@@ -27,6 +27,16 @@ int main(int argc, const char * argv[])
     client.addSceneToWindow("scene1","window1");
     client.addURDF("scene1/hrp2", "/local/mgeisert/devel/src/hrp2/hrp2_14_description/urdf/hrp2_14_capsule.urdf", "/local/mgeisert/devel/src/hrp2/");
 
+    sleep(5);
+
+    //vector<double> tri01 (3);
+
+    double pos1[3]= {1.,0.,0.};
+    double pos2[3] = {0.,1.,0.};
+    double pos3[3]= {0.,1.,1.};
+    double color[4] = {1.,1.,1.,1.};
+    client.addTriangleFace("scene1/triangle", pos1, pos2, pos3, color);
+
     sleep(15);
 
 

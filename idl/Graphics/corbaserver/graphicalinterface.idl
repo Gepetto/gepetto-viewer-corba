@@ -42,7 +42,10 @@ typedef double Color [4];
        //boolean addSphere(in string sphereName, in float radius) ;
        boolean addSphere(in string sphereName, in float radius, in Color RGBAcolor) ;
 
-       boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAColor) ;
+       boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) ;
+
+       boolean addSquareFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Position pos4, in Color RGBAcolor) ;
+       boolean addTriangleFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Color RGBAcolor) ;
 
        boolean addURDF(in string urdfName, in string urdfPath, in string urdfPackage) ;
 

@@ -69,6 +69,9 @@ public:
 
     bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color);
 
+    bool addTriangleFace(const char* lineName, const double* pos1, const double* pos2, const double* pos3, const double* color);
+    bool addSquareFace(const char* lineName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color);
+
     bool addURDF(const char* urdfName, const char* urdfPath, const char* urdfPackagePath);
 
     bool createGroup(const char* groupName) ;

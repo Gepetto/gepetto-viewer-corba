@@ -21,6 +21,7 @@
 #include <Graphics/LeafNodeCone.h>
 #include <Graphics/LeafNodeCylinder.h>
 #include <Graphics/LeafNodeLine.h>
+#include <Graphics/LeafNodeFace.h>
 #include <Graphics/LeafNodeSphere.h>
 #include <Graphics/macros.h>
 #include <Graphics/config.h>
@@ -105,6 +106,9 @@ public:
     virtual bool addSphere(const char* sphereName, float radius, const double* color);
 
     virtual bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color);
+
+    virtual bool addSquareFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color);
+    virtual bool addTriangleFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* color);
 
     virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
 

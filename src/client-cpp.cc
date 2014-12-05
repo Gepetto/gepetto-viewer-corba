@@ -164,6 +164,16 @@ bool ClientCpp::addLine(const char* lineName, const double* pos1, const double* 
     return manager_->addLine(lineName, pos1, pos2, color);
 }
 
+bool ClientCpp::addTriangleFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* color)
+{
+    return manager_->addTriangleFace(faceName, pos1, pos2, pos3, color);
+}
+
+bool ClientCpp::addSquareFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color)
+{
+    return manager_->addSquareFace(faceName, pos1, pos2, pos3, pos4, color);
+}
+
 bool ClientCpp::addURDF(const char* urdfName, const char* urdfPath, const char* urdfPackagePath)
 {
     return manager_->addURDF(urdfName, urdfPath, urdfPackagePath);

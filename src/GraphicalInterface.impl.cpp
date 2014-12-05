@@ -423,6 +423,43 @@ bool GraphicalInterface::addLine(const char* lineNameCorba, const double* posCor
     }
 }
 
+bool GraphicalInterface::addTriangleFace(const char* faceNameCorba, const double* posCorba1, const double* posCorba2, const double* posCorba3, const double* colorCorba)
+{
+    std::string faceName(faceNameCorba);
+    if (nodes_.find(faceName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << faceName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        osgVector3 pos1(posCorba1[0], posCorba1[1], posCorba1[2]);
+        osgVector3 pos2(posCorba2[0], posCorba2[1], posCorba2[2]);
+        osgVector3 pos3(posCorba3[0], posCorba3[1], posCorba3[2]);
+        LeafNodeFacePtr_t face = LeafNodeFace::create(faceName, pos1, pos2, pos3, getColor(colorCorba));
+        GraphicalInterface::initParent(faceName, face);
+        addNode(faceName, face);
+        return true;
+    }
+}
+
+bool GraphicalInterface::addSquareFace(const char* faceNameCorba, const double* posCorba1, const double* posCorba2, const double* posCorba3, const double* posCorba4, const double* colorCorba)
+{
+    std::string faceName(faceNameCorba);
+    if (nodes_.find(faceName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << faceName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        osgVector3 pos1(posCorba1[0], posCorba1[1], posCorba1[2]);
+        osgVector3 pos2(posCorba2[0], posCorba2[1], posCorba2[2]);
+        osgVector3 pos3(posCorba3[0], posCorba3[1], posCorba3[2]);
+        osgVector3 pos4(posCorba4[0], posCorba4[1], posCorba4[2]);
+        LeafNodeFacePtr_t face = LeafNodeFace::create(faceName, pos1, pos2, pos3, pos3, getColor(colorCorba));
+        GraphicalInterface::initParent(faceName, face);
+        addNode(faceName, face);
+        return true;
+    }
+}
+
 void GraphicalInterface::getNodeList()
 {
     std::cout << "List of Nodes :" << std::endl;
