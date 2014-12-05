@@ -31,6 +31,11 @@ osgVector4 GraphicalInterface::getColor(const std::string& colorName)
         return osgVector4(0.f, 0.f, 0.f, 1.f);
 }
 
+osgVector4 GraphicalInterface::getColor(const double* colorCorba)
+{
+    return osgVector4(colorCorba[0], colorCorba[1], colorCorba[2], colorCorba[3]);
+}
+
 VisibilityMode GraphicalInterface::getVisibility(const std::string& visibilityName)
 {
     if (visibilityName == "OFF")
@@ -229,17 +234,22 @@ bool GraphicalInterface::addSceneToWindow(const char* sceneNameCorba,const char*
     }
 }
 
-/*void GraphicalInterface::addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const char* colorName)
+bool GraphicalInterface::addBox(const char* boxNameCorba, const float boxSize1, const float boxSize2, const float boxSize3, const double* colorCorba)
+{
+    std::string boxName(boxNameCorba);
+    if (nodes_.find(boxName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << boxName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        LeafNodeBoxPtr_t box = LeafNodeBox::create(boxName, osgVector3(boxSize1, boxSize2, boxSize3), getColor(colorCorba));
+        GraphicalInterface::initParent(boxName, box);
+        addNode(boxName, box);
+        return true;
+    }
+}
 
-     {
-         osgVector4 color = getColor(colorName);
-         LeafNodeBoxPtr_t box = LeafNodeBox::create(boxName, osgVector3(boxSize1, boxSize2, boxSize3), color);
-         GraphicalInterface::initParent(boxName, box);
-         addNode(boxName, box);
-     }*/
-
-bool GraphicalInterface::addBox(const char* boxNameCorba, const float boxSize1, const float boxSize2, const float boxSize3)
-
+/*bool GraphicalInterface::addBox(const char* boxNameCorba, const float boxSize1, const float boxSize2, const float boxSize3)
 {
     std::string boxName(boxNameCorba);
     if (nodes_.find(boxName) != nodes_.end()) {
@@ -252,10 +262,9 @@ bool GraphicalInterface::addBox(const char* boxNameCorba, const float boxSize1, 
         addNode(boxName, box);
         return true;
     }
-}
+}*/
 
-bool GraphicalInterface::addCapsule(const char* capsuleNameCorba, const float radius, const float height)
-
+/*bool GraphicalInterface::addCapsule(const char* capsuleNameCorba, const float radius, const float height)
 {
     const std::string capsuleName(capsuleNameCorba);
     if (nodes_.find(capsuleName) != nodes_.end()) {
@@ -268,19 +277,24 @@ bool GraphicalInterface::addCapsule(const char* capsuleNameCorba, const float ra
         addNode(capsuleName, capsule);
         return true;
     }
+}*/
+
+bool GraphicalInterface::addCapsule(const char* capsuleNameCorba, const float radius, const float height, const double* colorCorba)
+{
+    const std::string capsuleName(capsuleNameCorba);
+    if (nodes_.find(capsuleName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << capsuleName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create(capsuleName, radius, height, getColor(colorCorba));
+        GraphicalInterface::initParent(capsuleName, capsule);
+        addNode(capsuleName, capsule);
+        return true;
+    }
 }
 
-/*void GraphicalInterface::addCapsule(const char* capsuleName, const float radius, const float height, const char* colorName)
-
-     {
-         osgVector4 color = getColor(colorName);
-         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create(capsuleName, radius, height, color);
-         GraphicalInterface::initParent(capsuleName, capsule);
-         addNode(capsuleName, capsule);
-     }*/
-
 bool GraphicalInterface::addMesh(const char* meshNameCorba, const char* meshPathCorba)
-
 {
     std::string meshName(meshNameCorba);
     std::string meshPath(meshPathCorba);
@@ -301,8 +315,22 @@ bool GraphicalInterface::addMesh(const char* meshNameCorba, const char* meshPath
     }
 }
 
-bool GraphicalInterface::addCone(const char* coneNameCorba, const float radius, const float height)
+/*bool GraphicalInterface::addCone(const char* coneNameCorba, const float radius, const float height)
+{
+    std::string coneName(coneNameCorba);
+    if (nodes_.find(coneName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << coneName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        LeafNodeConePtr_t cone = LeafNodeCone::create(coneName, radius, height);
+        GraphicalInterface::initParent(coneName, cone);
+        addNode(coneName, cone);
+        return true;
+    }
+}*/
 
+bool GraphicalInterface::addCone(const char* coneNameCorba, const float radius, const float height, const double* colorCorba)
 {
     std::string coneName(coneNameCorba);
     if (nodes_.find(coneName) != nodes_.end()) {
@@ -317,16 +345,7 @@ bool GraphicalInterface::addCone(const char* coneNameCorba, const float radius, 
     }
 }
 
-/*void GraphicalInterface::addCone(const char* coneName, const float radius, const float height, const char* colorName)
-
-     {
-         osgVector4 color = getColor(colorName);
-         LeafNodeConePtr_t cone = LeafNodeCone::create(coneName, radius, height, color);
-         GraphicalInterface::initParent(coneName, cone);
-         addNode(coneName, cone);
-     }*/
-
-bool GraphicalInterface::addCylinder(const char* cylinderNameCorba, const float radius, const float height)
+/*bool GraphicalInterface::addCylinder(const char* cylinderNameCorba, const float radius, const float height)
 
 {
     std::string cylinderName(cylinderNameCorba);
@@ -340,20 +359,24 @@ bool GraphicalInterface::addCylinder(const char* cylinderNameCorba, const float 
         addNode(cylinderName, cylinder);
         return true;
     }
+}*/
+
+bool GraphicalInterface::addCylinder(const char* cylinderNameCorba, const float radius, const float height, const double* colorCorba)
+{
+    std::string cylinderName(cylinderNameCorba);
+    if (nodes_.find(cylinderName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << cylinderName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create(cylinderName, radius, height, getColor(colorCorba));
+        GraphicalInterface::initParent(cylinderName, cylinder);
+        addNode(cylinderName, cylinder);
+        return true;
+    }
 }
 
-/*void GraphicalInterface::addCylinder(const char* cylinderName, const float radius, const float height, const char* colorName)
-
-     {
-         osgVector4 color = getColor(colorName);
-         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create(cylinderName, radius, height);
-         GraphicalInterface::initParent(cylinderName, cylinder);
-         addNode(cylinderName, cylinder);
-
-     }*/
-
-bool GraphicalInterface::addSphere(const char* sphereNameCorba, const float radius)
-
+/*bool GraphicalInterface::addSphere(const char* sphereNameCorba, const float radius)
 {
     std::string sphereName(sphereNameCorba);
     if (nodes_.find(sphereName) != nodes_.end()) {
@@ -364,6 +387,38 @@ bool GraphicalInterface::addSphere(const char* sphereNameCorba, const float radi
         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create(sphereName, radius);
         GraphicalInterface::initParent(sphereName, sphere);
         addNode(sphereName, sphere);
+        return true;
+    }
+}*/
+
+bool GraphicalInterface::addSphere(const char* sphereNameCorba, const float radius, const double* colorCorba)
+{
+    std::string sphereName(sphereNameCorba);
+    if (nodes_.find(sphereName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << sphereName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        LeafNodeSpherePtr_t sphere = LeafNodeSphere::create(sphereName, radius, getColor(colorCorba));
+        GraphicalInterface::initParent(sphereName, sphere);
+        addNode(sphereName, sphere);
+        return true;
+    }
+}
+
+bool GraphicalInterface::addLine(const char* lineNameCorba, const double* posCorba1, const double* posCorba2, const double* colorCorba)
+{
+    std::string lineName(lineNameCorba);
+    if (nodes_.find(lineName) != nodes_.end()) {
+        std::cout << "You need to chose an other name, \"" << lineName << "\" already exist." << std::endl;
+        return false;
+    }
+    else {
+        osgVector3 pos1(posCorba1[0], posCorba1[1], posCorba1[2]);
+        osgVector3 pos2(posCorba2[0], posCorba2[1], posCorba2[2]);
+        LeafNodeLinePtr_t line = LeafNodeLine::create(lineName, pos1, pos2, getColor(colorCorba));
+        GraphicalInterface::initParent(lineName, line);
+        addNode(lineName, line);
         return true;
     }
 }
@@ -384,14 +439,6 @@ void GraphicalInterface::getWindowList()
     for (std::map<std::string, WindowManagerPtr_t>::iterator it=windowManagers_.begin(); it!=windowManagers_.end(); ++it)
         std::cout << "   " << it->first << std::endl;
 }
-/*void GraphicalInterface::addSphere(const char* sphereName, const float radius, const char* colorName)
-
-     {
-         osgVector4 color = getColor(colorName);
-         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create(sphereName, radius);
-         GraphicalInterface::initParent(sphereName, sphere);
-         addNode(sphereName, sphere);
-     }*/
 
 bool GraphicalInterface::createGroup(const char* groupNameCorba)
 {

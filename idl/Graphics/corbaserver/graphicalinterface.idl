@@ -3,6 +3,8 @@ module Graphics {
 module corbaserver {
 
 typedef double Transform [7];
+typedef double Position [3];
+typedef double Color [4];
 
   /// Corba exception travelling through the Corba channel
   interface Graphicalinterface {
@@ -23,22 +25,24 @@ typedef double Transform [7];
        boolean createSceneWithFloor(in string sceneName) ;
        boolean addSceneToWindow(in string sceneName, in string windowName) ;
 
-       //void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in string colorName) ;
-       boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) ;
+       boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in Color RGBAcolor) ;
+       //boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) ;
 
-       boolean addCapsule(in string capsuleName, in float radius, in float height) ;
-       //void addCapsule(in string capsuleName, in float radius, in float height, in string colorName) ;
+       //boolean addCapsule(in string capsuleName, in float radius, in float height) ;
+       boolean addCapsule(in string capsuleName, in float radius, in float height, in Color RGBAcolorid) ;
 
        boolean addMesh(in string meshName, in string meshPath) ;
 
-       boolean addCone(in string coneName, in float radius, in float height) ;
-       //void addCone(in string coneName, in float radius, in float height, in string colorName) ;
+       //boolean addCone(in string coneName, in float radius, in float height) ;
+       boolean addCone(in string coneName, in float radius, in float height, in Color RGBAcolor) ;
 
-       boolean addCylinder(in string cylinderName, in float radius, in float height) ;
-       //void addCylinder(in string cylinderName, in float radius, in float height, in string colorName) ;
+       //boolean addCylinder(in string cylinderName, in float radius, in float height) ;
+       boolean addCylinder(in string cylinderName, in float radius, in float height, in Color RGBAcolor) ;
 
-       boolean addSphere(in string sphereName, in float radius) ;
-       //void addSphere(in string sphereName, in float radius, in string colorName) ;
+       //boolean addSphere(in string sphereName, in float radius) ;
+       boolean addSphere(in string sphereName, in float radius, in Color RGBAcolor) ;
+
+       boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAColor) ;
 
        boolean addURDF(in string urdfName, in string urdfPath, in string urdfPackage) ;
 

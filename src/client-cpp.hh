@@ -50,22 +50,24 @@ public:
     bool addSceneToWindow(const char* sceneName, const char* windowName) ;
 
 
-    //void addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const char* colorName);
-    bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3) ;
+    bool addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const double* color);
+    //bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3) ;
 
-    bool addCapsule(const char* capsuleName, float radius, float height) ;
-    //void addCapsule(const char* capsuleName, float radius, float height, const char* colorName);
+    //bool addCapsule(const char* capsuleName, float radius, float height) ;
+    bool addCapsule(const char* capsuleName, const float radius, const float height, const double* color);
 
     bool addMesh(const char* meshName, const char* meshPath) ;
 
-    bool addCone(const char* coneName, float radius, float height) ;
-    //void addCone(const char* coneName, float radius, float height, const char* colorName);
+    //bool addCone(const char* coneName, float radius, float height) ;
+    bool addCone(const char* coneName, const float radius, const float height, const double* color);
 
-    bool addCylinder(const char* cylinderName, float radius, float height) ;
-    //void addCylinder(const char* cylinderName, float radius, float height, const char* colorName);
+    //bool addCylinder(const char* cylinderName, float radius, float height) ;
+    bool addCylinder(const char* cylinderName, const float radius, const float height, const double* color);
 
-    bool addSphere(const char* sphereName, float radius) ;
-    //void addSphere(const char* sphereName, float radius, const char* colorName);
+    //bool addSphere(const char* sphereName, float radius) ;
+    bool addSphere(const char* sphereName, const float radius, const double* color);
+
+    bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color);
 
     bool addURDF(const char* urdfName, const char* urdfPath, const char* urdfPackagePath);
 

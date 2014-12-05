@@ -53,6 +53,7 @@ private:
     std::list<NodeConfiguration> newNodeConfigurations_;
 
     static osgVector4 getColor(const std::string& colorName);
+    static osgVector4 getColor(const double* color);
     static std::string parentName(const std::string& name);
     static VisibilityMode getVisibility(const std::string& visibilityName);
     static WireFrameMode getWire(const std::string& wireName);
@@ -79,8 +80,6 @@ public:
     virtual void refresh();
 
     virtual bool createWindow(const char* windowNameCorba);
-
-
     //virtual void createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
 
     virtual bool createScene(const char* sceneNameCorba) ;
@@ -88,22 +87,24 @@ public:
     virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba) ;
 
 
-    //virtual void addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const char* colorName);
-    virtual bool addBox(const char* boxNameCorba, float boxSize1, float boxSize2, float boxSize3) ;
+    virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const double* color);
+    //virtual bool addBox(const char* boxNameCorba, float boxSize1, float boxSize2, float boxSize3) ;
 
-    virtual bool addCapsule(const char* capsuleNameCorba, float radius, float height) ;
-    //virtual void addCapsule(const char* capsuleName, float radius, float height, const char* colorName);
+    //virtual bool addCapsule(const char* capsuleNameCorba, float radius, float height) ;
+    virtual bool addCapsule(const char* capsuleName, float radius, float height, const double* color);
 
     virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba) ;
 
-    virtual bool addCone(const char* coneNameCorba, float radius, float height) ;
-    //virtual void addCone(const char* coneName, float radius, float height, const char* colorName);
+    //virtual bool addCone(const char* coneNameCorba, float radius, float height) ;
+    virtual bool addCone(const char* coneName, float radius, float height, const double* color);
 
-    virtual bool addCylinder(const char* cylinderNameCorba, float radius, float height) ;
-    //virtual void addCylinder(const char* cylinderName, float radius, float height, const char* colorName);
+    //virtual bool addCylinder(const char* cylinderNameCorba, float radius, float height) ;
+    virtual bool addCylinder(const char* cylinderName, float radius, float height, const double* color);
 
-    virtual bool addSphere(const char* sphereNameCorba, float radius) ;
-    //virtual void addSphere(const char* sphereName, float radius, const char* colorName);
+    //virtual bool addSphere(const char* sphereNameCorba, float radius) ;
+    virtual bool addSphere(const char* sphereName, float radius, const double* color);
+
+    virtual bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color);
 
     virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
 

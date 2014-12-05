@@ -23,7 +23,6 @@ void ClientCpp::se3ToCorba(CORBA::Double* corbaPosition, const se3::SE3& se3posi
     corbaPosition[5] = q.z();        
 }
 
-
 ClientCpp::ClientCpp()
 {
     int    argc=0;       // Dummy variables to support following call.
@@ -105,45 +104,65 @@ bool ClientCpp::addSceneToWindow(const char* sceneName, const char* windowName)
    return  manager_->addSceneToWindow(sceneName, windowName);
 }
 
-    //void ClientCpp::addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const char* colorName);
-
-bool ClientCpp::addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3)
+/*bool ClientCpp::addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3)
 {
     return manager_->addBox(boxName, boxSize1, boxSize2, boxSize3);
+}*/
+
+bool ClientCpp::addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const double* color)
+{
+    return manager_->addBox(boxName, boxSize1, boxSize2, boxSize3, color);
 }
 
-bool ClientCpp::addCapsule(const char* capsuleName, float radius, float height)
+/*bool ClientCpp::addCapsule(const char* capsuleName, float radius, float height)
 {
     return manager_->addCapsule(capsuleName, radius, height);
-}
+}*/
 
-    //void ClientCpp::addCapsule(const char* capsuleName, float radius, float height, const char* colorName);
+bool ClientCpp::addCapsule(const char* capsuleName, const float radius, const float height, const double* color)
+{
+    return manager_->addCapsule(capsuleName, radius, height, color);
+}
 
 bool ClientCpp::addMesh(const char* meshName, const char* meshPath)
 {
     return manager_->addMesh(meshName, meshPath);
 }
 
-bool ClientCpp::addCone(const char* coneName, float radius, float height)
+/*bool ClientCpp::addCone(const char* coneName, float radius, float height)
 {
     return manager_->addCone(coneName, radius, height);
+}*/
+
+bool ClientCpp::addCone(const char* coneName, const float radius, const float height, const double* color)
+{
+    return manager_->addCone(coneName, radius, height, color);
 }
 
-    //void ClientCpp::addCone(const char* coneName, float radius, float height, const char* colorName);
-
-bool ClientCpp::addCylinder(const char* cylinderName, float radius, float height)
+/*bool ClientCpp::addCylinder(const char* cylinderName, float radius, float height)
 {
     return manager_->addCylinder(cylinderName, radius, height);
+}*/
+
+bool ClientCpp::addCylinder(const char* cylinderName, const float radius, const float height, const double* color)
+{
+    return manager_->addCylinder(cylinderName, radius, height, color);
 }
 
-    //void ClientCpp::addCylinder(const char* cylinderName, float radius, float height, const char* colorName);
-
-bool ClientCpp::addSphere(const char* sphereName, float radius)
+/*bool ClientCpp::addSphere(const char* sphereName, float radius)
 {
     return manager_->addSphere(sphereName, radius);
+}*/
+
+bool ClientCpp::addSphere(const char* sphereName, const float radius, const double* color)
+{
+    return manager_->addSphere(sphereName, radius, color);
 }
 
-    //void ClientCpp::addSphere(const char* sphereName, float radius, const char* colorName);
+bool ClientCpp::addLine(const char* lineName, const double* pos1, const double* pos2, const double* color)
+{
+    return manager_->addLine(lineName, pos1, pos2, color);
+}
 
 bool ClientCpp::addURDF(const char* urdfName, const char* urdfPath, const char* urdfPackagePath)
 {
