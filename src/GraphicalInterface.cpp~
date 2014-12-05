@@ -1,0 +1,327 @@
+//
+//  GraphicalGroupOSG.h
+//  DynAndGraphics
+//
+//  Created by Justin Carpentier on 07/02/2014.
+//  Copyright (c) 2014 Justin Carpentier. All rights reserved.
+//
+
+#include <iostream>
+#include "GraphicalInterface.hh"
+
+namespace Graphics {
+
+     GraphicalInterface::GraphicalInterface() :
+         windowManagers_(), nodes_(), groupNodes_()
+     {
+       return;
+     }
+
+     GraphicalInterfacePtr_t GraphicalInterface::create()
+     {
+         GraphicalInterfacePtr_t shared_ptr(new GraphicalInterface());
+         return shared_ptr;
+     }
+
+     osgVector4 GraphicalInterface::getColor(CORBA::char* colorName)
+     {
+         if (colorName == "blue")
+                 return osgVector4(0.f, 0.f, 1.f, 1.f);
+         else if (colorName == "green")
+                 return osgVector4(0.f, 1.f, 0.f, 1.f);
+         else if (colorName == "red")
+                 return osgVector4(1.f, 0.f, 0.f, 1.f);
+         else if (colorName == "white")
+                 return osgVector4(1.f, 1.f, 1.f, 1.f);
+         else
+             return osgVector4(0.f, 0.f, 0.f, 1.f);
+     }
+
+     VisibilityMode GraphicalInterface::getVisibility(CORBA::char* visibilityName)
+     {
+         if (visibilityName == "OFF")
+             return VISIBILITY_OFF;
+         else if (visibilityName == "ALWAYS_ON_TOP")
+             return ALWAYS_ON_TOP;
+         else
+             return VISIBILITY_ON;
+     }
+
+     WireFrameMode GraphicalInterface::getWire(CORBA::char* wireName)
+     {
+         if (wireName == "WIREFRAME")
+             return WIREFRAME;
+         else if (wireName == "FILL_AND_WIREFRAME")
+             return FILL_AND_WIREFRAME;
+         else
+             return FILL;
+     }
+
+     LightingMode GraphicalInterface::getLight(CORBA::char* lightName)
+     {
+         if (lightName == "OFF")
+             return LIGHT_INFLUENCE_OFF;
+         else
+             return LIGHT_INFLUENCE_ON;
+     }
+
+     std::string GraphicalInterface::parentName(CORBA::char* name)
+     {
+         std::string Name(name);
+         std::string::iterator parentNameIt;
+         for (std::string::iterator i = Name.end() ; (*i) != char('/') && i != Name.begin() ; i--) {
+             parentNameIt = i;
+         }
+         parentNameIt--;
+
+         std::string parentName;
+         for (std::string::iterator i = Name.begin(); i != parentNameIt; i++ ) {
+             parentName.push_back(*i);
+         }
+
+         return parentName;
+     }
+
+     void GraphicalInterface::initParent(CORBA::char* nodeName, NodePtr_t node)
+     {
+         GroupNodePtr_t groupNode = groupNodes_[GraphicalInterface::parentName(nodeName)];
+         if ( groupNode ) {
+             groupNode->addChild(node);
+         }
+     }
+
+     void GraphicalInterface::addNode(const std::string &nodeName, NodePtr_t node)
+     {
+         nodes_[nodeName] = node;
+     }
+
+     void GraphicalInterface::addGroup(const std::string &groupName, GroupNodePtr_t group)
+     {
+         groupNodes_[groupName] = group;
+         nodes_[groupName] = group;
+     }
+
+
+//Public functions
+
+     void GraphicalInterface::createWindow(CORBA::char* windowNameCorba)
+	throw (Error)
+     {
+	 std::string windowName(windowNameCorba);
+         WindowManagerPtr_t newWindow = WindowManager::create();
+         windowManagers_[name] = newWindow;
+     }
+
+     /*void GraphicalInterface::createWindow(CORBA::char* name, const unsigned int& x, const unsigned int& y, const unsigned int& width, const unsigned int& height)
+	throw (Error)
+     {
+         WindowManagerPtr_t newWindow = WindowManager::create(x, y, width, height);
+         windowManagers_[name] = newWindow;
+     }*/
+
+     void GraphicalInterface::createScene(CORBA::char* sceneNameCorba)
+	throw (Error)
+     {
+	 std::string sceneName(sceneNameCorba);
+         GroupNodePtr_t mainNode = GroupNode::create(sceneName);
+         addGroup(sceneName, mainNode);
+     }
+
+     void GraphicalInterface::createSceneWithFloor(CORBA::char* sceneNameCorba)
+	throw (Error)
+     {
+	 std::string sceneName(sceneNameCorba);
+         GroupNodePtr_t mainNode = GroupNode::create(sceneName);
+         addGroup(sceneName, mainNode);
+         std::string floorName = sceneName + "/floor";
+         LeafNodeGroundPtr_t floor = LeafNodeGround::create(floorName);
+         addNode(floorName, floor);
+         mainNode->addChild(floor);
+     }
+
+     void GraphicalInterface::addSceneToWindow(CORBA::char* sceneNameCorba,CORBA::char* windowNameCorba)
+	throw (Error)
+     {
+	 std::string sceneName(sceneNameCorba);
+	 std::string windowName(windowNameCorba);
+         windowManagers_[windowName]->addNode(groupNodes_[sceneName]);
+     }
+
+     /*void GraphicalInterface::addBox(CORBA::char* boxName, CORBA::Float boxSize1, CORBA::Float boxSize2, CORBA::Float boxSize3, CORBA::char* colorName)
+	throw (Error)
+     {
+         osgVector4 color = getColor(colorName);
+         LeafNodeBoxPtr_t box = LeafNodeBox::create(boxName, osgVector3(boxSize1, boxSize2, boxSize3), color);
+         GraphicalInterface::initParent(boxName, box);
+         addNode(boxName, box);
+     }*/
+
+     void GraphicalInterface::addBox(CORBA::char* boxNameCorba, CORBA::Float boxSize1, CORBA::Float boxSize2, CORBA::Float boxSize3)
+	throw (Error)
+     {
+	 std::string boxName(boxNameCorba);
+         LeafNodeBoxPtr_t box = LeafNodeBox::create(boxName, osgVector3(boxSize1, boxSize2, boxSize3));
+         GraphicalInterface::initParent(boxName, box);
+         addNode(boxName, box);
+     }
+
+     void GraphicalInterface::addCapsule(CORBA::char* capsuleNameCorba, CORBA::Float radius, CORBA::Float height)
+	throw (Error)
+     {
+	 std::string capsuleName(capsuleNameCorba);
+         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create(capsuleName, radius, height);
+         GraphicalInterface::initParent(capsuleName, capsule);
+         addNode(capsuleName, capsule);
+     }
+
+     /*void GraphicalInterface::addCapsule(CORBA::char* capsuleName, CORBA::Float radius, CORBA::Float height, CORBA::char* colorName)
+	throw (Error)
+     {
+         osgVector4 color = getColor(colorName);
+         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create(capsuleName, radius, height, color);
+         GraphicalInterface::initParent(capsuleName, capsule);
+         addNode(capsuleName, capsule);
+     }*/
+
+     void GraphicalInterface::addMesh(CORBA::char* meshNameCorba, CORBA::char* meshPathCorba)
+	throw (Error)
+     {
+	 std::string meshName(meshNameCorba);
+	 std::string meshPath(meshPathCorba);
+         LeafNodeColladaPtr_t mesh = LeafNodeCollada::create(meshName, meshPath);
+         GraphicalInterface::initParent(meshName, mesh);
+         addNode(meshName, mesh);
+     }
+
+     void GraphicalInterface::addCone(CORBA::char* coneNameCorba, CORBA::Float radius, CORBA::Float height)
+	throw (Error)
+     {
+	 std::string coneName(coneNameCorba);
+         LeafNodeConePtr_t cone = LeafNodeCone::create(coneName, radius, height);
+         GraphicalInterface::initParent(coneName, cone);
+         addNode(coneName, cone);
+     }
+
+     /*void GraphicalInterface::addCone(CORBA::char* coneName, CORBA::Float radius, CORBA::Float height, CORBA::char* colorName)
+	throw (Error)
+     {
+         osgVector4 color = getColor(colorName);
+         LeafNodeConePtr_t cone = LeafNodeCone::create(coneName, radius, height, color);
+         GraphicalInterface::initParent(coneName, cone);
+         addNode(coneName, cone);
+     }*/
+
+     void GraphicalInterface::addCylinder(CORBA::char* cylinderNameCorba, CORBA::Float radius, CORBA::Float height)
+	throw (Error)
+     {
+	 std::string cylinderName(cylinderNameCorba);
+         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create(cylinderName, radius, height);
+         GraphicalInterface::initParent(cylinderName, cylinder);
+         addNode(cylinderName, cylinder);
+     }
+
+     /*void GraphicalInterface::addCylinder(CORBA::char* cylinderName, CORBA::Float radius, CORBA::Float height, CORBA::char* colorName)
+	throw (Error)
+     {
+         osgVector4 color = getColor(colorName);
+         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create(cylinderName, radius, height);
+         GraphicalInterface::initParent(cylinderName, cylinder);
+         addNode(cylinderName, cylinder);
+
+     }*/
+
+     void GraphicalInterface::addSphere(CORBA::char* sphereNameCorba, CORBA::Float radius)
+	throw (Error)
+     {
+	 std::string sphereName(sphereNameCorba);
+         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create(sphereName, radius);
+         GraphicalInterface::initParent(sphereName, sphere);
+         addNode(sphereName, sphere);
+     }
+
+     /*void GraphicalInterface::addSphere(CORBA::char* sphereName, CORBA::Float radius, CORBA::char* colorName)
+	throw (Error)
+     {
+         osgVector4 color = getColor(colorName);
+         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create(sphereName, radius);
+         GraphicalInterface::initParent(sphereName, sphere);
+         addNode(sphereName, sphere);
+     }*/
+
+     void GraphicalInterface::createGroup(CORBA::char* groupNameCorba)
+	throw (Error)
+     {
+	 std::string groupName(groupNameCorba);
+         GroupNodePtr_t groupNode = GroupNode::create(groupName);
+         GraphicalInterface::initParent(groupName, groupNode);
+         addGroup(groupName, groupNode);
+     }
+
+     CORBA::boolean GraphicalInterface::addToGroup(CORBA::char* nodeNameCorba, CORBA::char* groupNameCorba)
+	throw (Error)
+     {
+	 std::string nodeName(nodeNameCorba);
+	 std::stirng groupName(groupNameCorba);
+         NodePtr_t node = nodes_[nodeName];
+         GroupNodePtr_t group = groupNodes_[groupName];
+         if (!node || !group) {
+             return false;
+         }
+         else {
+             group->addChild(node);
+             return true;
+         }
+     }
+
+     CORBA::boolean GraphicalInterface::applyConfiguration(CORBA::char* nodeNameCorba, CORBA::Float configuration)
+	throw (Error)
+     {
+	 std::string nodeName(nodeNameCorba);
+         NodePtr_t node = nodes_[nodeName];
+         if (!node)
+             return false;
+         //node->applyConfiguration(configuration);
+         return true;
+     }
+
+     CORBA::boolean GraphicalInterface::setVisibility(CORBA::char* nodeNameCorba, CORBA::char* visibilityModeCorba)
+	throw (Error)
+     {
+	 std::string nodeName(nodeNameCorba);
+	 std::string visibilityMode(visibilityModeCorba);
+         VisibilityMode visibility =  getVisibility(visibilityMode);
+         NodePtr_t node = nodes_[nodeName];
+         if (!node)
+             return false;
+         node->setVisibilityMode(visibility);
+         return true;
+     }
+
+     CORBA::boolean GraphicalInterface::setWireFrameMode(CORBA::char* nodeNameCorba, CORBA::char* wireFrameModeCorba)
+	throw (Error)
+     {
+	 std::string nodeName(nodeNameCorba);
+	 std::string wireFrameMode(wireFrameModeCorba);
+         WireFrameMode wire = getWire(wireFrameMode);
+         NodePtr_t node = nodes_[nodeName];
+         if (!node)
+             return false;
+         node->setWireFrameMode(wire);
+         return true;
+     }
+
+     CORBA::boolean GraphicalInterface::setLightingMode(CORBA::char* nodeNameCorba, CORBA::char* lightingModeCorba)
+	throw (Error)
+     {
+	 std::string nodeName(nodeNameCorba);
+	 std::string lightingMode(lightingModeCorba);
+         LightingMode light = getLight(lightingMode);
+         NodePtr_t node = nodes_[nodeName];
+         if (!node)
+             return false;
+         node->setLightingMode(light);
+         return true;
+     }
+
+
+}

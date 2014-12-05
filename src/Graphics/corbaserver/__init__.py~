@@ -1,0 +1,7 @@
+import omniORB
+omniORB.updateModule("Graphics.corbaserver")
+
+import sceneViewer_idl
+
+from client import Client
+

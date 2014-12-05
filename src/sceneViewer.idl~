@@ -1,0 +1,47 @@
+// file sceneViewer.idl
+module Graphics {
+module corbaserver {
+
+  /// Corba exception travelling through the Corba channel
+  exception Error
+  {
+    string msg;
+  };
+
+  interface sceneViewer {
+    // Compute the sum of two real numbers.
+       void createWindow(in string name) ;
+       //void createWindow(in string name, in unsigned long x, in unsigned long y, in unsigned long width, in unsigned long height) ;
+
+       void createScene(in string sceneName) ;
+       void createSceneWithFloor(in string sceneName) ;
+       void addSceneToWindow(in string sceneName, in string windowName) ;
+
+       //void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in string colorName) ;
+       void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) ;
+
+       void addCapsule(in string capsuleName, in float radius, in float height) ;
+       //void addCapsule(in string capsuleName, in float radius, in float height, in string colorName) ;
+
+       void addMesh(in string meshName, in string meshPath) ;
+
+       void addCone(in string coneName, in float radius, in float height) ;
+       //void addCone(in string coneName, in float radius, in float height, in string colorName) ;
+
+       void addCylinder(in string cylinderName, in float radius, in float height) ;
+       //void addCylinder(in string cylinderName, in float radius, in float height, in string colorName) ;
+
+       void addSphere(in string sphereName, in float radius) ;
+       //void addSphere(in string sphereName, in float radius, in string colorName) ;
+
+       void createGroup(in string groupName) ;
+       boolean addToGroup(in string nodeName, in string groupName) ;
+
+       boolean applyConfiguration(in string nodeName, in float configuration) ;
+
+       boolean setVisibility(in string nodeName, in string visibilityMode) ;
+       boolean setWireFrameMode(in string nodeName, in string wireFrameMode) ;
+       boolean setLightingMode(in string nodeName, in string lightingMode) ;
+  };
+};
+};

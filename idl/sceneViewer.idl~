@@ -1,0 +1,47 @@
+// file sceneViewer.idl
+module Graphics {
+module corbaserver {
+
+  /// Corba exception travelling through the Corba channel
+  exception Error
+  {
+    string msg;
+  };
+
+  interface sceneViewer {
+    // Compute the sum of two real numbers.
+       void createWindow(in string name) raises (Error);
+       //void createWindow(in string name, in unsigned long x, in unsigned long y, in unsigned long width, in unsigned long height) raises (Error);
+
+       void createScene(in string sceneName) raises (Error);
+       void createSceneWithFloor(in string sceneName) raises (Error);
+       void addSceneToWindow(in string sceneName, in string windowName) raises (Error);
+
+       //void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in string colorName) raises (Error);
+       void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) raises (Error);
+
+       void addCapsule(in string capsuleName, in float radius, in float height) raises (Error);
+       //void addCapsule(in string capsuleName, in float radius, in float height, in string colorName) raises (Error);
+
+       void addMesh(in string meshName, in string meshPath) raises (Error);
+
+       void addCone(in string coneName, in float radius, in float height) raises (Error);
+       //void addCone(in string coneName, in float radius, in float height, in string colorName) raises (Error);
+
+       void addCylinder(in string cylinderName, in float radius, in float height) raises (Error);
+       //void addCylinder(in string cylinderName, in float radius, in float height, in string colorName) raises (Error);
+
+       void addSphere(in string sphereName, in float radius) raises (Error);
+       //void addSphere(in string sphereName, in float radius, in string colorName) raises (Error);
+
+       void createGroup(in string groupName) raises (Error);
+       boolean addToGroup(in string nodeName, in string groupName) raises (Error);
+
+       boolean applyConfiguration(in string nodeName, in float configuration) raises (Error);
+
+       boolean setVisibility(in string nodeName, in string visibilityMode) raises (Error);
+       boolean setWireFrameMode(in string nodeName, in string wireFrameMode) raises (Error);
+       boolean setLightingMode(in string nodeName, in string lightingMode) raises (Error);
+  };
+};
+};

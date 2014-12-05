@@ -1,0 +1,253 @@
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer_Helper::duplicate(Graphics::corbaserver::_objref_sceneViewer*)':
+sceneViewerSK.cc:(.text+0xe6): undefined reference to `omni::duplicateObjRef(omniObjRef*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_duplicate(Graphics::corbaserver::_objref_sceneViewer*)':
+sceneViewerSK.cc:(.text+0x142): undefined reference to `omni::duplicateObjRef(omniObjRef*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_narrow(CORBA::Object*)':
+sceneViewerSK.cc:(.text+0x1a7): undefined reference to `omniObjRef::_realNarrow(char const*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_unchecked_narrow(CORBA::Object*)':
+sceneViewerSK.cc:(.text+0x21f): undefined reference to `omniObjRef::_uncheckedNarrow(char const*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_nil()':
+sceneViewerSK.cc:(.text+0x24e): undefined reference to `omni::nilRefLock()'
+sceneViewerSK.cc:(.text+0x2a7): undefined reference to `omni::registerNilCorbaObject(CORBA::Object*)'
+sceneViewerSK.cc:(.text+0x2ac): undefined reference to `omni::nilRefLock()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::~_objref_sceneViewer()':
+sceneViewerSK.cc:(.text+0x329): undefined reference to `omniObjRef::~omniObjRef()'
+sceneViewerSK.cc:(.text+0x343): undefined reference to `CORBA::Object::~Object()'
+sceneViewerSK.cc:(.text+0x378): undefined reference to `CORBA::Object::~Object()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::~_objref_sceneViewer()':
+sceneViewerSK.cc:(.text+0x3ef): undefined reference to `omniObjRef::~omniObjRef()'
+sceneViewerSK.cc:(.text+0x409): undefined reference to `CORBA::Object::~Object()'
+sceneViewerSK.cc:(.text+0x43e): undefined reference to `CORBA::Object::~Object()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::_objref_sceneViewer(omniIOR*, omniIdentity*)':
+sceneViewerSK.cc:(.text+0x530): undefined reference to `omniObjRef::omniObjRef(char const*, omniIOR*, omniIdentity*, bool)'
+sceneViewerSK.cc:(.text+0x58c): undefined reference to `CORBA::Object::~Object()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::_ptrToObjRef(char const*)':
+sceneViewerSK.cc:(.text+0x5ce): undefined reference to `CORBA::Object::_PD_repoId'
+sceneViewerSK.cc:(.text+0x604): undefined reference to `CORBA::Object::_PD_repoId'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::createWindow(char const*)':
+sceneViewerSK.cc:(.text+0x73a): undefined reference to `omniObjRef::_invoke(omniCallDescriptor&, bool)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::createScene(char const*)':
+sceneViewerSK.cc:(.text+0x806): undefined reference to `omniObjRef::_invoke(omniCallDescriptor&, bool)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::createSceneWithFloor(char const*)':
+sceneViewerSK.cc:(.text+0x8d2): undefined reference to `omniObjRef::_invoke(omniCallDescriptor&, bool)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::addSceneToWindow(char const*, char const*)':
+sceneViewerSK.cc:(.text+0xa6a): undefined reference to `omniObjRef::_invoke(omniCallDescriptor&, bool)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::addBox(char const*, float, float, float)':
+sceneViewerSK.cc:(.text+0xc55): undefined reference to `omniObjRef::_invoke(omniCallDescriptor&, bool)'
+/tmp/cc7FAfgc.o:sceneViewerSK.cc:(.text+0xe04): more undefined references to `omniObjRef::_invoke(omniCallDescriptor&, bool)' follow
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_pof_sceneViewer::~_pof_sceneViewer()':
+sceneViewerSK.cc:(.text+0x19b0): undefined reference to `omni::proxyObjectFactory::~proxyObjectFactory()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_impl_sceneViewer::~_impl_sceneViewer()':
+sceneViewerSK.cc:(.text+0x1ab1): undefined reference to `omniServant::~omniServant()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_impl_sceneViewer::~_impl_sceneViewer()':
+sceneViewerSK.cc:(.text+0x1b13): undefined reference to `omniServant::~omniServant()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_impl_sceneViewer::_dispatch(omniCallHandle&)':
+sceneViewerSK.cc:(.text+0x1be7): undefined reference to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)'
+sceneViewerSK.cc:(.text+0x1c61): undefined reference to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)'
+sceneViewerSK.cc:(.text+0x1cdb): undefined reference to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)'
+sceneViewerSK.cc:(.text+0x1d55): undefined reference to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)'
+sceneViewerSK.cc:(.text+0x1dcf): undefined reference to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)'
+/tmp/cc7FAfgc.o:sceneViewerSK.cc:(.text+0x1e49): more undefined references to `omniCallHandle::upcall(omniServant*, omniCallDescriptor&)' follow
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_impl_sceneViewer::_ptrToInterface(char const*)':
+sceneViewerSK.cc:(.text+0x24c6): undefined reference to `CORBA::Object::_PD_repoId'
+sceneViewerSK.cc:(.text+0x24f4): undefined reference to `CORBA::Object::_PD_repoId'
+/tmp/cc7FAfgc.o: In function `POA_Graphics::corbaserver::sceneViewer::~sceneViewer()':
+sceneViewerSK.cc:(.text+0x25a2): undefined reference to `PortableServer::ServantBase::~ServantBase()'
+sceneViewerSK.cc:(.text+0x25dd): undefined reference to `omniServant::~omniServant()'
+sceneViewerSK.cc:(.text+0x2637): undefined reference to `omniServant::~omniServant()'
+/tmp/cc7FAfgc.o: In function `POA_Graphics::corbaserver::sceneViewer::~sceneViewer()':
+sceneViewerSK.cc:(.text+0x26ca): undefined reference to `PortableServer::ServantBase::~ServantBase()'
+sceneViewerSK.cc:(.text+0x2707): undefined reference to `omniServant::~omniServant()'
+sceneViewerSK.cc:(.text+0x2763): undefined reference to `omniServant::~omniServant()'
+/tmp/cc7FAfgc.o: In function `__static_initialization_and_destruction_0(int, int)':
+sceneViewerSK.cc:(.text+0x27d9): undefined reference to `omni_thread::init_t::init_t()'
+sceneViewerSK.cc:(.text+0x27de): undefined reference to `omni_thread::init_t::~init_t()'
+sceneViewerSK.cc:(.text+0x2802): undefined reference to `_omniFinalCleanup::_omniFinalCleanup()'
+sceneViewerSK.cc:(.text+0x2807): undefined reference to `_omniFinalCleanup::~_omniFinalCleanup()'
+sceneViewerSK.cc:(.text+0x2824): undefined reference to `omni::omniORB_4_1'
+/tmp/cc7FAfgc.o: In function `_CORBA_String_helper::free(char*)':
+sceneViewerSK.cc:(.text._ZN20_CORBA_String_helper4freeEPc[_CORBA_String_helper::free(char*)]+0xd): undefined reference to `_CORBA_String_helper::empty_string'
+/tmp/cc7FAfgc.o: In function `cdrStream::marshalString(char const*, int)':
+sceneViewerSK.cc:(.text._ZN9cdrStream13marshalStringEPKci[cdrStream::marshalString(char const*, int)]+0x26): undefined reference to `omni::ucheckFail(char const*, int, char const*)'
+/tmp/cc7FAfgc.o: In function `CORBA::Object::Object()':
+sceneViewerSK.cc:(.text._ZN5CORBA6ObjectC2Ev[_ZN5CORBA6ObjectC5Ev]+0x8): undefined reference to `vtable for CORBA::Object'
+sceneViewerSK.cc:(.text._ZN5CORBA6ObjectC2Ev[_ZN5CORBA6ObjectC5Ev]+0x18): undefined reference to `CORBA::Object::_PR_magic'
+/tmp/cc7FAfgc.o: In function `CORBA::Object::_PR_is_valid(CORBA::Object*)':
+sceneViewerSK.cc:(.text._ZN5CORBA6Object12_PR_is_validEPS0_[CORBA::Object::_PR_is_valid(CORBA::Object*)]+0x10): undefined reference to `CORBA::Object::_PR_magic'
+/tmp/cc7FAfgc.o: In function `CORBA::is_nil(CORBA::Object*)':
+sceneViewerSK.cc:(.text._ZN5CORBA6is_nilEPNS_6ObjectE[CORBA::is_nil(CORBA::Object*)]+0x33): undefined reference to `_CORBA_use_nil_ptr_as_nil_objref()'
+/tmp/cc7FAfgc.o: In function `CORBA::release(CORBA::Object*)':
+sceneViewerSK.cc:(.text._ZN5CORBA7releaseEPNS_6ObjectE[CORBA::release(CORBA::Object*)]+0x60): undefined reference to `omni::releaseObjRef(omniObjRef*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_unmarshalObjRef(cdrStream&)':
+sceneViewerSK.cc:(.text._ZN8Graphics11corbaserver11sceneViewer16_unmarshalObjRefER9cdrStream[Graphics::corbaserver::sceneViewer::_unmarshalObjRef(cdrStream&)]+0x16): undefined reference to `omniObjRef::_unMarshal(char const*, cdrStream&)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_objref_sceneViewer::_objref_sceneViewer()':
+sceneViewerSK.cc:(.text._ZN8Graphics11corbaserver19_objref_sceneViewerC1Ev[Graphics::corbaserver::_objref_sceneViewer::_objref_sceneViewer()]+0x1f): undefined reference to `omniObjRef::omniObjRef()'
+sceneViewerSK.cc:(.text._ZN8Graphics11corbaserver19_objref_sceneViewerC1Ev[Graphics::corbaserver::_objref_sceneViewer::_objref_sceneViewer()]+0x75): undefined reference to `CORBA::Object::~Object()'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::_pof_sceneViewer::_pof_sceneViewer()':
+sceneViewerSK.cc:(.text._ZN8Graphics11corbaserver16_pof_sceneViewerC2Ev[_ZN8Graphics11corbaserver16_pof_sceneViewerC5Ev]+0x17): undefined reference to `omni::proxyObjectFactory::proxyObjectFactory(char const*)'
+/tmp/cc7FAfgc.o: In function `Graphics::corbaserver::sceneViewer::_marshalObjRef(Graphics::corbaserver::_objref_sceneViewer*, cdrStream&)':
+sceneViewerSK.cc:(.text._ZN8Graphics11corbaserver11sceneViewer14_marshalObjRefEPNS0_19_objref_sceneViewerER9cdrStream[Graphics::corbaserver::sceneViewer::_marshalObjRef(Graphics::corbaserver::_objref_sceneViewer*, cdrStream&)]+0x26): undefined reference to `omniObjRef::_marshal(omniObjRef*, cdrStream&)'
+/tmp/cc7FAfgc.o: In function `omniCallDescriptor::omniCallDescriptor(void (*)(omniCallDescriptor*, omniServant*), char const*, int, bool, char const* const*, int, bool)':
+sceneViewerSK.cc:(.text._ZN18omniCallDescriptorC2EPFvPS_P11omniServantEPKcibPKS6_ib[_ZN18omniCallDescriptorC5EPFvPS_P11omniServantEPKcibPKS6_ib]+0x17): undefined reference to `vtable for omniCallDescriptor'
+/tmp/cc7FAfgc.o: In function `omniCallDescriptor::~omniCallDescriptor()':
+sceneViewerSK.cc:(.text._ZN18omniCallDescriptorD2Ev[_ZN18omniCallDescriptorD5Ev]+0xb): undefined reference to `vtable for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xf4): undefined reference to `virtual thunk to PortableServer::ServantBase::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xfc): undefined reference to `omniServant::_is_a(char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x100): undefined reference to `omniServant::_non_existent()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x104): undefined reference to `virtual thunk to PortableServer::ServantBase::_do_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x10c): undefined reference to `virtual thunk to PortableServer::ServantBase::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x110): undefined reference to `virtual thunk to PortableServer::ServantBase::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x148): undefined reference to `PortableServer::ServantBase::_default_POA()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x14c): undefined reference to `PortableServer::ServantBase::_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x150): undefined reference to `PortableServer::ServantBase::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x154): undefined reference to `PortableServer::ServantBase::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x158): undefined reference to `PortableServer::ServantBase::_refcount_value()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x15c): undefined reference to `PortableServer::ServantBase::_do_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN12POA_Graphics11corbaserver11sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x160): undefined reference to `PortableServer::ServantBase::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE0_N8Graphics11corbaserver17_impl_sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x9c): undefined reference to `omniServant::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE0_N8Graphics11corbaserver17_impl_sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xa4): undefined reference to `omniServant::_is_a(char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE0_N8Graphics11corbaserver17_impl_sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xa8): undefined reference to `omniServant::_non_existent()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE0_N8Graphics11corbaserver17_impl_sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xb4): undefined reference to `omniServant::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE0_N8Graphics11corbaserver17_impl_sceneViewerE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xb8): undefined reference to `omniServant::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x8): undefined reference to `typeinfo for PortableServer::ServantBase'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0xc): undefined reference to `PortableServer::ServantBase::~ServantBase()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x10): undefined reference to `PortableServer::ServantBase::~ServantBase()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x14): undefined reference to `PortableServer::ServantBase::_default_POA()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x18): undefined reference to `PortableServer::ServantBase::_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x1c): undefined reference to `PortableServer::ServantBase::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x20): undefined reference to `PortableServer::ServantBase::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x24): undefined reference to `PortableServer::ServantBase::_refcount_value()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x28): undefined reference to `PortableServer::ServantBase::_do_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x2c): undefined reference to `PortableServer::ServantBase::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x5c): undefined reference to `typeinfo for PortableServer::ServantBase'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x60): undefined reference to `virtual thunk to PortableServer::ServantBase::~ServantBase()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x64): undefined reference to `virtual thunk to PortableServer::ServantBase::~ServantBase()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x68): undefined reference to `omniServant::_ptrToInterface(char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x6c): undefined reference to `virtual thunk to PortableServer::ServantBase::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x70): undefined reference to `omniServant::_mostDerivedRepoId()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x74): undefined reference to `omniServant::_is_a(char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x78): undefined reference to `omniServant::_non_existent()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x7c): undefined reference to `virtual thunk to PortableServer::ServantBase::_do_get_interface()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x80): undefined reference to `omniServant::_dispatch(omniCallHandle&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x84): undefined reference to `virtual thunk to PortableServer::ServantBase::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTCN12POA_Graphics11corbaserver11sceneViewerE20_N14PortableServer11ServantBaseE[vtable for POA_Graphics::corbaserver::sceneViewer]+0x88): undefined reference to `virtual thunk to PortableServer::ServantBase::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver17_impl_sceneViewerE[vtable for Graphics::corbaserver::_impl_sceneViewer]+0x9c): undefined reference to `omniServant::_downcast()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver17_impl_sceneViewerE[vtable for Graphics::corbaserver::_impl_sceneViewer]+0xa4): undefined reference to `omniServant::_is_a(char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver17_impl_sceneViewerE[vtable for Graphics::corbaserver::_impl_sceneViewer]+0xa8): undefined reference to `omniServant::_non_existent()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver17_impl_sceneViewerE[vtable for Graphics::corbaserver::_impl_sceneViewer]+0xb4): undefined reference to `omniServant::_add_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver17_impl_sceneViewerE[vtable for Graphics::corbaserver::_impl_sceneViewer]+0xb8): undefined reference to `omniServant::_remove_ref()'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_21000000[vtable for _0RL_cd_1340db5341f970cc_21000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_21000000[vtable for _0RL_cd_1340db5341f970cc_21000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_01000000[vtable for _0RL_cd_1340db5341f970cc_01000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_01000000[vtable for _0RL_cd_1340db5341f970cc_01000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_d0000000[vtable for _0RL_cd_1340db5341f970cc_d0000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_d0000000[vtable for _0RL_cd_1340db5341f970cc_d0000000]+0x18): undefined reference to `omniCallDescriptor::unmarshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_d0000000[vtable for _0RL_cd_1340db5341f970cc_d0000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_d0000000[vtable for _0RL_cd_1340db5341f970cc_d0000000]+0x24): undefined reference to `omniCallDescriptor::marshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_80000000[vtable for _0RL_cd_1340db5341f970cc_80000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_80000000[vtable for _0RL_cd_1340db5341f970cc_80000000]+0x18): undefined reference to `omniCallDescriptor::unmarshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_80000000[vtable for _0RL_cd_1340db5341f970cc_80000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_80000000[vtable for _0RL_cd_1340db5341f970cc_80000000]+0x24): undefined reference to `omniCallDescriptor::marshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_60000000[vtable for _0RL_cd_1340db5341f970cc_60000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_60000000[vtable for _0RL_cd_1340db5341f970cc_60000000]+0x18): undefined reference to `omniCallDescriptor::unmarshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_60000000[vtable for _0RL_cd_1340db5341f970cc_60000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_60000000[vtable for _0RL_cd_1340db5341f970cc_60000000]+0x24): undefined reference to `omniCallDescriptor::marshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_40000000[vtable for _0RL_cd_1340db5341f970cc_40000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_40000000[vtable for _0RL_cd_1340db5341f970cc_40000000]+0x18): undefined reference to `omniCallDescriptor::unmarshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_40000000[vtable for _0RL_cd_1340db5341f970cc_40000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_40000000[vtable for _0RL_cd_1340db5341f970cc_40000000]+0x24): undefined reference to `omniCallDescriptor::marshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_00000000[vtable for _0RL_cd_1340db5341f970cc_00000000]+0x10): undefined reference to `omniCallDescriptor::initialiseCall(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_00000000[vtable for _0RL_cd_1340db5341f970cc_00000000]+0x18): undefined reference to `omniCallDescriptor::unmarshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_00000000[vtable for _0RL_cd_1340db5341f970cc_00000000]+0x1c): undefined reference to `omniCallDescriptor::userException(cdrStream&, omni::IOP_C*, char const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTV33_0RL_cd_1340db5341f970cc_00000000[vtable for _0RL_cd_1340db5341f970cc_00000000]+0x24): undefined reference to `omniCallDescriptor::marshalReturnedValues(cdrStream&)'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver19_objref_sceneViewerE[vtable for Graphics::corbaserver::_objref_sceneViewer]+0x40): undefined reference to `CORBA::Object::_non_existent()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver19_objref_sceneViewerE[vtable for Graphics::corbaserver::_objref_sceneViewer]+0x44): undefined reference to `CORBA::Object::_NP_incrRefCount()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver19_objref_sceneViewerE[vtable for Graphics::corbaserver::_objref_sceneViewer]+0x48): undefined reference to `CORBA::Object::_NP_decrRefCount()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver19_objref_sceneViewerE[vtable for Graphics::corbaserver::_objref_sceneViewer]+0x6c): undefined reference to `omniObjRef::_localServantTarget()'
+/tmp/cc7FAfgc.o:(.rodata._ZTVN8Graphics11corbaserver19_objref_sceneViewerE[vtable for Graphics::corbaserver::_objref_sceneViewer]+0x70): undefined reference to `omniObjRef::_enableShortcut(omniServant*, bool const*)'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_21000000[typeinfo for _0RL_cd_1340db5341f970cc_21000000]+0x8): undefined reference to `typeinfo for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_01000000[typeinfo for _0RL_cd_1340db5341f970cc_01000000]+0x8): undefined reference to `typeinfo for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_d0000000[typeinfo for _0RL_cd_1340db5341f970cc_d0000000]+0x8): undefined reference to `typeinfo for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_80000000[typeinfo for _0RL_cd_1340db5341f970cc_80000000]+0x8): undefined reference to `typeinfo for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_60000000[typeinfo for _0RL_cd_1340db5341f970cc_60000000]+0x8): undefined reference to `typeinfo for omniCallDescriptor'
+/tmp/cc7FAfgc.o:(.rodata._ZTI33_0RL_cd_1340db5341f970cc_40000000[typeinfo for _0RL_cd_1340db5341f970cc_40000000]+0x8): more undefined references to `typeinfo for omniCallDescriptor' follow
+/tmp/cc7FAfgc.o:(.rodata._ZTIN12POA_Graphics11corbaserver11sceneViewerE[typeinfo for POA_Graphics::corbaserver::sceneViewer]+0x18): undefined reference to `typeinfo for PortableServer::ServantBase'
+/tmp/cc7FAfgc.o:(.rodata._ZTIN8Graphics11corbaserver17_impl_sceneViewerE[typeinfo for Graphics::corbaserver::_impl_sceneViewer]+0x10): undefined reference to `typeinfo for omniServant'
+/tmp/cc7FAfgc.o:(.rodata._ZTIN8Graphics11corbaserver16_pof_sceneViewerE[typeinfo for Graphics::corbaserver::_pof_sceneViewer]+0x8): undefined reference to `typeinfo for omni::proxyObjectFactory'
+/tmp/cc7FAfgc.o:(.rodata._ZTIN8Graphics11corbaserver19_objref_sceneViewerE[typeinfo for Graphics::corbaserver::_objref_sceneViewer]+0x10): undefined reference to `typeinfo for CORBA::Object'
+/tmp/cc7FAfgc.o:(.rodata._ZTIN8Graphics11corbaserver19_objref_sceneViewerE[typeinfo for Graphics::corbaserver::_objref_sceneViewer]+0x18): undefined reference to `typeinfo for omniObjRef'
+/tmp/cckfoQVU.o: In function `__static_initialization_and_destruction_0(int, int)':
+server.cc:(.text+0x31f): undefined reference to `omni_thread::init_t::init_t()'
+server.cc:(.text+0x324): undefined reference to `omni_thread::init_t::~init_t()'
+server.cc:(.text+0x348): undefined reference to `_omniFinalCleanup::_omniFinalCleanup()'
+server.cc:(.text+0x34d): undefined reference to `_omniFinalCleanup::~_omniFinalCleanup()'
+/tmp/cckfoQVU.o: In function `_CORBA_String_member::_CORBA_String_member()':
+server.cc:(.text._ZN20_CORBA_String_memberC2Ev[_ZN20_CORBA_String_memberC5Ev]+0x5): undefined reference to `_CORBA_String_helper::empty_string'
+/tmp/cckfoQVU.o: In function `_CORBA_String_member::operator=(_CORBA_String_member const&)':
+server.cc:(.text._ZN20_CORBA_String_memberaSERKS_[_CORBA_String_member::operator=(_CORBA_String_member const&)]+0x2a): undefined reference to `_CORBA_String_helper::empty_string'
+/tmp/cckfoQVU.o: In function `CORBA::Object_var::Object_var()':
+server.cc:(.text._ZN5CORBA10Object_varC2Ev[_ZN5CORBA10Object_varC5Ev]+0x7): undefined reference to `CORBA::Object::_nil()'
+/tmp/cckfoQVU.o: In function `CORBA::ORB_var::ORB_var()':
+server.cc:(.text._ZN5CORBA7ORB_varC2Ev[_ZN5CORBA7ORB_varC5Ev]+0x7): undefined reference to `CORBA::ORB::_nil()'
+/tmp/cckfoQVU.o: In function `POA_Graphics::corbaserver::sceneViewer::_this()':
+server.cc:(.text._ZN12POA_Graphics11corbaserver11sceneViewer5_thisEv[POA_Graphics::corbaserver::sceneViewer::_this()]+0x21): undefined reference to `PortableServer::ServantBase::_do_this(char const*)'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x130): undefined reference to `typeinfo for CORBA::Exception'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x134): undefined reference to `typeinfo for CORBA::SystemException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x138): undefined reference to `typeinfo for CORBA::UserException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x304): undefined reference to `typeinfo for CORBA::Exception'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x308): undefined reference to `typeinfo for CORBA::SystemException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x30c): undefined reference to `typeinfo for CORBA::UserException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x410): undefined reference to `typeinfo for CosNaming::NamingContext::AlreadyBound'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x414): undefined reference to `typeinfo for CORBA::COMM_FAILURE'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x418): undefined reference to `typeinfo for CORBA::ORB::InvalidName'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x424): undefined reference to `typeinfo for CORBA::Exception'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x428): undefined reference to `typeinfo for CORBA::SystemException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x42c): undefined reference to `typeinfo for CORBA::UserException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x46c): undefined reference to `typeinfo for CosNaming::NamingContext::AlreadyBound'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x470): undefined reference to `typeinfo for CORBA::SystemException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x474): undefined reference to `typeinfo for CORBA::COMM_FAILURE'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x548): undefined reference to `typeinfo for CORBA::Exception'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x54c): undefined reference to `typeinfo for CORBA::SystemException'
+/tmp/cckfoQVU.o:(.gcc_except_table+0x550): undefined reference to `typeinfo for CORBA::UserException'
+/tmp/cckfoQVU.o: In function `_CORBA_Pseudo_Unbounded_Sequence<CORBA::Policy, _CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > >::operator[](unsigned long)':
+server.cc:(.text._ZN32_CORBA_Pseudo_Unbounded_SequenceIN5CORBA6PolicyE23_CORBA_PseudoObj_MemberIS1_20_CORBA_PseudoObj_VarIS1_EEEixEm[_CORBA_Pseudo_Unbounded_Sequence<CORBA::Policy, _CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > >::operator[](unsigned long)]+0x12): undefined reference to `_CORBA_bound_check_error()'
+/tmp/cckfoQVU.o: In function `_CORBA_Sequence<CosNaming::NameComponent>::operator[](unsigned long)':
+server.cc:(.text._ZN15_CORBA_SequenceIN9CosNaming13NameComponentEEixEm[_CORBA_Sequence<CosNaming::NameComponent>::operator[](unsigned long)]+0x12): undefined reference to `_CORBA_bound_check_error()'
+/tmp/cckfoQVU.o: In function `hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::Server(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEEC2EiPPcbRKSs[_ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEEC5EiPPcbRKSs]+0x3c): undefined reference to `omniORB::setLogFunction(void (*)(char const*))'
+/tmp/cckfoQVU.o: In function `_CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> >::_CORBA_PseudoObj_Member()':
+server.cc:(.text._ZN23_CORBA_PseudoObj_MemberIN5CORBA6PolicyE20_CORBA_PseudoObj_VarIS1_EEC2Ev[_ZN23_CORBA_PseudoObj_MemberIN5CORBA6PolicyE20_CORBA_PseudoObj_VarIS1_EEC5Ev]+0x7): undefined reference to `CORBA::Policy::_nil()'
+/tmp/cckfoQVU.o: In function `_CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> >::operator=(_CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > const&)':
+server.cc:(.text._ZN23_CORBA_PseudoObj_MemberIN5CORBA6PolicyE20_CORBA_PseudoObj_VarIS1_EEaSERKS4_[_CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> >::operator=(_CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > const&)]+0x48): undefined reference to `CORBA::Policy::_duplicate(CORBA::Policy*)'
+/tmp/cckfoQVU.o: In function `_CORBA_PseudoObj_Var<PortableServer::POA>::_CORBA_PseudoObj_Var()':
+server.cc:(.text._ZN20_CORBA_PseudoObj_VarIN14PortableServer3POAEEC2Ev[_ZN20_CORBA_PseudoObj_VarIN14PortableServer3POAEEC5Ev]+0x12): undefined reference to `PortableServer::POA::_nil()'
+/tmp/cckfoQVU.o: In function `_CORBA_ObjRef_Var<CosNaming::_objref_NamingContext, CosNaming::NamingContext_Helper>::_CORBA_ObjRef_Var()':
+server.cc:(.text._ZN17_CORBA_ObjRef_VarIN9CosNaming21_objref_NamingContextENS0_20NamingContext_HelperEEC2Ev[_ZN17_CORBA_ObjRef_VarIN9CosNaming21_objref_NamingContextENS0_20NamingContext_HelperEEC5Ev]+0x12): undefined reference to `CosNaming::NamingContext_Helper::_nil()'
+/tmp/cckfoQVU.o: In function `_CORBA_ObjRef_Var<CosNaming::_objref_NamingContext, CosNaming::NamingContext_Helper>::~_CORBA_ObjRef_Var()':
+server.cc:(.text._ZN17_CORBA_ObjRef_VarIN9CosNaming21_objref_NamingContextENS0_20NamingContext_HelperEED2Ev[_ZN17_CORBA_ObjRef_VarIN9CosNaming21_objref_NamingContextENS0_20NamingContext_HelperEED5Ev]+0xf): undefined reference to `CosNaming::NamingContext_Helper::release(CosNaming::_objref_NamingContext*)'
+/tmp/cckfoQVU.o: In function `hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::initORBandServers(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE17initORBandServersEiPPcbRKSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::initORBandServers(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)]+0x5a): undefined reference to `CORBA::ORB_init(int&, char**, char const*, char const* (*) [2])'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE17initORBandServersEiPPcbRKSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::initORBandServers(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)]+0x107): undefined reference to `PortableServer::POA::_narrow(CORBA::Object*)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE17initORBandServersEiPPcbRKSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::initORBandServers(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)]+0x1bd): undefined reference to `PortableServer::ThreadPolicy::_duplicate(PortableServer::ThreadPolicy*)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE17initORBandServersEiPPcbRKSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::initORBandServers(int, char**, bool, std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)]+0xcd9): undefined reference to `PortableServer::POAManager::_nil()'
+/tmp/cckfoQVU.o: In function `hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createHppContext(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> >)':
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16createHppContextERKSsSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createHppContext(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> >)]+0x66): undefined reference to `CosNaming::NamingContext::_narrow(CORBA::Object*)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16createHppContextERKSsSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createHppContext(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> >)]+0x166): undefined reference to `CosNaming::_objref_NamingContext::bind_new_context(CosNaming::Name const&)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16createHppContextERKSsSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createHppContext(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> >)]+0x71f): undefined reference to `CosNaming::_objref_NamingContext::resolve(CosNaming::Name const&)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16createHppContextERKSsSs[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createHppContext(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::basic_string<char, std::char_traits<char>, std::allocator<char> >)]+0x741): undefined reference to `CosNaming::NamingContext::_narrow(CORBA::Object*)'
+/tmp/cckfoQVU.o: In function `_CORBA_Sequence<CosNaming::NameComponent>::length(unsigned long)':
+server.cc:(.text._ZN15_CORBA_SequenceIN9CosNaming13NameComponentEE6lengthEm[_CORBA_Sequence<CosNaming::NameComponent>::length(unsigned long)]+0x1c): undefined reference to `_CORBA_bound_check_error()'
+/tmp/cckfoQVU.o: In function `hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::bindObjectToName(CORBA::Object*, CosNaming::Name)':
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16bindObjectToNameEPN5CORBA6ObjectEN9CosNaming4NameE[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::bindObjectToName(CORBA::Object*, CosNaming::Name)]+0x28): undefined reference to `CosNaming::_objref_NamingContext::bind(CosNaming::Name const&, CORBA::Object*)'
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE16bindObjectToNameEPN5CORBA6ObjectEN9CosNaming4NameE[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::bindObjectToName(CORBA::Object*, CosNaming::Name)]+0x7d): undefined reference to `CosNaming::_objref_NamingContext::rebind(CosNaming::Name const&, CORBA::Object*)'
+/tmp/cckfoQVU.o: In function `_CORBA_PseudoObj_Var<PortableServer::ThreadPolicy>::_CORBA_PseudoObj_Var()':
+server.cc:(.text._ZN20_CORBA_PseudoObj_VarIN14PortableServer12ThreadPolicyEEC2Ev[_ZN20_CORBA_PseudoObj_VarIN14PortableServer12ThreadPolicyEEC5Ev]+0x12): undefined reference to `PortableServer::ThreadPolicy::_nil()'
+/tmp/cckfoQVU.o: In function `_CORBA_Pseudo_Unbounded_Sequence<CORBA::Policy, _CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > >::length(unsigned long)':
+server.cc:(.text._ZN32_CORBA_Pseudo_Unbounded_SequenceIN5CORBA6PolicyE23_CORBA_PseudoObj_MemberIS1_20_CORBA_PseudoObj_VarIS1_EEE6lengthEm[_CORBA_Pseudo_Unbounded_Sequence<CORBA::Policy, _CORBA_PseudoObj_Member<CORBA::Policy, _CORBA_PseudoObj_Var<CORBA::Policy> > >::length(unsigned long)]+0x65): undefined reference to `_CORBA_new_operator_return_null()'
+/tmp/cckfoQVU.o: In function `hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createAndActivateServers()':
+server.cc:(.text._ZN3hpp5corba6ServerIN8Graphics11corbaServer18GraphicalInterfaceEE24createAndActivateServersEv[hpp::corba::Server<Graphics::corbaServer::GraphicalInterface>::createAndActivateServers()]+0x1b): undefined reference to `Graphics::corbaServer::GraphicalInterface::GraphicalInterface()'
+/tmp/cckfoQVU.o: In function `_CORBA_ObjRef_Var<CosNaming::_objref_NamingContext, CosNaming::NamingContext_Helper>::operator=(CosNaming::_objref_NamingContext*)':
+server.cc:(.text._ZN17_CORBA_ObjRef_VarIN9CosNaming21_objref_NamingContextENS0_20NamingContext_HelperEEaSEPS1_[_CORBA_ObjRef_Var<CosNaming::_objref_NamingContext, CosNaming::NamingContext_Helper>::operator=(CosNaming::_objref_NamingContext*)]+0xf): undefined reference to `CosNaming::NamingContext_Helper::release(CosNaming::_objref_NamingContext*)'
+/tmp/cckfoQVU.o: In function `_CORBA_Sequence<CosNaming::NameComponent>::copybuffer(unsigned long)':
+server.cc:(.text._ZN15_CORBA_SequenceIN9CosNaming13NameComponentEE10copybufferEm[_CORBA_Sequence<CosNaming::NameComponent>::copybuffer(unsigned long)]+0x1b): undefined reference to `_CORBA_new_operator_return_null()'
+collect2: ld returned 1 exit status

@@ -1,0 +1,55 @@
+// file sceneViewer.idl
+module Graphics {
+module corbaserver {
+
+typedef double Transform [7];
+
+  /// Corba exception travelling through the Corba channel
+  interface Graphicalinterface {
+
+       // set refreching rate of windows
+       boolean setRate(in long rate);
+
+       // refresh configurations
+       void refresh();
+
+       boolean createWindow(in string name);
+
+       void getNodeList();
+       void getWindowList();
+       //void createWindow(in string name, in unsigned long x, in unsigned long y, in unsigned long width, in unsigned long height) ;
+
+       boolean createScene(in string sceneName) ;
+       boolean createSceneWithFloor(in string sceneName) ;
+       boolean addSceneToWindow(in string sceneName, in string windowName) ;
+
+       //void addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in string colorName) ;
+       boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) ;
+
+       boolean addCapsule(in string capsuleName, in float radius, in float height) ;
+       //void addCapsule(in string capsuleName, in float radius, in float height, in string colorName) ;
+
+       boolean addMesh(in string meshName, in string meshPath) ;
+
+       boolean addCone(in string coneName, in float radius, in float height) ;
+       //void addCone(in string coneName, in float radius, in float height, in string colorName) ;
+
+       boolean addCylinder(in string cylinderName, in float radius, in float height) ;
+       //void addCylinder(in string cylinderName, in float radius, in float height, in string colorName) ;
+
+       boolean addSphere(in string sphereName, in float radius) ;
+       //void addSphere(in string sphereName, in float radius, in string colorName) ;
+
+       boolean addURDF(in string urdfName, in string urdfPath, in string urdfPackage) ;
+
+       boolean createGroup(in string groupName) ;
+       boolean addToGroup(in string nodeName, in string groupName) ;
+
+       boolean applyConfiguration(in string nodeName, in Transform configuration) ;
+
+       boolean setVisibility(in string nodeName, in string visibilityMode) ;
+       boolean setWireFrameMode(in string nodeName, in string wireFrameMode) ;
+       boolean setLightingMode(in string nodeName, in string lightingMode) ;
+  };
+};
+};

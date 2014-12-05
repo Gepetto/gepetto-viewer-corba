@@ -1,0 +1,83 @@
+//
+//  client-cpp.h
+//  DynAndGraphics
+//
+//  Created by Mathieu Geisert on 02/12/2014.
+//  Copyright (c) 2014 Mathieu Geisert. All rights reserved.
+//
+
+#ifndef __DynAndGraphics__clientCpp__
+#define __DynAndGraphics__clientCpp__
+
+#include <iostream>
+#include <omniORB4/CORBA.h>
+
+#include "../../../src/graphicalinterface.hh"
+
+
+namespace Graphics {
+namespace corbaServer {
+
+class ClientCpp
+{
+private:
+    CORBA_ORB_var orb_;
+    GraphicalInterface_var manager_;
+
+protected:
+
+public:
+    // Default constructor
+    ClientCpp();
+    // Default destructor
+    ~ClientCpp();
+
+    /*void getNodeList();
+
+    void setRate(CORBA::Long rate);
+    void refresh();
+
+    void createWindow(const char* windowNameCorba);
+
+
+    //void createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
+
+    void createScene(const char* sceneNameCorba) ;
+    void createSceneWithFloor(const char* sceneNameCorba) ;
+    void addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba) ;
+
+
+    //void addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const char* colorName);
+    void addBox(const char* boxNameCorba, float boxSize1, float boxSize2, float boxSize3) ;
+
+    void addCapsule(const char* capsuleNameCorba, float radius, float height) ;
+    //void addCapsule(const char* capsuleName, float radius, float height, const char* colorName);
+
+    void addMesh(const char* meshNameCorba, const char* meshPathCorba) ;
+
+    void addCone(const char* coneNameCorba, float radius, float height) ;
+    //void addCone(const char* coneName, float radius, float height, const char* colorName);
+
+    void addCylinder(const char* cylinderNameCorba, float radius, float height) ;
+    //void addCylinder(const char* cylinderName, float radius, float height, const char* colorName);
+
+    void addSphere(const char* sphereNameCorba, float radius) ;
+    //void addSphere(const char* sphereName, float radius, const char* colorName);
+
+    void addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
+
+    void createGroup(const char* groupNameCorba) ;
+    bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba) ;
+
+    bool applyConfiguration(const char* nodeNameCorba, const double* configuration) ;
+
+    bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba) ;
+    bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba) ;
+    bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba) ;*/
+
+}; //end of class ClientCpp
+
+} //end of namespace corbaserver
+} //end of namespace Graphics
+
+#endif // __DynAndGraphics__clientCpp__
