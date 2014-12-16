@@ -2,6 +2,15 @@
 module Graphics {
 module corbaserver {
 
+// Comments :
+// 1)  Node names are parsed, so if you call a node "node1/xxx", this node will
+//     be automatically added as a child of node1
+// 2)  Functions return False if an error occured (in that case, check the
+//     SceneViewer-corbaserver window for more information)
+// 3)  applyConfiguration doesn't move object straigh forward, you need to used
+//     the "refresh" function each time you want actualize position of the Viewer.
+//     This system is used to synchronize movement of all objects. 
+
 typedef double Transform [7];
 typedef double Position [3];
 typedef double Color [4];
@@ -9,53 +18,144 @@ typedef double Color [4];
   /// Corba exception travelling through the Corba channel
   interface Graphicalinterface {
 
-       // set refreching rate of windows
+    /// Set time between window frames
+    /// \param input rate : waiting time (ms) between two frames.
        boolean setRate(in long rate);
 
-       // refresh configurations
+    /// Change configurations according to the last applyConfigurations.d
        void refresh();
 
+
+    /// Create a new window.
+    /// \param input name : name of the new window.
        boolean createWindow(in string name);
 
+
+    /// Print names of nodes on the SceneViewer-corbaserver terminal.
        void getNodeList();
+
+    /// Print names of windows on the SceneViewer-corbaserver terminal.
        void getWindowList();
+
        //void createWindow(in string name, in unsigned long x, in unsigned long y, in unsigned long width, in unsigned long height) ;
 
+
+    /// Create a group node.
+    /// \param input sceneName : name of the group.
        boolean createScene(in string sceneName) ;
+
+    /// Create a group node and a GroudNode ("sceneName/floor") as child
+    /// \param input sceneName : name of the group
        boolean createSceneWithFloor(in string sceneName) ;
+
+    /// Add groupNode sceneName to the WindowManager windowName so
+    /// sceneName and all its children will be displayed in the window windowName.
+    /// \param input sceneName : name of the groupNode.
+    /// \param input windowName : name  of rhe window.
        boolean addSceneToWindow(in string sceneName, in string windowName) ;
 
+    /// create a box called boxName.
+    /// \param input boxName : name of the box.
+    /// \param input boxSize1 : lenght of the box (x axis).
+    /// \param input boxSize2 : lenght of the box (y axis).
+    /// \param input boxSize3 : lenght of the box (z axis).
+    /// \param input RGBAcolor : Color of the box.
        boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in Color RGBAcolor) ;
+
        //boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3) ;
 
        //boolean addCapsule(in string capsuleName, in float radius, in float height) ;
+
+    /// create a box called CapsuleName.
+    /// \param input CapsuleName : name of the capsule.
+    /// \param input radius : radius of the capsule.
+    /// \param input height : lenght of the segment that generates the capsule.
+    /// \param input RGBAcolor : Color of the capsule.
        boolean addCapsule(in string capsuleName, in float radius, in float height, in Color RGBAcolorid) ;
 
+    /// create a node to display a mesh (works for .dae, .obj and some other formats)
+    /// \param input meshName : name of the new meshNode.
+    /// \param input meshPath : full path to the mesh file.
        boolean addMesh(in string meshName, in string meshPath) ;
 
        //boolean addCone(in string coneName, in float radius, in float height) ;
+
+    /// create a node to display a mesh (works for .dae, .obj and some other formats)
+    /// \param input meshName : name of the new meshNode.
+    /// \param input meshPath : full path to the mesh file.
        boolean addCone(in string coneName, in float radius, in float height, in Color RGBAcolor) ;
 
        //boolean addCylinder(in string cylinderName, in float radius, in float height) ;
+
+    /// create a Cyllinder called cylinderName
+    /// \param input cylinderName : name of the cylinder.
+    /// \param input radius : radius of the cylinder.
+    /// \param input height : lenght of the cylinder.
+    /// \param input RGBAcolor : color of the cylinder.
        boolean addCylinder(in string cylinderName, in float radius, in float height, in Color RGBAcolor) ;
 
        //boolean addSphere(in string sphereName, in float radius) ;
+
+    /// create a sphere called sphereName
+    /// \param input sphereName : name of the sphere.
+    /// \param input radius : radius of the sphere.
+    /// \param input RGBAcolor : color of the sphere.
        boolean addSphere(in string sphereName, in float radius, in Color RGBAcolor) ;
 
+    /// create a line called lineName.
+    /// \param input lineName : name of the line.
+    /// \param input pos1 : position one extremity of the line.
+    /// \param input pos2 : position the other extremity of the line.
+    /// \param input RGBAcolor : color of the line.
        boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) ;
 
+    /// create a four vertices face called faceName.
+    /// \param input faceName : name of the face.
+    /// \param input pos1, pos2, pos3, pos4 : position of the vertices.
+    /// \param input RGBAcolor : color of the face.
        boolean addSquareFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Position pos4, in Color RGBAcolor) ;
+
+    /// create a three vertices face called faceName.
+    /// \param input faceName : name of the face.
+    /// \param input pos1, pos2, pos3 : position of the vertices.
+    /// \param input RGBAcolor : color of the face.
        boolean addTriangleFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Color RGBAcolor) ;
 
+    /// parse an URDF model
+    /// a groupNode will be created and each link will be child node of this node.
+    /// Links will be named "urdfName/linkName", linkName is the name of the link in the URDF file.
+    /// \param input urdfName : name of the groupNode that will be created.
+    /// \param input urdfPath : full path to the URDF file.
+    /// \param input urddfPackage : path of the package to the package folder of the robot (this path should finish by "/").
        boolean addURDF(in string urdfName, in string urdfPath, in string urdfPackage) ;
 
+    /// create a groupNode called groupName
+    /// \param input groupName : name of the group.
        boolean createGroup(in string groupName) ;
+
+    /// set a node as child to a group node.
+    /// \param input nodeName : name of the child node.
+    /// \param input groupName : name of the mother node (=group node). 
        boolean addToGroup(in string nodeName, in string groupName) ;
 
+    /// Set a new configuration to a node. THIS CONFIGURATION WILL AFFECTIVE ONLY AFTER CALLING REFRESH FUNCTION!!!
+    /// \param input nodeName : name of the node.
+    /// \param input configuration : Double[7] new configuration.
        boolean applyConfiguration(in string nodeName, in Transform configuration) ;
 
+    /// Change the visibility of a node. If this node is a group node, visibility mode will be apply to all children.
+    /// \param input nodeName : name of the node.
+    /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
        boolean setVisibility(in string nodeName, in string visibilityMode) ;
+
+    /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
+    /// \param input nodeName : name of the node.
+    /// \param input wireframeMode : wiredframe mode can be "FILL", "WIREFRAME" or "FILL_AND_WIREFRAME".
        boolean setWireFrameMode(in string nodeName, in string wireFrameMode) ;
+
+    /// Change lighting mode of a node. If this node is a group node, lighting mode will be apply to all children.
+    /// \param input nodeName : name of the node.
+    /// \param input lightingMode : lighting mode can be "ON" or "OFF".
        boolean setLightingMode(in string nodeName, in string lightingMode) ;
   };
 };

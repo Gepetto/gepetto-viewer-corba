@@ -77,7 +77,6 @@ namespace Graphics
       obj = private_->orb_->resolve_initial_references("RootPOA");
 
       /// Create thread policy
-
       //
       // Make the CORBA object single-threaded to avoid GUI krash
       //
