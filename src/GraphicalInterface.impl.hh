@@ -117,6 +117,9 @@ public:
 
     virtual bool applyConfiguration(const char* nodeNameCorba, const double* configuration) ;
 
+    virtual bool addLandmark(const char* nodeNameCorba, float size);
+    virtual bool deleteLandmark(const char* nodeNameCorba);
+
     virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba) ;
     virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba) ;
     virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba) ;

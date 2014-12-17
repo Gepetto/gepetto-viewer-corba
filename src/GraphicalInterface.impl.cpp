@@ -551,6 +551,29 @@ bool GraphicalInterface::applyConfiguration(const char* nodeNameCorba, const dou
     }
 }
 
+bool GraphicalInterface::addLandmark(const char* nodeNameCorba, float size)
+{
+    const std::string nodeName(nodeNameCorba);
+    if (nodes_.find(nodeName) == nodes_.end()) {
+        std::cout << "Node \"" << nodeName << "\" doesn't exist." << std::endl;
+        return false;
+    }
+    nodes_[nodeName]->addLandmark(size);
+    return true;
+}
+
+
+bool GraphicalInterface::deleteLandmark(const char* nodeNameCorba)
+{
+    const std::string nodeName(nodeNameCorba);
+    if (nodes_.find(nodeName) == nodes_.end()) {
+        std::cout << "Node \"" << nodeName << "\" doesn't exist." << std::endl;
+        return false;
+    }
+    nodes_[nodeName]->deleteLandmark();
+    return true;
+}
+
 bool GraphicalInterface::setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)
 {
     const std::string nodeName(nodeNameCorba);

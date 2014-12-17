@@ -143,6 +143,15 @@ typedef double Color [4];
     /// \param input configuration : Double[7] new configuration.
        boolean applyConfiguration(in string nodeName, in Transform configuration) ;
 
+    /// Add Landmark at the center of a node (x=blue, y=green, z=red).
+    /// \param input nodeName : name of the node
+    /// \param input size : lenght of axises.
+       boolean addLandmark(in string nodeName, in float size) ;
+
+    /// delete Landmark of a node.
+    /// \param input nodeName : name of the node
+       boolean deleteLandmark(in string nodeName) ;
+
     /// Change the visibility of a node. If this node is a group node, visibility mode will be apply to all children.
     /// \param input nodeName : name of the node.
     /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
