@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 LAAS-CNRS. All rights reserved.
 //
 
-#include "../src/client-cpp.hh"
+#include <gepetto/viewer/corba/client.hh>
 
-int main(int argc, const char * argv[])
+int main(int, const char **)
 {
-    using namespace Graphics;
+    using namespace graphics;
     using namespace corbaServer;
     using namespace std;
 

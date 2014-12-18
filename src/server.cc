@@ -17,7 +17,7 @@
 #include "server-private.hh"
 
 
-namespace Graphics
+namespace graphics
 {
   namespace corbaServer
   {
@@ -113,8 +113,8 @@ namespace Graphics
       // Bind graphicalInterfaceObj with name graphicalinterface to the Context:
       CosNaming::Name objectName;
       objectName.length(1);
-      objectName[0].id   = (const char*) "basic";   // string copied
-      objectName[0].kind = (const char*) "graphicalinterface"; // string copied
+      objectName[0].id   = (const char*) "corbaserver";   // string copied
+      objectName[0].kind = (const char*) "gui"; // string copied
 
       private_->bindObjectToName(graphicalInterfaceObj, objectName);
       private_->graphicalInterfaceServant_->_remove_ref();
@@ -139,4 +139,4 @@ namespace Graphics
     }
 
   } // end of namespace corbaServer.
-} // end of namespace Graphics.
+} // end of namespace graphics.

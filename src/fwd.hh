@@ -14,7 +14,7 @@
 //FIXME: should be replaced by CORBA base types forward declarations.
 # include <omniORB4/CORBA.h>
 
-namespace Graphics
+namespace graphics
 {
   namespace corbaServer
   {

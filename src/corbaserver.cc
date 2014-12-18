@@ -11,7 +11,7 @@
 #include <iostream>
 #include "server.hh"
 
-using Graphics::corbaServer::Server;
+using graphics::corbaServer::Server;
 
 int
 main (int argc, const char* argv[])

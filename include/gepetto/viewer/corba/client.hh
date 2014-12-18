@@ -11,18 +11,18 @@
 
 #include <iostream>
 #include <omniORB4/CORBA.h>
-#include "se3.hpp"
-#include "graphicalinterface.hh"
+#include <gepetto/viewer/corba/se3.hh>
+#include <gepetto/viewer/corba/graphical-interface.hh>
 
 
-namespace Graphics {
+namespace graphics {
 namespace corbaServer {
 
 class ClientCpp
 {
 private:
     CORBA::ORB_var orb_;
-    Graphics::corbaserver::Graphicalinterface_var manager_;
+  gepetto::corbaserver::GraphicalInterface_var manager_;
 
     static void se3ToCorba(CORBA::Double* corbaPosition, const se3::SE3& se3position);
 
@@ -86,6 +86,6 @@ public:
 }; //end of class ClientCpp
 
 } //end of namespace corbaserver
-} //end of namespace Graphics
+} //end of namespace graphics
 
 #endif // SCENEVIEWER_CORBASERVER_CLIENTCPP_HH

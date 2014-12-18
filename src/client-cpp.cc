@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 LAAS-CNRS. All rights reserved.
 //
 
-#include "client-cpp.hh"
+#include <gepetto/viewer/corba/client.hh>
 
-namespace Graphics { 
+namespace graphics { 
 namespace corbaServer {
 
 void ClientCpp::se3ToCorba(CORBA::Double* corbaPosition, const se3::SE3& se3position)
@@ -37,14 +37,15 @@ ClientCpp::ClientCpp()
 
     CosNaming::Name name;
     name.length(2);
-    name[0].id = (const char *) "Graphics";
-    name[0].kind = (const char *) "corbaserver";
-    name[1].id = (const char *) "basic";
-    name[1].kind = (const char *) "graphicalinterface";
+    name[0].id = (const char *) "gepetto";
+    name[0].kind = (const char *) "viewer";
+    name[1].id = (const char *) "corbaserver";
+    name[1].kind = (const char *) "gui";
     // Invoke the root context to retrieve the object reference
     CORBA::Object_var managerObj = nc->resolve(name);
     // Narrow the previous object to obtain the correct type
-    manager_ = Graphics::corbaserver::Graphicalinterface::_narrow(managerObj.in());
+    manager_ =
+      gepetto::corbaserver::GraphicalInterface::_narrow(managerObj.in());
 }
 
 ClientCpp::~ClientCpp()
@@ -211,4 +212,4 @@ bool ClientCpp::setLightingMode(const char* nodeName, const char* lightingMode)
 }
 
 } // end of namespace corbaserver
-} // end of namespace Graphics
+} // end of namespace graphics

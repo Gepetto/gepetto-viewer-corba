@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 LAAS-CNRS. All rights reserved.
 //
 
-#include "GraphicalInterface.impl.hh"
+#include "graphical-interface.impl.hh"
 
-namespace Graphics { 
+namespace graphics { 
 namespace corbaServer {
 namespace impl {
 
@@ -502,7 +502,8 @@ bool GraphicalInterface::addURDF(const char* urdfNameCorba, const char* urdfPath
         return false;
     }
     else {
-        GroupNodePtr_t urdf = URDFparser::parse(urdfName, urdfPath, urdfPackagePath);
+        GroupNodePtr_t urdf = urdfParser::parse
+	  (urdfName, urdfPath, urdfPackagePath);
         NodePtr_t link;
         for (int i=0 ; i< urdf->getNumOfChildren() ; i++) {
             link = urdf->getChild(i);
@@ -614,4 +615,4 @@ bool GraphicalInterface::setLightingMode(const char* nodeNameCorba, const char* 
 }
 } //end namespace impl
 } //end namespace corbaServer	
-} //end namespace Graphics
+} //end namespace graphics

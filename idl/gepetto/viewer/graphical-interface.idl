@@ -1,5 +1,5 @@
 // file graphicalinterface.idl
-module Graphics {
+module gepetto {
 module corbaserver {
 
 // Comments :
@@ -16,7 +16,7 @@ typedef double Position [3];
 typedef double Color [4];
 
   /// Corba exception travelling through the Corba channel
-  interface Graphicalinterface {
+  interface GraphicalInterface {
 
     /// Set time between window frames
     /// \param input rate : waiting time (ms) between two frames.

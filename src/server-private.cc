@@ -11,11 +11,11 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "GraphicalInterface.impl.hh"
+#include "graphical-interface.impl.hh"
 #include "server-private.hh"
 #include "fwd.hh"
 
-namespace Graphics
+namespace graphics
 {
   namespace corbaServer
   {
@@ -74,8 +74,8 @@ namespace Graphics
 	}
 	// Bind a context called "Graphics" to the root context:
 	contextName.length(1);
-	contextName[0].id   = (const char*) "Graphics";       // string copied
-	contextName[0].kind = (const char*) "corbaserver"; // string copied
+	contextName[0].id   = (const char*) "gepetto";       // string copied
+	contextName[0].kind = (const char*) "viewer"; // string copied
 	// Note on kind: The kind field is used to indicate the type
 	// of the object. This is to avoid conventions such as that used
 	// by files (name.type -- e.g. Graphics.ps = postscript etc.)
@@ -115,4 +115,4 @@ namespace Graphics
       }
     } // end of namespace impl.
   } // end of namespace corbaServer.
-} // end of namespace Graphics.
+} // end of namespace graphics.

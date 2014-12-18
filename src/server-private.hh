@@ -11,10 +11,10 @@
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 # define SCENVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 
-#include "GraphicalInterface.impl.hh"
-#include "fwd.hh"
+# include "graphical-interface.impl.hh"
+# include "fwd.hh"
 
-namespace Graphics
+namespace graphics
 {
   namespace corbaServer
   {
@@ -26,7 +26,7 @@ namespace Graphics
 	~Server ();
 
 	/// \brief Create and activate the Corba servers.
-	void createAndActivateServers (Graphics::corbaServer::Server* server);
+	void createAndActivateServers (graphics::corbaServer::Server* server);
 
       private:
 	CORBA::ORB_var orb_;
@@ -58,6 +58,6 @@ namespace Graphics
 
     } // end of namespace impl.
   } // end of namespace corbaServer.
-} // end of namespace Graphics.
+} // end of namespace graphics.
 
 #endif // SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH

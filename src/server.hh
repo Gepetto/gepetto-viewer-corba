@@ -14,7 +14,7 @@
 
 #include "fwd.hh"
 
-namespace Graphics
+namespace graphics
 {
   namespace corbaServer
   {

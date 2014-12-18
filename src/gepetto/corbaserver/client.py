@@ -5,7 +5,7 @@ create client to wanted HPP services.
 from omniORB import CORBA
 import CosNaming
 
-import Graphics.corbaserver
+import gepetto.corbaserver
 
 class CorbaError(Exception):
   """
@@ -21,33 +21,34 @@ class Client:
   Connect and create clients for all HPP services.
   """
 
-  defaultClients = ['graphicalinterface']
+  defaultClients = [('gui', 'GraphicalInterface')]
 
   def makeClient(self, serviceName):
     """
     Create a client to a new CORBA service and add it to this class.
     """
-    serviceName = serviceName.lower ()
-    name = [CosNaming.NameComponent ("Graphics", "corbaserver"),
-            CosNaming.NameComponent ("basic", serviceName)]
+    name = [CosNaming.NameComponent ("gepetto", "viewer"),
+            CosNaming.NameComponent ("corbaserver", serviceName [0])]
 
     try:
       obj = self.rootContext.resolve (name)
     except CosNaming.NamingContext.NotFound, ex:
       raise CorbaError (
-        'failed to find the service ``{0}\'\''.format (serviceName))
+        'failed to find the service ``{0}\'\''.format (serviceName [0]))
 
     try:
-      client = obj._narrow (Graphics.corbaserver.__dict__[serviceName.capitalize ()])
+      client = obj._narrow (gepetto.corbaserver.__dict__
+                            [serviceName [1]])
     except KeyError:
-      raise CorbaError ('invalid service name ``{0}\'\''.format (serviceName))
+      raise CorbaError ('invalid service name ``{0}\'\''.format \
+                          (serviceName [0]))
 
     if client is None:
       # This happens when stubs from client and server are not synchronized.
       raise CorbaError (
         'failed to narrow client for service named ``{0}\'\''.format
-        (serviceName))
-    self.__dict__[serviceName] = client
+        (serviceName [0]))
+    self.__dict__[serviceName [0]] = client
 
 
   def __init__(self, clients = defaultClients):
