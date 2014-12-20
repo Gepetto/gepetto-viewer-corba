@@ -90,14 +90,14 @@ bool ClientCpp::createWindow(const char* windowName)
 
     //void ClientCpp::createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
 
-bool ClientCpp::createScene(const char* sceneName)
+void ClientCpp::createScene(const char* sceneName)
 {
-    return manager_->createScene(sceneName);
+  manager_->createScene(sceneName);
 }
 
-bool ClientCpp::createSceneWithFloor(const char* sceneName)
+void ClientCpp::createSceneWithFloor(const char* sceneName)
 {
-    return manager_->createSceneWithFloor(sceneName);
+  manager_->createSceneWithFloor(sceneName);
 }
 
 bool ClientCpp::addSceneToWindow(const char* sceneName, const char* windowName)

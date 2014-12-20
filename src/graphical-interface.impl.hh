@@ -84,8 +84,8 @@ public:
 
   virtual bool createWindow(const char* windowNameCorba) throw (Error);
 
-  virtual bool createScene(const char* sceneNameCorba)  throw (Error);
-  virtual bool createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
+  virtual void createScene(const char* sceneNameCorba)  throw (Error);
+  virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
   virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba)  throw (Error);
 
 

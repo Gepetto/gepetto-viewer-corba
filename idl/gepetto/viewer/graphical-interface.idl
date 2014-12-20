@@ -45,11 +45,11 @@ typedef double Color [4];
 
     /// Create a group node.
     /// \param input sceneName : name of the group.
-    boolean createScene(in string sceneName) raises (Error);
+    void createScene(in string sceneName) raises (Error);
 
     /// Create a group node and a GroudNode ("sceneName/floor") as child
     /// \param input sceneName : name of the group
-    boolean createSceneWithFloor(in string sceneName) raises (Error);
+    void createSceneWithFloor(in string sceneName) raises (Error);
 
     /// Add groupNode sceneName to the WindowManager windowName so
     /// sceneName and all its children will be displayed in the window windowName.

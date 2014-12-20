@@ -213,7 +213,7 @@ namespace graphics {
 	}
       }
 
-      bool GraphicalInterface::createScene (const char* sceneNameCorba)
+      void GraphicalInterface::createScene (const char* sceneNameCorba)
 	throw (Error)
       {
 	try {
@@ -226,14 +226,13 @@ namespace graphics {
 	  else {
 	    GroupNodePtr_t mainNode = GroupNode::create (sceneName);
 	    addGroup (sceneName, mainNode);
-	    return true;
 	  }
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
       }
 
-      bool GraphicalInterface::createSceneWithFloor
+      void GraphicalInterface::createSceneWithFloor
       (const char* sceneNameCorba) throw (Error)
 
       {
@@ -251,7 +250,6 @@ namespace graphics {
 	    LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
 	    addNode (floorName, floor);
 	    mainNode->addChild (floor);
-	    return true;
 	  }
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());

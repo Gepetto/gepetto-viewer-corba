@@ -45,8 +45,8 @@ public:
 
     //void createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
 
-    bool createScene(const char* sceneName) ;
-    bool createSceneWithFloor(const char* sceneName) ;
+    void createScene(const char* sceneName) ;
+    void createSceneWithFloor(const char* sceneName) ;
     bool addSceneToWindow(const char* sceneName, const char* windowName) ;
 
 
