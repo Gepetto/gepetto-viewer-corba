@@ -46,6 +46,7 @@ class GraphicalInterface :
     public virtual POA_gepetto::corbaserver::GraphicalInterface
 {
 private:
+  typedef gepetto::Error Error;
     std::map<std::string, WindowManagerPtr_t> windowManagers_;
     std::map<std::string, NodePtr_t> nodes_;
     std::map<std::string, GroupNodePtr_t> groupNodes_;
@@ -75,55 +76,49 @@ public:
         */
     GraphicalInterface (corbaServer::Server* server);
 
-    virtual void getNodeList();
-    virtual void getWindowList();
+  virtual void getNodeList() throw (Error);
+  virtual void getWindowList() throw (Error);
 
-    virtual bool setRate(CORBA::Long rate);
-    virtual void refresh();
+  virtual bool setRate(CORBA::Long rate) throw (Error);
+  virtual void refresh() throw (Error);
 
-    virtual bool createWindow(const char* windowNameCorba);
-    //virtual void createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
+  virtual bool createWindow(const char* windowNameCorba) throw (Error);
 
-    virtual bool createScene(const char* sceneNameCorba) ;
-    virtual bool createSceneWithFloor(const char* sceneNameCorba) ;
-    virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba) ;
+  virtual bool createScene(const char* sceneNameCorba)  throw (Error);
+  virtual bool createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
+  virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba)  throw (Error);
 
 
-    virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const double* color);
-    //virtual bool addBox(const char* boxNameCorba, float boxSize1, float boxSize2, float boxSize3) ;
+  virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const double* color) throw (Error);
 
-    //virtual bool addCapsule(const char* capsuleNameCorba, float radius, float height) ;
-    virtual bool addCapsule(const char* capsuleName, float radius, float height, const double* color);
+  virtual bool addCapsule(const char* capsuleName, float radius, float height, const double* color) throw (Error);
 
-    virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba) ;
+  virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
-    //virtual bool addCone(const char* coneNameCorba, float radius, float height) ;
-    virtual bool addCone(const char* coneName, float radius, float height, const double* color);
+  virtual bool addCone(const char* coneName, float radius, float height, const double* color) throw (Error);
 
-    //virtual bool addCylinder(const char* cylinderNameCorba, float radius, float height) ;
-    virtual bool addCylinder(const char* cylinderName, float radius, float height, const double* color);
+  virtual bool addCylinder(const char* cylinderName, float radius, float height, const double* color) throw (Error);
 
-    //virtual bool addSphere(const char* sphereNameCorba, float radius) ;
-    virtual bool addSphere(const char* sphereName, float radius, const double* color);
+  virtual bool addSphere(const char* sphereName, float radius, const double* color) throw (Error);
 
-    virtual bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color);
+  virtual bool addLine(const char* lineName, const double* pos1, const double* pos2, const double* color) throw (Error);
 
-    virtual bool addSquareFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color);
-    virtual bool addTriangleFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* color);
+  virtual bool addSquareFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color) throw (Error);
+  virtual bool addTriangleFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* color) throw (Error);
 
-    virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
+  virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba) throw (Error);
 
-    virtual bool createGroup(const char* groupNameCorba) ;
-    virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba) ;
+  virtual bool createGroup(const char* groupNameCorba)  throw (Error);
+  virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba)  throw (Error);
 
-    virtual bool applyConfiguration(const char* nodeNameCorba, const double* configuration) ;
+  virtual bool applyConfiguration(const char* nodeNameCorba, const double* configuration)  throw (Error);
 
-    virtual bool addLandmark(const char* nodeNameCorba, float size);
-    virtual bool deleteLandmark(const char* nodeNameCorba);
+  virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
+  virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
-    virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba) ;
-    virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba) ;
-    virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba) ;
+  virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
+  virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
+  virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
 
 }; // end of class
 
