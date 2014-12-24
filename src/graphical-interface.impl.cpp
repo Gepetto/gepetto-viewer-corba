@@ -595,6 +595,36 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::addUrdfCollision
+      (const char* urdfNameCorba, const char* urdfPathCorba,
+       const char* urdfPackagePathCorba) throw (Error)
+      {
+	try {
+	  const std::string urdfName (urdfNameCorba);
+	  const std::string urdfPath (urdfPathCorba);
+	  const std::string urdfPackagePath (urdfPackagePathCorba);
+	  if (nodes_.find (urdfName) != nodes_.end ()) {
+	    std::cout << "You need to chose an other name, \"" << urdfName
+		      << "\" already exist." << std::endl;
+	    return false;
+	  }
+	  else {
+	    GroupNodePtr_t urdf = urdfParser::parse
+	      (urdfName, urdfPath, urdfPackagePath, "collision");
+	    NodePtr_t link;
+	    for (int i=0; i< urdf->getNumOfChildren (); i++) {
+	      link = urdf->getChild (i);
+	      nodes_[link->getID ()] = link;
+	    }
+	    GraphicalInterface::initParent (urdfName, urdf);
+	    addGroup (urdfName, urdf);
+	    return true;
+	  }
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       bool GraphicalInterface::addToGroup (const char* nodeNameCorba,
 					   const char* groupNameCorba)
 	throw (Error)

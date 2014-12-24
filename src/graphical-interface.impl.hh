@@ -108,6 +108,11 @@ public:
 
   virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba) throw (Error);
 
+  virtual bool addUrdfCollision (const char* urdfNameCorba,
+				 const char* urdfPathCorba,
+				 const char* urdfPackagePathCorba)
+    throw (Error);
+
   virtual bool createGroup(const char* groupNameCorba)  throw (Error);
   virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba)  throw (Error);
 
