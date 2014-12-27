@@ -625,6 +625,41 @@ namespace graphics {
 	}
       }
 
+      void GraphicalInterface::addUrdfObjects (const char* urdfNameCorba,
+					       const char* urdfPathCorba,
+					       const char* urdfPackagePathCorba,
+					       bool visual)
+	throw (Error)
+      {
+	try {
+	  const std::string urdfName (urdfNameCorba);
+	  const std::string urdfPath (urdfPathCorba);
+	  const std::string urdfPackagePath (urdfPackagePathCorba);
+	  if (urdfName == "") {
+	    throw std::runtime_error ("Parameter nodeName cannot be empty in "
+				      "idl request addUrdfObjects.");
+	  }
+	  if (nodes_.find (urdfName) != nodes_.end ()) {
+	    std::ostringstream oss;
+	    oss << "You need to chose an other name, \"" << urdfName
+		<< "\" already exist.";
+	    throw std::runtime_error (oss.str ());
+	  }
+	  GroupNodePtr_t urdf = urdfParser::parse
+	    (urdfName, urdfPath, urdfPackagePath,
+	     visual ? "visual" : "collision", "object");
+	  NodePtr_t link;
+	  for (int i=0; i< urdf->getNumOfChildren (); i++) {
+	    link = urdf->getChild (i);
+	    nodes_[link->getID ()] = link;
+	  }
+	  GraphicalInterface::initParent (urdfName, urdf);
+	  addGroup (urdfName, urdf);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       bool GraphicalInterface::addToGroup (const char* nodeNameCorba,
 					   const char* groupNameCorba)
 	throw (Error)
