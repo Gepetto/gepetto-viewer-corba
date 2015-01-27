@@ -183,7 +183,8 @@ typedef double Color [4];
     /// \param input configuration : Double[7] new configuration.
     boolean applyConfiguration(in string nodeName, in Transform configuration) raises (Error);
 
-    /// Add Landmark at the center of a node (x=blue, y=green, z=red).
+    /// Add Landmark at the center of a node
+    /// The colors are x=red, y=green, z=blue (xyz=RGB).
     /// \param input nodeName : name of the node
     /// \param input size : lenght of axises.
     boolean addLandmark(in string nodeName, in float size) raises (Error);
