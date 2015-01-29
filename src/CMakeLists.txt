@@ -129,4 +129,3 @@ TARGET_LINK_LIBRARIES(client-test ${LIBRARY_NAME})
 PKG_CONFIG_USE_DEPENDENCY(client-test gepetto-viewer)
 
 INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
-INSTALL (TARGETS client-test DESTINATION bin)
