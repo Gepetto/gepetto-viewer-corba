@@ -46,8 +46,10 @@ class GraphicalInterface :
     public virtual POA_gepetto::corbaserver::GraphicalInterface
 {
 private:
-  typedef gepetto::Error Error;
-    std::map<std::string, WindowManagerPtr_t> windowManagers_;
+    typedef gepetto::Error Error;
+    typedef CORBA::ULong WindowID;
+    typedef std::vector <WindowManagerPtr_t> WindowManagers_t;
+    WindowManagers_t windowManagers_;
     std::map<std::string, NodePtr_t> nodes_;
     std::map<std::string, GroupNodePtr_t> groupNodes_;
     corbaServer::Server* server_;
@@ -82,11 +84,11 @@ public:
   virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
 
-  virtual bool createWindow(const char* windowNameCorba) throw (Error);
+  virtual WindowID createWindow(const char* windowNameCorba) throw (Error);
 
   virtual void createScene(const char* sceneNameCorba)  throw (Error);
   virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
-  virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowNameCorba)  throw (Error);
+  virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId)  throw (Error);
 
 
   virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const double* color) throw (Error);

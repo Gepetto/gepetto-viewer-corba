@@ -82,7 +82,7 @@ void ClientCpp::refresh()
     manager_->refresh();
 }
 
-bool ClientCpp::createWindow(const char* windowName)
+ClientCpp::WindowID ClientCpp::createWindow(const char* windowName)
 {
     return manager_->createWindow(windowName);
 }
@@ -100,9 +100,9 @@ void ClientCpp::createSceneWithFloor(const char* sceneName)
   manager_->createSceneWithFloor(sceneName);
 }
 
-bool ClientCpp::addSceneToWindow(const char* sceneName, const char* windowName)
+bool ClientCpp::addSceneToWindow(const char* sceneName, const ClientCpp::WindowID windowId)
 {
-   return  manager_->addSceneToWindow(sceneName, windowName);
+   return  manager_->addSceneToWindow(sceneName, windowId);
 }
 
 /*bool ClientCpp::addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3)

@@ -22,9 +22,9 @@ int main(int, const char **)
     se3::SE3 position4 = se3::SE3::Random();
     se3::SE3 position5 = se3::SE3::Random();
 
-    client.createWindow("window1");
+    ClientCpp::WindowID windowId = client.createWindow("window1");
     client.createScene("scene1");
-    client.addSceneToWindow("scene1","window1");
+    client.addSceneToWindow("scene1",windowId);
     client.addURDF("scene1/hrp2", "/local/mgeisert/devel/src/hrp2/hrp2_14_description/urdf/hrp2_14_capsule.urdf", "/local/mgeisert/devel/src/hrp2/");
 
     sleep(5);

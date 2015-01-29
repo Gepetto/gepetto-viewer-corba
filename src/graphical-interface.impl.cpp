@@ -173,24 +173,18 @@ namespace graphics {
 	}
       }
 
-      bool GraphicalInterface::createWindow (const char* windowNameCorba)
+      GraphicalInterface::WindowID GraphicalInterface::createWindow (const char* windowNameCorba)
 	throw (Error)
       {
 	try {
 	  std::string windowName (windowNameCorba);
-	  if (windowManagers_.find (windowName) != windowManagers_.end ()) {
-	    std::cout << "You need to chose an other name, \"" << windowName
-		      << "\" already exist." << std::endl;
-	    return false;
-	  }
-	  else {
-	    WindowManagerPtr_t newWindow = WindowManager::create ();
-	    windowManagers_[windowName] = newWindow;
-	    boost::thread refreshThread (boost::bind
-					 (&GraphicalInterface::threadRefreshing,
-					  this, newWindow));
-	    return true;
-	  }
+          WindowManagerPtr_t newWindow = WindowManager::create ();
+          WindowID windowId = windowManagers_.size ();
+          windowManagers_.push_back (newWindow);
+          boost::thread refreshThread (boost::bind
+              (&GraphicalInterface::threadRefreshing,
+               this, newWindow));
+          return windowId;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -257,19 +251,18 @@ namespace graphics {
       }
 
       bool GraphicalInterface::addSceneToWindow (const char* sceneNameCorba,
-						 const char* windowNameCorba)
+						 WindowID windowId)
 	throw (Error)
       {
 	try {
 	  std::string sceneName (sceneNameCorba);
-	  std::string windowName (windowNameCorba);
-	  if (windowManagers_.find (windowName) != windowManagers_.end () &&
+	  if ((windowId >= 0 || windowId < windowManagers_.size ()) &&
 	      groupNodes_.find (sceneName) != groupNodes_.end () ) {
-	    windowManagers_[windowName]->addNode (groupNodes_[sceneName]);
+	    windowManagers_[windowId]->addNode (groupNodes_[sceneName]);
 	    return true;
 	  }
 	  else {
-	    std::cout << "Window name \"" << windowName
+	    std::cout << "Window ID \"" << windowId
 		      << "\" and/or scene name \"" << sceneName
 		      << "\" doesn't exist." << std::endl;
 	    return false;
@@ -536,9 +529,10 @@ namespace graphics {
       {
 	try {
 	  std::cout << "List of Windows :" << std::endl;
-	  for (std::map<std::string, WindowManagerPtr_t>::iterator it=
-		 windowManagers_.begin (); it!=windowManagers_.end (); ++it)
-	    std::cout << "   " << it->first << std::endl;
+          size_t rank = 0;
+	  for (WindowManagers_t::iterator it = windowManagers_.begin ();
+              it!=windowManagers_.end (); ++it)
+	    std::cout << rank << " - " << (*it)->getViewerClone ()->getSlave (0)._camera->getGraphicsContext ()->getTraits ()->windowName << std::endl;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

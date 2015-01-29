@@ -34,7 +34,8 @@ typedef double Color [4];
 
     /// Create a new window.
     /// \param input name : name of the new window.
-    boolean createWindow(in string name) raises (Error);
+    /// return the ID of the newly create window.
+    unsigned long createWindow(in string name) raises (Error);
 
 
     /// Print names of nodes on the SceneViewer-corbaserver terminal.
@@ -54,8 +55,8 @@ typedef double Color [4];
     /// Add groupNode sceneName to the WindowManager windowName so
     /// sceneName and all its children will be displayed in the window windowName.
     /// \param input sceneName : name of the groupNode.
-    /// \param input windowName : name  of rhe window.
-    boolean addSceneToWindow(in string sceneName, in string windowName) raises (Error);
+    /// \param input windowId : ID of rhe window.
+    boolean addSceneToWindow(in string sceneName, in unsigned long windowId) raises (Error);
 
     /// create a box called boxName.
     /// \param input boxName : name of the box.

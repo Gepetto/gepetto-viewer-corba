@@ -29,6 +29,8 @@ private:
 protected:
 
 public:
+    typedef CORBA::ULong WindowID;
+
     // Default constructor
     ClientCpp();
     // Default destructor
@@ -40,14 +42,14 @@ public:
     bool setRate(int rate);
     void refresh();
 
-    bool createWindow(const char* windowName);
+    WindowID createWindow(const char* windowName);
 
 
     //void createWindow(const char* name, CORBA::ULong x, CORBA::ULong y, CORBA::ULong width, CORBA::ULong height) ;
 
     void createScene(const char* sceneName) ;
     void createSceneWithFloor(const char* sceneName) ;
-    bool addSceneToWindow(const char* sceneName, const char* windowName) ;
+    bool addSceneToWindow(const char* sceneName, const WindowID windowId) ;
 
 
     bool addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const double* color);
