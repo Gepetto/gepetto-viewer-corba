@@ -129,7 +129,7 @@ namespace graphics {
 
       void GraphicalInterface::threadRefreshing (WindowManagerPtr_t window)
       {
-	while (1)
+	while (!window->done ())
 	  {
 	    mtx_.lock ();
 	    window->frame ();
