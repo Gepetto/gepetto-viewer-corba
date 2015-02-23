@@ -133,6 +133,9 @@ public:
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
 
+  virtual bool startCapture (const WindowID windowId, const char* filename,
+      const char* extension) throw (Error);
+  virtual bool stopCapture (const WindowID windowId) throw (Error);
 }; // end of class
 
 } /* namespace impl */

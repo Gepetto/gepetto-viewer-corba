@@ -200,6 +200,9 @@ namespace graphics {
 	       it != newNodeConfigurations_.end (); it++) {
 	 (*it).node->applyConfiguration ( (*it).position, (*it).quat);
 	  }
+	  for (WindowManagers_t::iterator it = windowManagers_.begin ();
+              it!=windowManagers_.end (); ++it)
+            (*it)->frame ();
 	  mtx_.unlock ();
 	  newNodeConfigurations_.clear ();
 	} catch (const std::exception& exc) {
@@ -799,6 +802,44 @@ namespace graphics {
 	  }
 	  nodes_[nodeName]->setLightingMode (light);
 	  return true;
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::startCapture (const WindowID windowId, const char* filename,
+          const char* extension)
+        throw (Error)
+      {
+	try {
+	  if (windowId >= 0 || windowId < windowManagers_.size ()) {
+	    windowManagers_[windowId]->startCapture
+              (std::string (filename), std::string (extension));
+	    return true;
+	  }
+	  else {
+	    std::cout << "Window ID " << windowId
+		      << " doesn't exist." << std::endl;
+	    return false;
+	  }
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::stopCapture (const WindowID windowId)
+        throw (Error)
+      {
+	try {
+	  if (windowId >= 0 || windowId < windowManagers_.size ()) {
+	    windowManagers_[windowId]->stopCapture ();
+	    return true;
+	  }
+	  else {
+	    std::cout << "Window ID " << windowId
+		      << " doesn't exist." << std::endl;
+	    return false;
+	  }
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
