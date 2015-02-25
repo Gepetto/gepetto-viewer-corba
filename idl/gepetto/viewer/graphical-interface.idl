@@ -215,9 +215,11 @@ typedef double Color [4];
     /// '<filename>_<sequence_number>.<extension>'
     ///
     /// \note To make a movie from the sequence of images, you can run:
-    /// \code
-    ///   ffmpeg -r 25 -b 1800 -i capture_0_%d.jpeg video.mp4
+    /// \code{.sh}
+    ///   ffmpeg -r 50 -i capture_0_%d.jpeg -r 25 -vcodec libx264 video.mp4
     /// \endcode
+    /// Note that <EM>libx264</EM> is not installed by default. On ubuntu 12.04,
+    /// it is part of the package <EM>libavcodec-extra-53</EM>
     boolean startCapture (in unsigned long windowId, in string filename,
       in string extension) raises (Error);
 
