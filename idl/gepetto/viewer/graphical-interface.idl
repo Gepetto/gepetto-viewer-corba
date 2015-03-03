@@ -225,6 +225,8 @@ typedef double Color [4];
 
     /// Stop the running capture of a window.
     boolean stopCapture (in unsigned long windowId) raises (Error);
+
+    boolean writeNodeFile (in unsigned long windowId, in string filename) raises (Error);
   };
 };
 };

@@ -136,6 +136,7 @@ public:
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);
+  virtual bool writeNodeFile (const WindowID windowId, const char* filename) throw (Error);
 }; // end of class
 
 } /* namespace impl */

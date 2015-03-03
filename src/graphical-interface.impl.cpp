@@ -844,6 +844,23 @@ namespace graphics {
 	  throw Error (exc.what ());
 	}
       }
+
+      bool GraphicalInterface::writeNodeFile (const WindowID windowId, const char* filename)
+        throw (Error)
+      {
+	try {
+	  if (windowId >= 0 || windowId < windowManagers_.size ()) {
+	    return windowManagers_[windowId]->writeNodeFile (std::string (filename));
+	  }
+	  else {
+	    std::cout << "Window ID " << windowId
+		      << " doesn't exist." << std::endl;
+	    return false;
+	  }
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics
