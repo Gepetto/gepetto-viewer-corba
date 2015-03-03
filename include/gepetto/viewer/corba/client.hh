@@ -85,6 +85,9 @@ public:
     bool setWireFrameMode(const char* nodeName, const char* wireFrameMode) ;
     bool setLightingMode(const char* nodeName, const char* lightingMode) ;
 
+    bool startCapture (const WindowID windowId, const char* filename, const char* extension);
+    bool stopCapture (const WindowID windowId);
+    bool writeNodeFile (const WindowID windowId, const char* filename);
 }; //end of class ClientCpp
 
 } //end of namespace corbaserver

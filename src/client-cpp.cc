@@ -211,5 +211,20 @@ bool ClientCpp::setLightingMode(const char* nodeName, const char* lightingMode)
     return manager_->setLightingMode(nodeName, lightingMode);
 }
 
+bool ClientCpp::startCapture (const WindowID windowId, const char* filename, const char* extension)
+{
+  return manager_->startCapture (windowId, filename, extension);
+}
+
+bool ClientCpp::stopCapture (const WindowID windowId)
+{
+  return manager_->stopCapture (windowId);
+}
+
+bool ClientCpp::writeNodeFile (const WindowID windowId, const char* filename)
+{
+  return manager_->writeNodeFile (windowId, filename);
+}
+
 } // end of namespace corbaserver
 } // end of namespace graphics
