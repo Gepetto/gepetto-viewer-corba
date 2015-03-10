@@ -29,12 +29,12 @@ int main(int, const char **)
 
     sleep(5);
 
-    //vector<double> tri01 (3);
+    //vector<float> tri01 (3);
 
-    double pos1[3]= {1.,0.,0.};
-    double pos2[3] = {0.,1.,0.};
-    double pos3[3]= {0.,1.,1.};
-    double color[4] = {1.,1.,1.,1.};
+    float pos1[3]= {1.,0.,0.};
+    float pos2[3] = {0.,1.,0.};
+    float pos3[3]= {0.,1.,1.};
+    float color[4] = {1.,1.,1.,1.};
     client.addTriangleFace("scene1/triangle", pos1, pos2, pos3, color);
 
     sleep(15);

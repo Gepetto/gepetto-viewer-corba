@@ -11,13 +11,16 @@
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_HH
 # define SCENEVIEWER_CORBASERVER_SERVER_HH
 
-
-#include "fwd.hh"
+#include "gepetto/viewer/corba/fwd.hh"
+#include <gepetto/viewer/windows-manager.h>
 
 namespace graphics
 {
   namespace corbaServer
   {
+    using graphics::WindowsManager;
+    using graphics::WindowsManagerPtr_t;
+
     /// Implementation of Hpp module Corba server.
 
     ///  This class initializes the Corba server and starts the following Corba interface implementations.
@@ -50,6 +53,7 @@ namespace graphics
     {
     public:
       /// Constructor
+      /// \param the object that handles CORBA requests.
       /// \param argc, argv parameter to feed ORB initialization.
       /// \param multiThread whether the server may process request using
       ///        multithred policy.
@@ -59,7 +63,8 @@ namespace graphics
       /// \note It is highly recommended not to enable multi-thread policy in
       ///       CORBA request processing if this library is run from an openGL
       ///       based GUI, since OpenGL does not support multithreading.
-      Server (int argc, const char* argv[], bool multiThread = false);
+      Server (WindowsManagerPtr_t windowsManager, int argc,
+          const char* argv[], bool multiThread = false);
 
       /// \brief Shutdown CORBA server
       ~Server ();
@@ -74,8 +79,10 @@ namespace graphics
       ///             returns.
       int processRequest (bool loop);
 
-      //core::ProblemSolverPtr_t problemSolver () const;
-      //core::ProblemSolverPtr_t problemSolver ();
+      WindowsManagerPtr_t windowsManager () const
+      {
+        return windowsManager_;
+      }
 
     private:
 
@@ -92,6 +99,7 @@ namespace graphics
 
       impl::Server* private_;
 
+      WindowsManagerPtr_t windowsManager_;
     };
 
   } // end of namespace corbaServer.

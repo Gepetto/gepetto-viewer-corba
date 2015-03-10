@@ -12,10 +12,9 @@
 #include <pthread.h>
 #include <iostream>
 #include <stdexcept>
-#include "server.hh"
 
+#include "gepetto/viewer/corba/server.hh"
 #include "server-private.hh"
-
 
 namespace graphics
 {
@@ -42,7 +41,8 @@ namespace graphics
     //} // end of anonymous namespace.
 
 
-    Server::Server(int argc, const char *argv[], bool inMultiThread)
+    Server::Server(WindowsManagerPtr_t wm, int argc, const char *argv[],
+        bool inMultiThread) : windowsManager_ (wm)
     {
       private_ = new impl::Server;
 

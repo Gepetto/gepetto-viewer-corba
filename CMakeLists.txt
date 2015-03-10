@@ -30,6 +30,7 @@ SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "")
 
 SET(${PROJECT_NAME}_HEADERS
+  include/gepetto/viewer/corba/server.hh
   include/gepetto/viewer/corba/client.hh
   include/gepetto/viewer/corba/se3.hh
   )

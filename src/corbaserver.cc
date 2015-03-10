@@ -9,14 +9,15 @@
 // See the COPYING file for more information.
 
 #include <iostream>
-#include "server.hh"
+#include "gepetto/viewer/corba/server.hh"
 
 using graphics::corbaServer::Server;
 
 int
 main (int argc, const char* argv[])
 {
-  Server server (argc, argv, true);
+  graphics::WindowsManagerPtr_t wm = graphics::WindowsManager::create ();
+  Server server (wm, argc, argv, true);
 
   server.startCorbaServer ();
   server.processRequest(true);

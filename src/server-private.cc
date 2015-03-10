@@ -13,7 +13,7 @@
 
 #include "graphical-interface.impl.hh"
 #include "server-private.hh"
-#include "fwd.hh"
+#include "gepetto/viewer/corba/fwd.hh"
 
 namespace graphics
 {
