@@ -180,11 +180,26 @@ namespace graphics {
 	  std::string windowName (windowNameCorba);
           WindowManagerPtr_t newWindow = WindowManager::create ();
           WindowID windowId = windowManagers_.size ();
+          windowIDmap_ [windowNameCorba] = windowId;
           windowManagers_.push_back (newWindow);
           boost::thread refreshThread (boost::bind
               (&GraphicalInterface::threadRefreshing,
                this, newWindow));
           return windowId;
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      GraphicalInterface::WindowID GraphicalInterface::getWindowID (const char* windowNameCorba)
+	throw (Error)
+      {
+	try {
+	  std::string windowName (windowNameCorba);
+          WindowIDMap_t::iterator it = windowIDmap_.find (windowName);
+          if (it == windowIDmap_.end ())
+            throw Error ("There is no windows with that name");
+          return it->second;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

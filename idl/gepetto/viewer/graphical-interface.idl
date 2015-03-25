@@ -36,6 +36,7 @@ typedef double Color [4];
     /// \param input name : name of the new window.
     /// return the ID of the newly create window.
     unsigned long createWindow(in string name) raises (Error);
+    unsigned long getWindowID (in string name) raises (Error);
 
 
     /// Print names of nodes on the SceneViewer-corbaserver terminal.

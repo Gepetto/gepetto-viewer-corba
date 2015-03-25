@@ -49,7 +49,9 @@ private:
     typedef gepetto::Error Error;
     typedef CORBA::ULong WindowID;
     typedef std::vector <WindowManagerPtr_t> WindowManagers_t;
+    typedef std::map <std::string, WindowID> WindowIDMap_t;
     WindowManagers_t windowManagers_;
+    WindowIDMap_t windowIDmap_;
     std::map<std::string, NodePtr_t> nodes_;
     std::map<std::string, GroupNodePtr_t> groupNodes_;
     corbaServer::Server* server_;
@@ -85,6 +87,7 @@ public:
   virtual void refresh() throw (Error);
 
   virtual WindowID createWindow(const char* windowNameCorba) throw (Error);
+  virtual WindowID getWindowID (const char* windowNameCorba) throw (Error);
 
   virtual void createScene(const char* sceneNameCorba)  throw (Error);
   virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
