@@ -33,6 +33,7 @@ ADD_LIBRARY(${LIBRARY_NAME}
   graphical-interfaceSK.cc
   graphical-interface.impl.cpp
   graphical-interface.impl.hh
+  windows-manager.cpp
   server.cc
   server-private.cc
   server-private.hh
