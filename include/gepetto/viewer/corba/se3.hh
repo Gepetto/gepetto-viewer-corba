@@ -124,7 +124,7 @@ private:
 Matrix3 rot;
 Vector3 trans;
 };
-typedef SE3Tpl<double,0> SE3;
+typedef SE3Tpl<float,0> SE3;
 } // namespace se3
 #endif // ifndef __se3_se3_hpp__
 

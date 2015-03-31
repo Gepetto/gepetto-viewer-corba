@@ -17,9 +17,9 @@ module corbaserver {
 //     the "refresh" function each time you want actualize position of the Viewer.
 //     This system is used to synchronize movement of all objects.
 
-typedef double Transform [7];
-typedef double Position [3];
-typedef double Color [4];
+typedef float Transform [7];
+typedef float Position [3];
+typedef float Color [4];
 
   /// Corba exception travelling through the Corba channel
   interface GraphicalInterface {
@@ -182,7 +182,7 @@ typedef double Color [4];
 
     /// Set a new configuration to a node. THIS CONFIGURATION WILL AFFECTIVE ONLY AFTER CALLING REFRESH FUNCTION!!!
     /// \param input nodeName : name of the node.
-    /// \param input configuration : Double[7] new configuration.
+    /// \param input configuration : Float[7] new configuration.
     boolean applyConfiguration(in string nodeName, in Transform configuration) raises (Error);
 
     /// Add Landmark at the center of a node
