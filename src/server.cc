@@ -96,8 +96,12 @@ namespace graphics
       policyList.length(1);
       policyList[0] = PortableServer::ThreadPolicy::_duplicate(threadPolicy);
 
-      private_->poa_ = rootPoa->create_POA
-	("child", PortableServer::POAManager::_nil(), policyList);
+      try {
+        private_->poa_ = rootPoa->create_POA
+          ("child", PortableServer::POAManager::_nil(), policyList);
+      } catch (PortableServer::POA::AdapterAlreadyExists& /*e*/) {
+        private_->poa_ = rootPoa->find_POA ("child", false);
+      }
       // Destroy policy object
       threadPolicy->destroy();
       private_->createAndActivateServers(this);
