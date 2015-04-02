@@ -167,7 +167,7 @@ namespace graphics {
 					const value_type* colorCorba) throw (Error)
       {
           try {
-              return addLine ( lineNameCorba, posCorba1, posCorba2, colorCorba) ;
+              return windowsManager_->addLine ( lineNameCorba, posCorba1, posCorba2, colorCorba) ;
           } catch (const std::exception& exc) {
               throw Error (exc.what ());
           }
@@ -180,7 +180,7 @@ namespace graphics {
 						const value_type* colorCorba) throw (Error)
       {
 	try {
-      return addTriangleFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, colorCorba) ;
+      return windowsManager_->addTriangleFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, colorCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -194,7 +194,7 @@ namespace graphics {
 					      const value_type* colorCorba) throw (Error)
       {
 	try {
-      return addSquareFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, posCorba4, colorCorba) ;
+      return windowsManager_->addSquareFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, posCorba4, colorCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -202,8 +202,8 @@ namespace graphics {
 
       void GraphicalInterface::getNodeList () throw (Error)
       {
-	try {
-      return getNodeList ();
+        try {
+          windowsManager_->getNodeList ();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -212,7 +212,7 @@ namespace graphics {
       void GraphicalInterface::getWindowList () throw (Error)
       {
 	try {
-      return getWindowList ();
+          windowsManager_->getWindowList ();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -221,7 +221,7 @@ namespace graphics {
       bool GraphicalInterface::createGroup (const char* groupNameCorba) throw (Error)
       {
 	try {
-      return createGroup ( groupNameCorba) ;
+      return windowsManager_->createGroup ( groupNameCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -232,7 +232,7 @@ namespace graphics {
 					const char* urdfPackagePathCorba) throw (Error)
       {
 	try {
-      return addURDF ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
+      return windowsManager_->addURDF ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -242,7 +242,7 @@ namespace graphics {
        const char* urdfPackagePathCorba) throw (Error)
       {
 	try {
-      return addUrdfCollision ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
+      return windowsManager_->addUrdfCollision ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -254,7 +254,7 @@ namespace graphics {
 					       bool visual) throw (Error)
       {
 	try {
-      return addUrdfObjects ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba, visual) ;
+      return windowsManager_->addUrdfObjects ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba, visual) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -264,7 +264,7 @@ namespace graphics {
 					   const char* groupNameCorba) throw (Error)
       {
 	try {
-      return addToGroup ( nodeNameCorba, groupNameCorba) ;
+      return windowsManager_->addToGroup ( nodeNameCorba, groupNameCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -273,7 +273,7 @@ namespace graphics {
       bool GraphicalInterface::applyConfiguration (const char* nodeNameCorba, const value_type* configurationCorba) throw (Error)
       {
 	try {
-      return applyConfiguration ( nodeNameCorba, configurationCorba) ;
+      return windowsManager_->applyConfiguration ( nodeNameCorba, configurationCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -283,7 +283,7 @@ namespace graphics {
 					    float size) throw (Error)
       {
 	try {
-      return addLandmark ( nodeNameCorba, size) ;
+      return windowsManager_->addLandmark ( nodeNameCorba, size) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -293,7 +293,7 @@ namespace graphics {
       bool GraphicalInterface::deleteLandmark (const char* nodeNameCorba) throw (Error)
       {
 	try {
-      return deleteLandmark ( nodeNameCorba) ;
+      return windowsManager_->deleteLandmark ( nodeNameCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -303,7 +303,7 @@ namespace graphics {
 					      const char* visibilityModeCorba) throw (Error)
       {
 	try {
-      return setVisibility ( nodeNameCorba, visibilityModeCorba) ;
+      return windowsManager_->setVisibility ( nodeNameCorba, visibilityModeCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -313,7 +313,7 @@ namespace graphics {
 						 const char* wireFrameModeCorba) throw (Error)
       {
 	try {
-      return setWireFrameMode ( nodeNameCorba, wireFrameModeCorba) ;
+      return windowsManager_->setWireFrameMode ( nodeNameCorba, wireFrameModeCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -323,7 +323,7 @@ namespace graphics {
 						const char* lightingModeCorba) throw (Error)
       {
 	try {
-      return setLightingMode ( nodeNameCorba, lightingModeCorba) ;
+      return windowsManager_->setLightingMode ( nodeNameCorba, lightingModeCorba) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -333,7 +333,7 @@ namespace graphics {
           const char* extension) throw (Error)
       {
 	try {
-      return startCapture ( windowId, filename, extension) ;
+      return windowsManager_->startCapture ( windowId, filename, extension) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -342,7 +342,7 @@ namespace graphics {
       bool GraphicalInterface::stopCapture (const WindowID windowId) throw (Error)
       {
 	try {
-      return stopCapture ( windowId) ;
+      return windowsManager_->stopCapture ( windowId) ;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
