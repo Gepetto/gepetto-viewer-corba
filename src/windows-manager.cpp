@@ -479,25 +479,41 @@ namespace graphics {
         }
     }
 
-    void WindowsManager::getNodeList ()
+    std::vector<std::string> WindowsManager::getNodeList ()
     {
+        std::vector<std::string> l;
         std::cout << "List of Nodes :" << std::endl;
         for (std::map<std::string, NodePtr_t>::iterator it=nodes_.begin ();
-                it!=nodes_.end (); ++it)
+                it!=nodes_.end (); ++it) {
             std::cout << "   " << it->first << std::endl;
-        std::cout << "List of GroupNodes :" << std::endl;
-        for (std::map<std::string, GroupNodePtr_t>::iterator it=
-                groupNodes_.begin (); it!=groupNodes_.end (); ++it)
-            std::cout << "   " << it->first << std::endl;
+            l.push_back (it->first);
+        }
+        return l;
     }
 
-    void WindowsManager::getWindowList ()
+    std::vector<std::string> WindowsManager::getSceneList ()
     {
+        std::vector<std::string> l;
+        std::cout << "List of GroupNodes :" << std::endl;
+        for (std::map<std::string, GroupNodePtr_t>::iterator it=
+                groupNodes_.begin (); it!=groupNodes_.end (); ++it) {
+            std::cout << "   " << it->first << std::endl;
+            l.push_back (it->first);
+        }
+        return l;
+    }
+
+    std::vector<std::string> WindowsManager::getWindowList ()
+    {
+        std::vector<std::string> l;
         std::cout << "List of Windows :" << std::endl;
         size_t rank = 0;
         for (WindowManagerVector_t::iterator it = windowManagers_.begin ();
-                it!=windowManagers_.end (); ++it)
-            std::cout << rank << " - " << (*it)->getViewerClone ()->getSlave (0)._camera->getGraphicsContext ()->getTraits ()->windowName << std::endl;
+                it!=windowManagers_.end (); ++it) {
+            std::cout << rank << " - " << (*it)->getViewerClone ()->getCamera()->getGraphicsContext ()->getTraits ()->windowName << std::endl;
+            l.push_back ((*it)->getViewerClone ()->getCamera()->getGraphicsContext ()->getTraits ()->windowName);
+        }
+        return l;
     }
 
     bool WindowsManager::createGroup (const char* groupNameCorba)

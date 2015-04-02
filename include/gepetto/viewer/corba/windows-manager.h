@@ -72,8 +72,9 @@ namespace graphics {
         public:
             static WindowsManagerPtr_t create ();
 
-            virtual void getNodeList();
-            virtual void getWindowList();
+            virtual std::vector<std::string> getNodeList();
+            virtual std::vector<std::string> getSceneList();
+            virtual std::vector<std::string> getWindowList();
 
             virtual bool setRate(const int& rate);
             virtual void refresh();
