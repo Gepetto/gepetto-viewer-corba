@@ -67,6 +67,7 @@ namespace graphics {
               \brief Default constructor
               */
             WindowsManager ();
+            WindowID addWindow (std::string winName, WindowManagerPtr_t newWindow);
 
         public:
             static WindowsManagerPtr_t create ();
@@ -77,7 +78,7 @@ namespace graphics {
             virtual bool setRate(const int& rate);
             virtual void refresh();
 
-            virtual WindowID createWindow(const char* windowNameCorba, osg::GraphicsContext* gc = 0);
+            virtual WindowID createWindow(const char* windowNameCorba);
             virtual WindowID getWindowID (const char* windowNameCorba);
 
             virtual void createScene(const char* sceneNameCorba);

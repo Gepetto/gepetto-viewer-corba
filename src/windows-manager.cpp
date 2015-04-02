@@ -41,6 +41,15 @@ namespace graphics {
     {
     }
 
+    WindowsManager::WindowID WindowsManager::addWindow (std::string winName,
+            WindowManagerPtr_t newWindow)
+    {
+        WindowID windowId = windowManagers_.size ();
+        windowIDmap_ [winName] = windowId;
+        windowManagers_.push_back (newWindow);
+        return windowId;
+    }
+
     WindowsManagerPtr_t WindowsManager::create ()
     {
       WindowsManagerPtr_t shPtr (new WindowsManager());
@@ -192,23 +201,14 @@ namespace graphics {
         }
     }
 
-    WindowsManager::WindowID WindowsManager::createWindow (const char* winName,
-        osg::GraphicsContext* gc)
+    WindowsManager::WindowID WindowsManager::createWindow (const char* winName)
     {
         std::string wn (winName);
-        WindowManagerPtr_t newWindow;
-        if (gc == 0)
-          newWindow = WindowManager::create ();
-        else
-          newWindow = WindowManager::create (gc);
-        WindowID windowId = windowManagers_.size ();
-        windowIDmap_ [wn] = windowId;
-        windowManagers_.push_back (newWindow);
-        if (gc == 0) {
-          boost::thread refreshThread (boost::bind
-              (&WindowsManager::threadRefreshing,
-               this, newWindow));
-        }
+        WindowManagerPtr_t newWindow = WindowManager::create ();
+        WindowID windowId = addWindow (wn, newWindow);
+        boost::thread refreshThread (boost::bind
+                (&WindowsManager::threadRefreshing,
+                 this, newWindow));
         return windowId;
     }
 
