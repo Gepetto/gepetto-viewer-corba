@@ -116,6 +116,34 @@ typedef float Color [4];
     /// \param input RGBAcolor : color of the face.
     boolean addTriangleFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Color RGBAcolor) raises (Error);
 
+
+		// Add a sphere with xyz axis
+		// The colors are x=red, y=green, z=blue (xyz=RGB)
+		// \param input nodeName : name of the node
+		// \param input RGBAcolor : color of the sphere
+		// \param input radius : radius of the sphere
+		// \param input sizeAxis : size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
+		boolean addXYZaxis(in string nodeName, in Color RGBAcolor,in float radius,in float sizeAxis) raises(Error);
+
+		// Add an empty roadmap to the scene
+	  // \param input nameCorba : name of the roadmap
+	  // \param input RGBAcolorNode : color of the sphere
+	  // \param input radius : radius of the sphere
+	  // \param input sizeAxis :size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
+	  // \param input RGBAcolorEdge : color of the edges
+    boolean createRoadmap(in string nameCorba,in Color RGBAcolorNode, in float radius, in float sizeAxis, in Color RGBAcolorEdge) raises(Error);
+
+		// Add an edge to the roadmap
+	  // \param input nameRoadmap : name of the roadmap
+	  // \param input posFrom : position of the beginning of the edge
+	  // \param input posTo : position of the end of the edge (not oriented edge, order doesn't matter)
+    boolean addEdgeToRoadmap(in string nameRoadmap, in Position posFrom, in Position posTo)raises(Error);
+
+		// Add a node to the roadmap
+	  // \param input nameRoadmap : name of the roadmap
+	  // \param input configuration : configuration of the node 
+    boolean addNodeToRoadmap(in string nameRoadmap, in Transform configuration)raises(Error);
+
     /// Create a node from an urdf file
     /// \param robotName Name of the node that will contain the robot geometry,
     ///                  each geometric part is prefixed by this name,
@@ -129,6 +157,7 @@ typedef float Color [4];
     /// a groupNode is created and each link will be child node of this node.
     /// Links are named "prefix/linkName", linkName is the name of the link
     /// in the URDF file.
+
     boolean addURDF (in string robotName, in string urdfFilePath,
 		     in string meshDataRootDir) raises (Error);
 

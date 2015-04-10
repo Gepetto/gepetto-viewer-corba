@@ -17,7 +17,7 @@ int
 main (int argc, const char* argv[])
 {
   graphics::WindowsManagerPtr_t wm = graphics::WindowsManager::create ();
-  Server server (wm, argc, argv, true);
+  Server server (wm, argc, argv, false); // dernier arg : autorise ou non multithread (original = true)
 
   server.startCorbaServer ();
   server.processRequest(true);

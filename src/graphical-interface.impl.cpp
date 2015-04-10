@@ -200,6 +200,44 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::addXYZaxis(const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis)
+          throw (Error)
+      {
+          try {
+              return windowsManager_->addXYZaxis (nodeNameCorba,colorCorba,radius,sizeAxis);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      /** initialise the roadmap (graphical roadmap)*/
+      bool GraphicalInterface::createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba) throw(Error){
+          try {
+              return windowsManager_->createRoadmap (nameCorba,colorNodeCorba,radius,sizeAxis,colorEdgeCorba);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+
+      bool GraphicalInterface::addEdgeToRoadmap(const char* nameRoadmap, const value_type* posFrom, const value_type* posTo) throw(Error){
+          try {
+              return windowsManager_->addEdgeToRoadmap (nameRoadmap,posFrom,posTo);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      bool GraphicalInterface::addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration) throw(Error){
+          try {
+              return windowsManager_->addNodeToRoadmap (nameRoadmap,configuration);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+
+
       void GraphicalInterface::getNodeList () throw (Error)
       {
         try {

@@ -18,6 +18,7 @@
 #define SCENEVIEWER_WINDOWMANAGERS_HH
 
 #include <gepetto/viewer/window-manager.h>
+#include <gepetto/viewer/roadmap-viewer.h>
 #include <boost/thread/mutex.hpp>
 
 namespace graphics {
@@ -45,6 +46,7 @@ namespace graphics {
             WindowManagerVector_t windowManagers_;
             std::map<std::string, NodePtr_t> nodes_;
             std::map<std::string, GroupNodePtr_t> groupNodes_;
+            std::map<std::string, RoadmapViewerPtr_t> roadmapNodes_;
             boost::mutex mtx_;
             int rate_;
             std::list<NodeConfiguration> newNodeConfigurations_;
@@ -103,6 +105,13 @@ namespace graphics {
 
             virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);
             virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color);
+            virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis);
+
+            virtual bool createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba);
+
+            virtual bool addEdgeToRoadmap(const char* nameRoadmap, const value_type* posFromCorba, const value_type* posToCorba);
+
+            virtual bool addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration);
 
             virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
 

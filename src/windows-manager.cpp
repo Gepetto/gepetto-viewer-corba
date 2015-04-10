@@ -28,6 +28,8 @@
 #include <gepetto/viewer/leaf-node-line.h>
 #include <gepetto/viewer/leaf-node-face.h>
 #include <gepetto/viewer/leaf-node-sphere.h>
+#include <gepetto/viewer/leaf-node-xyzaxis.h>
+#include <gepetto/viewer/roadmap-viewer.h>
 #include <gepetto/viewer/macros.h>
 #include <gepetto/viewer/config-osg.h>
 #include <gepetto/viewer/leaf-node-ground.h>
@@ -36,7 +38,7 @@
 
 namespace graphics {
     WindowsManager::WindowsManager () :
-        windowManagers_ (), nodes_ (), groupNodes_ (),
+        windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
         mtx_ (), rate_ (20), newNodeConfigurations_ ()
     {
     }
@@ -477,6 +479,60 @@ namespace graphics {
             addNode (faceName, face);
             return true;
         }
+    }
+
+    bool WindowsManager::addXYZaxis (const char* nodeNameCorba,const value_type* colorCorba, float radius, float sizeAxis)
+    {
+
+          std::string nodeName (nodeNameCorba);
+          if (nodes_.find (nodeName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \"" << nodeName
+                  << "\" already exist." << std::endl;
+            return false;
+          }
+          else {
+            LeafNodeXYZAxisPtr_t axis = LeafNodeXYZAxis::create
+              (nodeName,getColor(colorCorba),radius,sizeAxis);
+            WindowsManager::initParent (nodeName, axis);
+            addNode (nodeName, axis);
+            return true;
+          }
+    }
+
+    bool WindowsManager::createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba){
+        const std::string roadmapName (nameCorba);
+        if (nodes_.find (roadmapName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \"" << roadmapName
+                << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            RoadmapViewerPtr_t rm = RoadmapViewer::create(roadmapName,getColor(colorNodeCorba),radius,sizeAxis,getColor(colorEdgeCorba));
+            WindowsManager::initParent (roadmapName, rm);
+            addNode (roadmapName, rm);
+            roadmapNodes_[roadmapName]=rm;
+            return true;
+        }
+    }
+
+    bool WindowsManager::addEdgeToRoadmap(const char* nameRoadmapCorba, const value_type* posFromCorba, const value_type* posToCorba){
+        const std::string nameRoadmap (nameRoadmapCorba);
+        if (roadmapNodes_.find (nameRoadmap) == roadmapNodes_.end ()) {
+            //no node named nodeName
+            std::cout << "No roadmap named \"" << nameRoadmap << "\"" << std::endl;
+            return false;
+        }
+        else {
+            RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
+            osgVector3 posFrom = osgVector3(posFromCorba[0], posFromCorba[1],posFromCorba[2]);
+            osgVector3 posTo = osgVector3(posToCorba[0], posToCorba[1],posToCorba[2]);
+            rm_ptr->addEdge(posFrom,posTo);
+            return true;
+        }
+    }
+
+    bool WindowsManager::addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration){
+//TODO
     }
 
     std::vector<std::string> WindowsManager::getNodeList ()
