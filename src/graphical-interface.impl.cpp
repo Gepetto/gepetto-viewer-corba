@@ -50,7 +50,9 @@ namespace graphics {
       void GraphicalInterface::refresh () throw (Error)
       {
 	try {
+	  mtx_.lock();
           return windowsManager_->refresh ();
+	  mtx_.unlock();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -321,7 +323,9 @@ namespace graphics {
       bool GraphicalInterface::applyConfiguration (const char* nodeNameCorba, const value_type* configurationCorba) throw (Error)
       {
 	try {
+	  mtx_.lock();
       return windowsManager_->applyConfiguration ( nodeNameCorba, configurationCorba) ;
+      mtx_.unlock();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
