@@ -95,6 +95,7 @@ public:
 
   virtual bool createGroup(const char* groupNameCorba)  throw (Error);
   virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba)  throw (Error);
+  virtual bool removeFromGroup (const char* nodeNameCorba,const char* groupNameCorba)  throw (Error);
 
   virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration)  throw (Error);
 

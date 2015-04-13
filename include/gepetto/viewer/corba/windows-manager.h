@@ -109,9 +109,9 @@ namespace graphics {
 
             virtual bool createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba);
 
-            virtual bool addEdgeToRoadmap(const char* nameRoadmap, const value_type* posFromCorba, const value_type* posToCorba);
+            virtual bool addEdgeToRoadmap(const char* nameRoadmapCorba, const value_type* posFromCorba, const value_type* posToCorba);
 
-            virtual bool addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration);
+            virtual bool addNodeToRoadmap(const char* nameRoadmapCorba, const value_type* configuration);
 
             virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
 
@@ -126,6 +126,8 @@ namespace graphics {
 
             virtual bool createGroup(const char* groupNameCorba);
             virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba);
+            virtual bool removeFromGroup (const char* nodeNameCorba, const char* groupNameCorba);
+
 
             virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration);
 

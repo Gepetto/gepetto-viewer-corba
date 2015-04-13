@@ -308,6 +308,16 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::removeFromGroup (const char* nodeNameCorba,
+                       const char* groupNameCorba) throw (Error)
+      {
+    try {
+      return windowsManager_->removeFromGroup ( nodeNameCorba, groupNameCorba) ;
+    } catch (const std::exception& exc) {
+      throw Error (exc.what ());
+    }
+      }
+
       bool GraphicalInterface::applyConfiguration (const char* nodeNameCorba, const value_type* configurationCorba) throw (Error)
       {
 	try {

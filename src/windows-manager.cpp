@@ -142,6 +142,7 @@ namespace graphics {
         return parentName;
     }
 
+
     void WindowsManager::initParent (const std::string& nodeName,
             NodePtr_t node)
     {
@@ -174,6 +175,8 @@ namespace graphics {
             boost::this_thread::sleep (boost::posix_time::milliseconds (rate_));
         }
     }
+
+
 
     osgQuat WindowsManager::corbaConfToOsgQuat (const value_type* configCorba)
     {
@@ -232,8 +235,8 @@ namespace graphics {
                 it != newNodeConfigurations_.end (); it++) {
             (*it).node->applyConfiguration ( (*it).position, (*it).quat);
         }
-        mtx_.unlock ();
         newNodeConfigurations_.clear ();
+        mtx_.unlock ();
     }
 
     void WindowsManager::createScene (const char* sceneNameCorba)
@@ -526,13 +529,29 @@ namespace graphics {
             RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
             osgVector3 posFrom = osgVector3(posFromCorba[0], posFromCorba[1],posFromCorba[2]);
             osgVector3 posTo = osgVector3(posToCorba[0], posToCorba[1],posToCorba[2]);
-            rm_ptr->addEdge(posFrom,posTo);
+          //  mtx_.lock(); mtx is now locked only when required in addEdge
+            rm_ptr->addEdge(posFrom,posTo,mtx_);
+         //   mtx_.unlock();
             return true;
         }
     }
 
-    bool WindowsManager::addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration){
-//TODO
+    bool WindowsManager::addNodeToRoadmap(const char* nameRoadmapCorba, const value_type* configuration){
+        const std::string nameRoadmap (nameRoadmapCorba);
+        if (roadmapNodes_.find (nameRoadmap) == roadmapNodes_.end ()) {
+            //no node named nodeName
+            std::cout << "No roadmap named \"" << nameRoadmap << "\"" << std::endl;
+            return false;
+        }
+        else {
+            RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
+            osgVector3 position =  WindowsManager::corbaConfToOsgVec3 (configuration);
+            osgQuat quat  = WindowsManager::corbaConfToOsgQuat (configuration);
+           // mtx_.lock();
+            rm_ptr->addNode(position,quat,mtx_);
+           // mtx_.unlock();
+            return true;
+        }
     }
 
     std::vector<std::string> WindowsManager::getNodeList ()
@@ -686,6 +705,23 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::removeFromGroup (const char* nodeNameCorba,
+            const char* groupNameCorba)
+    {
+        const std::string nodeName (nodeNameCorba);
+        const std::string groupName (groupNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end () ||
+                groupNodes_.find (groupName) == groupNodes_.end ()) {
+            std::cout << "Node name \"" << nodeName << "\" and/or groupNode \""
+                << groupName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else {
+            groupNodes_[groupName]->removeChild(nodes_[nodeName]);
+            return true;
+        }
+    }
+
     bool WindowsManager::applyConfiguration (const char* nodeNameCorba,
             const value_type* configurationCorba)
     {
@@ -709,7 +745,9 @@ namespace graphics {
                     "quatY, quatZ]" <<std::endl;
                 return false;
             }
+            mtx_.lock();
             newNodeConfigurations_.push_back (newNodeConfiguration);
+            mtx_.unlock();
             return true;
         }
     }

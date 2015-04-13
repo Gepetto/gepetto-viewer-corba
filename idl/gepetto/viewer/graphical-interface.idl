@@ -209,6 +209,11 @@ typedef float Color [4];
     /// \param input groupName : name of the mother node (=group node).
     boolean addToGroup(in string nodeName, in string groupName) raises (Error);
 
+    /// remove the node from the child list of a group node.
+    /// \param input nodeName : name of the child node.
+    /// \param input groupName : name of the mother node (=group node).
+    boolean removeFromGroup(in string nodeName, in string groupName) raises (Error);
+
     /// Set a new configuration to a node. THIS CONFIGURATION WILL AFFECTIVE ONLY AFTER CALLING REFRESH FUNCTION!!!
     /// \param input nodeName : name of the node.
     /// \param input configuration : Float[7] new configuration.
