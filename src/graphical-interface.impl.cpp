@@ -203,8 +203,8 @@ namespace graphics {
 	  for (WindowManagers_t::iterator it = windowManagers_.begin ();
               it!=windowManagers_.end (); ++it)
             (*it)->frame ();
-	  mtx_.unlock ();
 	  newNodeConfigurations_.clear ();
+          mtx_.unlock ();
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -704,8 +704,10 @@ namespace graphics {
 		"quatY, quatZ]" <<std::endl;
 	      return false;
 	    }
+	    mtx_.lock();
 	    newNodeConfigurations_.push_back (newNodeConfiguration);
-	    return true;
+	    mtx_.unlock();
+            return true;
 	  }
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
