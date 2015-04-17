@@ -700,7 +700,9 @@ namespace graphics {
             return false;
         }
         else {
+            mtx_.lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
             groupNodes_[groupName]->addChild (nodes_[nodeName]);
+            mtx_.unlock();
             return true;
         }
     }
