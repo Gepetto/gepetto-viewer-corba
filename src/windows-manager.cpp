@@ -330,6 +330,26 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(std::exception){
+        const std::string capsuleName (capsuleNameCorba);
+        if (nodes_.find (capsuleName) == nodes_.end ()) {
+            std::cout  << capsuleName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else{
+            NodePtr_t node = nodes_[capsuleName];
+            try{
+
+                LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
+                cap->setHeight(newHeight);
+            }catch (const std::exception& exc) {
+                std::cout <<capsuleName << "isn't a capsule."  << std::endl;
+                return false;
+            }
+            return true;
+        }
+    }
+
     bool WindowsManager::addMesh (const char* meshNameCorba,
             const char* meshPathCorba)
     {
