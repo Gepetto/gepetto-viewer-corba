@@ -365,6 +365,16 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::setScale (const char* nodeNameCorba,
+                          const value_type* scale) throw (Error)
+      {
+    try {
+      return windowsManager_->setScale ( nodeNameCorba, scale) ;
+    } catch (const std::exception& exc) {
+      throw Error (exc.what ());
+    }
+      }
+
       bool GraphicalInterface::setWireFrameMode (const char* nodeNameCorba,
 						 const char* wireFrameModeCorba) throw (Error)
       {

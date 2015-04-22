@@ -339,9 +339,8 @@ namespace graphics {
         else{
             NodePtr_t node = nodes_[capsuleName];
             try{
-
                 LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
-                cap->setHeight(newHeight);
+                cap->resize(newHeight);
             }catch (const std::exception& exc) {
                 std::cout <<capsuleName << "isn't a capsule."  << std::endl;
                 return false;
@@ -783,7 +782,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
+        mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
+        mtx_.unlock();
         return true;
     }
 
@@ -811,6 +812,19 @@ namespace graphics {
             return false;
         }
         nodes_[nodeName]->setVisibilityMode (visibility);
+        return true;
+    }
+
+    bool WindowsManager::setScale(const char* nodeNameCorba, const value_type* scale){
+        const std::string nodeName (nodeNameCorba);
+        osg::Vec3d vecScale(scale[0],scale[1],scale[2]);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node \"" << nodeName << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+
+        nodes_[nodeName]->setScale(vecScale);
         return true;
     }
 
