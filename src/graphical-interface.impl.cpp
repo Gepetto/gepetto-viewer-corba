@@ -115,6 +115,14 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error){
+          try{
+              return windowsManager_->resizeCapsule(capsuleNameCorba,newHeight);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addMesh (const char* meshNameCorba,
 					const char* meshPathCorba) throw (Error)
       {

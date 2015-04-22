@@ -77,6 +77,11 @@ typedef unsigned long WindowID;
     /// \param input height : lenght of the segment that generates the capsule.
     /// \param input RGBAcolor : Color of the capsule.
     boolean addCapsule(in string capsuleName, in float radius, in float height, in Color RGBAcolorid) raises (Error);
+    
+    /// resize the capsule CapsuleName.
+    /// \param input CapsuleName : name of the capsule.
+    /// \param input height : lenght of the segment that generates the capsule.
+    boolean resizeCapsule(in string capsuleName,in float height) raises (Error);
 
     /// create a node to display a mesh (works for .dae, .obj and some other formats)
     /// \param input meshName : name of the new meshNode.
