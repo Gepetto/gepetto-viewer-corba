@@ -242,6 +242,12 @@ typedef unsigned long WindowID;
     /// \param input nodeName : name of the node.
     /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
     boolean setVisibility(in string nodeName, in string visibilityMode) raises (Error);
+    
+       /// Change the scale of a node. 
+    /// \param input nodeName : name of the node.
+    /// \param input scale : new scale  
+    boolean setScale(in string nodeName, in Position scale) raises (Error);
+
 
     /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
     /// \param input nodeName : name of the node.

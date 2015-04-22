@@ -104,7 +104,9 @@ public:
   virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
+
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
+  virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
 
