@@ -11,9 +11,9 @@
 namespace graphics { 
 namespace corbaServer {
 
-void ClientCpp::se3ToCorba(CORBA::Double* corbaPosition, const se3::SE3& se3position)
+void ClientCpp::se3ToCorba(CORBA::Float* corbaPosition, const se3::SE3& se3position)
 {
-    Eigen::Quaternion<double> q(se3position.rotation());
+    Eigen::Quaternion<value_type> q(se3position.rotation());
     corbaPosition[0] = se3position.translation()(0);
     corbaPosition[1] = se3position.translation()(1);
     corbaPosition[2] = se3position.translation()(2);    
@@ -110,7 +110,7 @@ bool ClientCpp::addSceneToWindow(const char* sceneName, const ClientCpp::WindowI
     return manager_->addBox(boxName, boxSize1, boxSize2, boxSize3);
 }*/
 
-bool ClientCpp::addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const double* color)
+bool ClientCpp::addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const value_type* color)
 {
     return manager_->addBox(boxName, boxSize1, boxSize2, boxSize3, color);
 }
@@ -120,7 +120,7 @@ bool ClientCpp::addBox(const char* boxName, const float boxSize1, const float bo
     return manager_->addCapsule(capsuleName, radius, height);
 }*/
 
-bool ClientCpp::addCapsule(const char* capsuleName, const float radius, const float height, const double* color)
+bool ClientCpp::addCapsule(const char* capsuleName, const float radius, const float height, const value_type* color)
 {
     return manager_->addCapsule(capsuleName, radius, height, color);
 }
@@ -135,7 +135,7 @@ bool ClientCpp::addMesh(const char* meshName, const char* meshPath)
     return manager_->addCone(coneName, radius, height);
 }*/
 
-bool ClientCpp::addCone(const char* coneName, const float radius, const float height, const double* color)
+bool ClientCpp::addCone(const char* coneName, const float radius, const float height, const value_type* color)
 {
     return manager_->addCone(coneName, radius, height, color);
 }
@@ -145,7 +145,7 @@ bool ClientCpp::addCone(const char* coneName, const float radius, const float he
     return manager_->addCylinder(cylinderName, radius, height);
 }*/
 
-bool ClientCpp::addCylinder(const char* cylinderName, const float radius, const float height, const double* color)
+bool ClientCpp::addCylinder(const char* cylinderName, const float radius, const float height, const value_type* color)
 {
     return manager_->addCylinder(cylinderName, radius, height, color);
 }
@@ -155,22 +155,22 @@ bool ClientCpp::addCylinder(const char* cylinderName, const float radius, const 
     return manager_->addSphere(sphereName, radius);
 }*/
 
-bool ClientCpp::addSphere(const char* sphereName, const float radius, const double* color)
+bool ClientCpp::addSphere(const char* sphereName, const float radius, const value_type* color)
 {
     return manager_->addSphere(sphereName, radius, color);
 }
 
-bool ClientCpp::addLine(const char* lineName, const double* pos1, const double* pos2, const double* color)
+bool ClientCpp::addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color)
 {
     return manager_->addLine(lineName, pos1, pos2, color);
 }
 
-bool ClientCpp::addTriangleFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* color)
+bool ClientCpp::addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color)
 {
     return manager_->addTriangleFace(faceName, pos1, pos2, pos3, color);
 }
 
-bool ClientCpp::addSquareFace(const char* faceName, const double* pos1, const double* pos2, const double* pos3, const double* pos4, const double* color)
+bool ClientCpp::addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color)
 {
     return manager_->addSquareFace(faceName, pos1, pos2, pos3, pos4, color);
 }
@@ -192,7 +192,7 @@ bool ClientCpp::addToGroup(const char* nodeName, const char* groupName)
 
 bool ClientCpp::applyConfiguration(const char* nodeName, const se3::SE3& se3position)
 {
-    CORBA::Double corbaPosition[7];
+    CORBA::Float corbaPosition[7];
     ClientCpp::se3ToCorba(corbaPosition, se3position);
     return manager_->applyConfiguration(nodeName, corbaPosition);
 }

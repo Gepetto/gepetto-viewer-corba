@@ -12,7 +12,7 @@
 # define SCENVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 
 # include "graphical-interface.impl.hh"
-# include "fwd.hh"
+# include "gepetto/viewer/corba/fwd.hh"
 
 namespace graphics
 {
