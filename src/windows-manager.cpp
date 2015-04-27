@@ -826,6 +826,7 @@ namespace graphics {
                 << std::endl;
             return false;
         }
+
         mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
         mtx_.unlock();
