@@ -355,6 +355,7 @@ namespace graphics {
                 std::cout <<capsuleName << "isn't a capsule."  << std::endl;
                 return false;
             }
+
             return true;
         }
     }
@@ -725,7 +726,7 @@ namespace graphics {
                 << "\" already exist.";
             throw std::runtime_error (oss.str ());
         }
-	mtx_.lock();
+        mtx_.lock();
         GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
@@ -736,7 +737,7 @@ namespace graphics {
         }
         WindowsManager::initParent (urdfName, urdf);
         addGroup (urdfName, urdf);
-	mtx_.unlock();
+        mtx_.unlock();
     }
 
     bool WindowsManager::addToGroup (const char* nodeNameCorba,
@@ -814,10 +815,10 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-
         mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
         mtx_.unlock();
+
         return true;
     }
 
@@ -829,9 +830,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->deleteLandmark ();
-	mtx_.unlock();
+        mtx_.unlock();
         return true;
     }
 
@@ -846,9 +847,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setVisibilityMode (visibility);
-	mtx_.unlock();
+        mtx_.unlock();
         return true;
     }
 
@@ -862,6 +863,7 @@ namespace graphics {
         }
 
         nodes_[nodeName]->setScale(vecScale);
+
         return true;
     }
 
@@ -876,9 +878,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setWireFrameMode (wire);
-	mtx_.unlock();
+        mtx_.unlock();
 	return true;
     }
 
@@ -893,9 +895,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setLightingMode (light);
-	mtx_.unlock();
+        mtx_.unlock();
         return true;
     }
 
