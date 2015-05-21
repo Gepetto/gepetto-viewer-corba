@@ -115,6 +115,21 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addRod (const char* rodNameCorba,
+              const value_type* colorCorba,
+              const float radius,
+              const float length,
+              short maxCapsule
+              ) throw (Error)
+      {
+          try {
+              return windowsManager_->addRod (rodNameCorba, colorCorba,radius, length,
+                      maxCapsule);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error){
           try{
               return windowsManager_->resizeCapsule(capsuleNameCorba,newHeight);

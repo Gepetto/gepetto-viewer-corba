@@ -29,6 +29,7 @@
 #include <gepetto/viewer/leaf-node-face.h>
 #include <gepetto/viewer/leaf-node-sphere.h>
 #include <gepetto/viewer/leaf-node-xyzaxis.h>
+#include <gepetto/viewer/node-rod.h>
 #include <gepetto/viewer/roadmap-viewer.h>
 #include <gepetto/viewer/macros.h>
 #include <gepetto/viewer/config-osg.h>
@@ -354,6 +355,31 @@ namespace graphics {
             mtx_.unlock();
             return true;
         }
+    }
+
+    bool WindowsManager::addRod (const char* rodNameCorba,
+            const value_type* colorCorba,
+            const float radius,
+            const float length,
+            short maxCapsule
+            ){
+
+      const std::string rodName (rodNameCorba);
+      if (nodes_.find (rodName) != nodes_.end ()) {
+          std::cout << "You need to chose an other name, \"" << rodName
+              << "\" already exist." << std::endl;
+          return false;
+      }
+      else {
+          NodeRodPtr_t rod = NodeRod::create(rodName,getColor(colorCorba),radius,length,maxCapsule);
+          WindowsManager::initParent (rodName, rod);
+          mtx_.lock();
+          addNode (rodName, rod);
+          for(size_t i = 0 ; i < maxCapsule ; i++)
+            addNode(rod->getCapsuleName(i),rod->getCapsule(i));
+          mtx_.unlock();
+          return true;
+      }
     }
 
     bool WindowsManager::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(std::exception){
