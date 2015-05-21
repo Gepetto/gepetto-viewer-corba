@@ -58,6 +58,8 @@ public:
 
   virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color) throw (Error);
 
+  virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba, const float radius, const float length,short maxCapsule) throw (Error);
+
   virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error);
 
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
