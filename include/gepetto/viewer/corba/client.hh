@@ -11,13 +11,35 @@
 
 #include <iostream>
 #include <omniORB4/CORBA.h>
+#include <gepetto/viewer/corba/deprecated.hh>
 #include <gepetto/viewer/corba/se3.hh>
 #include <gepetto/viewer/corba/graphical-interface.hh>
 
 
 namespace graphics {
 namespace corbaServer {
+  class Client
+  {
+    public:
+      typedef CORBA::ULong WindowID;
 
+      Client (int argc, char* argv[]);
+
+      ~Client ();
+
+      void connect (const char* iiop = "corbaloc:rir:/NameService");
+
+      gepetto::corbaserver::GraphicalInterface_var& gui () {
+        return gui_;
+      }
+
+    private:
+      gepetto::corbaserver::GraphicalInterface_var gui_;
+
+      CORBA::ORB_var orb_;
+  };
+
+/// \deprecated Use class Client instead.
 class ClientCpp
 {
 private:
@@ -89,7 +111,7 @@ public:
     bool startCapture (const WindowID windowId, const char* filename, const char* extension);
     bool stopCapture (const WindowID windowId);
     bool writeNodeFile (const WindowID windowId, const char* filename);
-}; //end of class ClientCpp
+} GEPETTO_VIEWER_CORBA_DEPRECATED; //end of class ClientCpp
 
 } //end of namespace corbaserver
 } //end of namespace graphics
