@@ -12,7 +12,7 @@
 #include <omniORB4/CORBA.h>
 
 #include "gepetto/viewer/corba/server.hh"
-#include "graphical-interface.hh"
+#include "gepetto/viewer/corba/graphical-interface.hh"
 
 namespace graphics {
 namespace corbaServer {

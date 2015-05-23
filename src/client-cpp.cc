@@ -20,7 +20,7 @@ void ClientCpp::se3ToCorba(CORBA::Float* corbaPosition, const se3::SE3& se3posit
     corbaPosition[3] = q.w();
     corbaPosition[4] = q.x();
     corbaPosition[5] = q.y();
-    corbaPosition[5] = q.z();        
+    corbaPosition[6] = q.z();        
 }
 
 ClientCpp::ClientCpp()

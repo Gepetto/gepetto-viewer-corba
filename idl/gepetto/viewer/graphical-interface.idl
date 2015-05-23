@@ -20,6 +20,7 @@ module corbaserver {
 typedef float Transform [7];
 typedef float Position [3];
 typedef float Color [4];
+typedef unsigned long WindowID;
 
   /// Corba exception travelling through the Corba channel
   interface GraphicalInterface {
