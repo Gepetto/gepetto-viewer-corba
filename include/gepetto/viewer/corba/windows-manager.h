@@ -78,6 +78,11 @@ namespace graphics {
             virtual std::vector<std::string> getSceneList();
             virtual std::vector<std::string> getWindowList();
 
+            /// Return the mutex to be locked before refreshing
+            boost::mutex& lock () {
+              return mtx_;
+            }
+
             virtual bool setRate(const int& rate);
             virtual void refresh();
 
