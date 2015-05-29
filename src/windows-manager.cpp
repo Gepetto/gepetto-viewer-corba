@@ -142,6 +142,22 @@ namespace graphics {
         return parentName;
     }
 
+    NodePtr_t WindowsManager::find (const std::string name, GroupNodePtr_t group)
+    {
+      std::map<std::string, NodePtr_t>::iterator it
+        = nodes_.find (name);
+      if (it == nodes_.end ()) {
+        std::string::size_type slash = name.find_first_of ('/');
+        if (slash == std::string::npos)
+          return NodePtr_t ();
+        std::map<std::string, GroupNodePtr_t>::iterator itg
+          = groupNodes_.find (name.substr (0, slash));
+        if (itg == groupNodes_.end ())
+          return NodePtr_t ();
+        return find (name.substr (slash + 1), itg->second);
+      }
+      return it->second;
+    }
 
     void WindowsManager::initParent (const std::string& nodeName,
             NodePtr_t node)
@@ -755,14 +771,15 @@ namespace graphics {
             const value_type* configurationCorba)
     {
         const std::string nodeName (nodeNameCorba);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
+        NodePtr_t updatedNode = find (nodeName);
+        if (!updatedNode) {
             //no node named nodeName
             std::cout << "No Node named \"" << nodeName << "\"" << std::endl;
             return false;
         }
         else {
             NodeConfiguration newNodeConfiguration;
-            newNodeConfiguration.node = nodes_[nodeName];
+            newNodeConfiguration.node = updatedNode;
             try {
                 newNodeConfiguration.position =
                     WindowsManager::corbaConfToOsgVec3 (configurationCorba);

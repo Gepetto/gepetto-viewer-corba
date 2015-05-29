@@ -57,6 +57,7 @@ namespace graphics {
             static VisibilityMode getVisibility(const std::string& visibilityName);
             static WireFrameMode getWire(const std::string& wireName);
             static LightingMode getLight(const std::string& lightName);
+            NodePtr_t find (const std::string name, GroupNodePtr_t group = GroupNodePtr_t());
             void initParent(const std::string& nodeName, NodePtr_t node);
             void addNode(const std::string& nodeName, NodePtr_t node);
             void addGroup(const std::string& groupName, GroupNodePtr_t group);
