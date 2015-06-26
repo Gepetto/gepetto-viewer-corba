@@ -23,7 +23,7 @@ SET(IDL_SOURCES
 OMNIIDL_INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/idl)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
 FOREACH(IDL ${IDL_SOURCES})
-  GENERATE_IDL_FILE (${IDL}
+  GENERATE_IDL_FILE (gepetto/viewer/corba/${IDL}
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
 ENDFOREACH()
 
@@ -37,7 +37,7 @@ ADD_LIBRARY(${LIBRARY_NAME}
   server-private.cc
   server-private.hh
   client-cpp.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/graphical-interface_idl.py
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface_idl.py
   ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
   ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
 )
@@ -57,7 +57,7 @@ MAKE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba)
 FOREACH (IDL ${IDL_SOURCES})
   ADD_CUSTOM_COMMAND(
     OUTPUT
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/${IDL}_idl.py
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
     COMMAND ${OMNIIDL}
     ARGS -bpython -Wbpackage="" -I${CMAKE_SOURCE_DIR}/idl
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
@@ -65,7 +65,7 @@ FOREACH (IDL ${IDL_SOURCES})
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
     )
   SET_SOURCE_FILES_PROPERTIES(
-    ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
     PROPERTIES GENERATED ON
     )
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
