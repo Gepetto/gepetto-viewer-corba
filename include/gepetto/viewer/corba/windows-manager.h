@@ -93,9 +93,12 @@ namespace graphics {
 
             virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color);
 
+            virtual  bool addArrow (const char* arrowNameCorba,const float radius, const float length,  const value_type* colorCorba);
+
             virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba,const float radius,const float length, short maxCapsule);
 
             virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw (std::exception);
+            virtual bool resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception);
 
             virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba);
 

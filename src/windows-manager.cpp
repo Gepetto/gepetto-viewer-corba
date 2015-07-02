@@ -28,6 +28,7 @@
 #include <gepetto/viewer/leaf-node-line.h>
 #include <gepetto/viewer/leaf-node-face.h>
 #include <gepetto/viewer/leaf-node-sphere.h>
+#include <gepetto/viewer/leaf-node-arrow.h>
 #include <gepetto/viewer/leaf-node-xyzaxis.h>
 #include <gepetto/viewer/node-rod.h>
 #include <gepetto/viewer/roadmap-viewer.h>
@@ -341,6 +342,28 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::addArrow (const char* arrowNameCorba,
+            const float radius,
+            const float length,
+            const value_type* colorCorba)
+    {
+        const std::string arrowName (arrowNameCorba);
+        if (nodes_.find (arrowName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \""
+                << arrowName << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            mtx_.lock();
+            LeafNodeArrowPtr_t arrow = LeafNodeArrow::create
+                (arrowName,getColor (colorCorba), radius, length);
+            WindowsManager::initParent (arrowName, arrow);
+            addNode (arrowName, arrow);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
     bool WindowsManager::addRod (const char* rodNameCorba,
             const value_type* colorCorba,
             const float radius,
@@ -385,6 +408,27 @@ namespace graphics {
             return true;
         }
     }
+
+    bool WindowsManager::resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception){
+        const std::string arrowName (arrowNameCorba);
+        if (nodes_.find (arrowName) == nodes_.end ()) {
+            std::cout  << arrowName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else{
+            NodePtr_t node = nodes_[arrowName];
+            try{
+                LeafNodeArrowPtr_t arrow = boost::dynamic_pointer_cast<LeafNodeArrow>(node);
+                arrow->resize(newRadius,newLength);
+            }catch (const std::exception& exc) {
+                std::cout <<arrowName << "isn't an arrow."  << std::endl;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
 
     bool WindowsManager::addMesh (const char* meshNameCorba,
             const char* meshPathCorba)
