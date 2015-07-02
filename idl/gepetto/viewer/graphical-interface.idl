@@ -89,6 +89,8 @@ typedef float Color [4];
     /// \param input height : lenght of the segment that generates the capsule.
     boolean resizeCapsule(in string capsuleName,in float height) raises (Error);
 
+    boolean resizeArrow(in string capsuleName,in float radius, in float length) raises (Error);
+
     /// create a node to display a mesh (works for .dae, .obj and some other formats)
     /// \param input meshName : name of the new meshNode.
     /// \param input meshPath : full path to the mesh file.

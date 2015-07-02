@@ -64,6 +64,8 @@ public:
 
   virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error);
 
+  virtual bool resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(Error);
+
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
   virtual bool addCone(const char* coneName, float radius, float height, const value_type* color) throw (Error);

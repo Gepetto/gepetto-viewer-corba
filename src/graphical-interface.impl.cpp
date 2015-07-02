@@ -149,6 +149,14 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::resizeArrow(const char* arrowNameCorba, float newRadius, float newLength) throw(Error){
+          try{
+              return windowsManager_->resizeArrow(arrowNameCorba,newRadius, newLength);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addMesh (const char* meshNameCorba,
 					const char* meshPathCorba) throw (Error)
       {
