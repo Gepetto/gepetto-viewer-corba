@@ -115,6 +115,19 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addArrow (const char* arrowNameCorba,
+              float radius,
+              float length,
+              const value_type* colorCorba) throw (Error)
+      {
+          try {
+              return windowsManager_->addArrow (arrowNameCorba, radius, length,
+                      colorCorba);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addRod (const char* rodNameCorba,
               const value_type* colorCorba,
               const float radius,
