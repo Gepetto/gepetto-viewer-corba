@@ -750,9 +750,18 @@ namespace graphics {
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath);
             NodePtr_t link;
-            for (int i=0; i< urdf->getNumOfChildren (); i++) {
+            for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
                 link = urdf->getChild (i);
                 nodes_[link->getID ()] = link;
+		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+					  <GroupNode> (link));
+		if (groupNode) {
+		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+		       ++j) {
+		    NodePtr_t object (groupNode->getChild (j));
+		    nodes_ [object->getID ()] = object;
+		  }
+		}
             }
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
@@ -777,9 +786,18 @@ namespace graphics {
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath, "collision");
             NodePtr_t link;
-            for (int i=0; i< urdf->getNumOfChildren (); i++) {
+            for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
                 link = urdf->getChild (i);
                 nodes_[link->getID ()] = link;
+		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+					  <GroupNode> (link));
+		if (groupNode) {
+		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+		       ++j) {
+		    NodePtr_t object (groupNode->getChild (j));
+		    nodes_ [object->getID ()] = object;
+		  }
+		}
             }
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
@@ -811,10 +829,19 @@ namespace graphics {
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
         NodePtr_t link;
-        for (int i=0; i< urdf->getNumOfChildren (); i++) {
-            link = urdf->getChild (i);
-            nodes_[link->getID ()] = link;
-        }
+	for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+	  link = urdf->getChild (i);
+	  nodes_[link->getID ()] = link;
+	  GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+				    <GroupNode> (link));
+	  if (groupNode) {
+	    for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+		 ++j) {
+	      NodePtr_t object (groupNode->getChild (j));
+	      nodes_ [object->getID ()] = object;
+	    }
+	  }
+	}
         WindowsManager::initParent (urdfName, urdf);
         addGroup (urdfName, urdf);
 	mtx_.unlock();
