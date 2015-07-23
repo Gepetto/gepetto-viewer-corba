@@ -23,22 +23,23 @@ SET(IDL_SOURCES
 OMNIIDL_INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/idl)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
 FOREACH(IDL ${IDL_SOURCES})
-  GENERATE_IDL_FILE (${IDL}
+  GENERATE_IDL_FILE (gepetto/viewer/corba/${IDL}
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
 ENDFOREACH()
 
 ADD_LIBRARY(${LIBRARY_NAME}
   SHARED
-  graphical-interfaceSK.cc
   graphical-interface.impl.cpp
   graphical-interface.impl.hh
   windows-manager.cpp
   server.cc
+  client.cc
   server-private.cc
   server-private.hh
   client-cpp.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/graphical-interface_idl.py
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface_idl.py
   ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
 )
 
 PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
@@ -56,30 +57,18 @@ MAKE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba)
 FOREACH (IDL ${IDL_SOURCES})
   ADD_CUSTOM_COMMAND(
     OUTPUT
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/${IDL}_idl.py
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
     COMMAND ${OMNIIDL}
     ARGS -bpython -Wbpackage="" -I${CMAKE_SOURCE_DIR}/idl
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
     MAIN_DEPENDENCY
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
     )
-  ADD_CUSTOM_COMMAND(
-    OUTPUT
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
-    COMMAND ${OMNIIDL}
-    ARGS -bcxx -C${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba
-    -I${CMAKE_SOURCE_DIR}/idl
-    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
-    MAIN_DEPENDENCY
-    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
-    )
   SET_SOURCE_FILES_PROPERTIES(
-    ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
-    ${CMAKE_CURRENT_BINARY_DIR}/${IDL}.hh
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
-    GENERATED=ON
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
+    PROPERTIES GENERATED ON
     )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${IDL}.hh
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba)
 
   STRING(REGEX REPLACE "-" "_"
@@ -114,7 +103,8 @@ INSTALL(
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver
 )
 
-INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/graphical-interface.hh
+INSTALL (FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba
   )
 
