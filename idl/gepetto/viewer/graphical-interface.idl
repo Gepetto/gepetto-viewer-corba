@@ -6,6 +6,9 @@ module gepetto {
     string msg;
   };
 
+  /// Sequence of names
+  typedef sequence <string> Names_t;
+
 module corbaserver {
 
 // Comments :
@@ -40,10 +43,10 @@ typedef float Color [4];
 
 
     /// Print names of nodes on the SceneViewer-corbaserver terminal.
-    void getNodeList() raises (Error);
+    Names_t getNodeList() raises (Error);
 
     /// Print names of windows on the SceneViewer-corbaserver terminal.
-    void getWindowList() raises (Error);
+    Names_t getWindowList() raises (Error);
 
     /// Create a group node.
     /// \param input sceneName : name of the group.

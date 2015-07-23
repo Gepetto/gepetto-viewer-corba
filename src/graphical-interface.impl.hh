@@ -40,8 +40,8 @@ public:
         */
     GraphicalInterface (corbaServer::Server* server);
 
-  virtual void getNodeList() throw (Error);
-  virtual void getWindowList() throw (Error);
+  virtual gepetto::Names_t* getNodeList() throw (Error);
+  virtual gepetto::Names_t* getWindowList() throw (Error);
 
   virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
