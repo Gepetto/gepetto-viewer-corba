@@ -28,7 +28,9 @@
 #include <gepetto/viewer/leaf-node-line.h>
 #include <gepetto/viewer/leaf-node-face.h>
 #include <gepetto/viewer/leaf-node-sphere.h>
+#include <gepetto/viewer/leaf-node-arrow.h>
 #include <gepetto/viewer/leaf-node-xyzaxis.h>
+#include <gepetto/viewer/node-rod.h>
 #include <gepetto/viewer/roadmap-viewer.h>
 #include <gepetto/viewer/macros.h>
 #include <gepetto/viewer/config-osg.h>
@@ -355,6 +357,94 @@ namespace graphics {
             return true;
         }
     }
+
+    bool WindowsManager::addArrow (const char* arrowNameCorba,
+            const float radius,
+            const float length,
+            const value_type* colorCorba)
+    {
+        const std::string arrowName (arrowNameCorba);
+        if (nodes_.find (arrowName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \""
+                << arrowName << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            mtx_.lock();
+            LeafNodeArrowPtr_t arrow = LeafNodeArrow::create
+                (arrowName,getColor (colorCorba), radius, length);
+            WindowsManager::initParent (arrowName, arrow);
+            addNode (arrowName, arrow);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
+    bool WindowsManager::addRod (const char* rodNameCorba,
+            const value_type* colorCorba,
+            const float radius,
+            const float length,
+            short maxCapsule
+            ){
+
+      const std::string rodName (rodNameCorba);
+      if (nodes_.find (rodName) != nodes_.end ()) {
+          std::cout << "You need to chose an other name, \"" << rodName
+              << "\" already exist." << std::endl;
+          return false;
+      }
+      else {
+          NodeRodPtr_t rod = NodeRod::create(rodName,getColor(colorCorba),radius,length,maxCapsule);
+          WindowsManager::initParent (rodName, rod);
+          mtx_.lock();
+          addNode (rodName, rod);
+          for(size_t i = 0 ; i < maxCapsule ; i++)
+            addNode(rod->getCapsuleName(i),rod->getCapsule(i));
+          mtx_.unlock();
+          return true;
+      }
+    }
+
+    bool WindowsManager::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(std::exception){
+        const std::string capsuleName (capsuleNameCorba);
+        if (nodes_.find (capsuleName) == nodes_.end ()) {
+            std::cout  << capsuleName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else{
+            NodePtr_t node = nodes_[capsuleName];
+            try{
+                LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
+                cap->resize(newHeight);
+            }catch (const std::exception& exc) {
+                std::cout <<capsuleName << "isn't a capsule."  << std::endl;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    bool WindowsManager::resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception){
+        const std::string arrowName (arrowNameCorba);
+        if (nodes_.find (arrowName) == nodes_.end ()) {
+            std::cout  << arrowName << "\" doesn't exist." << std::endl;
+            return false;
+        }
+        else{
+            NodePtr_t node = nodes_[arrowName];
+            try{
+                LeafNodeArrowPtr_t arrow = boost::dynamic_pointer_cast<LeafNodeArrow>(node);
+                arrow->resize(newRadius,newLength);
+            }catch (const std::exception& exc) {
+                std::cout <<arrowName << "isn't an arrow."  << std::endl;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
 
     bool WindowsManager::addMesh (const char* meshNameCorba,
             const char* meshPathCorba)
@@ -717,7 +807,7 @@ namespace graphics {
                 << "\" already exist.";
             throw std::runtime_error (oss.str ());
         }
-	mtx_.lock();
+        mtx_.lock();
         GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
@@ -728,7 +818,7 @@ namespace graphics {
         }
         WindowsManager::initParent (urdfName, urdf);
         addGroup (urdfName, urdf);
-	mtx_.unlock();
+        mtx_.unlock();
     }
 
     bool WindowsManager::addToGroup (const char* nodeNameCorba,
@@ -807,9 +897,10 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
-	mtx_.unlock();
+        mtx_.unlock();
+
         return true;
     }
 
@@ -821,9 +912,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->deleteLandmark ();
-	mtx_.unlock();
+        mtx_.unlock();
         return true;
     }
 
@@ -838,9 +929,23 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setVisibilityMode (visibility);
-	mtx_.unlock();
+        mtx_.unlock();
+        return true;
+    }
+
+    bool WindowsManager::setScale(const char* nodeNameCorba, const value_type* scale){
+        const std::string nodeName (nodeNameCorba);
+        osg::Vec3d vecScale(scale[0],scale[1],scale[2]);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node \"" << nodeName << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+
+        nodes_[nodeName]->setScale(vecScale);
+
         return true;
     }
 
@@ -855,9 +960,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setWireFrameMode (wire);
-	mtx_.unlock();
+        mtx_.unlock();
 	return true;
     }
 
@@ -872,9 +977,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+        mtx_.lock();
         nodes_[nodeName]->setLightingMode (light);
-	mtx_.unlock();
+        mtx_.unlock();
         return true;
     }
 

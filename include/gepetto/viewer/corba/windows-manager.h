@@ -99,6 +99,13 @@ namespace graphics {
 
             virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color);
 
+            virtual  bool addArrow (const char* arrowNameCorba,const float radius, const float length,  const value_type* colorCorba);
+
+            virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba,const float radius,const float length, short maxCapsule);
+
+            virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw (std::exception);
+            virtual bool resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception);
+
             virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba);
 
             virtual bool addCone(const char* coneName, float radius, float height, const value_type* color);
@@ -141,6 +148,7 @@ namespace graphics {
             virtual bool deleteLandmark(const char* nodeNameCorba);
 
             virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
+            virtual bool setScale(const char* nodeNameCorba, const value_type* scale);
             virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba);
             virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
 

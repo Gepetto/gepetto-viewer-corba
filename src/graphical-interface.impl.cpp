@@ -115,6 +115,50 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addArrow (const char* arrowNameCorba,
+              float radius,
+              float length,
+              const value_type* colorCorba) throw (Error)
+      {
+          try {
+              return windowsManager_->addArrow (arrowNameCorba, radius, length,
+                      colorCorba);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      bool GraphicalInterface::addRod (const char* rodNameCorba,
+              const value_type* colorCorba,
+              const float radius,
+              const float length,
+              short maxCapsule
+              ) throw (Error)
+      {
+          try {
+              return windowsManager_->addRod (rodNameCorba, colorCorba,radius, length,
+                      maxCapsule);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      bool GraphicalInterface::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error){
+          try{
+              return windowsManager_->resizeCapsule(capsuleNameCorba,newHeight);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      bool GraphicalInterface::resizeArrow(const char* arrowNameCorba, float newRadius, float newLength) throw(Error){
+          try{
+              return windowsManager_->resizeArrow(arrowNameCorba,newRadius, newLength);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addMesh (const char* meshNameCorba,
 					const char* meshPathCorba) throw (Error)
       {
@@ -375,6 +419,16 @@ namespace graphics {
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
+      }
+
+      bool GraphicalInterface::setScale (const char* nodeNameCorba,
+                          const value_type* scale) throw (Error)
+      {
+    try {
+      return windowsManager_->setScale ( nodeNameCorba, scale) ;
+    } catch (const std::exception& exc) {
+      throw Error (exc.what ());
+    }
       }
 
       bool GraphicalInterface::setWireFrameMode (const char* nodeNameCorba,

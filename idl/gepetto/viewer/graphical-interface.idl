@@ -78,6 +78,23 @@ typedef unsigned long WindowID;
     /// \param input RGBAcolor : Color of the capsule.
     boolean addCapsule(in string capsuleName, in float radius, in float height, in Color RGBAcolorid) raises (Error);
 
+
+    /// create a box called CapsuleName.
+    /// \param input CapsuleName : name of the arrow.
+    /// \param input radius : radius of the arrow
+    /// \param input length : lenght of the arrow 
+    /// \param input RGBAcolor : Color of the capsule.
+    boolean addArrow(in string arrowName, in float radius, in float length, in Color RGBAcolorid) raises (Error);
+
+    boolean addRod(in string rodName, in Color RGBAcolorid, in float radius, in float totalLength,in short maxCapsule) raises (Error);
+    
+    /// resize the capsule CapsuleName.
+    /// \param input CapsuleName : name of the capsule.
+    /// \param input height : lenght of the segment that generates the capsule.
+    boolean resizeCapsule(in string capsuleName,in float height) raises (Error);
+
+    boolean resizeArrow(in string capsuleName,in float radius, in float length) raises (Error);
+
     /// create a node to display a mesh (works for .dae, .obj and some other formats)
     /// \param input meshName : name of the new meshNode.
     /// \param input meshPath : full path to the mesh file.
@@ -237,6 +254,12 @@ typedef unsigned long WindowID;
     /// \param input nodeName : name of the node.
     /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
     boolean setVisibility(in string nodeName, in string visibilityMode) raises (Error);
+    
+       /// Change the scale of a node. 
+    /// \param input nodeName : name of the node.
+    /// \param input scale : new scale  
+    boolean setScale(in string nodeName, in Position scale) raises (Error);
+
 
     /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
     /// \param input nodeName : name of the node.

@@ -58,6 +58,14 @@ public:
 
   virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color) throw (Error);
 
+  virtual  bool addArrow (const char* arrowNameCorba, float radius, float length,const value_type* colorCorba) throw (Error);
+
+  virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba, const float radius, const float length,short maxCapsule) throw (Error);
+
+  virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error);
+
+  virtual bool resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(Error);
+
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
   virtual bool addCone(const char* coneName, float radius, float height, const value_type* color) throw (Error);
@@ -102,7 +110,9 @@ public:
   virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
+
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
+  virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
 
