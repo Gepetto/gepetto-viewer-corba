@@ -118,6 +118,12 @@ typedef unsigned long WindowID;
     /// \param input RGBAcolor : color of the sphere.
     boolean addSphere(in string sphereName, in float radius, in Color RGBAcolor) raises (Error);
 
+    /// create a light called lightName
+    /// \param input lightName : name of the light.
+    /// \param input radius : radius of the bulb showing the light.
+    /// \param input RGBAcolor : color of the light.
+    boolean addLight(in string lightName, in WindowID wid, in float radius, in Color RGBAcolor) raises (Error);
+
     /// create a line called lineName.
     /// \param input lineName : name of the line.
     /// \param input pos1 : position one extremity of the line.

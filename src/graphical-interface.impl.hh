@@ -74,6 +74,8 @@ public:
 
   virtual bool addSphere(const char* sphereName, float radius, const value_type* color) throw (Error);
 
+  virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const value_type* color) throw (Error);
+
   virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color) throw (Error);
 
   virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color) throw (Error);

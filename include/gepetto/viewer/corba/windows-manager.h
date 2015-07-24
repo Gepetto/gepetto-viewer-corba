@@ -114,6 +114,8 @@ namespace graphics {
 
             virtual bool addSphere(const char* sphereName, float radius, const value_type* color);
 
+            virtual bool addLight(const char* lightName, const WindowID wid, float radius, const value_type* color);
+
             virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color);
 
             virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);

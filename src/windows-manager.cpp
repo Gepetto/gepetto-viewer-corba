@@ -29,6 +29,7 @@
 #include <gepetto/viewer/leaf-node-face.h>
 #include <gepetto/viewer/leaf-node-sphere.h>
 #include <gepetto/viewer/leaf-node-arrow.h>
+#include <gepetto/viewer/leaf-node-light.h>
 #include <gepetto/viewer/leaf-node-xyzaxis.h>
 #include <gepetto/viewer/node-rod.h>
 #include <gepetto/viewer/roadmap-viewer.h>
@@ -530,6 +531,29 @@ namespace graphics {
                 (sphereName, radius, getColor (colorCorba));
             WindowsManager::initParent (sphereName, sphere);
             addNode (sphereName, sphere);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
+    bool WindowsManager::addLight (const char* lightNameCorba,
+            const WindowID wid,
+            const float radius,
+            const value_type* colorCorba)
+    {
+        std::string lightName (lightNameCorba);
+        if (nodes_.find (lightName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \"" << lightName
+                << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            mtx_.lock();
+            LeafNodeLightPtr_t light = LeafNodeLight::create
+                (lightName, radius, getColor (colorCorba));
+            WindowsManager::initParent (lightName, light);
+            addNode (lightName, light);
+            light->setRoot (windowManagers_[wid]->getScene ());
             mtx_.unlock();
             return true;
         }

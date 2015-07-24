@@ -207,6 +207,20 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addLight (const char* lightNameCorba,
+                                         const WindowID windowId,
+                                         const float radius,
+                                         const value_type* colorCorba)
+          throw (Error)
+      {
+          try {
+              return windowsManager_->addLight (lightNameCorba, windowId,
+                  radius, colorCorba);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addLine (const char* lineNameCorba,
 					const value_type* posCorba1,
 					const value_type* posCorba2,
