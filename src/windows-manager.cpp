@@ -1032,6 +1032,21 @@ namespace graphics {
         return true;
     }
 
+    bool WindowsManager::setHighlight (const char* nodeNameCorba,
+            int state)
+    {
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node \"" << nodeName << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+	mtx_.lock();
+        nodes_[nodeName]->setHighlightState (state);
+	mtx_.unlock();
+        return true;
+    }
+
     bool WindowsManager::startCapture (const WindowID windowId, const char* filename,
             const char* extension)
     {

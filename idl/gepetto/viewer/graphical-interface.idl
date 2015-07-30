@@ -277,6 +277,11 @@ typedef unsigned long WindowID;
     /// \param input lightingMode : lighting mode can be "ON" or "OFF".
     boolean setLightingMode(in string nodeName, in string lightingMode) raises (Error);
 
+    /// Change the highlight status
+    /// \param input nodeName : name of the node.
+    /// \param input state : 0 for off, 1 or 2 for other things.
+    boolean setHighlight (in string nodeName, in long state) raises (Error);
+
     /// Start capturing a window into image files.
     /// \param windowId the ID of the window
     /// \param filename, extension image files will be

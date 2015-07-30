@@ -465,6 +465,16 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::setHighlight (const char* nodeNameCorba,
+                                             ::CORBA::Long state) throw (Error)
+      {
+	try {
+          return windowsManager_->setHighlight ( nodeNameCorba, state) ;
+        } catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       bool GraphicalInterface::startCapture (const WindowID windowId, const char* filename,
           const char* extension) throw (Error)
       {
