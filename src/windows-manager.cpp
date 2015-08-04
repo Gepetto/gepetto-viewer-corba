@@ -49,7 +49,7 @@ namespace graphics {
     WindowsManager::WindowID WindowsManager::addWindow (std::string winName,
             WindowManagerPtr_t newWindow)
     {
-        WindowID windowId = windowManagers_.size ();
+      WindowID windowId = (WindowID) windowManagers_.size ();
         windowIDmap_ [winName] = windowId;
         windowManagers_.push_back (newWindow);
         return windowId;
@@ -145,7 +145,7 @@ namespace graphics {
         return parentName;
     }
 
-    NodePtr_t WindowsManager::find (const std::string name, GroupNodePtr_t group)
+    NodePtr_t WindowsManager::find (const std::string name, GroupNodePtr_t)
     {
       std::map<std::string, NodePtr_t>::iterator it
         = nodes_.find (name);
@@ -298,7 +298,7 @@ namespace graphics {
             WindowID windowId)
     {
         std::string sceneName (sceneNameCorba);
-        if ((windowId >= 0 || windowId < windowManagers_.size ()) &&
+        if (windowId < windowManagers_.size () &&
                 groupNodes_.find (sceneName) != groupNodes_.end () ) {
             mtx_.lock();
             windowManagers_[windowId]->addNode (groupNodes_[sceneName]);
@@ -399,7 +399,7 @@ namespace graphics {
           WindowsManager::initParent (rodName, rod);
           mtx_.lock();
           addNode (rodName, rod);
-          for(size_t i = 0 ; i < maxCapsule ; i++)
+          for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
             addNode(rod->getCapsuleName(i),rod->getCapsule(i));
           mtx_.unlock();
           return true;
@@ -1050,7 +1050,7 @@ namespace graphics {
     bool WindowsManager::startCapture (const WindowID windowId, const char* filename,
             const char* extension)
     {
-        if (windowId >= 0 || windowId < windowManagers_.size ()) {
+        if (windowId < windowManagers_.size ()) {
             windowManagers_[windowId]->startCapture
                 (std::string (filename), std::string (extension));
             return true;
@@ -1064,7 +1064,7 @@ namespace graphics {
 
     bool WindowsManager::stopCapture (const WindowID windowId)
     {
-        if (windowId >= 0 || windowId < windowManagers_.size ()) {
+        if (windowId < windowManagers_.size ()) {
             windowManagers_[windowId]->stopCapture ();
             return true;
         }
@@ -1077,7 +1077,7 @@ namespace graphics {
 
     bool WindowsManager::writeNodeFile (const WindowID windowId, const char* filename)
     {
-        if (windowId >= 0 || windowId < windowManagers_.size ()) {
+        if (windowId < windowManagers_.size ()) {
             return windowManagers_[windowId]->writeNodeFile (std::string (filename));
         }
         else {
@@ -1089,7 +1089,7 @@ namespace graphics {
 
     WindowManagerPtr_t WindowsManager::getWindowManager (const WindowID wid)
     {
-      if (wid >= 0 || wid < windowManagers_.size ()) {
+      if (wid < windowManagers_.size ()) {
         return windowManagers_[wid];
       }
       else {
