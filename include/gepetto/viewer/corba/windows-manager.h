@@ -146,7 +146,7 @@ namespace graphics {
             virtual bool createGroup(const char* groupNameCorba);
             virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba);
             virtual bool removeFromGroup (const char* nodeNameCorba, const char* groupNameCorba);
-
+            virtual bool deleteNode (const char* nodeNameCorba);
 
             virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration);
 
