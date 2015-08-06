@@ -1131,5 +1131,4 @@ namespace graphics {
             return NodePtr_t ();
         return it->second;
     }
-            NodePtr_t getNode (const std::string nodeName);
 } // namespace graphics
