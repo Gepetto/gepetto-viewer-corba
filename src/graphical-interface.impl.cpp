@@ -88,6 +88,17 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addFloor (const char* floorNameCorba)
+          throw (Error)
+      {
+          try {
+            return windowsManager_->addFloor (floorNameCorba);
+          } catch (const std::exception& exc) {
+            throw Error (exc.what ());
+          }
+      }
+
+
       bool GraphicalInterface::addBox (const char* boxNameCorba,
 				       const float boxSize1,
 				       const float boxSize2,

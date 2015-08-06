@@ -63,6 +63,10 @@ typedef unsigned long WindowID;
     /// \param input windowId : ID of rhe window.
     boolean addSceneToWindow(in string sceneName, in unsigned long windowId) raises (Error);
 
+    /// create a floor called floorName.
+    /// \param input floorName : name of the floor.
+    boolean addFloor(in string floorName) raises (Error);
+
     /// create a box called boxName.
     /// \param input boxName : name of the box.
     /// \param input boxSize1 : lenght of the box (x axis).

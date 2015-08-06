@@ -95,6 +95,8 @@ namespace graphics {
             virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId);
 
 
+            virtual bool addFloor(const char* floorNameCorba);
+
             virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const value_type* color);
 
             virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color);

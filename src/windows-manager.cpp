@@ -313,6 +313,24 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::addFloor(const char* floorNameCorba)
+    {
+        std::string floorName(floorNameCorba);
+        if (nodes_.find (floorName) != nodes_.end ()) {
+            std::cout << "You need to choose an other name, \"" << floorName
+                << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
+            mtx_.lock();
+            WindowsManager::initParent (floorName, floor);
+            addNode (floorName, floor);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
     bool WindowsManager::addBox (const char* boxNameCorba,
             const float boxSize1,
             const float boxSize2,
