@@ -267,8 +267,8 @@ namespace graphics {
             throw std::runtime_error (oss.str ());
         }
         else {
-            mtx_.lock();
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
+            mtx_.lock();
             addGroup (sceneName, mainNode);
             mtx_.unlock();
         }
@@ -283,11 +283,11 @@ namespace graphics {
             throw std::runtime_error (oss.str ());
         }
         else {
-            mtx_.lock();
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
-            addGroup (sceneName, mainNode);
             std::string floorName = sceneName + "/floor";
             LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
+            mtx_.lock();
+            addGroup (sceneName, mainNode);
             addNode (floorName, floor);
             mainNode->addChild (floor);
             mtx_.unlock();
@@ -326,10 +326,10 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeBoxPtr_t box = LeafNodeBox::create
                 (boxName, osgVector3 (boxSize1, boxSize2, boxSize3),
                  getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (boxName, box);
             addNode (boxName, box);
             mtx_.unlock();
@@ -349,9 +349,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create
                 (capsuleName, radius, height, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (capsuleName, capsule);
             addNode (capsuleName, capsule);
             mtx_.unlock();
@@ -371,9 +371,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeArrowPtr_t arrow = LeafNodeArrow::create
                 (arrowName,getColor (colorCorba), radius, length);
+            mtx_.lock();
             WindowsManager::initParent (arrowName, arrow);
             addNode (arrowName, arrow);
             mtx_.unlock();
@@ -396,8 +396,8 @@ namespace graphics {
       }
       else {
           NodeRodPtr_t rod = NodeRod::create(rodName,getColor(colorCorba),radius,length,maxCapsule);
-          WindowsManager::initParent (rodName, rod);
           mtx_.lock();
+          WindowsManager::initParent (rodName, rod);
           addNode (rodName, rod);
           for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
             addNode(rod->getCapsuleName(i),rod->getCapsule(i));
@@ -458,15 +458,16 @@ namespace graphics {
         }
         else {
             try {
-	        mtx_.lock();
                 LeafNodeColladaPtr_t mesh = LeafNodeCollada::create
                     (meshName, meshPath);
+	        mtx_.lock();
                 WindowsManager::initParent (meshName, mesh);
                 addNode (meshName, mesh);
 		mtx_.unlock();
                 return true;
             } catch (const std::exception& exc) {
-                std::cout << "Mesh \"" << meshPath << "\" not found." << std::endl;
+                std::cout << exc.what() << std::endl;
+		mtx_.unlock();
                 return false;
             }
         }
@@ -483,9 +484,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeConePtr_t cone = LeafNodeCone::create
                 (coneName, radius, height);
+            mtx_.lock();
             WindowsManager::initParent (coneName, cone);
             addNode (coneName, cone);
             mtx_.unlock();
@@ -505,9 +506,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
                 (cylinderName, radius, height, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (cylinderName, cylinder);
             addNode (cylinderName, cylinder);
             mtx_.unlock();
@@ -526,9 +527,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
                 (sphereName, radius, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (sphereName, sphere);
             addNode (sphereName, sphere);
             mtx_.unlock();
@@ -548,9 +549,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             LeafNodeLightPtr_t light = LeafNodeLight::create
                 (lightName, radius, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (lightName, light);
             addNode (lightName, light);
             light->setRoot (windowManagers_[wid]->getScene ());
@@ -571,11 +572,11 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             osgVector3 pos1 (posCorba1[0], posCorba1[1], posCorba1[2]);
             osgVector3 pos2 (posCorba2[0], posCorba2[1], posCorba2[2]);
             LeafNodeLinePtr_t line = LeafNodeLine::create
                 (lineName, pos1, pos2, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (lineName, line);
             addNode (lineName, line);
             mtx_.unlock();
@@ -596,12 +597,12 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             osgVector3 pos1 (posCorba1[0], posCorba1[1], posCorba1[2]);
             osgVector3 pos2 (posCorba2[0], posCorba2[1], posCorba2[2]);
             osgVector3 pos3 (posCorba3[0], posCorba3[1], posCorba3[2]);
             LeafNodeFacePtr_t face = LeafNodeFace::create
                 (faceName, pos1, pos2, pos3, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (faceName, face);
             addNode (faceName, face);
             mtx_.unlock();
@@ -623,13 +624,13 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             osgVector3 pos1 (posCorba1[0], posCorba1[1], posCorba1[2]);
             osgVector3 pos2 (posCorba2[0], posCorba2[1], posCorba2[2]);
             osgVector3 pos3 (posCorba3[0], posCorba3[1], posCorba3[2]);
             osgVector3 pos4 (posCorba4[0], posCorba4[1], posCorba4[2]);
             LeafNodeFacePtr_t face = LeafNodeFace::create
                 (faceName, pos1, pos2, pos3, pos3, getColor (colorCorba));
+            mtx_.lock();
             WindowsManager::initParent (faceName, face);
             addNode (faceName, face);
 	    mtx_.unlock();
@@ -649,8 +650,10 @@ namespace graphics {
           else {
             LeafNodeXYZAxisPtr_t axis = LeafNodeXYZAxis::create
               (nodeName,getColor(colorCorba),radius,sizeAxis);
+            mtx_.lock();
             WindowsManager::initParent (nodeName, axis);
             addNode (nodeName, axis);
+            mtx_.unlock();
             return true;
           }
     }
@@ -664,8 +667,10 @@ namespace graphics {
         }
         else {
             RoadmapViewerPtr_t rm = RoadmapViewer::create(roadmapName,getColor(colorNodeCorba),radius,sizeAxis,getColor(colorEdgeCorba));
+            mtx_.lock();
             WindowsManager::initParent (roadmapName, rm);
             addNode (roadmapName, rm);
+            mtx_.unlock();
             roadmapNodes_[roadmapName]=rm;
             return true;
         }
@@ -748,8 +753,8 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             GroupNodePtr_t groupNode = GroupNode::create (groupName);
+            mtx_.lock();
             WindowsManager::initParent (groupName, groupNode);
             addGroup (groupName, groupNode);
             mtx_.unlock();
@@ -770,7 +775,6 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath);
             NodePtr_t link;
@@ -787,6 +791,7 @@ namespace graphics {
 		  }
 		}
             }
+            mtx_.lock();
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
             mtx_.unlock();
@@ -806,7 +811,6 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath, "collision");
             NodePtr_t link;
@@ -823,6 +827,7 @@ namespace graphics {
 		  }
 		}
             }
+            mtx_.lock();
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
             mtx_.unlock();
@@ -848,7 +853,6 @@ namespace graphics {
                 << "\" already exist.";
             throw std::runtime_error (oss.str ());
         }
-	mtx_.lock();
         GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
@@ -866,6 +870,7 @@ namespace graphics {
 	    }
 	  }
 	}
+	mtx_.lock();
         WindowsManager::initParent (urdfName, urdf);
         addGroup (urdfName, urdf);
 	mtx_.unlock();
@@ -902,7 +907,9 @@ namespace graphics {
             return false;
         }
         else {
+            mtx_.lock();
             groupNodes_[groupName]->removeChild(nodes_[nodeName]);
+	    mtx_.unlock();
             return true;
         }
     }
@@ -994,7 +1001,9 @@ namespace graphics {
             return false;
         }
 
+        mtx_.lock();
         nodes_[nodeName]->setScale(vecScale);
+        mtx_.unlock();
         return true;
     }
 
@@ -1051,8 +1060,10 @@ namespace graphics {
             const char* extension)
     {
         if (windowId < windowManagers_.size ()) {
+            mtx_.lock();
             windowManagers_[windowId]->startCapture
                 (std::string (filename), std::string (extension));
+            mtx_.unlock();
             return true;
         }
         else {
@@ -1065,7 +1076,9 @@ namespace graphics {
     bool WindowsManager::stopCapture (const WindowID windowId)
     {
         if (windowId < windowManagers_.size ()) {
+            mtx_.lock();
             windowManagers_[windowId]->stopCapture ();
+            mtx_.unlock();
             return true;
         }
         else {
@@ -1078,7 +1091,10 @@ namespace graphics {
     bool WindowsManager::writeNodeFile (const WindowID windowId, const char* filename)
     {
         if (windowId < windowManagers_.size ()) {
-            return windowManagers_[windowId]->writeNodeFile (std::string (filename));
+            mtx_.lock();
+            bool ret = windowManagers_[windowId]->writeNodeFile (std::string (filename));
+            mtx_.unlock();
+            return ret;
         }
         else {
             std::cout << "Window ID " << windowId
