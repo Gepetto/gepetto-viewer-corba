@@ -486,6 +486,24 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::setScale(const char* nodeNameCorba,
+						float scalex, float scaley, float scalez)
+	throw (Error)
+      {
+	try {
+	  const std::string nodeName (nodeNameCorba);
+	  if (nodes_.find (nodeName) == nodes_.end ()) {
+	    std::cout << "Node \"" << nodeName << "\" doesn't exist."
+		      << std::endl;
+	    return false;
+	  }
+	  nodes_[nodeName]->setScale(osgVector3(scalex, scaley, scalez));
+	  return true;
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       bool GraphicalInterface::startCapture (const WindowID windowId, const char* filename,
           const char* extension) throw (Error)
       {
