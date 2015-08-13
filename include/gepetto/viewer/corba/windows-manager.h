@@ -90,8 +90,8 @@ namespace graphics {
             virtual WindowID createWindow(const char* windowNameCorba);
             virtual WindowID getWindowID (const char* windowNameCorba);
 
-            virtual void createScene(const char* sceneNameCorba);
-            virtual void createSceneWithFloor(const char* sceneNameCorba);
+            virtual bool createScene(const char* sceneNameCorba);
+            virtual bool createSceneWithFloor(const char* sceneNameCorba);
             virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId);
 
 

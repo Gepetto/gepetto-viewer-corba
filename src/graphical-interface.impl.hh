@@ -49,8 +49,8 @@ public:
   virtual WindowID createWindow(const char* windowNameCorba) throw (Error);
   virtual WindowID getWindowID (const char* windowNameCorba) throw (Error);
 
-  virtual void createScene(const char* sceneNameCorba)  throw (Error);
-  virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
+  virtual bool createScene(const char* sceneNameCorba)  throw (Error);
+  virtual bool createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
   virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId)  throw (Error);
 
 

@@ -258,13 +258,12 @@ namespace graphics {
         mtx_.unlock ();
     }
 
-    void WindowsManager::createScene (const char* sceneNameCorba)
+    bool WindowsManager::createScene (const char* sceneNameCorba)
     {
         std::string sceneName (sceneNameCorba);
         if (nodes_.find (sceneName) != nodes_.end ()) {
-            std::ostringstream oss;
-            oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw std::runtime_error (oss.str ());
+            std::cerr <<"A scene with name, \"" << sceneName << "\" already exists.";
+            return false;
         }
         else {
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
@@ -272,15 +271,16 @@ namespace graphics {
             addGroup (sceneName, mainNode);
             mtx_.unlock();
         }
+
+        return true;
     }
 
-    void WindowsManager::createSceneWithFloor (const char* sceneNameCorba)
+    bool WindowsManager::createSceneWithFloor (const char* sceneNameCorba)
     {
         std::string sceneName (sceneNameCorba);
         if (nodes_.find (sceneName) != nodes_.end ()) {
-            std::ostringstream oss;
-            oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw std::runtime_error (oss.str ());
+            std::cerr <<"A scene with name, \"" << sceneName << "\" already exists.";
+            return false;
         }
         else {
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
@@ -292,6 +292,8 @@ namespace graphics {
             mainNode->addChild (floor);
             mtx_.unlock();
         }
+
+        return true;
     }
 
     bool WindowsManager::addSceneToWindow (const char* sceneNameCorba,
