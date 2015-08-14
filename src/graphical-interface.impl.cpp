@@ -58,7 +58,7 @@ namespace graphics {
 	}
       }
 
-      void GraphicalInterface::createScene (const char* sceneNameCorba)
+      bool GraphicalInterface::createScene (const char* sceneNameCorba)
           throw (Error)
       {
 	try {
@@ -68,7 +68,7 @@ namespace graphics {
 	}
       }
 
-      void GraphicalInterface::createSceneWithFloor (const char* sceneNameCorba)
+      bool GraphicalInterface::createSceneWithFloor (const char* sceneNameCorba)
           throw (Error)
           {
               try {

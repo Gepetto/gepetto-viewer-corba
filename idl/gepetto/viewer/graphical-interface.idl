@@ -51,11 +51,11 @@ typedef unsigned long WindowID;
 
     /// Create a group node.
     /// \param input sceneName : name of the group.
-    void createScene(in string sceneName) raises (Error);
+    boolean createScene(in string sceneName) raises (Error);
 
     /// Create a group node and a GroudNode ("sceneName/floor") as child
     /// \param input sceneName : name of the group
-    void createSceneWithFloor(in string sceneName) raises (Error);
+    boolean createSceneWithFloor(in string sceneName) raises (Error);
 
     /// Add groupNode sceneName to the WindowManager windowName so
     /// sceneName and all its children will be displayed in the window windowName.
