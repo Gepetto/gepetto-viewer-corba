@@ -39,6 +39,8 @@
 #include <gepetto/viewer/leaf-node-collada.h>
 #include <gepetto/viewer/urdf-parser.h>
 
+#include "gepetto/viewer/corba/graphical-interface.hh"
+
 namespace graphics {
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
@@ -241,7 +243,7 @@ namespace graphics {
         std::string windowName (windowNameCorba);
         WindowIDMap_t::iterator it = windowIDmap_.find (windowName);
         if (it == windowIDmap_.end ())
-            throw std::invalid_argument ("There is no windows with that name");
+            throw gepetto::Error ("There is no windows with that name");
         return it->second;
     }
 
@@ -264,7 +266,7 @@ namespace graphics {
         if (nodes_.find (sceneName) != nodes_.end ()) {
             std::ostringstream oss;
             oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw std::runtime_error (oss.str ());
+            throw gepetto::Error (oss.str ().c_str ());
         }
         else {
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
@@ -280,7 +282,7 @@ namespace graphics {
         if (nodes_.find (sceneName) != nodes_.end ()) {
             std::ostringstream oss;
             oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw std::runtime_error (oss.str ());
+            throw gepetto::Error (oss.str ().c_str ());
         }
         else {
             GroupNodePtr_t mainNode = GroupNode::create (sceneName);
@@ -862,14 +864,14 @@ namespace graphics {
         const std::string urdfPath (urdfPathCorba);
         const std::string urdfPackagePath (urdfPackagePathCorba);
         if (urdfName == "") {
-            throw std::runtime_error ("Parameter nodeName cannot be empty in "
+            throw gepetto::Error ("Parameter nodeName cannot be empty in "
                     "idl request addUrdfObjects.");
         }
         if (nodes_.find (urdfName) != nodes_.end ()) {
             std::ostringstream oss;
             oss << "You need to chose an other name, \"" << urdfName
                 << "\" already exist.";
-            throw std::runtime_error (oss.str ());
+            throw gepetto::Error (oss.str ().c_str ());
         }
         GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
