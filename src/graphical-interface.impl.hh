@@ -120,7 +120,6 @@ public:
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
   virtual bool setHighlight(const char* nodeNameCorba, ::CORBA::Long state)  throw (Error);
-  virtual bool setScale(const char* nodeNameCorba, float scalex, float scaley, float scalez) throw (Error);
 
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
