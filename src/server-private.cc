@@ -47,7 +47,6 @@ namespace graphics
       void Server::deactivateAndDestroyServers()
       {
 	  poa_->deactivate_object(*graphicalInterfaceServantid_);
-	  delete graphicalInterfaceServant_;
       }
 
 
