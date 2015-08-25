@@ -270,6 +270,10 @@ typedef sequence<float> floatSeq;
     /// \param input nodeName : name of the node
     boolean deleteLandmark(in string nodeName) raises (Error);
 
+    /// get the static transform of the node
+    /// \param input nodeName : name of the node
+    boolean getStaticTransform(in string nodeName, out Transform configuration) raises (Error);
+
     /// Change the visibility of a node. If this node is a group node, visibility mode will be apply to all children.
     /// \param input nodeName : name of the node.
     /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".

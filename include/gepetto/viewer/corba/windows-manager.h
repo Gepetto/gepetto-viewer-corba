@@ -19,6 +19,7 @@
 
 #include <gepetto/viewer/window-manager.h>
 #include <gepetto/viewer/roadmap-viewer.h>
+#include "gepetto/viewer/corba/graphical-interface.hh"
 #include <boost/thread/mutex.hpp>
 
 namespace graphics {
@@ -152,6 +153,8 @@ namespace graphics {
 
             virtual bool addLandmark(const char* nodeNameCorba, float size);
             virtual bool deleteLandmark(const char* nodeNameCorba);
+
+            virtual bool getStaticTransform (const char* nodeName, ::gepetto::corbaserver::Transform transform) const;
 
             virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
             virtual bool setScale(const char* nodeNameCorba, const value_type* scale);

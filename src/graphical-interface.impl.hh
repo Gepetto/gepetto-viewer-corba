@@ -115,6 +115,7 @@ public:
   virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
+  virtual bool getStaticTransform (const char* nodeName, ::gepetto::corbaserver::Transform transform) throw (Error);
 
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
   virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
