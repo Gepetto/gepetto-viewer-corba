@@ -244,6 +244,17 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::addCurve (const char* curveNameCorba,
+					 const PositionSeq& pos,
+					 const value_type* colorCorba) throw (Error)
+      {
+          try {
+              return windowsManager_->addCurve ( curveNameCorba, pos, colorCorba) ;
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addTriangleFace (const char* faceNameCorba,
 						const value_type* posCorba1,
 						const value_type* posCorba2,

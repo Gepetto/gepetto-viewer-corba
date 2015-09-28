@@ -35,6 +35,8 @@ private:
     typedef graphics::WindowsManager::value_type value_type;
 
 public:
+    typedef gepetto::corbaserver::PositionSeq PositionSeq;
+
     /**
         \brief Default constructor
         */
@@ -80,6 +82,8 @@ public:
   virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const value_type* color) throw (Error);
 
   virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color) throw (Error);
+
+  virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color) throw (Error);
 
   virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color) throw (Error);
   virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color) throw (Error);

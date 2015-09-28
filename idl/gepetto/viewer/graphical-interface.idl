@@ -26,6 +26,7 @@ typedef float Color [4];
 typedef unsigned long WindowID;
 typedef sequence <string> Names_t; /// Sequence of names
 typedef sequence<float> floatSeq;
+typedef sequence<Position> PositionSeq;
 
   /// Corba exception travelling through the Corba channel
   interface GraphicalInterface {
@@ -144,6 +145,13 @@ typedef sequence<float> floatSeq;
     /// \param input pos2 : position the other extremity of the line.
     /// \param input RGBAcolor : color of the line.
     boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) raises (Error);
+
+    /// create a curve called curveName.
+    /// The curve is the graph of the piecewise linear interpolation between each consecutive pos.
+    /// \param input lineName : name of the line.
+    /// \param input pos : waypoints of the curve.
+    /// \param input RGBAcolor : color of the line.
+    boolean addCurve(in string curveName, in PositionSeq pos, in Color RGBAcolor) raises (Error);
 
     /// create a four vertices face called faceName.
     /// \param input faceName : name of the face.

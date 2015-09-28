@@ -604,6 +604,39 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::addCurve (const char* curveNameCorba,
+            const PositionSeq& pos,
+            const value_type* colorCorba)
+    {
+        std::string curveName (curveNameCorba);
+        if (nodes_.find (curveName) != nodes_.end ()) {
+            std::cout << "You need to chose an other name, \"" << curveName
+                << "\" already exist." << std::endl;
+            return false;
+        }
+        else {
+            if (pos.length () < 2) {
+              std::cout << "Need at least two points" << std::endl;
+              return false;
+            }
+            ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
+            std::size_t i = 0;
+            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+            for (i = 1; i < pos.length () - 1; ++i) {
+              values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+              values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+            }
+            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+            LeafNodeLinePtr_t curve = LeafNodeLine::create
+                (curveName, values, getColor (colorCorba));
+            mtx_.lock();
+            WindowsManager::initParent (curveName, curve);
+            addNode (curveName, curve);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
     bool WindowsManager::addTriangleFace (const char* faceNameCorba,
             const value_type* posCorba1,
             const value_type* posCorba2,

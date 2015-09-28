@@ -43,6 +43,8 @@ namespace graphics {
             typedef std::map <std::string, WindowID> WindowIDMap_t;
             WindowIDMap_t windowIDmap_;
 
+            typedef gepetto::corbaserver::PositionSeq PositionSeq;
+
         private:
             typedef std::vector <WindowManagerPtr_t> WindowManagerVector_t;
             WindowManagerVector_t windowManagers_;
@@ -122,6 +124,8 @@ namespace graphics {
             virtual bool addLight(const char* lightName, const WindowID wid, float radius, const value_type* color);
 
             virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color);
+
+            virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color);
 
             virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);
             virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color);
