@@ -99,6 +99,16 @@ INSTALL(
   )
 INSTALL(
   FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/corbaserver/exporttoblender.py
+  DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver
+  )
+INSTALL(
+  FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/../blender/gepettoimport.py
+  DESTINATION ${PYTHON_SITELIB}/gepetto/blender
+  )
+INSTALL(
+  FILES
   ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/graphical-interface.idl
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver
 )

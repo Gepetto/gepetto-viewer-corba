@@ -40,8 +40,9 @@ public:
         */
     GraphicalInterface (corbaServer::Server* server);
 
-  virtual gepetto::Names_t* getNodeList() throw (Error);
-  virtual gepetto::Names_t* getWindowList() throw (Error);
+  virtual gepetto::corbaserver::Names_t* getNodeList() throw (Error);
+  virtual gepetto::corbaserver::Names_t* getGroupNodeList(const char* group) throw (Error);
+  virtual gepetto::corbaserver::Names_t* getWindowList() throw (Error);
 
   virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
@@ -125,6 +126,7 @@ public:
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);
   virtual bool writeNodeFile (const WindowID windowId, const char* filename) throw (Error);
+  virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);
 }; // end of class
 
 } /* namespace impl */

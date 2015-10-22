@@ -308,38 +308,43 @@ namespace graphics {
       }
 
 
+      gepetto::corbaserver::Names_t* fromStringVector(const std::vector<std::string>& input)
+      {
+          ULong size = input.size ();
+          char** nameList = gepetto::corbaserver::Names_t::allocbuf(size);
+          gepetto::corbaserver::Names_t *jointNames = new gepetto::corbaserver::Names_t (size, size, nameList);
+          for (std::size_t i = 0; i < input.size (); ++i)
+          {
+              std::string name = input[i];
+              nameList [i] =
+                      (char*) malloc (sizeof(char)*(name.length ()+1));
+              strcpy (nameList [i], name.c_str ());
+          }
+          return jointNames;
+      }
 
-      Names_t* GraphicalInterface::getNodeList () throw (Error)
+      gepetto::corbaserver::Names_t *GraphicalInterface::getNodeList() throw (Error)
       {
         try {
-          std::vector<std::string> nodes (windowsManager_->getNodeList ());
-	  ULong size = (ULong) nodes.size ();
-	  char** nameList = Names_t::allocbuf(size);
-	  Names_t *nodeNames = new Names_t (size, size, nameList);
-	  for (std::size_t i=0; i<nodes.size (); ++i) {
-	    nameList [i] = (char*) malloc
-	      (sizeof(char) * (nodes [i].size () + 1));
-	    strcpy (nameList [i], nodes [i].c_str ());
-	  }
-	  return nodeNames;
+          return fromStringVector(windowsManager_->getNodeList ());
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
       }
 
-      Names_t* GraphicalInterface::getWindowList () throw (Error)
+      gepetto::corbaserver::Names_t *GraphicalInterface::getGroupNodeList(const char* group) throw (Error)
+      {
+        try {
+          return fromStringVector(windowsManager_->getGroupNodeList(group));
+    } catch (const std::exception& exc) {
+      throw Error (exc.what ());
+    }
+      }
+
+      gepetto::corbaserver::Names_t* GraphicalInterface::getWindowList () throw (Error)
       {
 	try {
-          std::vector<std::string> windows (windowsManager_->getWindowList ());
-	  ULong size = (ULong) windows.size ();
-	  char** nameList = Names_t::allocbuf(size);
-	  Names_t *windowNames = new Names_t (size, size, nameList);
-	  for (std::size_t i=0; i<windows.size (); ++i) {
-	    nameList [i] = (char*) malloc
-	      (sizeof(char) * (windows [i].size () + 1));
-	    strcpy (nameList [i], windows [i].c_str ());
-	  }
-	  return windowNames;
+          return fromStringVector(windowsManager_->getWindowList ());
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}
@@ -508,7 +513,24 @@ namespace graphics {
       bool GraphicalInterface::writeNodeFile (const WindowID windowId, const char* filename) throw (Error)
       {
 	try {
-      return writeNodeFile ( windowId, filename) ;
+      return windowsManager_->writeNodeFile ( windowId, filename) ;
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+      
+      gepetto::corbaserver::floatSeq* GraphicalInterface::getNodeGlobalTransform(const char* nodeName) throw (Error)
+      {
+	try {
+      WindowsManager::configuration_t config = windowsManager_->getNodeGlobalTransform(nodeName);
+      if(config.size() != 7) throw std::runtime_error("No Node name ." + std::string(nodeName));
+      gepetto::corbaserver::floatSeq *dofArray;
+      std::size_t dim = config.size();
+      dofArray = new gepetto::corbaserver::floatSeq();
+      dofArray->length(dim);
+      for(std::size_t i=0; i<dim; i++)
+          (*dofArray)[i] = config[i];
+      return dofArray;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

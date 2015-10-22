@@ -24,6 +24,8 @@ typedef float Transform [7];
 typedef float Position [3];
 typedef float Color [4];
 typedef unsigned long WindowID;
+typedef sequence <string> Names_t; /// Sequence of names
+typedef sequence<float> floatSeq;
 
   /// Corba exception travelling through the Corba channel
   interface GraphicalInterface {
@@ -43,8 +45,16 @@ typedef unsigned long WindowID;
     unsigned long getWindowID (in string name) raises (Error);
 
 
-    /// Print names of nodes on the SceneViewer-corbaserver terminal.
+    /// Print names of nodes on the SceneViewer-corbaserver terminal
+    /// and return them in an array
+    /// \return the list of node names contained in the scene
     Names_t getNodeList() raises (Error);
+
+    /// Print names of a group nodes on the SceneViewer-corbaserver terminal
+    /// and return them in an array
+    /// \param input name : name of the new window.
+    /// \return the list of node names contained in the group
+    Names_t getGroupNodeList(in string group) raises (Error);
 
     /// Print names of windows on the SceneViewer-corbaserver terminal.
     Names_t getWindowList() raises (Error);
@@ -304,6 +314,11 @@ typedef unsigned long WindowID;
     boolean stopCapture (in unsigned long windowId) raises (Error);
 
     boolean writeNodeFile (in unsigned long windowId, in string filename) raises (Error);
+    
+    /// Return the Position + Quaternion orientation of an object in the global frame
+    /// \param input nodeName : name of the node.
+    /// \return a length 7 array
+    floatSeq getNodeGlobalTransform(in string nodeName) raises (Error);
   };
 };
 };

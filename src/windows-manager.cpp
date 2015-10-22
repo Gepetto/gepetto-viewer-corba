@@ -741,7 +741,29 @@ namespace graphics {
         }
         return l;
     }
-
+		
+    std::vector<std::string> WindowsManager::getGroupNodeList (const char* group)
+    {
+        std::vector<std::string> l;
+        std::map<std::string, GroupNodePtr_t>::iterator it= groupNodes_.find(std::string(group));
+        if(it == groupNodes_.end())
+        {
+            std::cout << "Unexisting group: " << std::string(group) << std::endl;
+        }
+        else
+        {
+            std::cout << "List of Nodes in group :" << group << std::endl;
+            GroupNodePtr_t group = it->second;
+            for(std::size_t i = 0; i < group->getNumOfChildren(); ++i)
+            {
+                NodePtr_t node = group->getChild(i);
+                l.push_back(node->getID());
+                std::cout << "   " << node->getID() << std::endl;
+            }
+        }
+        return l;
+    }
+	
     std::vector<std::string> WindowsManager::getSceneList ()
     {
         std::vector<std::string> l;
@@ -974,10 +996,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-
-        mtx_.lock();
+	mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
-        mtx_.unlock();
+	mtx_.unlock();
         return true;
     }
 
@@ -1150,5 +1171,25 @@ namespace graphics {
         if (it == nodes_.end ())
             return NodePtr_t ();
         return it->second;
+    }
+
+    WindowsManager::configuration_t WindowsManager::getNodeGlobalTransform(const std::string nodeName)
+    {
+        configuration_t res;
+        std::map<std::string, NodePtr_t>::iterator it =
+            nodes_.find (nodeName);
+        if (it != nodes_.end ())
+        {
+            NodePtr_t node = it->second;
+            std::pair<osgVector3, osgQuat> posQuat = node->getGlobalTransform();
+            res.push_back(posQuat.first.x());
+            res.push_back(posQuat.first.y());
+            res.push_back(posQuat.first.z());
+            res.push_back(posQuat.second.w());
+            res.push_back(posQuat.second.x());
+            res.push_back(posQuat.second.y());
+            res.push_back(posQuat.second.z());
+        }
+        return res;
     }
 } // namespace graphics

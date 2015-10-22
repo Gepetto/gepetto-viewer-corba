@@ -36,6 +36,7 @@ namespace graphics {
         public:
             // Typedef for position and color values.
             typedef osg::Vec3f::value_type value_type;
+            typedef std::vector<float> configuration_t;
             typedef unsigned int WindowID;
 
             typedef std::map <std::string, WindowID> WindowIDMap_t;
@@ -76,6 +77,7 @@ namespace graphics {
             static WindowsManagerPtr_t create ();
 
             virtual std::vector<std::string> getNodeList();
+            virtual std::vector<std::string> getGroupNodeList(const char* group);
             virtual std::vector<std::string> getSceneList();
             virtual std::vector<std::string> getWindowList();
 
@@ -165,6 +167,7 @@ namespace graphics {
             WindowManagerPtr_t getWindowManager (const WindowID wid);
             GroupNodePtr_t getScene (const std::string sceneName);
             NodePtr_t getNode (const std::string nodeName);
+            configuration_t getNodeGlobalTransform(const std::string nodeName);
     };
 } /* namespace graphics */
 
