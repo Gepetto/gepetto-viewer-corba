@@ -24,6 +24,95 @@
 #
 ###################################################
 
+
+#  A. Exporting the empty scene ("without the robot")
+#  This is already possible from the current python API, by simply calling
+#  the method "writeNodeFile" defined in hpp.gepetto.viewer
+#  
+#  Once the scene is loaded, simply type
+#  
+#  gui.writeNodeFile(0, 'scene.obj')
+#  I recommend the obj format. The collada sometimes fails for some reason.
+#  
+#  
+#  B.1 For non hpp users: recording frames
+#  
+#  - first, make sure that all the objects related to your robot belong to
+#  the same group, say "hrp2".
+#  
+#  For any frame for which you want to record the configuration of the
+#  robot, you need to call the method
+    #~ exportState(viewer, group, outData)
+#  
+#  defined in gepetto.corbaserver.exporttoblender
+#  
+#  where viewer is the instance of the gepetto viewer, group is the string
+#  designing the group of your robot, and outData is a dictionnary that
+#  will be filled with relevant data.
+#  
+#  
+#  for instance to record 100 frames:
+#  
+#  import gepetto.corbaserver.exporttoblender as etb
+#  
+#  group = "hrp2"
+#  data = {}
+#  
+#  for i in range(0,100):
+#  	   #update robot configuration
+#       ...
+# 	   etb.exportState(viewer, group, data)
+#  
+#  #then you can export the motion
+#   etb.writeDataToFile(group, data, "filename.txt")
+#  
+#  
+#  B.2 For hpp users: recording frames / a list of configurations
+#  
+#  In the module hpp.gepetto.blender.exportmotion
+#  you can directly export a motion by calling either
+#  
+#  exportPath(viewer, robot, problem, pathId, stepsize, filename)
+#  where robot is the name of your robot, problem is the python problem
+#  instance, pathId is the id of the computed path you want to export,
+#  and stepsize is the discretization step used to generate discrete
+#  postures along the path
+#  
+#  or
+#  
+#  exportStates(viewer, robot, configurations, filename)
+#  where robot is the name of your robot, and configurations is a list of
+#  configurations
+#  
+#  
+#  C. Loading the motion into blender
+#  
+#  This step assumes that you have loaded, in blender, a scene containing
+#  all the objects, the names of which correspond to the links of the
+#  robot, as defined in their urdf file.
+#  I already computed such files for Hyq and HRP-2, and can give them to
+#  you if you signed the non disclosure agreement. Olivier,
+#  it might be nice to add them to the hrp2_description later?
+#  
+#  C.1 load the motion.
+#  Switch to the script view in blender (menu on the top the screen)
+#  open the python script that you can find in the gepetto-viewer
+#  repository, under blender/gepettoimport.py
+#  
+#  Experimented users can install the script as an add-on to blender.
+#  
+#  Run the script, by calling the loadmotion method with the path to the
+#  previously generated file in parameter.
+#  
+#  Voilà! A set of frames should automatically be generated, resulting
+#  in an animation.
+#  
+#  If some errors occur, the messages will appear in the console, or the
+#  terminal used to launch blender, depending on how the script was launched.
+#  
+#  C.2 You can now import the previsouly generated scene using the import
+#  function from the file menu. 
+  
 import bpy
 import re
 
