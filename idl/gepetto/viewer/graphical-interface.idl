@@ -153,6 +153,8 @@ typedef sequence<Position> PositionSeq;
     /// \param input RGBAcolor : color of the line.
     boolean addCurve(in string curveName, in PositionSeq pos, in Color RGBAcolor) raises (Error);
 
+    boolean setCurveMode (in string curveName, in string mode) raises (Error);
+
     /// create a four vertices face called faceName.
     /// \param input faceName : name of the face.
     /// \param input pos1, pos2, pos3, pos4 : position of the vertices.

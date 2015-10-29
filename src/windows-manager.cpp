@@ -621,17 +621,35 @@ namespace graphics {
             }
             ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
             std::size_t i = 0;
-            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
-            for (i = 1; i < pos.length () - 1; ++i) {
-              values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+            for (i = 0; i < pos.length (); ++i) {
               values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             }
-            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             LeafNodeLinePtr_t curve = LeafNodeLine::create
                 (curveName, values, getColor (colorCorba));
+            curve->setMode (GL_LINE_STRIP);
             mtx_.lock();
             WindowsManager::initParent (curveName, curve);
             addNode (curveName, curve);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
+    bool WindowsManager::setCurveMode (const char* curveName, const GLenum mode)
+    {
+        NodePtr_t node = find (curveName);
+        if (!node) {
+            std::cerr << "Node \"" << curveName << "\" not found." << std::endl;
+            return false;
+        } else {
+            LeafNodeLinePtr_t curve (boost::dynamic_pointer_cast
+                <LeafNodeLine> (node));
+            if (!curve) {
+              std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
+              return false;
+            }
+            mtx_.lock();
+            curve->setMode (mode);
             mtx_.unlock();
             return true;
         }

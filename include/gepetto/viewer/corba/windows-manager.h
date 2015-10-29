@@ -127,6 +127,10 @@ namespace graphics {
 
             virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color);
 
+            /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
+            /// possible values
+            virtual bool setCurveMode (const char* curveName, const GLenum mode);
+
             virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);
             virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color);
             virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis);

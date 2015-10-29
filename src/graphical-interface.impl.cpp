@@ -255,6 +255,21 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::setCurveMode(const char* curveName,
+          const char* modeName) throw (Error)
+      {
+          try {
+              GLenum mode;
+              if      (strcasecmp (modeName, "lines") == 0) mode = GL_LINES;
+              else if (strcasecmp (modeName, "line_strip") == 0) mode = GL_LINE_STRIP;
+              else if (strcasecmp (modeName, "polygon") == 0) mode = GL_POLYGON;
+              else throw Error ("Unknown mode name");
+              return windowsManager_->setCurveMode (curveName, mode) ;
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addTriangleFace (const char* faceNameCorba,
 						const value_type* posCorba1,
 						const value_type* posCorba2,
