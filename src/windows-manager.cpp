@@ -14,7 +14,7 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer. If not, see <http://www.gnu.org/licenses/>.
 
-#include "gepetto/viewer/corba/windows-manager.h"
+#include "gepetto/viewer/corba/windows-manager.hh"
 
 #include <boost/thread.hpp>
 
