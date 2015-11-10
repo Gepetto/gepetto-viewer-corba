@@ -293,7 +293,11 @@ typedef sequence<Position> PositionSeq;
     /// \param input nodeName : name of the node.
     /// \param input scale : new scale  
     boolean setScale(in string nodeName, in Position scale) raises (Error);
-
+    
+    /// Change the color of a node. 
+    /// \param input nodeName : name of the node.
+    /// \param input color : new color
+    boolean setColor(in string nodeName, in Color scale) raises (Error);
 
     /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
     /// \param input nodeName : name of the node.

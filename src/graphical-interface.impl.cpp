@@ -496,6 +496,16 @@ namespace graphics {
     }
       }
 
+      bool GraphicalInterface::setColor(const char* nodeNameCorba,
+          const Color color) throw (Error)
+      {
+        try {
+          return windowsManager_->setColor ( nodeNameCorba, color) ;
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
+      }
+
       bool GraphicalInterface::setWireFrameMode (const char* nodeNameCorba,
 						 const char* wireFrameModeCorba) throw (Error)
       {

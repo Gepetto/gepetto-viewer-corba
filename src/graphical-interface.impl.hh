@@ -36,6 +36,7 @@ private:
 
 public:
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
+    typedef gepetto::corbaserver::Color Color;
 
     /**
         \brief Default constructor
@@ -125,6 +126,7 @@ public:
 
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
   virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
+  virtual bool setColor(const char* nodeNameCorba, const Color color) throw (Error);
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
   virtual bool setHighlight(const char* nodeNameCorba, ::CORBA::Long state)  throw (Error);

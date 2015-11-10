@@ -1140,6 +1140,20 @@ namespace graphics {
         return true;
     }
 
+    bool WindowsManager::setColor(const char* nodeNameCorba, const value_type* color){
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node \"" << nodeName << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        osgVector4 vecColor(color[0],color[1],color[2],color[3]);
+        mtx_.lock();
+        nodes_[nodeName]->setColor (vecColor);
+        mtx_.unlock();
+        return true;
+    }
+
     bool WindowsManager::setWireFrameMode (const char* nodeNameCorba,
             const char* wireFrameModeCorba)
     {

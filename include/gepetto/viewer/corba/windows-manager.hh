@@ -166,6 +166,7 @@ namespace graphics {
 
             virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
             virtual bool setScale(const char* nodeNameCorba, const value_type* scale);
+            virtual bool setColor(const char* nodeNameCorba, const value_type* color);
             virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba);
             virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
             virtual bool setHighlight(const char* nodeNameCorba, int state);
