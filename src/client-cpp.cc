@@ -223,7 +223,7 @@ bool ClientCpp::stopCapture (const WindowID windowId)
 
 bool ClientCpp::writeNodeFile (const WindowID windowId, const char* filename)
 {
-  return manager_->writeNodeFile (windowId, filename);
+  return manager_->writeWindowFile (windowId, filename);
 }
 
 } // end of namespace corbaserver

@@ -18,6 +18,8 @@
 
 #include <boost/thread.hpp>
 
+#include <osgDB/WriteFile>
+
 #include <gepetto/viewer/window-manager.h>
 #include <gepetto/viewer/node.h>
 #include <gepetto/viewer/group-node.h>
@@ -45,8 +47,7 @@ namespace graphics {
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
         mtx_ (), rate_ (20), newNodeConfigurations_ ()
-    {
-    }
+    {}
 
     WindowsManager::WindowID WindowsManager::addWindow (std::string winName,
             WindowManagerPtr_t newWindow)
@@ -1235,7 +1236,50 @@ namespace graphics {
         }
     }
 
-    bool WindowsManager::writeNodeFile (const WindowID windowId, const char* filename)
+    bool WindowsManager::setCaptureTransform (const char* filename,
+        const char* nodename)
+    {
+        const std::string name (nodename);
+        std::map<std::string, NodePtr_t>::iterator it = nodes_.find (name);
+        if (it == nodes_.end ()) {
+            std::cout << "Node \"" << nodename << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        blenderCapture_.writer_visitor_->writer_ =
+          new YamlTransformWriter (filename);
+        blenderCapture_.node_ = it->second;
+        return true;
+    }
+
+    void WindowsManager::captureTransform ()
+    {
+        mtx_.lock ();
+        blenderCapture_.captureFrame ();
+        mtx_.unlock ();
+    }
+
+    bool WindowsManager::writeNodeFile (const char* nodename,
+        const char* filename)
+    {
+        const std::string name (nodename);
+        std::map<std::string, NodePtr_t>::iterator it = nodes_.find (name);
+        if (it == nodes_.end ()) {
+            std::cout << "Node \"" << nodename << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        mtx_.lock();
+        osg::ref_ptr <osgDB::Options> os = new osgDB::Options;
+        os->setOptionString ("NoExtras");
+        bool ret = osgDB::writeNodeFile (*it->second->asGroup (),
+            std::string (filename), os.get());
+        mtx_.unlock();
+        return ret;
+    }
+
+    bool WindowsManager::writeWindowFile (const WindowID windowId,
+        const char* filename)
     {
         if (windowId < windowManagers_.size ()) {
             mtx_.lock();

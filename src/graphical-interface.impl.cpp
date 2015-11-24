@@ -555,10 +555,40 @@ namespace graphics {
 	}
       }
 
-      bool GraphicalInterface::writeNodeFile (const WindowID windowId, const char* filename) throw (Error)
+      bool GraphicalInterface::setCaptureTransform (const char* filename,
+          const char* nodeName) throw (Error)
+      {
+        try {
+          return windowsManager_->setCaptureTransform (filename, nodeName);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      void GraphicalInterface::captureTransform () throw (Error)
       {
 	try {
-      return windowsManager_->writeNodeFile ( windowId, filename) ;
+          return windowsManager_->captureTransform ();
+        } catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::writeNodeFile (const char* nodeName,
+          const char* filename) throw (Error)
+      {
+        try {
+          return windowsManager_->writeNodeFile (nodeName, filename);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::writeWindowFile (const WindowID windowId,
+          const char* filename) throw (Error)
+      {
+        try {
+          return windowsManager_->writeWindowFile (windowId, filename);
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

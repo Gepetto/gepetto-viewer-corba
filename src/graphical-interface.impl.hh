@@ -134,7 +134,10 @@ public:
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);
-  virtual bool writeNodeFile (const WindowID windowId, const char* filename) throw (Error);
+  virtual bool setCaptureTransform (const char* filename, const char* nodename) throw (Error);
+  virtual void captureTransform () throw (Error);
+  virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
+  virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
   virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);
 }; // end of class
 

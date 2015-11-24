@@ -19,6 +19,7 @@
 
 #include <gepetto/viewer/window-manager.h>
 #include <gepetto/viewer/roadmap-viewer.h>
+#include <gepetto/viewer/transform-writer.h>
 #include "gepetto/viewer/corba/graphical-interface.hh"
 #include <boost/thread/mutex.hpp>
 
@@ -28,6 +29,23 @@ namespace graphics {
         NodePtr_t node;
         osgVector3 position;
         osgQuat quat;
+    };
+
+    struct BlenderFrameCapture {
+      osg::ref_ptr < TransformWriterVisitor > writer_visitor_;
+      NodePtr_t node_;
+      BlenderFrameCapture ()
+        : writer_visitor_ (new TransformWriterVisitor (
+              new YamlTransformWriter ("gepetto_viewer.yaml")))
+        , node_ ()
+      {}
+      void captureFrame () {
+        using std::invalid_argument;
+        if (!writer_visitor_)
+          throw invalid_argument ("Capture writer not defined");
+        if (!node_) throw invalid_argument ("No node to capture");
+        writer_visitor_->captureFrame (*node_);
+      }
     };
 
     DEF_CLASS_SMART_PTR(WindowsManager)
@@ -54,6 +72,7 @@ namespace graphics {
             boost::mutex mtx_;
             int rate_;
             std::list<NodeConfiguration> newNodeConfigurations_;
+            BlenderFrameCapture blenderCapture_;
 
             static osgVector4 getColor(const std::string& colorName);
             static osgVector4 getColor(const float* color);
@@ -174,7 +193,10 @@ namespace graphics {
             virtual bool startCapture (const WindowID windowId, const char* filename,
                     const char* extension);
             virtual bool stopCapture (const WindowID windowId);
-            virtual bool writeNodeFile (const WindowID windowId, const char* filename);
+            virtual bool setCaptureTransform (const char* filename, const char* nodename);
+            virtual void captureTransform ();
+            virtual bool writeNodeFile (const char* nodename, const char* filename);
+            virtual bool writeWindowFile (const WindowID windowId, const char* filename);
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
             GroupNodePtr_t getScene (const std::string sceneName);

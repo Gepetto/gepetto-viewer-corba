@@ -114,35 +114,56 @@
 #  function from the file menu. 
   
 import bpy
+import bpy_extras.io_utils
 import re
-
+import yaml
 
 def loadmotion (filename):
-	file = open(filename,"r+");
-	# first retrieve frame range
-	frameLine = file.readline();
-	assert (frameLine.find('nbFrames=') != -1),"Invalid file format. First line must be of type: 'nbFrames="
-	_, nbFrames=frameLine.rstrip("\n").split("="); nbFrames = (int)(nbFrames)
-	unknownObjects = []
-	for line in file.readlines():
-		if not (line.find('OBJECT=') == -1):
-			_, obj = line.rstrip("\n").split("=");
-			currentObj = bpy.context.scene.objects.get(obj)
-			if currentObj:
-				objset = True
-				currentObj.rotation_mode = 'QUATERNION'
-			else:
-				unknownObjects.append(obj)
-				objset = False
-		elif re.match('\d+=', line) != None and objset:
-			frameId, data = line.rstrip("\n").split("=");
-			x, y, z, q0, q1, q2, q3 = data.split(", ")
-			bpy.context.scene.frame_set(int(frameId)) # frame from file name or loop variable
-			bpy.context.scene.objects.active = currentObj
-			currentObj.location = (float(x), float(y), float(z))
-			currentObj.rotation_quaternion = (float(q0), float(q1), float(q2), float(q3))
-			bpy.ops.anim.keyframe_insert(type='BUILTIN_KSI_LocRot')
-	if len(unknownObjects) >0:
-		print('unknown objects:\n')
-		for uk in unknownObjects:
-			print ('\t'+uk+'\n')
+    with open (filename) as file:
+        data = yaml.load (file)
+        for frameId in range (len(data.keys())):
+            frameKey = "frame_" + str (frameId)
+            objPositions = data[frameKey]
+            for objName, pos in objPositions.items ():
+                currentObj = bpy.context.scene.objects.get(objName)
+                if currentObj:
+                    currentObj.rotation_mode = 'QUATERNION'
+                    posF = [float(x) for x in pos]
+                    currentObj.location = posF[0:3]
+                    currentObj.rotation_quaternion = posF[3:7]
+                    currentObj.keyframe_insert (data_path="location", frame=10*frameId)
+                    currentObj.keyframe_insert (data_path="rotation_quaternion", frame=10*frameId)
+                else:
+                    print("Unknown object " + objName)
+
+def testframe (filename, frameId):
+    with open (filename) as file:
+        data = yaml.load (file)
+        frameKey = "frame_" + str (frameId)
+        objPositions = data[frameKey]
+        for objName, pos in objPositions.items ():
+            currentObj = bpy.context.scene.objects.get(objName)
+            if currentObj:
+                currentObj.rotation_mode = 'QUATERNION'
+                posF = [float(x) for x in pos]
+                currentObj.location = posF[0:3]
+                currentObj.rotation_quaternion = posF[3:7]
+            else:
+                print("Unknown object " + objName)
+
+class YamlPathImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
+    bl_idname = "export.gepettoimport"
+    bl_label = "Import YAML path files"
+    
+    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
+    
+    def execute(self, context):
+        self.report ({'INFO'}, "Loading " + str(self.filepath))
+        loadmotion(self.filepath)
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+    
+bpy.utils.register_class(YamlPathImport)

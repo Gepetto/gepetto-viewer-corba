@@ -331,7 +331,13 @@ typedef sequence<Position> PositionSeq;
     /// Stop the running capture of a window.
     boolean stopCapture (in unsigned long windowId) raises (Error);
 
-    boolean writeNodeFile (in unsigned long windowId, in string filename) raises (Error);
+    boolean setCaptureTransform (in string filename, in string nodeName)
+      raises (Error);
+
+    void captureTransform () raises (Error);
+
+    boolean writeNodeFile (in string nodeName, in string filename) raises (Error);
+    boolean writeWindowFile (in unsigned long windowId, in string filename) raises (Error);
     
     /// Return the Position + Quaternion orientation of an object in the global frame
     /// \param input nodeName : name of the node.
