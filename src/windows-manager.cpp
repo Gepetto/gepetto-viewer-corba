@@ -46,7 +46,8 @@
 namespace graphics {
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
-        mtx_ (), rate_ (20), newNodeConfigurations_ ()
+        mtx_ (), rate_ (20), newNodeConfigurations_ (),
+        autoCaptureTransform_ (false)
     {}
 
     WindowsManager::WindowID WindowsManager::addWindow (std::string winName,
@@ -259,6 +260,7 @@ namespace graphics {
         }
         newNodeConfigurations_.clear ();
         mtx_.unlock ();
+        if (autoCaptureTransform_) captureTransform ();
     }
 
     void WindowsManager::createScene (const char* sceneNameCorba)
@@ -1250,6 +1252,11 @@ namespace graphics {
           new YamlTransformWriter (filename);
         blenderCapture_.node_ = it->second;
         return true;
+    }
+
+    void WindowsManager::captureTransformOnRefresh (bool autoCapture)
+    {
+      autoCaptureTransform_ = autoCapture;
     }
 
     void WindowsManager::captureTransform ()

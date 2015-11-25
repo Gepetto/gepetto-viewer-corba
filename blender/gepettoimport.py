@@ -17,6 +17,11 @@
 # hpp-gepetto-viewer.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+###
+# See blender/README.md for instructions
+# https://github.com/jmirabel/gepetto-viewer-corba/tree/devel/blender
+###
+
 import bpy
 import bpy_extras.io_utils
 import re

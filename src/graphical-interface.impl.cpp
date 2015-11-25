@@ -565,6 +565,16 @@ namespace graphics {
 	}
       }
 
+      void GraphicalInterface::captureTransformOnRefresh (bool autoCapture)
+        throw (Error)
+      {
+	try {
+          return windowsManager_->captureTransformOnRefresh (autoCapture);
+        } catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       void GraphicalInterface::captureTransform () throw (Error)
       {
 	try {

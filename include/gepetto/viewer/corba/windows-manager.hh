@@ -73,6 +73,7 @@ namespace graphics {
             int rate_;
             std::list<NodeConfiguration> newNodeConfigurations_;
             BlenderFrameCapture blenderCapture_;
+            bool autoCaptureTransform_;
 
             static osgVector4 getColor(const std::string& colorName);
             static osgVector4 getColor(const float* color);
@@ -194,6 +195,7 @@ namespace graphics {
                     const char* extension);
             virtual bool stopCapture (const WindowID windowId);
             virtual bool setCaptureTransform (const char* filename, const char* nodename);
+            virtual void captureTransformOnRefresh (bool autoCapture);
             virtual void captureTransform ();
             virtual bool writeNodeFile (const char* nodename, const char* filename);
             virtual bool writeWindowFile (const WindowID windowId, const char* filename);

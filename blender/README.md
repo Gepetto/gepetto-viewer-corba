@@ -21,21 +21,35 @@ Environment has to be exported **after** in place (having been placed correctly)
 
 ## Recording frames
 
-- setup the export by calling `gui.setCaptureTransform (filename, nodeName)` where `nodeName` refers to a node containing all the objects that will be recorded.
-- a frame can then be saved using `gui.captureTransform ()` to capture the current state.
+First, setup the export by calling `gui.setCaptureTransform (filename, nodeName)` where `nodeName` refers to a node containing all the objects that will be recorded.
+
+- Frame by frame record:
+a frame can then be saved using `gui.captureTransform ()` to capture the current state.
+- Capturing on refresh:
+use `gui.captureTransformOnRefresh(true)` to start capturing and `gui.captureTransformOnRefresh(false)` to stop it.
 
 **Notice**: datas will be appended to `filename` so it must be empty at the beginning.
 
 ```python
 gui.setCaptureTransform ("path.yaml", "hrp2")
 
+# Frame by Frame
 for i in range(0,100):
 	   #update robot configuration
      ...
         gui.captureTransform ()
-```
 
-**TODO**: add a function `captureOnRefresh(bool)` that turns on/off an automatic capture when `refresh` is called.
+
+# Capture on refresh
+gui.captureTransformOnRefresh(true)
+for i in range(0,100):
+	   #update robot configuration
+     ...
+        gui.refresh ()
+
+gui.captureTransformOnRefresh(false)
+
+```
 
 ## Loading the motion into blender
 

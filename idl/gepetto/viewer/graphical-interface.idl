@@ -331,12 +331,23 @@ typedef sequence<Position> PositionSeq;
     /// Stop the running capture of a window.
     boolean stopCapture (in unsigned long windowId) raises (Error);
 
+    /// Configure the capture of node transformation in YAML format
+    /// \param filename file where to write.
+    /// \param nodeName name of the node to be captured
+    ///        (all children will also be captured)
     boolean setCaptureTransform (in string filename, in string nodeName)
       raises (Error);
 
+    /// Change status of automatic capture on refresh
+    void captureTransformOnRefresh (in boolean autoCapture) raises (Error);
+
+    /// Write current configuration to the motion file
     void captureTransform () raises (Error);
 
+    /// Write a node and its children to filename
     boolean writeNodeFile (in string nodeName, in string filename) raises (Error);
+
+    /// Write the nodes contained in the window to filename
     boolean writeWindowFile (in unsigned long windowId, in string filename) raises (Error);
     
     /// Return the Position + Quaternion orientation of an object in the global frame
