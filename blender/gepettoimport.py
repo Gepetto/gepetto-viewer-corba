@@ -40,8 +40,8 @@ def loadmotion (filename):
                     posF = [float(x) for x in pos]
                     currentObj.location = posF[0:3]
                     currentObj.rotation_quaternion = posF[3:7]
-                    currentObj.keyframe_insert (data_path="location", frame=10*frameId)
-                    currentObj.keyframe_insert (data_path="rotation_quaternion", frame=10*frameId)
+                    currentObj.keyframe_insert (data_path="location", frame=frameId)
+                    currentObj.keyframe_insert (data_path="rotation_quaternion", frame=frameId)
                 else:
                     print("Unknown object " + objName)
 
@@ -74,5 +74,21 @@ class YamlPathImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
+
+class UrdfToBlendImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
+    bl_idname = "import.urdf_to_blendimport"
+    bl_label = "Import a script generated with urdf_to_blend.py"
     
+    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
+    
+    def execute(self, context):
+        self.report ({'INFO'}, "Loading " + str(self.filepath))
+        exec(open(self.filepath).read())
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        context.window_manager.fileselect_add(self)
+        return {'RUNNING_MODAL'}
+
 bpy.utils.register_class(YamlPathImport)
+bpy.utils.register_class(UrdfToBlendImport)

@@ -1,0 +1,189 @@
+#!/usr/bin/env python2.7
+from __future__ import print_function
+import roslib; roslib.load_manifest('urdf_parser_py')
+import rospy
+import resource_retriever
+import sys, getopt
+import os.path
+import inspect
+
+import urdf_parser_py.urdf as urdf
+
+def usage ():
+    print (sys.argv[0] + " -p <prefix> -i <urdf-file> -o <blender-script>")
+    print ("urdf-file is mandatory")
+    print ("blender-script is mandatory")
+    print ("prefix is optional")
+
+try:
+    opts, args = getopt.getopt (sys.argv[1:], "p:i:o:", ["prefix=", "in=", "out="])
+except getopt.GetoptError:
+    usage ()
+    sys.exit (2)
+
+prefix = ""
+urdfFilename = None
+blendFilename = None
+for opt, arg in opts:
+    if opt in ("-i", "--in"):
+        urdfFilename = arg
+    elif opt in ("-o", "--out"):
+        blendFilename = arg
+    elif opt in ("-p", "--prefix"):
+        prefix = arg
+
+if urdfFilename is None or blendFilename is None:
+    usage ()
+    sys.exit (2)
+
+robot = urdf.URDF.from_xml_file (urdfFilename)
+
+def resolve_ros_path (path):
+    filename = resource_retriever.get_filename (path)
+    if filename.startswith ("file://"):
+        return filename[7:]
+    else:
+        print ("Path might not be understood by blender: " + filename)
+        return filename
+
+def updateFrameMessage ():
+    callerframerecord = inspect.stack()[1]
+    info = inspect.getframeinfo(callerframerecord[0])
+    print ("Update function %s in script %s:%i" % (info.function, info.filename, info.lineno))
+
+class CreateBlenderObject:
+    def __init__ (self, prefix, file):
+        self.run = dict ()
+        self.file = file
+        self.prefix = prefix
+        self.materials = list ()
+        self.textures = list ()
+        self.run[urdf.Cylinder] = self.handleCylinder
+        self.run[urdf.Box] = self.handleBox
+        self.run[urdf.Mesh] = self.handleMesh
+        self.writeCmd ("import bpy")
+        self.writeCmd ("""
+taggedObjects = list()
+def tagObjects ():
+  global taggedObjects
+  taggedObjects = list ()
+  for obj in bpy.data.objects:
+    taggedObjects.append (obj.name)
+
+def getNonTaggedObjects ():
+  global taggedObjects
+  return [obj for obj in bpy.data.objects if obj.name not in taggedObjects]
+
+def setParent (children, parent):
+  for child in children:
+    child.parent = parent
+""")
+
+    def setName (self, name):
+        self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_visual0\"")
+
+    def setupParent (self, name):
+        self.writeCmd ("bpy.ops.object.empty_add ()")
+        self.writeCmd ("empty = bpy.context.object")
+        self.writeCmd ("empty.name = \"" + self.prefix + name + "\"")
+        self.writeCmd ("currentObj.parent = empty")
+
+    def translate (self, position):
+        self.writeCmd ("currentObj.location = %s" % \
+                (position, ))
+
+    def rotate (self, rotation):
+        self.writeCmd ("currentObj.rotation_euler = %s" % \
+                (rotation, ))
+
+    def scale (self, scale):
+        self.writeCmd ("currentObj.scale = %s" % \
+                (scale, ))
+
+    def handleBox (self, geometry):
+        self.writeCmd ("bpy.ops.mesh.primitive_cube_add ()")
+        self.writeCmd ("currentObj = bpy.context.object")
+        self.writeCmd ("currentObj.dimensions = %s" %\
+                (geometry.size, ))
+
+    def handleCylinder (self, geometry):
+        self.writeCmd ("bpy.ops.mesh.primitive_cylinder_add (radius=%s, depth=%s)" % \
+                (geometry.radius, geometry.length, ))
+        self.writeCmd ("currentObj = bpy.context.object")
+
+    def handleMesh (self, geometry):
+        self.writeCmd ("tagObjects()")
+        extension = os.path.splitext(geometry.filename)[1]
+        if extension.lower() == '.dae':
+            command = "bpy.ops.wm.collada_import (filepath=\"%s\")"
+        elif extension.lower() == '.stl':
+            command = "bpy.ops.import_mesh.stl (filepath=\"%s\")"
+        else:
+            command = "bpy.ops.mesh.primitive_cube_add () # Failed to find loading method for %s"
+            print ("Extension %s of file %s is not know by the script" %\
+                    (extension, geometry.filename, ))
+            updateFrameMessage ()
+        self.writeCmd (command % (resolve_ros_path (geometry.filename),))
+        self.writeCmd ("imported_objects = getNonTaggedObjects ()")
+        self.writeCmd ("print(imported_objects)")
+        self.writeCmd ("bpy.ops.object.empty_add ()")
+        self.writeCmd ("currentObj = bpy.context.object")
+        self.writeCmd ("setParent (imported_objects, currentObj)")
+
+    def writeCmd (self, command):
+        print(command, file=self.file)
+
+    def addMaterial (self, name, rgba):
+        self.writeCmd ("mat = bpy.data.materials.new(\"%s\")" % (name,))
+        self.writeCmd ("mat.diffuse_color = %s" % (rgba[0:3],))
+        self.writeCmd ("mat.alpha = %s" % (rgba[3],))
+        self.materials.append(name)
+
+    def addTexture (self, name, filename):
+        self.writeCmd ("img = bpy.data.images.load (\"%s\")" % (filename,))
+        self.writeCmd ("cTex = bpy.data.textures.new(\"%s\", type='IMAGE')" % (name,))
+        self.writeCmd ("cTex.image = img")
+        self.writeCmd ("mat = bpy.data.materials.new(\"%s\")" % (name,))
+        self.writeCmd ("mtex = mat.texture_slots.add()")
+        self.writeCmd ("mtex.texture = cTex")
+        self.writeCmd ("mtex.texture_coords = 'ORCO'")
+        self.textures.append(name)
+        self.materials.append(name)
+
+    def setMatOrText (self, name):
+        if name in self.textures:
+            # self.writeCmd ("bpy.context.object.data.textures.append(bpy.data.textures[\"%s\"])" %\
+                    # (name,))
+                    pass
+        if name in self.materials:
+            self.writeCmd ("bpy.context.object.data.materials.append(bpy.data.materials[\"%s\"])" %\
+                    (name,))
+
+    def __call__ (self, link):
+        geometry = link.visual.geometry
+        if self.run.has_key (type(geometry)):
+            self.run[type(geometry)](geometry)
+            self.setName(link.name)
+            if link.visual.material is not None:
+                self.setMatOrText (link.visual.material.name)
+            self.setupParent (link.name)
+            if link.visual.origin is not None:
+                self.translate (link.visual.origin.position)
+                self.rotate    (link.visual.origin.rotation)
+            # if link.visual.geometry.scale is not None:
+                # self.scale (link.visual.geometry.scale)
+                # pass
+        else:
+            print ("Geometry " + str(type(geometry)) + " not supported")
+            updateFrameMessage ()
+
+with open (blendFilename, "w+") as blendscript:
+    blend = CreateBlenderObject (prefix, blendscript)
+    for m in robot.materials:
+        if m.color is not None:
+            blend.addMaterial (m.name, m.color.rgba)
+        if m.texture is not None:
+            blend.addTexture (m.name, resolve_ros_path (m.texture.filename))
+    for link in robot.links:
+        if link.visual is not None:
+            blend (link)
