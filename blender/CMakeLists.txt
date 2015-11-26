@@ -15,5 +15,21 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-# INSTALL (gepettoimport.py DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python3/site-packages/gepettoimport)
+SET (BLENDER_EXE "" CACHE FILEPATH "Path to the blender executable")
+
+IF (EXISTS ${BLENDER_EXE})
+    CONFIGURE_FILE (install_addon.py.in ${CMAKE_CURRENT_BINARY_DIR}/install_addon.py)
+    # ADD_CUSTOM_COMMAND (OUTPUT nothing
+      # COMMAND echo "${BLENDER_EXE}"
+      # COMMENT "Installing the blender addon")
+      # COMMAND ${BLENDER_EXE}
+      # --background --enable-autoexec
+      # --python ${CMAKE_CURRENT_SOURCE_DIR}/install_addon.py
+    ADD_CUSTOM_TARGET (blender ALL
+      PYTHONPATH=/usr/lib/python3/dist-packages/
+      ${BLENDER_EXE} --background --enable-autoexec
+      --python ${CMAKE_CURRENT_BINARY_DIR}/install_addon.py
+      COMMENT "Installing the blender addon")
+ENDIF (EXISTS ${BLENDER_EXE})
+
 INSTALL (PROGRAMS urdf_to_blender.py DESTINATION bin)
