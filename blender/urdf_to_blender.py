@@ -61,6 +61,7 @@ class CreateBlenderObject:
         self.textures = list ()
         self.run[urdf.Cylinder] = self.handleCylinder
         self.run[urdf.Box] = self.handleBox
+        self.run[urdf.Sphere] = self.handleSphere
         self.run[urdf.Mesh] = self.handleMesh
         self.writeCmd ("import bpy")
         self.writeCmd ("""
@@ -100,6 +101,12 @@ def setParent (children, parent):
     def scale (self, scale):
         self.writeCmd ("currentObj.scale = %s" % \
                 (scale, ))
+
+    def handleSphere (self, sphere):
+        print ("Untested feature: Sphere will be treated as icosphere")
+        self.writeCmd ("bpy.ops.mesh.primitive_ico_sphere_add (size=%s)" %\
+                (sphere.radius,))
+        self.writeCmd ("currentObj = bpy.context.object")
 
     def handleBox (self, geometry):
         self.writeCmd ("bpy.ops.mesh.primitive_cube_add ()")
