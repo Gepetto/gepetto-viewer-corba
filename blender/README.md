@@ -67,9 +67,10 @@ gui.captureTransformOnRefresh(false)
 
 Blender is using python 3, so you may encounter some problems of you do not set `PYTHONPATH` environment properly.
 
-Two options:
+Three options:
 
 - ```blender --python <source-folder>/gepetto-viewer-corba/blender/gepettoimport.py```
+- Install it as an addon (https://www.blender.org/manual/advanced/scripting/python/add_ons.html) - save the user preferences
 - Manually load the plugin by running the script `blender/gepettoimport.py`
 _Switch to the script view in blender (menu on the top the screen) the python script that you can find in the gepetto-viewer under `blender/gepettoimport.py` and press `Run script`_
 

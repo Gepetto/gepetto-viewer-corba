@@ -22,6 +22,19 @@
 # https://github.com/jmirabel/gepetto-viewer-corba/tree/devel/blender
 ###
 
+bl_info = {
+    "author": "Joseph Mirabel",
+    "name"  : "Gepetto Viewer Blender Addon",
+    "category": "Import-Export",
+    "blender": (2,75,0),
+    "description": "Add functionality to import files generated using the Gepetto Viewer software",
+    "location": "SpaceBar Search > YAML Gepetto or URDF blender",
+    "wiki_url": "https://github.com/jmirabel/gepetto-viewer-corba/tree/master/blender#readme",
+    "warning" : "Not heavily tested, feel free to report bug on github.",
+    "version" : (0,0),
+    "support" : "COMMUNITY"
+    }
+
 import bpy
 import bpy_extras.io_utils
 import re
@@ -77,7 +90,7 @@ class YamlPathImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
 class UrdfToBlendImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     bl_idname = "import.urdf_to_blendimport"
-    bl_label = "Import a script generated with urdf_to_blend.py"
+    bl_label = "Import a URDF blender script"
     
     filepath = bpy.props.StringProperty(subtype="FILE_PATH")
     
@@ -90,5 +103,13 @@ class UrdfToBlendImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
 
-bpy.utils.register_class(YamlPathImport)
-bpy.utils.register_class(UrdfToBlendImport)
+def register():
+    bpy.utils.register_class(YamlPathImport)
+    bpy.utils.register_class(UrdfToBlendImport)
+
+def unregister():
+    bpy.utils.unregister_class(YamlPathImport)
+    bpy.utils.unregister_class(UrdfToBlendImport)
+
+if __name__ == "__main__":
+    register()

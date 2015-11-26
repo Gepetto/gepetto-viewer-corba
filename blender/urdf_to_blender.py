@@ -10,10 +10,11 @@ import inspect
 import urdf_parser_py.urdf as urdf
 
 def usage ():
-    print (sys.argv[0] + " -p <prefix> -i <urdf-file> -o <blender-script>")
-    print ("urdf-file is mandatory")
-    print ("blender-script is mandatory")
-    print ("prefix is optional")
+    print (os.path.basename(sys.argv[0]) + " -p <prefix> -i <urdf-file> -o <blender-script>\n")
+    print ("Arguments:")
+    print ("\turdf-file     \t[mandatory]\tinput URDF file")
+    print ("\tblender-script\t[mandatory]\toutput blender script")
+    print ("\tprefix        \t[optional] \tprefix of object names")
 
 try:
     opts, args = getopt.getopt (sys.argv[1:], "p:i:o:", ["prefix=", "in=", "out="])
