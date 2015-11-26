@@ -37,6 +37,25 @@ if urdfFilename is None or blendFilename is None:
     usage ()
     sys.exit (2)
 
+## There is a bug in urdf_parser_py that has been fixed in a later release.
+## See https://github.com/ros/urdfdom/pull/38
+## and https://github.com/ros/urdfdom/pull/46/files
+for tag in urdf.JointLimit.XML_REFL.attributes:
+    if tag.var == 'upper' or tag.var == 'lower':
+        tag.required = False
+        tag.default = 0
+
+## There is something wrong with tag transmission
+## This just disables it but it is not the right way of doing it.
+urdf.Transmission.XML_REFL.attributes = list()
+urdf.Transmission.XML_REFL.vars = list()
+urdf.Transmission.XML_REFL.required_attribute_names = list()
+urdf.Transmission.XML_REFL.required_element_names = list()
+urdf.Transmission.XML_REFL.attribute_map = dict()
+urdf.Transmission.XML_REFL.element_map = dict()
+urdf.Transmission.XML_REFL.scalarNames = list()
+urdf.Transmission.XML_REFL.scalars = list()
+
 robot = urdf.URDF.from_xml_file (urdfFilename)
 
 def resolve_ros_path (path):
