@@ -48,6 +48,13 @@ namespace graphics {
       }
     };
 
+    struct UrdfFile {
+      std::string filename;
+      time_t modTime;
+      UrdfFile (const std::string& f);
+      UrdfFile () {}
+    };
+
     DEF_CLASS_SMART_PTR(WindowsManager)
 
     class WindowsManager
@@ -60,6 +67,9 @@ namespace graphics {
 
             typedef std::map <std::string, WindowID> WindowIDMap_t;
             WindowIDMap_t windowIDmap_;
+
+            typedef std::map <std::string, UrdfFile> UrdfFileMap_t;
+            UrdfFileMap_t urdfFileMap_;
 
             typedef gepetto::corbaserver::PositionSeq PositionSeq;
 
@@ -88,6 +98,12 @@ namespace graphics {
             void threadRefreshing(WindowManagerPtr_t window);
             static osgQuat corbaConfToOsgQuat(const value_type* configurationCorba);
             static osgVector3 corbaConfToOsgVec3(const value_type* configurationCorba);
+            bool urdfUpToDate (const std::string nodeName,
+                const std::string filename);
+            void registerUrdfNode (const std::string nodeName,
+                const std::string filename);
+            bool urdfNodeMustBeAdded (const std::string& nodeName,
+                const std::string& filename);
 
         protected:
             /**

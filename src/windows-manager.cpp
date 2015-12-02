@@ -16,6 +16,10 @@
 
 #include "gepetto/viewer/corba/windows-manager.hh"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <boost/thread.hpp>
 
 #include <osgDB/WriteFile>
@@ -214,6 +218,31 @@ namespace graphics {
         return osgVector3 (configCorba[0], configCorba[1], configCorba[2]);
     }
 
+    UrdfFile::UrdfFile (const std::string& f)
+      : filename (f) {
+        struct stat buffer;
+        if (stat (filename.c_str(), &buffer) != 0) {
+          perror (filename.c_str());
+          modTime = 0;
+        }
+        modTime = buffer.st_mtime;
+      }
+
+    bool WindowsManager::urdfUpToDate (const std::string nodeName,
+        const std::string filename)
+    {
+      UrdfFileMap_t::const_iterator it = urdfFileMap_.find (nodeName);
+      if (it == urdfFileMap_.end())
+        return false;
+      UrdfFile uf (filename);
+      return it->second.modTime == uf.modTime;
+    }
+
+    void WindowsManager::registerUrdfNode (const std::string nodeName,
+        const std::string filename)
+    {
+      urdfFileMap_[nodeName] = UrdfFile (filename);
+    }
 
     //Public functions
 
@@ -858,6 +887,22 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::urdfNodeMustBeAdded (const std::string& nodeName,
+                const std::string& filename)
+    {
+      if (nodes_.find (nodeName) != nodes_.end ()) {
+        if (urdfUpToDate (nodeName, filename)) {
+          std::cout << "Urdf already loaded: " << nodeName << std::endl;
+          return false;
+        } else {
+          // Erase existing node.
+          std::cout << "Urdf deleted: " << nodeName << std::endl;
+          deleteNode (nodeName.c_str());
+        }
+      }
+      return true;
+    }
+
     bool WindowsManager::addURDF (const char* urdfNameCorba,
             const char* urdfPathCorba,
             const char* urdfPackagePathCorba)
@@ -865,34 +910,31 @@ namespace graphics {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
         const std::string urdfPackagePath (urdfPackagePathCorba);
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << urdfName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            GroupNodePtr_t urdf = urdfParser::parse
-                (urdfName, urdfPath, urdfPackagePath);
-            NodePtr_t link;
-            for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-                link = urdf->getChild (i);
-                nodes_[link->getID ()] = link;
-		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-					  <GroupNode> (link));
-		if (groupNode) {
-		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-		       ++j) {
-		    NodePtr_t object (groupNode->getChild (j));
-		    nodes_ [object->getID ()] = object;
-		  }
-		}
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
+          GroupNodePtr_t urdf = urdfParser::parse
+            (urdfName, urdfPath, urdfPackagePath);
+          NodePtr_t link;
+          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+            link = urdf->getChild (i);
+            nodes_[link->getID ()] = link;
+            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+                <GroupNode> (link));
+            if (groupNode) {
+              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+                  ++j) {
+                NodePtr_t object (groupNode->getChild (j));
+                nodes_ [object->getID ()] = object;
+              }
             }
-            mtx_.lock();
-            WindowsManager::initParent (urdfName, urdf);
-            addGroup (urdfName, urdf);
-            mtx_.unlock();
-            return true;
+          }
+          mtx_.lock();
+          WindowsManager::initParent (urdfName, urdf);
+          addGroup (urdfName, urdf);
+          registerUrdfNode (urdfName, urdfPath);
+          mtx_.unlock();
+          return true;
         }
+        return false;
     }
 
     bool WindowsManager::addUrdfCollision (const char* urdfNameCorba,
@@ -901,12 +943,7 @@ namespace graphics {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
         const std::string urdfPackagePath (urdfPackagePathCorba);
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << urdfName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath, "collision");
             NodePtr_t link;
@@ -926,9 +963,11 @@ namespace graphics {
             mtx_.lock();
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
+            registerUrdfNode (urdfName, urdfPath);
             mtx_.unlock();
             return true;
         }
+        return false;
     }
 
     void WindowsManager::addUrdfObjects (const char* urdfNameCorba,
@@ -943,33 +982,30 @@ namespace graphics {
             throw gepetto::Error ("Parameter nodeName cannot be empty in "
                     "idl request addUrdfObjects.");
         }
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::ostringstream oss;
-            oss << "You need to chose an other name, \"" << urdfName
-                << "\" already exist.";
-            throw gepetto::Error (oss.str ().c_str ());
-        }
-        GroupNodePtr_t urdf = urdfParser::parse
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
+          GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
-        NodePtr_t link;
-	for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-	  link = urdf->getChild (i);
-	  nodes_[link->getID ()] = link;
-	  GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-				    <GroupNode> (link));
-	  if (groupNode) {
-	    for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-		 ++j) {
-	      NodePtr_t object (groupNode->getChild (j));
-	      nodes_ [object->getID ()] = object;
-	    }
-	  }
-	}
-	mtx_.lock();
-        WindowsManager::initParent (urdfName, urdf);
-        addGroup (urdfName, urdf);
-	mtx_.unlock();
+          NodePtr_t link;
+          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+            link = urdf->getChild (i);
+            nodes_[link->getID ()] = link;
+            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+                <GroupNode> (link));
+            if (groupNode) {
+              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+                  ++j) {
+                NodePtr_t object (groupNode->getChild (j));
+                nodes_ [object->getID ()] = object;
+              }
+            }
+          }
+          mtx_.lock();
+          WindowsManager::initParent (urdfName, urdf);
+          addGroup (urdfName, urdf);
+          registerUrdfNode (urdfName, urdfPath);
+          mtx_.unlock();
+        }
     }
 
     bool WindowsManager::addToGroup (const char* nodeNameCorba,
