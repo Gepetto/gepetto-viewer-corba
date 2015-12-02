@@ -25,7 +25,7 @@ IF (EXISTS ${BLENDER_EXE})
       # COMMAND ${BLENDER_EXE}
       # --background --enable-autoexec
       # --python ${CMAKE_CURRENT_SOURCE_DIR}/install_addon.py
-    ADD_CUSTOM_TARGET (blender ALL
+    ADD_CUSTOM_TARGET (blender
       PYTHONPATH=/usr/lib/python3/dist-packages/
       ${BLENDER_EXE} --background --enable-autoexec
       --python ${CMAKE_CURRENT_BINARY_DIR}/install_addon.py
