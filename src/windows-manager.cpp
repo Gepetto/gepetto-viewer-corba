@@ -862,9 +862,9 @@ namespace graphics {
     std::vector<std::string> WindowsManager::getWindowList ()
     {
         std::vector<std::string> l;
-        for (WindowManagerVector_t::iterator it = windowManagers_.begin ();
-                it!=windowManagers_.end (); ++it) {
-            l.push_back ((*it)->getViewerClone ()->getCamera()->getGraphicsContext ()->getTraits ()->windowName);
+        for (WindowIDMap_t::const_iterator it = windowIDmap_.begin ();
+                it!=windowIDmap_.end (); ++it) {
+            l.push_back (it->first);
         }
         return l;
     }
