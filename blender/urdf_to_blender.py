@@ -101,7 +101,7 @@ def setParent (children, parent):
 """)
 
     def setName (self, name):
-        self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_visual0\"")
+        self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_0\"")
 
     def setupParent (self, name):
         self.writeCmd ("bpy.ops.object.empty_add ()")
