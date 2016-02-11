@@ -170,6 +170,46 @@ namespace graphics {
       return it->second;
     }
 
+    inline bool WindowsManager::nodeExists (const std::string& name)
+    {
+      std::map <std::string, NodePtr_t>::const_iterator it = nodes_.find (name);
+      return (it != nodes_.end ());
+    }
+
+    NodePtr_t WindowsManager::getNode (const std::string& name) const
+    {
+      std::map <std::string, NodePtr_t>::const_iterator it = nodes_.find (name);
+      if (it == nodes_.end ()) return NodePtr_t();
+      return it->second;
+    }
+
+    template <typename NodeContainer_t> std::size_t WindowsManager::getNodes
+      (const gepetto::corbaserver::Names_t& names, NodeContainer_t& nodes)
+    {
+      const std::size_t l = nodes.size();
+      for (CORBA::ULong i = 0; i < names.length(); ++i) {
+        std::string name (names[i]);
+        NodePtr_t n = getNode (name);
+        if (n) nodes.push_back (n);
+        else std::cout << "Node \"" << name << "\" doesn't exist." << std::endl;
+      }
+      return nodes.size() - l;
+    }
+
+    template <typename Iterator, typename NodeContainer_t>
+      std::size_t WindowsManager::getNodes
+      (const Iterator& begin, const Iterator& end, NodeContainer_t& nodes)
+    {
+      const std::size_t l = nodes.size();
+      for (Iterator it = begin; it != end; ++it) {
+        std::string name (*it);
+        NodePtr_t n = getNode (name);
+        if (n) nodes.push_back (n);
+        else std::cout << "Node \"" << name << "\" doesn't exist." << std::endl;
+      }
+      return nodes.size() - l;
+    }
+
     void WindowsManager::initParent (const std::string& nodeName,
             NodePtr_t node)
     {
@@ -1275,19 +1315,14 @@ namespace graphics {
     }
 
     bool WindowsManager::setCaptureTransform (const char* filename,
-        const char* nodename)
+        const std::list<std::string>& nodeNames)
     {
-        const std::string name (nodename);
-        std::map<std::string, NodePtr_t>::iterator it = nodes_.find (name);
-        if (it == nodes_.end ()) {
-            std::cout << "Node \"" << nodename << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        blenderCapture_.nodes_.clear ();
+        std::size_t nb = getNodes (nodeNames.begin(), nodeNames.end(),
+            blenderCapture_.nodes_);
         blenderCapture_.writer_visitor_->writer_ =
           new YamlTransformWriter (filename);
-        blenderCapture_.node_ = it->second;
-        return true;
+        return nb != nodeNames.size();
     }
 
     void WindowsManager::captureTransformOnRefresh (bool autoCapture)
@@ -1354,15 +1389,6 @@ namespace graphics {
             groupNodes_.find (sceneName);
         if (it == groupNodes_.end ())
             return GroupNodePtr_t ();
-        return it->second;
-    }
-
-    NodePtr_t WindowsManager::getNode (const std::string nodeName)
-    {
-        std::map<std::string, NodePtr_t>::iterator it =
-            nodes_.find (nodeName);
-        if (it == nodes_.end ())
-            return NodePtr_t ();
         return it->second;
     }
 

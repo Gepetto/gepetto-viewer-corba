@@ -37,15 +37,16 @@ private:
 public:
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
     typedef gepetto::corbaserver::Color Color;
+    typedef gepetto::corbaserver::Names_t Names_t;
 
     /**
         \brief Default constructor
         */
     GraphicalInterface (corbaServer::Server* server);
 
-  virtual gepetto::corbaserver::Names_t* getNodeList() throw (Error);
-  virtual gepetto::corbaserver::Names_t* getGroupNodeList(const char* group) throw (Error);
-  virtual gepetto::corbaserver::Names_t* getWindowList() throw (Error);
+  virtual Names_t* getNodeList() throw (Error);
+  virtual Names_t* getGroupNodeList(const char* group) throw (Error);
+  virtual Names_t* getWindowList() throw (Error);
 
   virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
@@ -134,7 +135,7 @@ public:
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);
-  virtual bool setCaptureTransform (const char* filename, const char* nodename) throw (Error);
+  virtual bool setCaptureTransform (const char* filename, const Names_t& nodename) throw (Error);
   virtual void captureTransformOnRefresh (bool autoCapture) throw (Error);
   virtual void captureTransform () throw (Error);
   virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);

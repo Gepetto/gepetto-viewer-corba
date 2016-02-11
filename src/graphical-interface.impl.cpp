@@ -12,6 +12,13 @@
 namespace graphics {
   namespace corbaServer {
     namespace impl {
+      namespace {
+        template <typename Input, typename Output>
+          void to (const Input& in, Output& out) {
+            for (CORBA::ULong i = 0; i < in.length(); ++i)
+              out.push_back ((typename Output::value_type)in[i]);
+          }
+      }
 
       using gepetto::Names_t;
 
@@ -556,10 +563,12 @@ namespace graphics {
       }
 
       bool GraphicalInterface::setCaptureTransform (const char* filename,
-          const char* nodeName) throw (Error)
+          const Names_t& nodeNames) throw (Error)
       {
         try {
-          return windowsManager_->setCaptureTransform (filename, nodeName);
+          std::list <std::string> nodes;
+          to (nodeNames, nodes);
+          return windowsManager_->setCaptureTransform (filename, nodes);
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

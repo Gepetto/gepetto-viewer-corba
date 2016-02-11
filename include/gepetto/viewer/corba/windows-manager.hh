@@ -32,19 +32,20 @@ namespace graphics {
     };
 
     struct BlenderFrameCapture {
+      typedef std::vector<NodePtr_t> Nodes_t;
       osg::ref_ptr < TransformWriterVisitor > writer_visitor_;
-      NodePtr_t node_;
+      Nodes_t nodes_;
       BlenderFrameCapture ()
         : writer_visitor_ (new TransformWriterVisitor (
               new YamlTransformWriter ("gepetto_viewer.yaml")))
-        , node_ ()
+        , nodes_ ()
       {}
       void captureFrame () {
         using std::invalid_argument;
         if (!writer_visitor_)
           throw invalid_argument ("Capture writer not defined");
-        if (!node_) throw invalid_argument ("No node to capture");
-        writer_visitor_->captureFrame (*node_);
+        if (nodes_.empty()) throw invalid_argument ("No node to capture");
+        writer_visitor_->captureFrame (nodes_.begin(), nodes_.end());
       }
     };
 
@@ -111,6 +112,14 @@ namespace graphics {
               */
             WindowsManager ();
             WindowID addWindow (std::string winName, WindowManagerPtr_t newWindow);
+
+            bool nodeExists (const std::string& name);
+            template <typename NodeContainer_t>
+              std::size_t getNodes
+              (const gepetto::corbaserver::Names_t& name, NodeContainer_t& nodes);
+            template <typename Iterator, typename NodeContainer_t> 
+              std::size_t getNodes
+              (const Iterator& begin, const Iterator& end, NodeContainer_t& nodes);
 
         public:
             static WindowsManagerPtr_t create ();
@@ -210,7 +219,7 @@ namespace graphics {
             virtual bool startCapture (const WindowID windowId, const char* filename,
                     const char* extension);
             virtual bool stopCapture (const WindowID windowId);
-            virtual bool setCaptureTransform (const char* filename, const char* nodename);
+            virtual bool setCaptureTransform (const char* filename, const std::list<std::string>& nodename);
             virtual void captureTransformOnRefresh (bool autoCapture);
             virtual void captureTransform ();
             virtual bool writeNodeFile (const char* nodename, const char* filename);
@@ -218,7 +227,7 @@ namespace graphics {
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
             GroupNodePtr_t getScene (const std::string sceneName);
-            NodePtr_t getNode (const std::string nodeName);
+            NodePtr_t getNode (const std::string& nodeName) const;
             configuration_t getNodeGlobalTransform(const std::string nodeName);
     };
 } /* namespace graphics */
