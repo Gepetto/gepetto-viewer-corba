@@ -10,21 +10,24 @@ import inspect
 import urdf_parser_py.urdf as urdf
 
 def usage ():
-    print (os.path.basename(sys.argv[0]) + " -p <prefix> -i <urdf-file> -o <blender-script>\n")
+    print (os.path.basename(sys.argv[0]) + " [--env] [-p <prefix>] -i <urdf-file> -o <blender-script>\n")
     print ("Arguments:")
-    print ("\turdf-file     \t[mandatory]\tinput URDF file")
-    print ("\tblender-script\t[mandatory]\toutput blender script")
-    print ("\tprefix        \t[optional] \tprefix of object names")
+    print ("\t-i urdf-file     \t[mandatory]\tinput URDF file")
+    print ("\t-o blender-script\t[mandatory]\toutput blender script")
+    print ("\t-p prefix        \t[optional] \tprefix of object names")
+    print ("\t--env            \t[optional] \tobject static transform will be ignored")
 
 try:
-    opts, args = getopt.getopt (sys.argv[1:], "p:i:o:", ["prefix=", "in=", "out="])
-except getopt.GetoptError:
+    opts, args = getopt.getopt (sys.argv[1:], "p:i:o:", ["env", "prefix=", "in=", "out="])
+except getopt.GetoptError as err:
     usage ()
-    sys.exit (2)
+    print ("\nError: " + err.msg + "\n")
+    raise
 
 prefix = ""
 urdfFilename = None
 blendFilename = None
+isEnv = False
 for opt, arg in opts:
     if opt in ("-i", "--in"):
         urdfFilename = arg
@@ -32,6 +35,8 @@ for opt, arg in opts:
         blendFilename = arg
     elif opt in ("-p", "--prefix"):
         prefix = arg
+    elif opt in ("--env"):
+        isEnv = True
 
 if urdfFilename is None or blendFilename is None:
     usage ()
@@ -101,7 +106,10 @@ def setParent (children, parent):
 """)
 
     def setName (self, name):
-        self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_0\"")
+        if isEnv:
+            self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_0\"")
+        else:
+            self.writeCmd ("bpy.context.object.name = \"" + self.prefix + name + "_visual0\"")
 
     def setupParent (self, name):
         self.writeCmd ("bpy.ops.object.empty_add ()")
