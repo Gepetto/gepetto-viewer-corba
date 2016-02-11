@@ -335,7 +335,7 @@ typedef sequence<Position> PositionSeq;
     /// \param filename file where to write.
     /// \param nodeName name of the node to be captured
     ///        (all children will also be captured)
-    boolean setCaptureTransform (in string filename, in string nodeName)
+    boolean setCaptureTransform (in string filename, in Names_t nodeNames)
       raises (Error);
 
     /// Change status of automatic capture on refresh
