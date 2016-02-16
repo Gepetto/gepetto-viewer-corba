@@ -937,7 +937,7 @@ namespace graphics {
         } else {
           // Erase existing node.
           std::cout << "Urdf deleted: " << nodeName << std::endl;
-          deleteNode (nodeName.c_str());
+          deleteNode (nodeName.c_str(), false);
         }
       }
       return true;
@@ -1086,23 +1086,30 @@ namespace graphics {
         }
     }
 
-    bool WindowsManager::deleteNode (const char* nodeNameCorba)
+    bool WindowsManager::deleteNode (const char* nodeNameCorba, bool all)
     {
         const std::string nodeName (nodeNameCorba);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node name \"" << nodeName << "\" doesn't exist." << std::endl;
-            return false;
-        }
+        NodePtr_t n = getNode (nodeName);
+        if (!n) return false;
         else {
             /// Check if it is a group
-            if (groupNodes_.find (nodeName) != groupNodes_.end ()) {
+            std::map<std::string, GroupNodePtr_t>::iterator it =
+              groupNodes_.find(nodeName);
+            if (it != groupNodes_.end ()) {
+              if (all) {
+                std::vector <std::string> names(it->second->getNumOfChildren ());
+                for (std::size_t i = 0; i < names.size(); ++i)
+                  names[i] = it->second->getChild (i)->getID();
+                it->second->removeAllChildren ();
+                for (std::size_t i = 0; i < names.size(); ++i)
+                  deleteNode (names[i].c_str(), all);
+              }
               groupNodes_.erase (nodeName);
             }
-            NodePtr_t n = nodes_[nodeName];
             std::map<std::string, GroupNodePtr_t>::iterator itg;
             for (itg = groupNodes_.begin (); itg != groupNodes_.end(); ++itg) {
               if (itg->second && itg->second->hasChild (n))
-                itg->second->removeChild(nodes_[nodeName]);
+                itg->second->removeChild(n);
             }
             nodes_.erase (nodeName);
             return true;
