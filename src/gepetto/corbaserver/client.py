@@ -51,13 +51,16 @@ class Client:
     self.__dict__[serviceName [0]] = client
 
 
-  def __init__(self, clients = defaultClients):
+  def __init__(self, clients = defaultClients, url = "corbaloc:rir:/NameService"):
     """
     Initialize CORBA and create default clients.
+    :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
+                For a remote corba server, use
+                url = "corbaloc:iiop:<host>:<port>/NameService"
     """
     import sys
     self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
-    obj = self.orb.resolve_initial_references("NameService")
+    obj = self.orb.string_to_object (url)
     self.rootContext = obj._narrow(CosNaming.NamingContext)
     if self.rootContext is None:
       raise CorbaError ('failed to narrow the root context')
