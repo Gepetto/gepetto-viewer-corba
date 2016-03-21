@@ -215,7 +215,7 @@ namespace graphics {
             virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba);
             virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
             virtual bool setHighlight(const char* nodeNameCorba, int state);
-            virtual bool setAlpha(const float& alpha);
+            virtual bool setAlpha(const char *nodeNameCorba, const value_type* integerValue);
 
             virtual bool startCapture (const WindowID windowId, const char* filename,
                     const char* extension);
