@@ -19,6 +19,7 @@
 
 #include <gepetto/viewer/window-manager.h>
 #include <gepetto/viewer/roadmap-viewer.h>
+#include <gepetto/viewer/transform-writer.h>
 #include "gepetto/viewer/corba/graphical-interface.hh"
 #include <boost/thread/mutex.hpp>
 
@@ -28,6 +29,30 @@ namespace graphics {
         NodePtr_t node;
         osgVector3 position;
         osgQuat quat;
+    };
+
+    struct BlenderFrameCapture {
+      osg::ref_ptr < TransformWriterVisitor > writer_visitor_;
+      NodePtr_t node_;
+      BlenderFrameCapture ()
+        : writer_visitor_ (new TransformWriterVisitor (
+              new YamlTransformWriter ("gepetto_viewer.yaml")))
+        , node_ ()
+      {}
+      void captureFrame () {
+        using std::invalid_argument;
+        if (!writer_visitor_)
+          throw invalid_argument ("Capture writer not defined");
+        if (!node_) throw invalid_argument ("No node to capture");
+        writer_visitor_->captureFrame (*node_);
+      }
+    };
+
+    struct UrdfFile {
+      std::string filename;
+      time_t modTime;
+      UrdfFile (const std::string& f);
+      UrdfFile () {}
     };
 
     DEF_CLASS_SMART_PTR(WindowsManager)
@@ -43,6 +68,9 @@ namespace graphics {
             typedef std::map <std::string, WindowID> WindowIDMap_t;
             WindowIDMap_t windowIDmap_;
 
+            typedef std::map <std::string, UrdfFile> UrdfFileMap_t;
+            UrdfFileMap_t urdfFileMap_;
+
             typedef gepetto::corbaserver::PositionSeq PositionSeq;
 
         private:
@@ -54,6 +82,8 @@ namespace graphics {
             boost::mutex mtx_;
             int rate_;
             std::list<NodeConfiguration> newNodeConfigurations_;
+            BlenderFrameCapture blenderCapture_;
+            bool autoCaptureTransform_;
 
             static osgVector4 getColor(const std::string& colorName);
             static osgVector4 getColor(const float* color);
@@ -68,6 +98,12 @@ namespace graphics {
             void threadRefreshing(WindowManagerPtr_t window);
             static osgQuat corbaConfToOsgQuat(const value_type* configurationCorba);
             static osgVector3 corbaConfToOsgVec3(const value_type* configurationCorba);
+            bool urdfUpToDate (const std::string nodeName,
+                const std::string filename);
+            void registerUrdfNode (const std::string nodeName,
+                const std::string filename);
+            bool urdfNodeMustBeAdded (const std::string& nodeName,
+                const std::string& filename);
 
         protected:
             /**
@@ -127,6 +163,10 @@ namespace graphics {
 
             virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color);
 
+            /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
+            /// possible values
+            virtual bool setCurveMode (const char* curveName, const GLenum mode);
+
             virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);
             virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color);
             virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis);
@@ -162,6 +202,7 @@ namespace graphics {
 
             virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
             virtual bool setScale(const char* nodeNameCorba, const value_type* scale);
+            virtual bool setColor(const char* nodeNameCorba, const value_type* color);
             virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba);
             virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
             virtual bool setHighlight(const char* nodeNameCorba, int state);
@@ -169,7 +210,11 @@ namespace graphics {
             virtual bool startCapture (const WindowID windowId, const char* filename,
                     const char* extension);
             virtual bool stopCapture (const WindowID windowId);
-            virtual bool writeNodeFile (const WindowID windowId, const char* filename);
+            virtual bool setCaptureTransform (const char* filename, const char* nodename);
+            virtual void captureTransformOnRefresh (bool autoCapture);
+            virtual void captureTransform ();
+            virtual bool writeNodeFile (const char* nodename, const char* filename);
+            virtual bool writeWindowFile (const WindowID windowId, const char* filename);
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
             GroupNodePtr_t getScene (const std::string sceneName);

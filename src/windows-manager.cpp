@@ -14,9 +14,15 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer. If not, see <http://www.gnu.org/licenses/>.
 
-#include "gepetto/viewer/corba/windows-manager.h"
+#include "gepetto/viewer/corba/windows-manager.hh"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <boost/thread.hpp>
+
+#include <osgDB/WriteFile>
 
 #include <gepetto/viewer/window-manager.h>
 #include <gepetto/viewer/node.h>
@@ -44,9 +50,9 @@
 namespace graphics {
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
-        mtx_ (), rate_ (20), newNodeConfigurations_ ()
-    {
-    }
+        mtx_ (), rate_ (20), newNodeConfigurations_ (),
+        autoCaptureTransform_ (false)
+    {}
 
     WindowsManager::WindowID WindowsManager::addWindow (std::string winName,
             WindowManagerPtr_t newWindow)
@@ -212,6 +218,31 @@ namespace graphics {
         return osgVector3 (configCorba[0], configCorba[1], configCorba[2]);
     }
 
+    UrdfFile::UrdfFile (const std::string& f)
+      : filename (f) {
+        struct stat buffer;
+        if (stat (filename.c_str(), &buffer) != 0) {
+          perror (filename.c_str());
+          modTime = 0;
+        }
+        modTime = buffer.st_mtime;
+      }
+
+    bool WindowsManager::urdfUpToDate (const std::string nodeName,
+        const std::string filename)
+    {
+      UrdfFileMap_t::const_iterator it = urdfFileMap_.find (nodeName);
+      if (it == urdfFileMap_.end())
+        return false;
+      UrdfFile uf (filename);
+      return it->second.modTime == uf.modTime;
+    }
+
+    void WindowsManager::registerUrdfNode (const std::string nodeName,
+        const std::string filename)
+    {
+      urdfFileMap_[nodeName] = UrdfFile (filename);
+    }
 
     //Public functions
 
@@ -258,6 +289,7 @@ namespace graphics {
         }
         newNodeConfigurations_.clear ();
         mtx_.unlock ();
+        if (autoCaptureTransform_) captureTransform ();
     }
 
     void WindowsManager::createScene (const char* sceneNameCorba)
@@ -621,17 +653,35 @@ namespace graphics {
             }
             ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
             std::size_t i = 0;
-            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
-            for (i = 1; i < pos.length () - 1; ++i) {
-              values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+            for (i = 0; i < pos.length (); ++i) {
               values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             }
-            values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             LeafNodeLinePtr_t curve = LeafNodeLine::create
                 (curveName, values, getColor (colorCorba));
+            curve->setMode (GL_LINE_STRIP);
             mtx_.lock();
             WindowsManager::initParent (curveName, curve);
             addNode (curveName, curve);
+            mtx_.unlock();
+            return true;
+        }
+    }
+
+    bool WindowsManager::setCurveMode (const char* curveName, const GLenum mode)
+    {
+        NodePtr_t node = find (curveName);
+        if (!node) {
+            std::cerr << "Node \"" << curveName << "\" not found." << std::endl;
+            return false;
+        } else {
+            LeafNodeLinePtr_t curve (boost::dynamic_pointer_cast
+                <LeafNodeLine> (node));
+            if (!curve) {
+              std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
+              return false;
+            }
+            mtx_.lock();
+            curve->setMode (mode);
             mtx_.unlock();
             return true;
         }
@@ -837,6 +887,22 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::urdfNodeMustBeAdded (const std::string& nodeName,
+                const std::string& filename)
+    {
+      if (nodes_.find (nodeName) != nodes_.end ()) {
+        if (urdfUpToDate (nodeName, filename)) {
+          std::cout << "Urdf already loaded: " << nodeName << std::endl;
+          return false;
+        } else {
+          // Erase existing node.
+          std::cout << "Urdf deleted: " << nodeName << std::endl;
+          deleteNode (nodeName.c_str());
+        }
+      }
+      return true;
+    }
+
     bool WindowsManager::addURDF (const char* urdfNameCorba,
             const char* urdfPathCorba,
             const char* urdfPackagePathCorba)
@@ -844,34 +910,31 @@ namespace graphics {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
         const std::string urdfPackagePath (urdfPackagePathCorba);
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << urdfName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            GroupNodePtr_t urdf = urdfParser::parse
-                (urdfName, urdfPath, urdfPackagePath);
-            NodePtr_t link;
-            for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-                link = urdf->getChild (i);
-                nodes_[link->getID ()] = link;
-		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-					  <GroupNode> (link));
-		if (groupNode) {
-		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-		       ++j) {
-		    NodePtr_t object (groupNode->getChild (j));
-		    nodes_ [object->getID ()] = object;
-		  }
-		}
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
+          GroupNodePtr_t urdf = urdfParser::parse
+            (urdfName, urdfPath, urdfPackagePath);
+          NodePtr_t link;
+          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+            link = urdf->getChild (i);
+            nodes_[link->getID ()] = link;
+            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+                <GroupNode> (link));
+            if (groupNode) {
+              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+                  ++j) {
+                NodePtr_t object (groupNode->getChild (j));
+                nodes_ [object->getID ()] = object;
+              }
             }
-            mtx_.lock();
-            WindowsManager::initParent (urdfName, urdf);
-            addGroup (urdfName, urdf);
-            mtx_.unlock();
-            return true;
+          }
+          mtx_.lock();
+          WindowsManager::initParent (urdfName, urdf);
+          addGroup (urdfName, urdf);
+          registerUrdfNode (urdfName, urdfPath);
+          mtx_.unlock();
+          return true;
         }
+        return false;
     }
 
     bool WindowsManager::addUrdfCollision (const char* urdfNameCorba,
@@ -880,12 +943,7 @@ namespace graphics {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
         const std::string urdfPackagePath (urdfPackagePathCorba);
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << urdfName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, urdfPackagePath, "collision");
             NodePtr_t link;
@@ -905,9 +963,11 @@ namespace graphics {
             mtx_.lock();
             WindowsManager::initParent (urdfName, urdf);
             addGroup (urdfName, urdf);
+            registerUrdfNode (urdfName, urdfPath);
             mtx_.unlock();
             return true;
         }
+        return false;
     }
 
     void WindowsManager::addUrdfObjects (const char* urdfNameCorba,
@@ -922,33 +982,30 @@ namespace graphics {
             throw gepetto::Error ("Parameter nodeName cannot be empty in "
                     "idl request addUrdfObjects.");
         }
-        if (nodes_.find (urdfName) != nodes_.end ()) {
-            std::ostringstream oss;
-            oss << "You need to chose an other name, \"" << urdfName
-                << "\" already exist.";
-            throw gepetto::Error (oss.str ().c_str ());
-        }
-        GroupNodePtr_t urdf = urdfParser::parse
+        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
+          GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, urdfPackagePath,
              visual ? "visual" : "collision", "object");
-        NodePtr_t link;
-	for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-	  link = urdf->getChild (i);
-	  nodes_[link->getID ()] = link;
-	  GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-				    <GroupNode> (link));
-	  if (groupNode) {
-	    for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-		 ++j) {
-	      NodePtr_t object (groupNode->getChild (j));
-	      nodes_ [object->getID ()] = object;
-	    }
-	  }
-	}
-	mtx_.lock();
-        WindowsManager::initParent (urdfName, urdf);
-        addGroup (urdfName, urdf);
-	mtx_.unlock();
+          NodePtr_t link;
+          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+            link = urdf->getChild (i);
+            nodes_[link->getID ()] = link;
+            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+                <GroupNode> (link));
+            if (groupNode) {
+              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
+                  ++j) {
+                NodePtr_t object (groupNode->getChild (j));
+                nodes_ [object->getID ()] = object;
+              }
+            }
+          }
+          mtx_.lock();
+          WindowsManager::initParent (urdfName, urdf);
+          addGroup (urdfName, urdf);
+          registerUrdfNode (urdfName, urdfPath);
+          mtx_.unlock();
+        }
     }
 
     bool WindowsManager::addToGroup (const char* nodeNameCorba,
@@ -1122,6 +1179,20 @@ namespace graphics {
         return true;
     }
 
+    bool WindowsManager::setColor(const char* nodeNameCorba, const value_type* color){
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+            std::cout << "Node \"" << nodeName << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        osgVector4 vecColor(color[0],color[1],color[2],color[3]);
+        mtx_.lock();
+        nodes_[nodeName]->setColor (vecColor);
+        mtx_.unlock();
+        return true;
+    }
+
     bool WindowsManager::setWireFrameMode (const char* nodeNameCorba,
             const char* wireFrameModeCorba)
     {
@@ -1203,7 +1274,55 @@ namespace graphics {
         }
     }
 
-    bool WindowsManager::writeNodeFile (const WindowID windowId, const char* filename)
+    bool WindowsManager::setCaptureTransform (const char* filename,
+        const char* nodename)
+    {
+        const std::string name (nodename);
+        std::map<std::string, NodePtr_t>::iterator it = nodes_.find (name);
+        if (it == nodes_.end ()) {
+            std::cout << "Node \"" << nodename << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        blenderCapture_.writer_visitor_->writer_ =
+          new YamlTransformWriter (filename);
+        blenderCapture_.node_ = it->second;
+        return true;
+    }
+
+    void WindowsManager::captureTransformOnRefresh (bool autoCapture)
+    {
+      autoCaptureTransform_ = autoCapture;
+    }
+
+    void WindowsManager::captureTransform ()
+    {
+        mtx_.lock ();
+        blenderCapture_.captureFrame ();
+        mtx_.unlock ();
+    }
+
+    bool WindowsManager::writeNodeFile (const char* nodename,
+        const char* filename)
+    {
+        const std::string name (nodename);
+        std::map<std::string, NodePtr_t>::iterator it = nodes_.find (name);
+        if (it == nodes_.end ()) {
+            std::cout << "Node \"" << nodename << "\" doesn't exist."
+                << std::endl;
+            return false;
+        }
+        mtx_.lock();
+        osg::ref_ptr <osgDB::Options> os = new osgDB::Options;
+        os->setOptionString ("NoExtras");
+        bool ret = osgDB::writeNodeFile (*it->second->asGroup (),
+            std::string (filename), os.get());
+        mtx_.unlock();
+        return ret;
+    }
+
+    bool WindowsManager::writeWindowFile (const WindowID windowId,
+        const char* filename)
     {
         if (windowId < windowManagers_.size ()) {
             mtx_.lock();

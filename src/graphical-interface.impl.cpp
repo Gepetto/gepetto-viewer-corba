@@ -255,6 +255,21 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::setCurveMode(const char* curveName,
+          const char* modeName) throw (Error)
+      {
+          try {
+              GLenum mode;
+              if      (strcasecmp (modeName, "lines") == 0) mode = GL_LINES;
+              else if (strcasecmp (modeName, "line_strip") == 0) mode = GL_LINE_STRIP;
+              else if (strcasecmp (modeName, "polygon") == 0) mode = GL_POLYGON;
+              else throw Error ("Unknown mode name");
+              return windowsManager_->setCurveMode (curveName, mode) ;
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addTriangleFace (const char* faceNameCorba,
 						const value_type* posCorba1,
 						const value_type* posCorba2,
@@ -481,6 +496,16 @@ namespace graphics {
     }
       }
 
+      bool GraphicalInterface::setColor(const char* nodeNameCorba,
+          const Color color) throw (Error)
+      {
+        try {
+          return windowsManager_->setColor ( nodeNameCorba, color) ;
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
+      }
+
       bool GraphicalInterface::setWireFrameMode (const char* nodeNameCorba,
 						 const char* wireFrameModeCorba) throw (Error)
       {
@@ -530,10 +555,50 @@ namespace graphics {
 	}
       }
 
-      bool GraphicalInterface::writeNodeFile (const WindowID windowId, const char* filename) throw (Error)
+      bool GraphicalInterface::setCaptureTransform (const char* filename,
+          const char* nodeName) throw (Error)
+      {
+        try {
+          return windowsManager_->setCaptureTransform (filename, nodeName);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      void GraphicalInterface::captureTransformOnRefresh (bool autoCapture)
+        throw (Error)
       {
 	try {
-      return windowsManager_->writeNodeFile ( windowId, filename) ;
+          return windowsManager_->captureTransformOnRefresh (autoCapture);
+        } catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      void GraphicalInterface::captureTransform () throw (Error)
+      {
+	try {
+          return windowsManager_->captureTransform ();
+        } catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::writeNodeFile (const char* nodeName,
+          const char* filename) throw (Error)
+      {
+        try {
+          return windowsManager_->writeNodeFile (nodeName, filename);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
+      bool GraphicalInterface::writeWindowFile (const WindowID windowId,
+          const char* filename) throw (Error)
+      {
+        try {
+          return windowsManager_->writeWindowFile (windowId, filename);
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());
 	}

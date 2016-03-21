@@ -1,0 +1,4 @@
+import bpy
+
+bpy.ops.wm.addon_install (filepath="@CMAKE_SOURCE_DIR@/blender/gepettoimport.py")
+bpy.ops.wm.addon_enable (module="gepettoimport")

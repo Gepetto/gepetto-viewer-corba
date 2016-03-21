@@ -36,6 +36,7 @@ private:
 
 public:
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
+    typedef gepetto::corbaserver::Color Color;
 
     /**
         \brief Default constructor
@@ -85,6 +86,8 @@ public:
 
   virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color) throw (Error);
 
+  virtual bool setCurveMode(const char* curveName, const char* modeName) throw (Error);
+
   virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color) throw (Error);
   virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color) throw (Error);
 
@@ -123,6 +126,7 @@ public:
 
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
   virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
+  virtual bool setColor(const char* nodeNameCorba, const Color color) throw (Error);
   virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba)  throw (Error);
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
   virtual bool setHighlight(const char* nodeNameCorba, ::CORBA::Long state)  throw (Error);
@@ -130,7 +134,11 @@ public:
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);
-  virtual bool writeNodeFile (const WindowID windowId, const char* filename) throw (Error);
+  virtual bool setCaptureTransform (const char* filename, const char* nodename) throw (Error);
+  virtual void captureTransformOnRefresh (bool autoCapture) throw (Error);
+  virtual void captureTransform () throw (Error);
+  virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
+  virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
   virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);
 }; // end of class
 

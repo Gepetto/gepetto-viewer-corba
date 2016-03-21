@@ -30,7 +30,7 @@ SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "")
 
 SET(${PROJECT_NAME}_HEADERS
-  include/gepetto/viewer/corba/windows-manager.h
+  include/gepetto/viewer/corba/windows-manager.hh
   include/gepetto/viewer/corba/server.hh
   include/gepetto/viewer/corba/client.hh
   include/gepetto/viewer/corba/se3.hh
@@ -55,6 +55,7 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS})
 
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(blender)
 ADD_SUBDIRECTORY(examples EXCLUDE_FROM_ALL)
 
 SETUP_PROJECT_FINALIZE()

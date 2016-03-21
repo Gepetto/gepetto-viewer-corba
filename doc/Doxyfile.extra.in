@@ -1,12 +1,9 @@
-FILE_PATTERNS          = *.idl *.hh
+FILE_PATTERNS   = *.idl *.hh
 
-INPUT                  = @CMAKE_SOURCE_DIR@/include \
-                         @CMAKE_SOURCE_DIR@/idl	  \
-                         @CMAKE_SOURCE_DIR@/doc \
-		  	 @CMAKE_SOURCE_DIR@/src/hpp/corbaserver/problem_solver.py \
- 		  	 @CMAKE_SOURCE_DIR@/src/hpp/corbaserver/robot.py
+INPUT           = @CMAKE_SOURCE_DIR@/include    \
+                  @CMAKE_SOURCE_DIR@/idl        \
+                  @CMAKE_SOURCE_DIR@/doc
 
-TAGFILES		 = @HPP_CORE_DOXYGENDOCDIR@/hpp-core.doxytag=@HPP_CORE_DOXYGENDOCDIR@ \
-			 @HPP_MODEL_DOXYGENDOCDIR@/hpp-model.doxytag=@HPP_MODEL_DOXYGENDOCDIR@
+TAGFILES        = @GEPETTO_VIEWER_DOXYGENDOCDIR@/gepetto-viewer.doxytag=@GEPETTO_VIEWER_DOXYGENDOCDIR@
 
 GENERATE_TREEVIEW      = NO

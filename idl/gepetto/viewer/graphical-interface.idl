@@ -153,6 +153,8 @@ typedef sequence<Position> PositionSeq;
     /// \param input RGBAcolor : color of the line.
     boolean addCurve(in string curveName, in PositionSeq pos, in Color RGBAcolor) raises (Error);
 
+    boolean setCurveMode (in string curveName, in string mode) raises (Error);
+
     /// create a four vertices face called faceName.
     /// \param input faceName : name of the face.
     /// \param input pos1, pos2, pos3, pos4 : position of the vertices.
@@ -291,7 +293,11 @@ typedef sequence<Position> PositionSeq;
     /// \param input nodeName : name of the node.
     /// \param input scale : new scale  
     boolean setScale(in string nodeName, in Position scale) raises (Error);
-
+    
+    /// Change the color of a node. 
+    /// \param input nodeName : name of the node.
+    /// \param input color : new color
+    boolean setColor(in string nodeName, in Color scale) raises (Error);
 
     /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
     /// \param input nodeName : name of the node.
@@ -325,7 +331,24 @@ typedef sequence<Position> PositionSeq;
     /// Stop the running capture of a window.
     boolean stopCapture (in unsigned long windowId) raises (Error);
 
-    boolean writeNodeFile (in unsigned long windowId, in string filename) raises (Error);
+    /// Configure the capture of node transformation in YAML format
+    /// \param filename file where to write.
+    /// \param nodeName name of the node to be captured
+    ///        (all children will also be captured)
+    boolean setCaptureTransform (in string filename, in string nodeName)
+      raises (Error);
+
+    /// Change status of automatic capture on refresh
+    void captureTransformOnRefresh (in boolean autoCapture) raises (Error);
+
+    /// Write current configuration to the motion file
+    void captureTransform () raises (Error);
+
+    /// Write a node and its children to filename
+    boolean writeNodeFile (in string nodeName, in string filename) raises (Error);
+
+    /// Write the nodes contained in the window to filename
+    boolean writeWindowFile (in unsigned long windowId, in string filename) raises (Error);
     
     /// Return the Position + Quaternion orientation of an object in the global frame
     /// \param input nodeName : name of the node.
