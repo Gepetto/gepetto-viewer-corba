@@ -1219,6 +1219,21 @@ namespace graphics {
         return true;
     }
 
+    bool WindowsManager::setAlpha(const char *nodeNameCorba, const value_type* integerValue)
+    {
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end ()) {
+    	  std::cout << "Node \"" << nodeName << "\" doesn't exist."
+  		    << std::endl;
+  	  return false;
+        }
+	float alpha = ((*integerValue) * 50) / static_cast<float>(100.0);
+  	mtx_.lock();
+        nodes_[nodeName]->setAlpha (alpha);
+   	mtx_.unlock();
+        return true;
+    }
+
     bool WindowsManager::setColor(const char* nodeNameCorba, const value_type* color){
         const std::string nodeName (nodeNameCorba);
         if (nodes_.find (nodeName) == nodes_.end ()) {
