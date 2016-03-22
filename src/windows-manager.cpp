@@ -1219,7 +1219,7 @@ namespace graphics {
         return true;
     }
 
-    bool WindowsManager::setAlpha(const char *nodeNameCorba, const value_type* integerValue)
+    bool WindowsManager::setAlpha(const char *nodeNameCorba, const float& alpha)
     {
         const std::string nodeName (nodeNameCorba);
         if (nodes_.find (nodeName) == nodes_.end ()) {
@@ -1227,7 +1227,6 @@ namespace graphics {
   		    << std::endl;
   	  return false;
         }
-	float alpha = ((*integerValue) * 50) / static_cast<float>(100.0);
   	mtx_.lock();
         nodes_[nodeName]->setAlpha (alpha);
    	mtx_.unlock();
