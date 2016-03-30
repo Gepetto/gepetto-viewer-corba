@@ -269,7 +269,13 @@ namespace graphics {
               GLenum mode;
               if      (strcasecmp (modeName, "lines") == 0) mode = GL_LINES;
               else if (strcasecmp (modeName, "line_strip") == 0) mode = GL_LINE_STRIP;
+              else if (strcasecmp (modeName, "line_loop") == 0) mode = GL_LINE_LOOP;
               else if (strcasecmp (modeName, "polygon") == 0) mode = GL_POLYGON;
+              else if (strcasecmp (modeName, "quads") == 0) mode = GL_QUADS;
+              else if (strcasecmp (modeName, "quad_strip") == 0) mode = GL_QUAD_STRIP;
+              else if (strcasecmp (modeName, "triangle_strip") == 0) mode = GL_TRIANGLE_STRIP;
+              else if (strcasecmp (modeName, "triangles") == 0) mode = GL_TRIANGLES;
+              else if (strcasecmp (modeName, "triangle_fan") == 0) mode = GL_TRIANGLE_FAN;
               else throw Error ("Unknown mode name");
               return windowsManager_->setCurveMode (curveName, mode) ;
           } catch (const std::exception& exc) {
