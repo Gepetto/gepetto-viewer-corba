@@ -124,6 +124,8 @@ namespace graphics {
         public:
             static WindowsManagerPtr_t create ();
 
+            virtual ~WindowsManager () {};
+
             virtual std::vector<std::string> getNodeList();
             virtual std::vector<std::string> getGroupNodeList(const char* group);
             virtual std::vector<std::string> getSceneList();
