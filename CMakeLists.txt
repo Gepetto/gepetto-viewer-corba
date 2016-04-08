@@ -33,7 +33,6 @@ SET(${PROJECT_NAME}_HEADERS
   include/gepetto/viewer/corba/windows-manager.hh
   include/gepetto/viewer/corba/server.hh
   include/gepetto/viewer/corba/client.hh
-  include/gepetto/viewer/corba/se3.hh
   include/gepetto/viewer/corba/fwd.hh
   )
 
@@ -47,7 +46,6 @@ ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
 ADD_REQUIRED_DEPENDENCY("openthreads >= 2.6")
 ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
 ADD_REQUIRED_DEPENDENCY("urdfdom")
-ADD_REQUIRED_DEPENDENCY("eigen3 >= v3.0.5")
 SEARCH_FOR_BOOST()
 
 PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})

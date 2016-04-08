@@ -20,12 +20,35 @@ SET(IDL_SOURCES
   graphical-interface
   )
 
+# search for python
+FINDPYTHON(2.7 EXACT REQUIRED)
+
 OMNIIDL_INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/idl)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
+
 FOREACH(IDL ${IDL_SOURCES})
   GENERATE_IDL_CPP (gepetto/viewer/corba/${IDL}
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
+  GENERATE_IDL_PYTHON (gepetto/viewer/corba/${IDL}
+    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
+
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba)
+
+  STRING(REGEX REPLACE "-" "_" IDL_UNDERSCORE "${IDL}")
+  IF(NOT ${IDL} EQUAL ${IDL_UNDERSCORE})
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL_UNDERSCORE}_idl.py
+      COMMAND ${CMAKE_COMMAND}
+      ARGS -E copy ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
+      )
+  ENDIF(NOT ${IDL} EQUAL ${IDL_UNDERSCORE})
+
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL_UNDERSCORE}_idl.py
+    DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver)
 ENDFOREACH()
+
+ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
+ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
 
 ADD_LIBRARY(${LIBRARY_NAME}
   SHARED
@@ -36,11 +59,12 @@ ADD_LIBRARY(${LIBRARY_NAME}
   client.cc
   server-private.cc
   server-private.hh
-  client-cpp.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface_idl.py
   ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
   ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
 )
+
+ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
+ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
 
 PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
 PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} gepetto-viewer)
@@ -49,37 +73,7 @@ TARGET_LINK_LIBRARIES(${LIBRARY_NAME} ${Boost_LIBRARIES})
 
 INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
 
-# search for python
-FINDPYTHON()
-
 MAKE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba)
-
-FOREACH (IDL ${IDL_SOURCES})
-  ADD_CUSTOM_COMMAND(
-    OUTPUT
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
-    COMMAND ${OMNIIDL}
-    ARGS -bpython -Wbpackage="" -I${CMAKE_SOURCE_DIR}/idl
-    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
-    MAIN_DEPENDENCY
-    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
-    )
-  SET_SOURCE_FILES_PROPERTIES(
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
-    PROPERTIES GENERATED ON
-    )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba)
-
-  STRING(REGEX REPLACE "-" "_"
-    IDL_UNDERSCORE "${IDL}")
-
-  INSTALL(
-    FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${IDL_UNDERSCORE}_idl.py
-    DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver
-    )
-ENDFOREACH()
 
 INSTALL(
   FILES
@@ -122,9 +116,5 @@ INSTALL (FILES
 ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
 TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
 #TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
-
-ADD_EXECUTABLE (client-test test-client-cpp.cc)
-TARGET_LINK_LIBRARIES(client-test ${LIBRARY_NAME})
-PKG_CONFIG_USE_DEPENDENCY(client-test gepetto-viewer)
 
 INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
