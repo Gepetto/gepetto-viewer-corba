@@ -24,7 +24,6 @@ have to be available on your machine.
  - Libraries:
    - omniORB4 (version >= 4.1.4)
    - openscenegraph (version >= 3.2)
-   - eigen3 (version >= 3.0.5) (only for C++ client)
    - urdfdom (version >= 0.3.0)
    - SceneViewer (Graphical Interface of Pinocchio and HPP)
  - System tools:

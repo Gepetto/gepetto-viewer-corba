@@ -722,7 +722,6 @@ namespace graphics {
             ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
             std::size_t i = 0;
             for (i = 0; i < pos.length (); ++i) {
-	      // std::cout << pos[i][0] << " - " << pos[i][1] << " - " << pos[i][2] << std::endl;
               values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             }
             LeafNodeLinePtr_t curve = LeafNodeLine::create
