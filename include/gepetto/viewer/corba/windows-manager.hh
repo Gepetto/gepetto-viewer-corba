@@ -146,6 +146,8 @@ namespace graphics {
             virtual void createSceneWithFloor(const char* sceneNameCorba);
             virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId);
 
+            virtual bool attachCameraToNode(const char* nodeNameCorba, const WindowID windowId);
+            virtual bool detachCamera(const WindowID windowId);
 
             virtual bool addFloor(const char* floorNameCorba);
 

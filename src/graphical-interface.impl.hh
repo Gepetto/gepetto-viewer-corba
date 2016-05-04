@@ -58,6 +58,8 @@ public:
   virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
   virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId)  throw (Error);
 
+  virtual bool attachCameraToNode(const char* nodeName, const WindowID windowId);
+  virtual bool detachCamera(const WindowID windowId);
 
   virtual bool addFloor(const char* floorName) throw (Error);
 

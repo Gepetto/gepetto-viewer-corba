@@ -74,6 +74,18 @@ typedef sequence<Position> PositionSeq;
     /// \param input windowId : ID of rhe window.
     boolean addSceneToWindow(in string sceneName, in unsigned long windowId) raises (Error);
 
+    /// Attach the camera to the Node nodeName in the WindowManager
+    /// pointed by windowId
+    /// If already attached, detach from the other node
+    /// \param input nodeName : name of the node
+    /// \param input windowId : ID of the window
+    boolean attachCameraToNode(in string nodeName, in unsigned long windowId) raises (Error);
+
+    /// Detach the camera of WindowManager pointed by windowId
+    /// from any node
+    /// \param input windowId : ID of the window
+    boolean detachCamera(in unsigned long windowId) raises (Error);
+
     /// create a floor called floorName.
     /// \param input floorName : name of the floor.
     boolean addFloor(in string floorName) raises (Error);
