@@ -386,6 +386,34 @@ namespace graphics {
             return false;
         }
     }
+  
+     bool WindowsManager::attachCameraToNode(const char* nodeNameCorba, const WindowID windowId)
+     {
+        const std::string nodeName (nodeNameCorba);
+        if (nodes_.find (nodeName) == nodes_.end () || windowId > windowManagers_.size()) {
+    	  std::cout << "Node \"" << nodeName << "\" and/or Window ID" << windowId
+		    << "doesn't exist."
+  		    << std::endl;
+  	  return false;
+        }
+  	mtx_.lock();
+	windowManagers_[windowId]->attachCameraToNode(nodes_[nodeName].get());
+   	mtx_.unlock();
+	return true;
+     }
+
+     bool WindowsManager::detachCamera(const WindowID windowId)
+     {
+        if (windowId > windowManagers_.size()) {
+    	  std::cout << "Window ID " << windowId << " doesn't exist."
+  		    << std::endl;
+  	  return false;
+        }
+  	mtx_.lock();
+	windowManagers_[windowId]->detachCamera();
+   	mtx_.unlock();       
+	return true;
+     }
 
     bool WindowsManager::addFloor(const char* floorNameCorba)
     {
@@ -694,6 +722,7 @@ namespace graphics {
             ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
             std::size_t i = 0;
             for (i = 0; i < pos.length (); ++i) {
+	      // std::cout << pos[i][0] << " - " << pos[i][1] << " - " << pos[i][2] << std::endl;
               values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
             }
             LeafNodeLinePtr_t curve = LeafNodeLine::create

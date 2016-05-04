@@ -95,6 +95,24 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::attachCameraToNode(const char* nodeName, const WindowID windowId)
+      {
+          try {
+              return windowsManager_->attachCameraToNode (nodeName, windowId);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
+      bool GraphicalInterface::detachCamera(const WindowID windowId)
+      {
+          try {
+              return windowsManager_->detachCamera (windowId);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
+
       bool GraphicalInterface::addFloor (const char* floorNameCorba)
           throw (Error)
       {
