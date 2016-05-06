@@ -366,6 +366,9 @@ typedef sequence<Position> PositionSeq;
     /// \param input nodeName : name of the node.
     /// \return a length 7 array
     floatSeq getNodeGlobalTransform(in string nodeName) raises (Error);
+
+		/// Delete node from visualiser
+		void deleteNode (in string nodeName, in boolean all) raises (Error);
   };
 };
 };

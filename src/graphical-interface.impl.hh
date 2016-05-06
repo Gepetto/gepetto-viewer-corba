@@ -143,6 +143,7 @@ public:
   virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
   virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
   virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);
+	virtual void deleteNode (const char* nodeName, bool all) throw (Error);
 }; // end of class
 
 } /* namespace impl */
