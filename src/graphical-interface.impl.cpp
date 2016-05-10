@@ -653,6 +653,16 @@ namespace graphics {
 	  throw Error (exc.what ());
 	}
       }
+
+			void GraphicalInterface::deleteNode (const char* nodeName, bool all) throw (Error)
+			{
+				try {
+					windowsManager_->deleteNode (nodeName, all);
+				} catch (const std::exception& exc) {
+	  			throw Error (exc.what ());
+				}
+			}
+
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics
