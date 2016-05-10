@@ -367,8 +367,10 @@ typedef sequence<Position> PositionSeq;
     /// \return a length 7 array
     floatSeq getNodeGlobalTransform(in string nodeName) raises (Error);
 
-		/// Delete node from visualiser
-		void deleteNode (in string nodeName, in boolean all) raises (Error);
+    /// Delete node from visualiser
+    /// \param all if nodeName is a group node and all is True, nodes
+    ///        are deleted recursively.
+    void deleteNode (in string nodeName, in boolean all) raises (Error);
   };
 };
 };
