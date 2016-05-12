@@ -52,7 +52,52 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
 INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS})
 
+SET (${PROJECT_NAME}_HEADERS_MOC
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/mainwindow.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/safeapplication.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/osgwidget.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/tree-item.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/bodytreewidget.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ledindicator.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/plugin-interface.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/omniorbthread.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadrobot.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadenvironment.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/pluginmanagerdialog.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
+  )
+SET (${PROJECT_NAME}_HEADERS_NO_MOC
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/meta.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/windows-manager.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
+  ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh
+  )
+
+SET(${PROJECT_NAME}_FORMS
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/mainwindow.ui
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/dialogloadrobot.ui
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/dialogloadenvironment.ui
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/pluginmanagerdialog.ui
+  )
+
+SET(${PROJECT_NAME}_RESOURCES ${CMAKE_SOURCE_DIR}/res/images.qrc)
+
+SET(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_HEADERS}
+  ${${PROJECT_NAME}_HEADERS_MOC}
+  ${${PROJECT_NAME}_HEADERS_NO_MOC})
+
+config_files(
+  include/gepetto/gui/config-dep.hh
+  src/gui/main.cc
+  src/gui/gepetto-gui
+  )
+
 ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(src/gui)
 ADD_SUBDIRECTORY(blender)
 ADD_SUBDIRECTORY(examples EXCLUDE_FROM_ALL)
 
