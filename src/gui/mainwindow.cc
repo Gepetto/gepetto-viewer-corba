@@ -58,6 +58,7 @@ namespace gepetto {
       backgroundQueue_.moveToThread(&worker_);
       worker_.start();
 
+      collisionLabel_ = new QLabel("No collisions.");
       setupInterface();
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
@@ -320,6 +321,23 @@ namespace gepetto {
       QMessageBox::about(this, QApplication::applicationName(), devString);
     }
 
+    void MainWindow::activateCollision(bool activate)
+    {
+      if (activate) {
+        requestConfigurationValidation();
+        foreach (QString b, lastBodiesInCollision_) {
+          osg ()->setHighlight(b.toLocal8Bit().data(), 1);
+        }
+      }
+      else {
+        foreach (QString b, lastBodiesInCollision_) {
+          osg ()->setHighlight(b.toLocal8Bit().data(), 0);
+        }
+        collisionIndicator_->switchLed(true);
+        collisionLabel_->setText("No collisions.");
+      }
+    }
+
     void MainWindow::setupInterface()
     {
       // Menu "Window"
@@ -348,9 +366,11 @@ namespace gepetto {
       collisionValidationActivated_ = new QCheckBox ();
       collisionValidationActivated_->setToolTip (tr("Automatically validate configurations."));
       collisionValidationActivated_->setCheckState (Qt::Checked);
+      statusBar()->addPermanentWidget(collisionLabel_);
       statusBar()->addPermanentWidget(collisionValidationActivated_);
       statusBar()->addPermanentWidget(collisionIndicator_);
 
+      connect (collisionValidationActivated_, SIGNAL(clicked(bool)), SLOT(activateCollision(bool)));
       connect (collisionIndicator_, SIGNAL (mouseClickEvent()), SLOT(requestConfigurationValidation()));
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
@@ -405,12 +425,15 @@ namespace gepetto {
         }
       }
       QString tooltip ("Collision between ");
-      tooltip += bodiesInCollision.join (", ");
       foreach(const QString& b, bodiesInCollision) {
         osg ()->setHighlight(b.toLocal8Bit().data(), 1);
         lastBodiesInCollision_.append(b);
       }
-      collisionIndicator_->setToolTip (tooltip);
+      tooltip += lastBodiesInCollision_.join (", ");
+      if (lastBodiesInCollision_.count() > 0)
+        collisionLabel_->setText(tooltip);
+      else
+        collisionLabel_->setText("No collisions.");
     }
 
     void MainWindow::requestSelectJointFromBodyName(const QString bodyName)

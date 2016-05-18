@@ -86,6 +86,7 @@ signals:
           OSGWidget* onCreateView();
         void openLoadRobotDialog ();
         void openLoadEnvironmentDialog ();
+        void activateCollision(bool activate);
 
         void handleWorkerDone (int id);
 
@@ -112,6 +113,7 @@ signals:
 
         QCheckBox* collisionValidationActivated_;
         LedIndicator* collisionIndicator_;
+        QLabel* collisionLabel_;
 
         QStandardItemModel *bodyTreeModel_;
 
