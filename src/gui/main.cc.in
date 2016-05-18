@@ -9,8 +9,6 @@
 #include "gepetto/gui/dialog/pluginmanagerdialog.hh"
 #include "gepetto/gui/settings.hh"
 
-#include <X11/Xlib.h>
-
 using namespace gepetto::gui;
 
 void setupEnvironment ()
@@ -55,7 +53,7 @@ void setupEnvironment ()
 
 int main(int argc, char *argv[])
 {
-  XInitThreads();
+  QApplication::setAttribute(Qt::AA_X11InitThreads);
 
   SafeApplication a(argc, argv);
   a.setStyle(new QCleanlooksStyle);
