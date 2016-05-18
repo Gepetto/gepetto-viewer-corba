@@ -33,9 +33,7 @@ namespace gepetto {
 
       PythonWidget::~PythonWidget()
       {
-	std::cout << "begin cleanup" << std::endl;
 	PythonQt::cleanup();
-	std::cout << "end cleanup" << std::endl;
       }
 
         void PythonWidget::browseFile() {
