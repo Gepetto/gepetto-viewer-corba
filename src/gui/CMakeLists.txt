@@ -19,29 +19,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-SET(CMAKE_MODULE_PATH
-  ${CMAKE_SOURCE_DIR}/cmake-modules/
-  ${CMAKE_MODULE_PATH})
-
-FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
-FINDPYTHON(2.7 EXACT)
-FIND_PACKAGE(PythonQt COMPONENTS QtAll)
-
-ADD_REQUIRED_DEPENDENCY("openscenegraph >= 3.2")
-ADD_REQUIRED_DEPENDENCY("openscenegraph-osgQt")
-ADD_REQUIRED_DEPENDENCY("openthreads >= 2.6")
-ADD_REQUIRED_DEPENDENCY("gepetto-viewer-corba")
-
-SET(BOOST_COMPONENTS program_options system thread regex)
-SEARCH_FOR_BOOST ()
-
 FIND_PACKAGE("X11")
-
-# Activate hpp-util logging if requested
-SET (HPP_DEBUG FALSE CACHE BOOL "trigger hpp-util debug output")
-IF (HPP_DEBUG)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHPP_DEBUG")
-ENDIF()
 
 # Configure the project
 
@@ -61,8 +39,6 @@ SET (${PROJECT_NAME}_SOURCES
   dialog/dialogloadenvironment.cc
   dialog/pluginmanagerdialog.cc
   )
-
-SET(GEPETTO_GUI_HAS_PYTHONQT ${PYTHONQT_FOUND} CACHE BOOL "Use PythonQt dependency")
 
 IF(GEPETTO_GUI_HAS_PYTHONQT)
   INCLUDE_DIRECTORIES("${PYTHON_INCLUDE_DIR}" "${PYTHONQT_INCLUDE_DIR}")
@@ -100,10 +76,9 @@ ADD_EXECUTABLE(gepetto-gui ${${PROJECT_NAME}_SOURCES}
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/gui)
 
-TARGET_LINK_LIBRARIES(gepetto-gui ${QT_LIBRARIES})
+TARGET_LINK_LIBRARIES(gepetto-gui ${PROJECT_NAME} ${QT_LIBRARIES})
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openthreads)
-PKG_CONFIG_USE_DEPENDENCY(gepetto-gui gepetto-viewer-corba)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph-osgQt)
 IF (GEPETTO_GUI_HAS_PYTHONQT)
   TARGET_LINK_LIBRARIES(gepetto-gui ${PYTHONQT_LIBRARIES})
