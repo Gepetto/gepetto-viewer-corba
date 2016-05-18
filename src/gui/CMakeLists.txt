@@ -73,8 +73,11 @@ ADD_EXECUTABLE(gepetto-gui ${${PROJECT_NAME}_SOURCES}
   )
 
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src/gui)
+# gepetto/viewer/corba/graphical-interface.hh
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
 
 TARGET_LINK_LIBRARIES(gepetto-gui ${PROJECT_NAME} ${QT_LIBRARIES})
+PKG_CONFIG_USE_DEPENDENCY(gepetto-gui gepetto-viewer)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openthreads)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph-osgQt)
