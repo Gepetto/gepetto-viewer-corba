@@ -8,7 +8,7 @@
 namespace gepetto {
     namespace gui {
         PythonWidget::PythonWidget(QWidget *parent) :
-            QDockWidget("PythonQt console", parent)
+            QDockWidget("&PythonQt console", parent)
         {
             PythonQt::init(PythonQt::RedirectStdOut);
             PythonQt_QtAll::init();
@@ -28,6 +28,7 @@ namespace gepetto {
             widget->setLayout(layout);
             this->setWidget(widget);
 
+            toggleViewAction()->setShortcut(gepetto::gui::DockKeyShortcutBase + Qt::Key_A);
             connect(button_, SIGNAL(clicked()), SLOT(browseFile()));
         }
 

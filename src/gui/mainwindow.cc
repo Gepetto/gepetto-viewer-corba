@@ -198,7 +198,7 @@ namespace gepetto {
         centralWidget_ = osgWidget;
         centralWidget_->setObjectName(objName);
         setCentralWidget(centralWidget_);
-	#if PYTHONQT_NEED_INCLUDE==1
+    #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
 	#endif
         connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
