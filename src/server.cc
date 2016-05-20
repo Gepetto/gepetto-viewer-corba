@@ -53,7 +53,6 @@ namespace graphics
     Server::~Server()
     {
       private_->deactivateAndDestroyServers();
-      private_->orb_->shutdown(0);
       delete private_;
       private_ = NULL;
     }
