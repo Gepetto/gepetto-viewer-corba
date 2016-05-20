@@ -53,6 +53,7 @@ class _NodeCreator (QtGui.QWidget):
 
     def createGroup (self):
         self.client.gui.createGroup(str(self.nodeName.text))
+        self.groupNodes.addItem(self.nodeName.text)
 
     def addToGroup (self):
         self.client.gui.addToGroup(str(self.nodeName.text), str(self.groupNodes.currentText))

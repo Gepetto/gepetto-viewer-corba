@@ -128,8 +128,16 @@ namespace gepetto {
 
       void PythonWidget::addSignalHandlersToPlugin(PythonQtObjectPtr plugin)
       {
+        MainWindow* main = MainWindow::instance();
         addSignalHandler(plugin, "osgWidget",
-            MainWindow::instance(), SIGNAL(viewCreated(OSGWidget*)));
+            main, SIGNAL(viewCreated(OSGWidget*)));
+        QAction* reconnect = main->findChild<QAction*>("actionReconnect");
+        if (reconnect)
+          addSignalHandler(plugin, "resetConnection",
+            reconnect, SIGNAL(triggered()));
+        else
+          qDebug() << "Could not find actionReconnect button. The plugin will"
+            << "not be able to reset CORBA connections";
       }
     }
 }

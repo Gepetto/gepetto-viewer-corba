@@ -23,29 +23,46 @@ namespace gepetto {
     /// \ingroup plugin
     /// Python plugin interface
     ///
+    /// ## Overview
+    ///
     /// A Python plugin is a Python module containing a class Plugin, with a
     /// constructor taking a pointer to the MainWindow as input.
     ///
-    /// For instance, if you have \code gepetto.gui=true \endcode in your
-    /// configuration file, then the Plugin class will be accessed via:
+    /// For instance, if you have
+    /// \code
+    /// [pyplugins]
+    /// module.submodule=true
+    /// \endcode
+    /// in your configuration file (Settings::readSettingFile), then the Plugin
+    /// class will be accessed by the GUI in a way similar to:
     ///
     /// \code{py}
-    /// from gepetto.gui import Plugin
+    /// from module.submodule import Plugin
     /// pluginInstance = Plugin(mainWindow)
     /// \endcode
     ///
-    /// It may interact with the interface in two following ways.
+    /// It may interact with the interface in following ways.
     ///
-    /// pyplugin_dockwidget Add a dock widget:
+    /// ### Add a dock widget:
     ///
     /// Your plugin may inherits from class PythonQt.QtGui.QDockWidget.
     /// In this case, an instance of the Plugin  will be added to the MainWindow
     /// as a QDockWidget.
     ///
-    /// pyplugin_signals Signals and slots:
+    /// ### Signals and slots:
     ///
     /// The following method will be automatically connected to Qt signals:
-    /// \li MainWindow::viewCreated(OSGWidget*) -> Plugin.osgWidget
+    /// \li \c Plugin.osgWidget when a new OSGWidget is created (MainWindow::viewCreated(OSGWidget*))
+    /// \li \c Plugin.resetConnection triggered when CORBA connection should be reset.
+    ///
+    /// ### Logging
+    ///
+    /// Logging can be done from Python through:
+    /// \li MainWindow::log(const QString&)
+    /// \li MainWindow::logError(const QString&)
+    /// \li MainWindow::logJobStarted, MainWindow::logJobDone and
+    ///     MainWindow::logJobFailed to inform users when
+    ///     something may take some time.
     ///
     /// \sa See example \ref pyplugins/gepetto/gui/pythonwidget.py
     class PythonWidget : public QDockWidget
@@ -93,6 +110,13 @@ namespace gepetto {
     /// This is an example Python Plugin for \link hpp::gui::PythonWidget \endlink. Two classes are defined:
     /// \b _NodeCreator and \b Plugin. Two signals are used: \a mainWindow.refresh()
     /// and \a osgWidget.
+    /// Add this to your configuration file to load this plugin
+    /// \code
+    /// [pyplugins]
+    /// gepetto.gui=true
+    /// \endcode
+    /// Then right-click on a tool bar, menu bar or title bar of dock widgets
+    /// to open your window.
   } // namespace gui
 } // namespace gepetto
 
