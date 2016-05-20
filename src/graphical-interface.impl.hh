@@ -46,6 +46,7 @@ public:
 
   virtual Names_t* getNodeList() throw (Error);
   virtual Names_t* getGroupNodeList(const char* group) throw (Error);
+  virtual Names_t* getSceneList() throw (Error);
   virtual Names_t* getWindowList() throw (Error);
 
   virtual bool setRate(CORBA::Long rate) throw (Error);

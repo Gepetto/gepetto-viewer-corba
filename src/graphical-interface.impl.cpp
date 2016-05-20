@@ -398,6 +398,15 @@ namespace graphics {
     }
       }
 
+      gepetto::corbaserver::Names_t *GraphicalInterface::getSceneList() throw (Error)
+      {
+        try {
+          return fromStringVector(windowsManager_->getSceneList());
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
+      }
+
       gepetto::corbaserver::Names_t* GraphicalInterface::getWindowList () throw (Error)
       {
 	try {

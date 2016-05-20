@@ -57,6 +57,9 @@ typedef sequence<Position> PositionSeq;
     /// \return the list of node names contained in the group
     Names_t getGroupNodeList(in string group) raises (Error);
 
+    /// Get the list of group (i.e. scene) nodes
+    Names_t getSceneList() raises (Error);
+
     /// Print names of windows on the SceneViewer-corbaserver terminal.
     Names_t getWindowList() raises (Error);
 
