@@ -28,6 +28,10 @@
 #include <gepetto/gui/dialog/dialogloadenvironment.hh>
 #include <gepetto/gui/mainwindow.hh>
 
+#if GEPETTO_GUI_HAS_PYTHONQT
+# include <gepetto/gui/pythonwidget.hh>
+#endif
+
 namespace po = boost::program_options;
 
 namespace gepetto {
@@ -162,6 +166,11 @@ namespace gepetto {
     {
       foreach (QString name, pluginsToInit_)
         pluginManager_.initPlugin (name);
+#if GEPETTO_GUI_HAS_PYTHONQT
+      PythonWidget* pw = mw->pythonWidget();
+      foreach (QString name, pyplugins_)
+        pw->loadModulePlugin (name);
+#endif
     }
 
     void Settings::setMainWindow(gepetto::gui::MainWindow *main)
@@ -277,6 +286,11 @@ namespace gepetto {
             addPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+        env.beginGroup("pyplugins");
+        foreach (QString name, env.childKeys()) {
+            addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
+        }
+        env.endGroup ();
         log (QString ("Read configuration file ") + env.fileName());
       }
     }
@@ -343,6 +357,10 @@ namespace gepetto {
           env.setValue(p.key(), (noPlugin)?false:p.value()->isLoaded());
         }
       env.endGroup ();
+      env.beginGroup("pyplugins");
+      foreach (QString name, pyplugins_)
+        env.setValue(name, !noPlugin);
+      env.endGroup ();
       log (QString ("Read configuration file ") + env.fileName());
     }
 
@@ -389,6 +407,11 @@ namespace gepetto {
     {
       if (init) pluginsToInit_.append (plg);
       pluginManager_.add(plg, 0, false);
+    }
+
+    void Settings::addPyPlugin (const QString& plg, bool init)
+    {
+      if (init) pyplugins_.append (plg);
     }
 
     void Settings::log(const QString &t)

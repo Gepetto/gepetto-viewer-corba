@@ -44,6 +44,7 @@ namespace gepetto {
 
       PluginManager pluginManager_;
       QStringList pluginsToInit_;
+      QStringList pyplugins_;
 
       void setMainWindow (MainWindow* main);
 
@@ -63,6 +64,7 @@ namespace gepetto {
       void addRobotFromString (const std::string& rbtStr);
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);
+      void addPyPlugin (const QString& plg, bool init);
 
       inline void log (const QString& t);
       inline void logError (const QString& t);

@@ -55,6 +55,12 @@ namespace gepetto {
         PluginManager* pluginManager ();
 
         void emitSendToBackground (WorkItem* item);
+#if GEPETTO_GUI_HAS_PYTHONQT
+        PythonWidget* pythonWidget()
+        {
+          return pythonWidget_;
+        }
+#endif
 
 signals:
         void sendToBackground (WorkItem* item);

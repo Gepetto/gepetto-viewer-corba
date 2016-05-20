@@ -1,6 +1,7 @@
 #include "gepetto/gui/pythonwidget.hh"
 
 #include <QFileDialog>
+#include <PythonQt/PythonQtClassInfo.h>
 
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
@@ -34,6 +35,8 @@ namespace gepetto {
       PythonWidget::~PythonWidget()
       {
 	std::cout << "begin cleanup" << std::endl;
+        foreach (const PythonQtObjectPtr& m, modules_)
+          unloadModulePlugin(m);
 	PythonQt::cleanup();
 	std::cout << "end cleanup" << std::endl;
       }
@@ -50,6 +53,50 @@ namespace gepetto {
             }
             fd->close();
             fd->deleteLater();
+        }
+
+        void PythonWidget::loadModulePlugin(QString moduleName) {
+          PythonQtObjectPtr module = PythonQt::self()->importModule (moduleName);
+          if (module.isNull()) {
+            qDebug() << "Enable to load module" << moduleName;
+            return;
+          }
+          module.addObject("mainWindow", MainWindow::instance());
+          QString var = "pluginInstance";
+          module.evalScript (var + " = Plugin(mainWindow)");
+          PythonQtObjectPtr dockPyObj = PythonQt::self()->lookupObject(module,var);
+          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
+          if (wrap->classInfo()->className() == "QDockWidget") {
+//            This solution would be better, but when deleting this dock widget,
+//            the program ends with a SEGV.
+//            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
+//            MainWindow::instance()->insertDockWidget(dock, Qt::RightDockWidgetArea);
+            module.evalScript ("mainWindow.addDockWidget (1, " + var + ")");
+            module.evalScript (var + ".visible = False");
+            module.evalScript (var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))");
+          }
+          modules_[moduleName] = module;
+        }
+
+        void PythonWidget::unloadModulePlugin(QString moduleName) {
+          if (modules_.contains(moduleName)) {
+            PythonQtObjectPtr module = modules_.value(moduleName);
+            unloadModulePlugin(module);
+            modules_.remove(moduleName);
+          }
+        }
+
+        void PythonWidget::unloadModulePlugin(PythonQtObjectPtr module ) {
+          QString var = "pluginInstance";
+          PythonQtObjectPtr dockPyObj = PythonQt::self()->lookupObject(module,var);
+          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
+          if (wrap->classInfo()->className() == "QDockWidget") {
+//            this generates SEGV
+//            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
+//            MainWindow::instance()->removeDockWidget(dock);
+            module.evalScript ("mainWindow.removeDockWidget (" + var + ")");
+          }
+          module.evalScript ("del " + var);
         }
 
         void PythonWidget::addToContext(QString const& name, QObject* obj) {

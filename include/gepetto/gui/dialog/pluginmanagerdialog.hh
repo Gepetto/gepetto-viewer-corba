@@ -45,6 +45,8 @@ namespace gepetto {
 
         bool unloadPlugin (const QString& name);
 
+        void clearPlugins ();
+
       private:
         template <typename Interface>
           static const Interface* const_instance_cast (const QPluginLoader* pl);

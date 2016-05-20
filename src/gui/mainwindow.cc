@@ -11,6 +11,7 @@
 #include "gepetto/gui/plugin-interface.hh"
 
 #include <gepetto/gui/meta.hh>
+#include <gepetto/gui/config-dep.hh>
 
 #if GEPETTO_GUI_HAS_PYTHONQT
 # include <gepetto/gui/pythonwidget.hh>

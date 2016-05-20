@@ -24,10 +24,30 @@ namespace gepetto {
       void addToContext(QString const& name, QObject *obj);
       virtual ~PythonWidget();
 
+    public slots:
+      /// Load a plugin by importing a module
+      ///
+      /// This is mostly equivalent to running the following code in the Python
+      /// console
+      /// \code[py]
+      /// import modulename
+      /// pluginInstance = modulename.Plugin(mainWindow)
+      /// mainWindow.addDockWidget (1, pluginInstance)
+      /// # Some extra code to add dock widget toggle button to the right place.
+      /// \endcode
+      ///
+      /// \note The module must contain a class Plugin that inherits from
+      /// class PythonQt.QtGui.QDockWidget
+      void loadModulePlugin(QString moduleName);
+      void unloadModulePlugin(QString moduleName);
+
     private:
+      void unloadModulePlugin(PythonQtObjectPtr module);
+
       PythonQtObjectPtr mainContext_;
       PythonQtScriptingConsole* console_;
       QPushButton* button_;
+      QMap<QString, PythonQtObjectPtr> modules_;
 
     signals:
 
