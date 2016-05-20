@@ -72,5 +72,12 @@ class Plugin(QtGui.QDockWidget):
         self.tabWidget.addTab (self.nodeCreator, "Node Creator")
         mainWindow.connect('refresh()', self.refresh)
 
+    ### If present, this function is called when a new OSG Widget is created.
+    def osgWidget(self, osgWindow):
+        osgWindow.connect('selected(QString)', self.selected)
+
     def refresh(self):
         self.nodeCreator.update()
+
+    def selected(self, name):
+        QtGui.QMessageBox.information(self, "Selected object", name)

@@ -215,6 +215,7 @@ namespace gepetto {
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
       }
       osgWindows_.append(osgWidget);
+      emit viewCreated(osgWidget);
       delayedCreateView_.unlock();
       return osgWidget;
     }

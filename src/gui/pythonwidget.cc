@@ -8,6 +8,26 @@
 
 namespace gepetto {
     namespace gui {
+      namespace {
+        void addSignalHandler (PythonQtObjectPtr obj, const QString& callable,
+            QObject* sender, const char* signal) {
+          PythonQt* pqt = PythonQt::self();
+          PythonQtObjectPtr call = pqt->lookupCallable(obj, callable);
+          if (call.isNull()) {
+            qDebug() << "Callable" << callable << "not found.";
+            return;
+          }
+          if (!pqt->addSignalHandler(sender, signal, call)) {
+            qDebug() << "Signal" << signal << "not found in object"
+              << sender->objectName();
+          } else {
+            qDebug() << "Connected"
+              << signal << "of" << sender->objectName()
+              << "to" << callable;
+          }
+        }
+      }
+
         PythonWidget::PythonWidget(QWidget *parent) :
             QDockWidget("PythonQt console", parent)
         {
@@ -56,7 +76,8 @@ namespace gepetto {
         }
 
         void PythonWidget::loadModulePlugin(QString moduleName) {
-          PythonQtObjectPtr module = PythonQt::self()->importModule (moduleName);
+          PythonQt* pqt = PythonQt::self();
+          PythonQtObjectPtr module = pqt->importModule (moduleName);
           if (module.isNull()) {
             qDebug() << "Enable to load module" << moduleName;
             return;
@@ -64,7 +85,7 @@ namespace gepetto {
           module.addObject("mainWindow", MainWindow::instance());
           QString var = "pluginInstance";
           module.evalScript (var + " = Plugin(mainWindow)");
-          PythonQtObjectPtr dockPyObj = PythonQt::self()->lookupObject(module,var);
+          PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
           PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
           if (wrap->classInfo()->className() == "QDockWidget") {
 //            This solution would be better, but when deleting this dock widget,
@@ -75,6 +96,7 @@ namespace gepetto {
             module.evalScript (var + ".visible = False");
             module.evalScript (var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))");
           }
+          addSignalHandlersToPlugin(dockPyObj);
           modules_[moduleName] = module;
         }
 
@@ -87,8 +109,9 @@ namespace gepetto {
         }
 
         void PythonWidget::unloadModulePlugin(PythonQtObjectPtr module ) {
+          PythonQt* pqt = PythonQt::self();
           QString var = "pluginInstance";
-          PythonQtObjectPtr dockPyObj = PythonQt::self()->lookupObject(module,var);
+          PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
           PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
           if (wrap->classInfo()->className() == "QDockWidget") {
 //            this generates SEGV
@@ -102,5 +125,11 @@ namespace gepetto {
         void PythonWidget::addToContext(QString const& name, QObject* obj) {
             mainContext_.addObject(name, obj);
         }
+
+      void PythonWidget::addSignalHandlersToPlugin(PythonQtObjectPtr plugin)
+      {
+        addSignalHandler(plugin, "osgWidget",
+            MainWindow::instance(), SIGNAL(viewCreated(OSGWidget*)));
+      }
     }
 }
