@@ -29,6 +29,12 @@ namespace gepetto {
       Q_OBJECT
 
       public:
+        enum RefreshType {
+          RefreshBodyTree = 1,
+          RefreshPlugins  = 2,
+          RefreshAll = RefreshBodyTree + RefreshPlugins
+        };
+
         Settings* settings_;
 
         explicit MainWindow(Settings* settings, QWidget *parent = 0);
@@ -81,7 +87,9 @@ signals:
         void logJobFailed  (int id, const QString& text);
 
         OSGWidget* delayedCreateView (QString name = "");
-        void requestRefresh ();
+        /// Request a refresh of the interface.
+        /// \param refreshType tells what to refresh. See RefreshType
+        void requestRefresh (int refreshType = RefreshAll);
         void requestApplyCurrentConfiguration ();
         void requestConfigurationValidation ();
         void configurationValidationStatusChanged (bool valid);

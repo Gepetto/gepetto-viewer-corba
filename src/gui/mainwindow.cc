@@ -179,9 +179,12 @@ namespace gepetto {
       return osgWindows_.last();
     }
 
-    void MainWindow::requestRefresh()
+    void MainWindow::requestRefresh(int type)
     {
-      emit refresh ();
+      if (type & RefreshBodyTree)
+        bodyTree()->reloadBodyTree();
+      if (type & RefreshPlugins)
+        emit refresh ();
     }
 
     OSGWidget *MainWindow::onCreateView() {

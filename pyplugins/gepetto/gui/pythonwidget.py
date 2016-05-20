@@ -3,10 +3,11 @@ from gepetto.corbaserver import Client
 import sys
 sys.argv = ["none"]
 
+### This class represents one special tab of the new QDockWidget
 class _NodeCreator (QtGui.QWidget):
-    def __init__(self, parent, client):
+    def __init__(self, parent, plugin):
         super(_NodeCreator, self).__init__ (parent)
-        self.client = client
+        self.plugin = plugin
         box = QtGui.QVBoxLayout(self)
 
         # Name line edit
@@ -31,7 +32,7 @@ class _NodeCreator (QtGui.QWidget):
 
     def update(self):
         self.groupNodes.clear()
-        for n in self.client.gui.getSceneList():
+        for n in self.plugin.client.gui.getSceneList():
             self.groupNodes.addItem (n)
 
     def addWidgetsInHBox(self, widgets):
@@ -49,14 +50,21 @@ class _NodeCreator (QtGui.QWidget):
 
     def addMesh (self):
         filename = QtGui.QFileDialog.getOpenFileName (self, "Choose a mesh")
-        self.client.gui.addMesh(str(self.nodeName.text), str(filename))
+        self.plugin.client.gui.addMesh(str(self.nodeName.text), str(filename))
+        self.refreshBodyTree()
 
     def createGroup (self):
-        self.client.gui.createGroup(str(self.nodeName.text))
+        self.plugin.client.gui.createGroup(str(self.nodeName.text))
         self.groupNodes.addItem(self.nodeName.text)
+        self.refreshBodyTree()
 
     def addToGroup (self):
-        self.client.gui.addToGroup(str(self.nodeName.text), str(self.groupNodes.currentText))
+        self.plugin.client.gui.addToGroup(str(self.nodeName.text), str(self.groupNodes.currentText))
+        self.refreshBodyTree()
+
+    ## See gepetto::gui::MainWindow::requestRefresh for more information
+    def refreshBodyTree(self, select = 1):
+        self.plugin.main.requestRefresh(select)
 
 class Plugin(QtGui.QDockWidget):
     """
@@ -72,13 +80,17 @@ class Plugin(QtGui.QDockWidget):
         # Initialize the widget
         self.tabWidget = QtGui.QTabWidget(self)
         self.setWidget (self.tabWidget)
-        self.nodeCreator = _NodeCreator(self, self.client)
+        self.nodeCreator = _NodeCreator(self, self)
         self.tabWidget.addTab (self.nodeCreator, "Node Creator")
+        self.main = mainWindow
         mainWindow.connect('refresh()', self.refresh)
 
     ### If present, this function is called when a new OSG Widget is created.
     def osgWidget(self, osgWindow):
         osgWindow.connect('selected(QString)', self.selected)
+
+    def resetConnection(self):
+        self.client = Client()
 
     def refresh(self):
         self.nodeCreator.update()
