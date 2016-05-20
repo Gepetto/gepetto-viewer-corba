@@ -72,6 +72,7 @@ namespace gepetto {
       removeDockWidget(pythonWidget_);
       delete pythonWidget_;
 #endif
+      pluginManager()->clearPlugins();
       osgViewerManagers_.reset();
       worker_.quit();
       if (osgServer_ != NULL) {

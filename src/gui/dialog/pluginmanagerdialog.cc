@@ -88,6 +88,13 @@ namespace gepetto {
       return plugins_[name]->unload();
     }
 
+    void PluginManager::clearPlugins()
+    {
+      foreach (QPluginLoader* p, plugins_) {
+        p->unload();
+      }
+    }
+
     PluginManagerDialog::PluginManagerDialog(PluginManager *pm, QWidget *parent) :
       QDialog(parent),
       ui_(new ::Ui::PluginManagerDialog),
