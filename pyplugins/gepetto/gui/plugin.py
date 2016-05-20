@@ -58,7 +58,7 @@ class _NodeCreator (QtGui.QWidget):
         self.client.gui.addToGroup(str(self.nodeName.text), str(self.groupNodes.currentText))
 
 class Plugin(QtGui.QDockWidget):
-    """" Extra functionalities of the Gepetto Viewer GUI """
+    """ Example of plugin of the Gepetto Viewer GUI """
     def __init__ (self, mainWindow, flags = None):
         if flags is None:
             super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow)
