@@ -1,5 +1,4 @@
-/// \mainpage
-/// \section gepetto_viewer_corba_introduction
+/// \page gepetto_viewer_corba_introduction Gepetto Viewer server
 ///
 /// This package implements a corba server embedding gepetto-viewer library.
 ///
@@ -7,9 +6,9 @@
 ///
 /// To use the graphical interface via python,
 /// \li start executable
-///     \code gepetto-viewer-server \endcode.
+///     \code{bash} gepetto-viewer-server \endcode.
 /// \li in a python terminal, create a client
-/// \code
+/// \code{py}
 /// from gepetto.corbaserver import Client
 /// client = Client ()
 /// # open a new window
