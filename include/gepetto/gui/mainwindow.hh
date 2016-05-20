@@ -65,6 +65,7 @@ namespace gepetto {
 signals:
         void sendToBackground (WorkItem* item);
         void createView (QString name);
+        /// Triggered when an OSGWidget is created.
         void viewCreated (OSGWidget* widget);
         void refresh ();
         void applyCurrentConfiguration();

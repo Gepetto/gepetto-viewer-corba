@@ -12,6 +12,12 @@ namespace gepetto {
   namespace gui {
     class MainWindow;
 
+    /// Settings manager for the interface.
+    ///
+    /// This struct is responsible for parsing configuration files as follow:
+    /// - Robots file: Settings::readRobotFile()
+    /// - Environments file: Settings::readEnvFile()
+    /// - Configuration file: Settings::readSettingFile()
     struct Settings {
       std::string configurationFile;
       std::string predifinedRobotConf;
@@ -52,11 +58,33 @@ namespace gepetto {
 
       std::ostream& print (std::ostream& os);
 
-    private:
+      /// \note Prefer using Settings::fromFiles()
       void readRobotFile ();
+      /// \note Prefer using Settings::fromFiles()
       void readEnvFile ();
+      /// Read the settings file.
+      ///
+      /// Here is the syntax:
+      /// \code
+      /// ; Comments starts with a ; You may uncomment to see the effect.
+      ///
+      /// [plugins]
+      /// ; Put a list of C++ plugins followed by '=true'. For instance, HPP users may have
+      /// ; libhppwidgetsplugin.so=true
+      /// ; libhppcorbaserverplugin.so=true
+      ///
+      /// [pyplugins]
+      /// ; Put a list of Python plugins followed by '=true'. For instance, the example plugin can be loaded with
+      /// ; gepetto.plugin=true
+      ///
+      /// ; WARNING: Any comment in this file may be removed by the GUI if you regenerate a configuration file.
+      /// \endcode
+      /// \note Details on plugin interface can be found in PluginInterface, resp. PythonWidget, class
+      /// for C++, resp. Python, plugins.
+      /// \note Prefer using Settings::fromFiles()
       void readSettingFile ();
 
+    private:
       void writeRobotFile ();
       void writeEnvFile ();
       void writeSettingFile ();
