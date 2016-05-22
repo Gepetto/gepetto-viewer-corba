@@ -1,7 +1,5 @@
 from PythonQt import QtGui, Qt
 from gepetto.corbaserver import Client
-import sys
-sys.argv = ["none"]
 
 ### This class represents one special tab of the new QDockWidget
 class _NodeCreator (QtGui.QWidget):

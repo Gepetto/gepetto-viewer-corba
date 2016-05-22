@@ -34,8 +34,8 @@ namespace gepetto {
             PythonQt::init(PythonQt::RedirectStdOut);
             PythonQt_QtAll::init();
             mainContext_ = PythonQt::self()->getMainModule();
-	    PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
-	    sys.addVariable ("argv", QVariant(QStringList () << "toto.py"));
+            PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
+            sys.evalScript ("argv = ['gepetto-gui']");
             console_ = new PythonQtScriptingConsole(NULL, mainContext_);
             mainContext_.addObject("mainWindow", MainWindow::instance());
 
