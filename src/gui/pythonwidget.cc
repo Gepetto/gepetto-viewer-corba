@@ -38,6 +38,13 @@ namespace gepetto {
             sys.evalScript ("argv = ['gepetto-gui']");
             console_ = new PythonQtScriptingConsole(NULL, mainContext_);
             mainContext_.addObject("mainWindow", MainWindow::instance());
+            console_->QTextEdit::clear();
+            console_->consoleMessage(
+                    "PythonQt command prompt\n"
+                    "Use Shift+Enter for multiline code.\n"
+                    "Variable mainWindow and osg are available.\n"
+                    );
+            console_->appendCommandPrompt();
 
             QWidget* widget = new QWidget;
             QVBoxLayout* layout = new QVBoxLayout;
