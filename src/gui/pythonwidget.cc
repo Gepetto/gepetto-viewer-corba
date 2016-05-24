@@ -29,7 +29,7 @@ namespace gepetto {
       }
 
         PythonWidget::PythonWidget(QWidget *parent) :
-            QDockWidget("PythonQt console", parent)
+            QDockWidget("&PythonQt console", parent)
         {
             PythonQt::init(PythonQt::RedirectStdOut);
             PythonQt_QtAll::init();
@@ -56,16 +56,15 @@ namespace gepetto {
             widget->setLayout(layout);
             this->setWidget(widget);
 
+            toggleViewAction()->setShortcut(gepetto::gui::DockKeyShortcutBase + Qt::Key_A);
             connect(button_, SIGNAL(clicked()), SLOT(browseFile()));
         }
 
       PythonWidget::~PythonWidget()
       {
-	std::cout << "begin cleanup" << std::endl;
         foreach (const PythonQtObjectPtr& m, modules_)
           unloadModulePlugin(m);
 	PythonQt::cleanup();
-	std::cout << "end cleanup" << std::endl;
       }
 
         void PythonWidget::browseFile() {
