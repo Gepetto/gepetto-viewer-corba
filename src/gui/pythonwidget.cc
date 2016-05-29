@@ -88,20 +88,23 @@ namespace gepetto {
             qDebug() << "Enable to load module" << moduleName;
             return;
           }
+          module.evalScript("from PythonQt import QtGui");
           module.addObject("mainWindow", MainWindow::instance());
           QString var = "pluginInstance";
           module.evalScript (var + " = Plugin(mainWindow)");
           PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
-          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
-          if (wrap->classInfo()->className() == "QDockWidget") {
+//          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
+//          if (wrap->classInfo()->className() == "QDockWidget") {
 //            This solution would be better, but when deleting this dock widget,
 //            the program ends with a SEGV.
+//            Among other, wrap->classInfo() is sometimes NULL...
 //            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
 //            MainWindow::instance()->insertDockWidget(dock, Qt::RightDockWidgetArea);
-            module.evalScript ("mainWindow.addDockWidget (1, " + var + ")");
-            module.evalScript (var + ".visible = False");
-            module.evalScript (var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))");
-          }
+//          }
+          module.evalScript ("if issubclass (Plugin, QtGui.QDockWidget):\n"
+                             "  mainWindow.addDockWidget (1, " + var + ")\n"
+                             "  " + var + ".visible = False\n"
+                             "  " + var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))\n");
           addSignalHandlersToPlugin(dockPyObj);
           modules_[moduleName] = module;
         }
@@ -118,13 +121,14 @@ namespace gepetto {
           PythonQt* pqt = PythonQt::self();
           QString var = "pluginInstance";
           PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
-          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
-          if (wrap->classInfo()->className() == "QDockWidget") {
+//          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
+//          if (wrap->classInfo()->className() == "QDockWidget") {
 //            this generates SEGV
 //            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
 //            MainWindow::instance()->removeDockWidget(dock);
-            module.evalScript ("mainWindow.removeDockWidget (" + var + ")");
-          }
+//          }
+          module.evalScript ("if issubclass (Plugin, QtGui.QDockWidget):\n"
+                             "  mainWindow.removeDockWidget (" + var + ")");
           module.evalScript ("del " + var);
         }
 
