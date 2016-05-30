@@ -26,6 +26,9 @@ class _NodeCreator (QtGui.QWidget):
         # Add mesh
         box.addWidget(self.bindFunctionToButton("Add mesh", self.addMesh))
 
+        # Add box
+        box.addWidget(self.bindFunctionToButton("Add box", self.addBox))
+
         self.update()
 
     def update(self):
@@ -49,6 +52,10 @@ class _NodeCreator (QtGui.QWidget):
     def addMesh (self):
         filename = QtGui.QFileDialog.getOpenFileName (self, "Choose a mesh")
         self.plugin.client.gui.addMesh(str(self.nodeName.text), str(filename))
+        self.refreshBodyTree()
+
+    def addBox (self):
+        self.plugin.client.gui.addBox(str(self.nodeName.text), 1, 1, 1, [1, 0, 0, 1])
         self.refreshBodyTree()
 
     def createGroup (self):
