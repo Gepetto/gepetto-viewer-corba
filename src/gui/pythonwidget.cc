@@ -90,6 +90,7 @@ namespace gepetto {
           }
           module.evalScript("from PythonQt import QtGui");
           module.addObject("mainWindow", MainWindow::instance());
+          module.addObject("_menuPlugin", MainWindow::instance()->pluginMenu());
           QString var = "pluginInstance";
           module.evalScript (var + " = Plugin(mainWindow)");
           PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
@@ -104,7 +105,9 @@ namespace gepetto {
           module.evalScript ("if issubclass (Plugin, QtGui.QDockWidget):\n"
                              "  mainWindow.addDockWidget (1, " + var + ")\n"
                              "  " + var + ".visible = False\n"
-                             "  " + var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))\n");
+                             "  " + var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))\n"
+                             "  _menuPlugin.addAction (" + var + ".toggleViewAction())\n");
+          module.evalScript ("del _menuPlugin");
           addSignalHandlersToPlugin(dockPyObj);
           modules_[moduleName] = module;
         }
