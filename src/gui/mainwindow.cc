@@ -156,6 +156,11 @@ namespace gepetto {
       emit sendToBackground(item);
     }
 
+    QMenu *MainWindow::pluginMenu() const
+    {
+      return ui_->menuWindow;
+    }
+
     void MainWindow::logJobStarted(int id, const QString &text)
     {
       log (QString ("Starting job ") + QString::number (id) + ": " + text);

@@ -76,6 +76,9 @@ namespace gepetto {
 
         /// Emit a signal to indicate that a job has been put in background.
         void emitSendToBackground (WorkItem* item);
+
+        QMenu* pluginMenu () const;
+
 #if GEPETTO_GUI_HAS_PYTHONQT
         /// Get the python widget.
         PythonWidget* pythonWidget()
