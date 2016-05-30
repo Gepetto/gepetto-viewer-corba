@@ -16,7 +16,7 @@ namespace gepetto {
       Q_OBJECT
 
     public:
-      PickHandler (WindowsManagerPtr_t wsm);
+      PickHandler (OSGWidget* parent, WindowsManagerPtr_t wsm);
 
       virtual ~PickHandler();
 
@@ -30,9 +30,6 @@ namespace gepetto {
     private slots:
       void bodyTreeCurrentChanged (const QModelIndex &current,
           const QModelIndex &previous);
-
-    signals:
-      void selected (QString name);
 
     private:
       std::list <graphics::NodePtr_t> computeIntersection (osgGA::GUIActionAdapter& aa,

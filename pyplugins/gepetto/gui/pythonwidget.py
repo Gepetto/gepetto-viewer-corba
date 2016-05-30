@@ -85,7 +85,7 @@ class Plugin(QtGui.QDockWidget):
 
     ### If present, this function is called when a new OSG Widget is created.
     def osgWidget(self, osgWindow):
-        osgWindow.connect('selected(QString)', self.selected)
+        osgWindow.connect('selected(QString,QVector3D)', self.selected)
 
     def resetConnection(self):
         self.client = Client()
@@ -93,5 +93,5 @@ class Plugin(QtGui.QDockWidget):
     def refresh(self):
         self.nodeCreator.update()
 
-    def selected(self, name):
-        QtGui.QMessageBox.information(self, "Selected object", name)
+    def selected(self, name, posInWorldFrame):
+        QtGui.QMessageBox.information(self, "Selected object", name + " " + str(posInWorldFrame))

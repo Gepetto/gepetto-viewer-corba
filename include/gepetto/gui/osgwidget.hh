@@ -58,7 +58,7 @@ namespace gepetto {
         WindowsManager::WindowID windowID () const;
 
 signals:
-        void selected (QString name);
+        void selected (QString name, QVector3D positionInWorldFrame);
         void requestMotion (graphics::NodePtr_t node, graphics::Node::Arrow direction,
             float speed);
 
@@ -85,10 +85,8 @@ signals:
 
         virtual void paintEvent( QPaintEvent* paintEvent );
 
-    private slots:
-        void transferSelected (QString name);
-
       private:
+        void emitSelected (QString name, QVector3D positionInWorldFrame);
         osgGA::EventQueue* getEventQueue() const;
 
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;

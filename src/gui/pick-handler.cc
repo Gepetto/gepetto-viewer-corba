@@ -20,8 +20,10 @@
 
 namespace gepetto {
   namespace gui {
-    PickHandler::PickHandler(WindowsManagerPtr_t wsm)
-      : wsm_ (wsm)
+    PickHandler::PickHandler(OSGWidget *parent, WindowsManagerPtr_t wsm)
+      : QObject (parent)
+      , wsm_ (wsm)
+      , parent_ (parent)
       , last_ ()
       , pushed_ (false)
       , lastX_ (0)
@@ -130,7 +132,9 @@ namespace gepetto {
                       if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
                         continue;
                       select (n);
-                      emit selected (QString::fromStdString(n->getID ()));
+                      osg::Vec3d p = it->getWorldIntersectPoint();
+                      QVector3D pWF (p[0],p[1],p[2]);
+                      parent_->emitSelected(QString::fromStdString(n->getID ()), pWF);
                       return nodes;
                       // nodes.push_back(n);
                       // break;

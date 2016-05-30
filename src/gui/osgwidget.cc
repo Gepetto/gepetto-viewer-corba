@@ -81,7 +81,7 @@ namespace gepetto {
       : QWidget( parent, f )
         , graphicsWindow_()
         , wsm_ (wm)
-        , pickHandler_ (new PickHandler (wsm_))
+        , pickHandler_ (new PickHandler (this, wsm_))
         , wid_ (-1)
         , wm_ ()
         , viewer_ (new osgViewer::Viewer)
@@ -134,8 +134,6 @@ namespace gepetto {
             1);
       viewer_->addEventHandler(screenCapture_);
       viewer_->addEventHandler(new osgViewer::HelpHandler);
-
-      connect(pickHandler_, SIGNAL(selected(QString)), SLOT(transferSelected(QString)));
       viewer_->addEventHandler(pickHandler_);
 
       wid_ = wm->createWindow (name.c_str(), viewer_, graphicsWindow_.get());
@@ -155,8 +153,8 @@ namespace gepetto {
       render_.start ();
 
       parent->bodyTree()->connect(this,
-          SIGNAL (selected(QString)), SLOT (selectBodyByName(QString)));
-      parent->connect(this, SIGNAL (selected(QString)),
+          SIGNAL (selected(QString,QVector3D)), SLOT (selectBodyByName(QString)));
+      parent->connect(this, SIGNAL (selected(QString,QVector3D)),
           SLOT (requestSelectJointFromBodyName(QString)));
     }
 
@@ -198,9 +196,9 @@ namespace gepetto {
       //        wsm_->lock().unlock();
     }
 
-    void gepetto::gui::OSGWidget::transferSelected(QString name)
+    void OSGWidget::emitSelected(QString name, QVector3D positionInWorldFrame)
     {
-      emit selected (name);
+      emit selected (name, positionInWorldFrame);
     }
 
     void OSGWidget::onHome()
