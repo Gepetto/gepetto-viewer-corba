@@ -229,6 +229,8 @@ namespace graphics {
             virtual void captureTransform ();
             virtual bool writeNodeFile (const char* nodename, const char* filename);
             virtual bool writeWindowFile (const WindowID windowId, const char* filename);
+            virtual bool setBackgroundColor(const WindowID windowId,const value_type* colorCorba);
+            
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
             GroupNodePtr_t getScene (const std::string sceneName);

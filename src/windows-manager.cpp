@@ -1460,4 +1460,13 @@ namespace graphics {
         }
         return res;
     }
+    
+    bool WindowsManager::setBackgroundColor(const WindowID windowId,const value_type* colorCorba)
+    {
+      mtx_.lock();
+      windowManagers_[windowId]->setBackgroundColor(getColor (colorCorba));
+      mtx_.unlock();
+      return true;
+    }
+    
 } // namespace graphics

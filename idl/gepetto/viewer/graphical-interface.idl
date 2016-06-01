@@ -374,6 +374,12 @@ typedef sequence<Position> PositionSeq;
     /// \param all if nodeName is a group node and all is True, nodes
     ///        are deleted recursively.
     void deleteNode (in string nodeName, in boolean all) raises (Error);
+    
+
+    /// change the background color
+    /// \param input windowId : ID of the window
+    /// \param input RGBAcolor : desired color
+    boolean setBackgroundColor(in unsigned long windowId,in Color RGBAcolor);
   };
 };
 };

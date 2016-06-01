@@ -671,6 +671,15 @@ namespace graphics {
 	  			throw Error (exc.what ());
 				}
 			}
+      
+      bool GraphicalInterface::setBackgroundColor(const WindowID windowId,const value_type* colorCorba) throw (Error)
+      {
+          try {
+              return windowsManager_->setBackgroundColor (windowId,colorCorba);
+          } catch (const std::exception& exc) {
+              throw Error (exc.what ());
+          }
+      }
 
     } //end namespace impl
   } //end namespace corbaServer
