@@ -3,6 +3,7 @@
 
 #include <QtGui>
 #include <QWidget>
+#include <iostream>
 
 #include <gepetto/gui/dialog/dialogloadrobot.hh>
 #include <gepetto/gui/dialog/dialogloadenvironment.hh>

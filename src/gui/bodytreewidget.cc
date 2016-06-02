@@ -72,6 +72,7 @@ namespace gepetto {
       view_->setModel(model_);
       view_->setSelectionMode(QAbstractItemView::SingleSelection);
 
+      connect (main, SIGNAL(refresh()), SLOT(reloadBodyTree()));
       connect (view_, SIGNAL (customContextMenuRequested(QPoint)), SLOT(customContextMenu(QPoint)));
 
       toolBox_->removeItem(0);

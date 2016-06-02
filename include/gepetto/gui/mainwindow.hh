@@ -24,6 +24,7 @@ namespace Ui {
 
 namespace gepetto {
   namespace gui {
+    /// Class
     class MainWindow : public QMainWindow
     {
       Q_OBJECT
@@ -40,28 +41,43 @@ namespace gepetto {
         explicit MainWindow(Settings* settings, QWidget *parent = 0);
         ~MainWindow();
 
+        /// Return the instance of MainWindow stored
         static MainWindow* instance ();
 
+        /// Insert a dockwidget in the dock area of the window.
+        /// \param dock widget to add
+        /// \param area where the widget will be add
+        /// \param orientation of the widget
         void insertDockWidget (QDockWidget* dock,
             Qt::DockWidgetArea area = Qt::AllDockWidgetAreas,
             Qt::Orientation orientation = Qt::Horizontal);
 
+        /// Remove a dock widget.
+        /// \param dock widget to remove
         void removeDockWidget (QDockWidget* dock);
 
+        /// Get the worker.
         BackgroundQueue &worker();
 
+        /// Get
         WindowsManagerPtr_t osg () const;
 
+        /// Get the central widget.
         OSGWidget* centralWidget() const;
 
+        /// Get the list of windows.
         QList <OSGWidget*> osgWindows () const;
 
+        /// Get the body tree widget.
         BodyTreeWidget* bodyTree () const;
 
+        /// Get the plugin manager.
         PluginManager* pluginManager ();
 
+        /// Emit a signal to indicate that a job has been put in background.
         void emitSendToBackground (WorkItem* item);
 #if GEPETTO_GUI_HAS_PYTHONQT
+        /// Get the python widget.
         PythonWidget* pythonWidget()
         {
           return pythonWidget_;
@@ -79,22 +95,51 @@ signals:
         void selectJointFromBodyName(const QString bodyName);
 
         public slots:
+        /// Add the text to logs.
+        /// \param text text to log
         void log (const QString& text);
+        /// Add the text to logs and colors it in red.
+        /// \param text text to log
         void logError (const QString& text);
 
+        /// Log that a job has started.
+        /// \param id id of the job
+        /// \param text text to log
           void logJobStarted (int id, const QString& text);
-        void logJobDone    (int id, const QString& text);
-        void logJobFailed  (int id, const QString& text);
+
+          /// Log that a job has successfuly finished.
+          /// \param id id of the job
+          /// \param text text to log
+          void logJobDone    (int id, const QString& text);
+
+          /// Log that a job has failed.
+          /// \param id id of the job
+          /// \param text text to log
+          void logJobFailed  (int id, const QString& text);
 
         OSGWidget* delayedCreateView (QString name = "");
         /// Request a refresh of the interface.
         /// \param refreshType tells what to refresh. See RefreshType
-        void requestRefresh (int refreshType = RefreshAll);
+        void requestRefresh ();
+        /// Emit a signal to display the current configuration in the viewer.
         void requestApplyCurrentConfiguration ();
+
+        /// Emit a signal to check if the the current configuration is valid.
         void requestConfigurationValidation ();
+
+        /// Display if a configuration is valid or not.
+        /// \param valid configuration is valid
         void configurationValidationStatusChanged (bool valid);
+
+        /// Display if a configuration is valid or not.
+        /// \param bodiesInCollision list of bodies in collision
         void configurationValidationStatusChanged (QStringList bodiesInCollision);
+
+        /// Emit a signal to tell that a body has been selected.
+        /// \param bodyName name of the body selected
         void requestSelectJointFromBodyName (const QString bodyName);
+
+        /// Open the plugin manager dialog.
         void onOpenPluginManager ();
 
         private slots:

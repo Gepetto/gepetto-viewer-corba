@@ -91,6 +91,8 @@ namespace gepetto {
         ui_->packageName->setText(rd.package_);
         ui_->packagePath->setText(rd.packagePath_);
         ui_->urdfFilename->setText(rd.urdfFilename_);
+	ui_->urdfSuffix->setText(rd.urdfSuf_);
+	ui_->srdfSuffix->setText(rd.srdfSuf_);
         ui_->meshDirectory->setText(rd.mesh_);
       }
     }

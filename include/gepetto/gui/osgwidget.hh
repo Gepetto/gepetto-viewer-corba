@@ -34,6 +34,7 @@ namespace gepetto {
       void run();
     };
 
+    /// Widget that displays scenes.
     class OSGWidget : public QWidget
     {
       Q_OBJECT
@@ -62,11 +63,18 @@ signals:
             float speed);
 
         public slots:
+        /// Load an urdf file in the viewer.
+        /// \param robotName name of the robot
+        /// \param udrf_file_path path to the urdf file
+        /// \param meshDataRootDir path to the mesh directory
           void loadURDF (const QString robotName,
               const QString urdf_file_path,
               const QString meshDataRootDir);
+
+        /// Replace the camera at her home position.
         virtual void onHome();
 
+        /// Change
         void changeMode (Mode mode);
         void selectionMode ();
         void cameraManipulationMode ();
