@@ -79,6 +79,7 @@ INSTALL(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/__init__.py
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/quaternion.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/color.py
   DESTINATION ${PYTHON_SITELIB}/gepetto
   )
 INSTALL(

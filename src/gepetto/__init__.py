@@ -15,4 +15,5 @@
 # hpp-corbaserver.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+from color import Color
 from quaternion import Quaternion
