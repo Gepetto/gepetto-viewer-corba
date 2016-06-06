@@ -68,8 +68,8 @@ class _NodeCreator (QtGui.QWidget):
         self.refreshBodyTree()
 
     ## See gepetto::gui::MainWindow::requestRefresh for more information
-    def refreshBodyTree(self, select = 1):
-        self.plugin.main.requestRefresh(select)
+    def refreshBodyTree(self):
+        self.plugin.main.requestRefresh()
 
 class Plugin(QtGui.QDockWidget):
     """
