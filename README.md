@@ -15,6 +15,7 @@ CORBA server/client for the Graphical Interface of Pinocchio and HPP
   * [Installation procedure](#installation-procedure)
     * [Dependencies](#dependencies)
     * [PythonQt](#pythonqt)
+* [Troubleshooting](#troubleshooting)
 
 ## gepetto-viewer-corba
 ###Setup
@@ -193,6 +194,27 @@ To install `gepetto-gui` you just have to follow the installation step at the to
 
 ### PythonQt
 gepetto-gui offers the possibility to develop plugins in python. To do so, you must install PythonQt by following the instructions here: https://github.com/jmirabel/PythonQt#readme
+
+# Troubleshooting
+
+## `CORBA::TRANSIENT` when launching a server
+
+It very often happens that the OmniNames server failed to start properly at boot.
+
+To check is the server is running, run:
+```bash
+ps -C omniNames -o pid,args
+```
+
+If the process is not running, delete omniNames related log and backup files in `/var/log`. They may have different names on your computer, but most likely, something like:
+```bash
+rm /var/log/omniORB/omninames-<computer_name>.log
+rm /var/log/omniORB/omninames-<computer_name>.bak
+```
+then restart the server:
+```bash
+sudo service omniorb4-nameserver restart
+```
 
 [HPP]:http://projects.laas.fr/gepetto/index.php/Software/Hpp
 [remoteimu]:https://github.com/jmirabel/remoteimu
