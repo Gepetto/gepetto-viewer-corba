@@ -201,7 +201,7 @@ gepetto-gui offers the possibility to develop plugins in python. To do so, you m
 
 It very often happens that the OmniNames server failed to start properly at boot.
 
-To check is the server is running, run:
+To check if the server is running, run:
 ```bash
 ps -C omniNames -o pid,args
 ```
