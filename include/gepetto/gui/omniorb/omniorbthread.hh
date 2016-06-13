@@ -127,6 +127,25 @@ namespace gepetto {
                    Arg4 arg4;
                    Arg5 arg5;
                };
+    template <typename Caller, typename ReturnType,
+            typename Arg0, typename Arg1, typename Arg2, typename Arg3, typename Arg4, typename Arg5, typename Arg6>
+            class WorkItem_7 : public WorkItem {
+              public:
+                typedef ReturnType (Caller::* Method) (Arg0,Arg1,Arg2,Arg3,Arg4,Arg5, Arg6);
+                WorkItem_7 (Caller* c, Method m, Arg0 a0, Arg1 a1, Arg2 a2, Arg3 a3, Arg4 a4, Arg5 a5, Arg6 a6) : caller (c), method (m),
+                arg0 (a0), arg1 (a1), arg2 (a2), arg3 (a3), arg4 (a4), arg5 (a5), arg6 (a6) {}
+                void performWork () { (caller->*method) (arg0, arg1, arg2, arg3, arg4, arg5, arg6); }
+              private:
+                Caller* caller;
+                Method method;
+                Arg0 arg0;
+                Arg1 arg1;
+                Arg2 arg2;
+                Arg3 arg3;
+                Arg4 arg4;
+                Arg5 arg5;
+                Arg6 arg6;
+            };
 
     class ServerProcess : public QObject
     {
