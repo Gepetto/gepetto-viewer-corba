@@ -413,6 +413,34 @@ namespace gepetto {
       d.exec ();
     }
 
+    void MainWindow::registerSlot(const char *slot, QObject *obj)
+    {
+      if (registeredSlots_.find(slot) == registeredSlots_.end())
+        {
+          registeredSlots_[slot] = obj;
+          qDebug() << slot << " registered";
+        }
+      else
+        std::cout << "Slot " << slot << "already registered." << std::endl;
+    }
+
+    QObject* MainWindow::getFromSlot(const char* slot)
+    {
+      if (registeredSlots_.find(slot) == registeredSlots_.end())
+        {
+          std::cout << "slot " << slot << "isn't registered" << std::endl;
+          return NULL;
+        }
+      return registeredSlots_[slot];
+    }
+
+    void MainWindow::connectSlot(const char *slot, const char *signal, QObject* obj)
+    {
+      if (registeredSlots_.find(slot) != registeredSlots_.end()) {
+        QObject::connect(obj, signal, registeredSlots_[slot], slot);
+      }
+    }
+
     void MainWindow::configurationValidationStatusChanged (bool valid)
     {
       collisionIndicator_->switchLed (valid);

@@ -145,6 +145,12 @@ signals:
         /// Open the plugin manager dialog.
         void onOpenPluginManager ();
 
+        void registerSlot(const char *slot, QObject* obj);
+
+        QObject* getFromSlot(const char *slot);
+
+        void connectSlot(const char *slot, const char *signal, QObject* obj);
+
         private slots:
           OSGWidget* onCreateView(QString name);
           OSGWidget* onCreateView();
@@ -184,6 +190,8 @@ signals:
         QMutex delayedCreateView_;
         QStringList robotNames_;
         QStringList lastBodiesInCollision_;
+
+        std::map<std::string, QObject *> registeredSlots_;
     };
   } // namespace gui
 } // namespace gepetto
