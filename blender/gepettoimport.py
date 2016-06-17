@@ -38,7 +38,7 @@ bl_info = {
 import bpy
 import bpy_extras.io_utils
 import re
-import yaml
+import yaml, os
 
 def loadmotion (filename):
     with open (filename) as file:
@@ -76,12 +76,16 @@ def checkframe (filename, frameId):
 class YamlPathImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     bl_idname = "import.gepettoimport"
     bl_label = "Import a YAML Gepetto Viewer path file"
-    
-    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
+
+    files = bpy.props.CollectionProperty(name="File Path", type=bpy.types.OperatorFileListElement,)
+    directory = bpy.props.StringProperty(subtype='DIR_PATH',)
     
     def execute(self, context):
-        self.report ({'INFO'}, "Loading " + str(self.filepath))
-        loadmotion(self.filepath)
+        dir = self.directory
+        for f in self.files:
+            fullname = os.path.join (dir, f.name)
+            self.report ({'INFO'}, "Loading " + str(fullname))
+            loadmotion(fullname)
         return {'FINISHED'}
     
     def invoke(self, context, event):
@@ -92,11 +96,15 @@ class UrdfToBlendImport (bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     bl_idname = "import.urdf_to_blendimport"
     bl_label = "Import a URDF blender script"
     
-    filepath = bpy.props.StringProperty(subtype="FILE_PATH")
+    files = bpy.props.CollectionProperty(name="File Path", type=bpy.types.OperatorFileListElement,)
+    directory = bpy.props.StringProperty(subtype='DIR_PATH',)
     
     def execute(self, context):
-        self.report ({'INFO'}, "Loading " + str(self.filepath))
-        exec(open(self.filepath).read())
+        dir = self.directory
+        for f in self.files:
+            fullname = os.path.join (dir, f.name)
+            self.report ({'INFO'}, "Loading " + str(fullname))
+            exec(open(fullname).read())
         return {'FINISHED'}
     
     def invoke(self, context, event):
