@@ -141,6 +141,7 @@ public:
   virtual bool setCaptureTransform (const char* filename, const Names_t& nodename) throw (Error);
   virtual void captureTransformOnRefresh (bool autoCapture) throw (Error);
   virtual void captureTransform () throw (Error);
+  virtual bool writeBlenderScript (const char* filename, const Names_t& nodeNames) throw (Error);
   virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
   virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
   virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);

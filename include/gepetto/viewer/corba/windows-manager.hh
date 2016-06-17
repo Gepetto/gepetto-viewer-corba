@@ -227,6 +227,7 @@ namespace graphics {
             virtual bool setCaptureTransform (const char* filename, const std::list<std::string>& nodename);
             virtual void captureTransformOnRefresh (bool autoCapture);
             virtual void captureTransform ();
+            virtual bool writeBlenderScript (const char* filename, const std::list<std::string>& nodename);
             virtual bool writeNodeFile (const char* nodename, const char* filename);
             virtual bool writeWindowFile (const WindowID windowId, const char* filename);
             virtual bool setBackgroundColor(const WindowID windowId,const value_type* colorCorba);

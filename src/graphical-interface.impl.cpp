@@ -626,6 +626,18 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::writeBlenderScript (const char* filename,
+          const Names_t& nodeNames) throw (Error)
+      {
+        try {
+          std::list <std::string> nodes;
+          to (nodeNames, nodes);
+          return windowsManager_->writeBlenderScript (filename, nodes);
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
+      }
+
       bool GraphicalInterface::writeNodeFile (const char* nodeName,
           const char* filename) throw (Error)
       {

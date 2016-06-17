@@ -44,6 +44,7 @@
 #include <gepetto/viewer/leaf-node-ground.h>
 #include <gepetto/viewer/leaf-node-collada.h>
 #include <gepetto/viewer/urdf-parser.h>
+#include <gepetto/viewer/blender-geom-writer.h>
 
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
@@ -1384,6 +1385,19 @@ namespace graphics {
         mtx_.lock ();
         blenderCapture_.captureFrame ();
         mtx_.unlock ();
+    }
+
+    bool WindowsManager::writeBlenderScript (const char* filename,
+        const std::list<std::string>& nodeNames)
+    {
+      std::vector<NodePtr_t> nodes;
+      std::size_t nb = getNodes (nodeNames.begin(), nodeNames.end(), nodes);
+      if (nb != nodeNames.size())
+        throw std::invalid_argument ("Could not find one of the nodes");
+      BlenderGeomWriterVisitor visitor (filename);
+      for (std::size_t i = 0; i < nodes.size(); ++i)
+        nodes[i]->accept(visitor);
+      return true;
     }
 
     bool WindowsManager::writeNodeFile (const char* nodename,

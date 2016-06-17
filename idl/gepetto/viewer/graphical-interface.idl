@@ -359,6 +359,12 @@ typedef sequence<Position> PositionSeq;
     /// Write current configuration to the motion file
     void captureTransform () raises (Error);
 
+    /// Export the nodes for blender
+    ///
+    /// Append a python3 script corresponding the nodes,
+    /// to be loaded by the blender gepetto plugin.
+    boolean writeBlenderScript (in string filename, in Names_t nodeNames) raises (Error);
+
     /// Write a node and its children to filename
     boolean writeNodeFile (in string nodeName, in string filename) raises (Error);
 
