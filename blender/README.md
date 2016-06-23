@@ -8,7 +8,10 @@ Script for importing in blender a motion viewed with gepetto viewer
 
 ## Exporting the scene
 
-### URDF to blender conversion - suggested approach
+### Export Blender script - suggested approach
+In python, run `gui.writeBlenderScript("blenderscript.py", ["node1", "node2"])`.
+
+### URDF to blender conversion
 
 Exporting from OpenSceneGraph does not always work. One can also convert URDF files to a script loadable by blender:
 `blender/urdf_to_blender.py -p prefix/ -i robot.urdf -o robot_blend.py`
@@ -30,12 +33,12 @@ If you export them before placing them, you can capture them in a frame using th
 
 ## Recording frames
 
-First, setup the export by calling `gui.setCaptureTransform (filename, nodeName)` where `nodeName` refers to a node containing all the objects that will be recorded.
+First, setup the export by calling `gui.setCaptureTransform (filename, [nodeName1, nodeName2, ...])` where `[nodeName1, nodeName2, ...]` refers to a node containing all the objects that will be recorded.
 
 - Frame by frame record:
 a frame can then be saved using `gui.captureTransform ()` to capture the current state.
 - Capturing on refresh:
-use `gui.captureTransformOnRefresh(true)` to start capturing and `gui.captureTransformOnRefresh(false)` to stop it.
+use `gui.captureTransformOnRefresh(True)` to start capturing and `gui.captureTransformOnRefresh(False)` to stop it.
 
 **Notice**: datas will be appended to `filename` so it must be empty at the beginning. Otherwise, you will get an error when loading the file into blender.
 
