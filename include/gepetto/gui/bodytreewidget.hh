@@ -68,6 +68,9 @@ namespace gepetto {
       /// Reload the body tree.
       void reloadBodyTree ();
 
+      /// Get selected bodies
+      QList<BodyTreeItem*> selectedBodies() const;
+
     protected slots:
       /// Display the context menu for one item.
       /// \param pos position of the item

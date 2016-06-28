@@ -68,9 +68,6 @@ namespace gepetto {
         /// Get the list of windows.
         QList <OSGWidget*> osgWindows () const;
 
-        /// Get the body tree widget.
-        BodyTreeWidget* bodyTree () const;
-
         /// Get the plugin manager.
         PluginManager* pluginManager ();
 
@@ -98,6 +95,13 @@ signals:
         void selectJointFromBodyName(const QString bodyName);
 
         public slots:
+          /// \addtogroup available_in_python Python API
+          /// These slots are available for Python scripting in plugins
+          /// \{
+
+        /// Get the body tree widget.
+        BodyTreeWidget* bodyTree () const;
+
         /// Add the text to logs.
         /// \param text text to log
         void log (const QString& text);
@@ -150,6 +154,8 @@ signals:
         QObject* getFromSlot(const char *slot);
 
         void connectSlot(const char *slot, const char *signal, QObject* obj);
+
+        /// \}
 
         private slots:
           OSGWidget* onCreateView(QString name);

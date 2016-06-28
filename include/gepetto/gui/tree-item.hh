@@ -41,7 +41,7 @@ namespace gepetto {
       protected:
         void init ();
 
-        protected slots:
+        public slots:
           void setViewingMode (QString mode);
         void setVisibilityMode (QString mode);
         void removeFromGroup ();
@@ -49,6 +49,7 @@ namespace gepetto {
         void removeAll ();
         void addLandmark ();
         void deleteLandmark ();
+        QString text () const { return QStandardItem::text(); }
 
       private:
         graphics::NodePtr_t node_;

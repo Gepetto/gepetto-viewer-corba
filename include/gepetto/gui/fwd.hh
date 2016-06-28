@@ -10,6 +10,7 @@ namespace gepetto {
     class OSGWidget;
     class PickHandler;
     class BodyTreeWidget;
+    class BodyTreeItem;
 
     class ViewerCorbaServer;
 

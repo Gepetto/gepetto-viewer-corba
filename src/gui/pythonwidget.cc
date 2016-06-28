@@ -37,6 +37,7 @@ namespace gepetto {
             PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
             sys.evalScript ("argv = ['gepetto-gui']");
             console_ = new PythonQtScriptingConsole(NULL, mainContext_);
+            PythonQt::self()->registerQObjectClassNames(QStringList() << "BodyTreeWidget" << "BodyTreeItem");
             mainContext_.addObject("mainWindow", MainWindow::instance());
             console_->QTextEdit::clear();
             console_->consoleMessage(

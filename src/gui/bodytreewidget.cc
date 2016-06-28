@@ -70,7 +70,7 @@ namespace gepetto {
       toolBox_ = toolBox;
       model_  = new QStandardItemModel (this);
       view_->setModel(model_);
-      view_->setSelectionMode(QAbstractItemView::SingleSelection);
+      view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
       connect (main, SIGNAL(refresh()), SLOT(reloadBodyTree()));
       connect (view_, SIGNAL (customContextMenuRequested(QPoint)), SLOT(customContextMenu(QPoint)));
@@ -130,6 +130,17 @@ namespace gepetto {
     void BodyTreeWidget::addBodyToTree(graphics::GroupNodePtr_t group)
     {
       model_->appendRow(new BodyTreeItem (this, group));
+    }
+
+    QList<BodyTreeItem*> BodyTreeWidget::selectedBodies() const
+    {
+      QList<BodyTreeItem*> list;
+      foreach (const QModelIndex& index, view_->selectionModel ()->selectedIndexes ()) {
+        BodyTreeItem *item = dynamic_cast <BodyTreeItem*>
+          (model_->itemFromIndex (index));
+        if (item) list.push_back(item);
+      }
+      return list;
     }
 
     void BodyTreeWidget::customContextMenu(const QPoint &pos)

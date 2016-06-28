@@ -18,6 +18,7 @@
 INSTALL(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/pythonwidget.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/blenderexport.py
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/__init__.py
   DESTINATION ${PYTHON_SITELIB}/gepetto/gui
   )
