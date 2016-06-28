@@ -311,24 +311,24 @@ namespace gepetto {
     void MainWindow::about()
     {
       QString devString;
-      devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%3</a></p>"
-          "<p><small>Copyright (c) 2015 CNRS<br/>By Joseph Mirabel and others.</small></p>"
+      devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%2</a></p>"
+          "<p><small>Copyright (c) 2015-2016 CNRS<br/>By Joseph Mirabel and others.</small></p>"
           "<p><small>"
-          "hpp-gui is free software: you can redistribute it and/or modify it under the "
+          "%3 is free software: you can redistribute it and/or modify it under the "
           "terms of the GNU Lesser General Public License as published by the Free "
           "Software Foundation, either version 3 of the License, or (at your option) "
           "any later version.<br/><br/>"
-          "hpp-gui is distributed in the hope that it will be "
+          "%3 is distributed in the hope that it will be "
           "useful, but WITHOUT ANY WARRANTY; without even the implied warranty "
           "of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU "
           "General Lesser Public License for more details.  You should have "
-          "received a copy of the GNU Lesser General Public License along with hpp-gui."
+          "received a copy of the GNU Lesser General Public License along with %3. "
           "If not, see <a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses<a/>."
           "</small></p>"
           )
         .arg(QApplication::applicationVersion())
         .arg(QApplication::organizationDomain())
-        .arg(QApplication::organizationDomain());
+        .arg(QApplication::applicationName());
 
       QMessageBox::about(this, QApplication::applicationName(), devString);
     }
