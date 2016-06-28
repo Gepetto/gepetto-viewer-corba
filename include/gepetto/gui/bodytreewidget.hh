@@ -13,6 +13,8 @@
         (model_->itemFromIndex (index)); \
       if (item) wsm->WindowsManagerFunc (item->node()->getID().c_str(), \
                                          Traits<CorbaType>::from (arg).in()); \
+      else \
+        qDebug() << model_->itemFromIndex(index)->text() << "is not a BodyTreeItem"; \
     } \
   }
 
@@ -57,6 +59,9 @@ namespace gepetto {
       QTreeView* view ();
 
     public slots:
+      /// \addtogroup available_in_python Python API
+      /// \{
+
       /// Triggered when an item is selected in the body tree view.
       /// \param bodyName name of the body
       void selectBodyByName (const QString bodyName);
@@ -71,12 +76,6 @@ namespace gepetto {
       /// Get selected bodies
       QList<BodyTreeItem*> selectedBodies() const;
 
-    protected slots:
-      /// Display the context menu for one item.
-      /// \param pos position of the item
-      void customContextMenu (const QPoint& pos);
-
-    public slots:
       /// Set the transparency of currently selected body.
       /// \param value value of the slider to convert
       void setTransparency(int value);
@@ -96,6 +95,13 @@ namespace gepetto {
       /// Set the scale of currently selected body.
       /// \param scale new scale of the body
       void setScale (int scale);
+
+      /// \}
+
+    protected slots:
+      /// Display the context menu for one item.
+      /// \param pos position of the item
+      void customContextMenu (const QPoint& pos);
 
     private:
       QTreeView* view_;
