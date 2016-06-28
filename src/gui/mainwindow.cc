@@ -63,7 +63,7 @@ namespace gepetto {
       setupInterface();
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
-      insertDockWidget(pythonWidget_, Qt::RightDockWidgetArea, Qt::Horizontal);
+      insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
 #endif
     }
 
