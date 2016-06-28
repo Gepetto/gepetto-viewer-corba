@@ -87,6 +87,9 @@ namespace gepetto {
           ("load-plugin,p", po::value <Strings_t>(),
            "load the plugin")
 
+          ("load-pyplugin,q", po::value <Strings_t>(),
+           "load the PythonQt module as a plugin")
+
           ("no-plugin,P", "do not load any plugin")
 
           ("auto-write-settings,w", "write the settings in the configuration file")
@@ -128,6 +131,12 @@ namespace gepetto {
           for (Strings_t::const_iterator it = envs.begin();
                it != envs.end(); ++it)
             addPlugin (QString::fromStdString(*it), !noPlugin);
+        }
+      if (vm.count ("load-pyplugin") > 0) {
+          const Strings_t& envs = vm["load-pyplugin"].as <Strings_t> ();
+          for (Strings_t::const_iterator it = envs.begin();
+               it != envs.end(); ++it)
+            addPyPlugin (QString::fromStdString(*it), !noPlugin);
         }
 
       if (help || genAndQuit) retVal = 1;
