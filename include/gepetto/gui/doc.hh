@@ -18,9 +18,8 @@
 ///
 /// \subsection python_plugins Python plugins
 ///
-/// See the documentation of gepetto::gui::PythonWidget to know how to write
-/// plugins in Python. You may have a look at the file
-/// \ref pyplugins/gepetto/gui/pythonwidget.py which is an example.
+/// See the documentation of gepetto::gui::PythonWidget for instructions
+/// and examples of Python plugin usage.
 ///
 /// The Python console is a good tool for debugging. The following variables
 /// are accessible:

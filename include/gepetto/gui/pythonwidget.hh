@@ -41,28 +41,31 @@ namespace gepetto {
     /// pluginInstance = Plugin(mainWindow)
     /// \endcode
     ///
-    /// It may interact with the interface in following ways.
+    /// Plugin can interact with the interface in following ways.
     ///
-    /// ### Add a dock widget:
+    /// ### Dock widgets:
     ///
-    /// Your plugin may inherits from class PythonQt.QtGui.QDockWidget.
+    /// Your plugin may inherits from class \c PythonQt.QtGui.QDockWidget.
     /// In this case, an instance of the Plugin  will be added to the MainWindow
-    /// as a QDockWidget.
+    /// as a \c QDockWidget.
     ///
     /// ### Signals and slots:
     ///
-    /// The following method will be automatically connected to Qt signals:
-    /// \li \c Plugin.osgWidget when a new OSGWidget is created (MainWindow::viewCreated(OSGWidget*))
-    /// \li \c Plugin.resetConnection triggered when CORBA connection should be reset.
+    /// The most important signals and slots you should now about are listed here.
+    /// A more up-to-date list of the \ref available_in_python
     ///
-    /// ### Logging
+    /// The following method will be automatically connected to Qt signals:
+    /// \li \c Plugin.osgWidget when a new OSGWidget is created (MainWindow::viewCreated(OSGWidget*)).
+    /// \li \c Plugin.resetConnection triggered when CORBA connection should be reset. **This is mandatory is you have a CORBA Client**
+    ///
+    /// ### Logging information
     ///
     /// Logging can be done from Python through:
     /// \li MainWindow::log(const QString&)
     /// \li MainWindow::logError(const QString&)
     /// \li MainWindow::logJobStarted, MainWindow::logJobDone and
     ///     MainWindow::logJobFailed to inform users when
-    ///     something may take some time.
+    ///     starting and finishing (Done or Failed) actions that may take some time.
     ///
     /// \sa See example \ref pyplugins/gepetto/gui/pythonwidget.py
     class PythonWidget : public QDockWidget
