@@ -800,7 +800,7 @@ namespace graphics {
             osgVector3 pos3 (posCorba3[0], posCorba3[1], posCorba3[2]);
             osgVector3 pos4 (posCorba4[0], posCorba4[1], posCorba4[2]);
             LeafNodeFacePtr_t face = LeafNodeFace::create
-                (faceName, pos1, pos2, pos3, pos3, getColor (colorCorba));
+                (faceName, pos1, pos2, pos3, pos4, getColor (colorCorba));
             mtx_.lock();
             WindowsManager::initParent (faceName, face);
             addNode (faceName, face);
