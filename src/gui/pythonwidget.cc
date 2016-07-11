@@ -152,6 +152,13 @@ namespace gepetto {
         else
           qDebug() << "Could not find actionReconnect button. The plugin will"
             << "not be able to reset CORBA connections";
+        QAction* refresh = main->findChild<QAction*>("actionRefresh");
+        if (refresh)
+          addSignalHandler(plugin, "refreshInterface",
+            refresh, SIGNAL(triggered()));
+        else
+          qDebug() << "Could not find actionRefresh button. The plugin will"
+            << "not be able to refresh interface.";
       }
     }
 }
