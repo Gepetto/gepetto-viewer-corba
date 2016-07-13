@@ -60,10 +60,12 @@ namespace gepetto {
       worker_.start();
 
       collisionLabel_ = new QLabel("No collisions.");
+      shortcutFactory_ = new ShortcutFactory;
+      setupInterface();
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
 #endif
-      setupInterface();
+      connect(ui_->actionChange_shortcut, SIGNAL(triggered()), shortcutFactory_, SLOT(open()));
     }
 
     MainWindow::~MainWindow()
@@ -72,6 +74,7 @@ namespace gepetto {
       removeDockWidget(pythonWidget_);
       delete pythonWidget_;
 #endif
+      delete shortcutFactory_;
       pluginManager()->clearPlugins();
       osgViewerManagers_.reset();
       worker_.quit();
@@ -373,6 +376,16 @@ namespace gepetto {
       insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
 #endif
 
+      registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
+      registerShortcut("Body tree widget", "Toggle view", ui_->dockWidget_bodyTree->toggleViewAction ());
+      registerShortcut("Main window", "Load robot", ui_->actionLoad_robot_from_file);
+      registerShortcut("Main window", "Load environment", ui_->actionLoad_environment);
+      registerShortcut("Main window", "Change shortcut", ui_->actionChange_shortcut);
+      registerShortcut("Main window", "Quit", ui_->actionQuit);
+      registerShortcut("Main window", "Reset connection", ui_->actionReconnect);
+      registerShortcut("Main window", "Refresh", ui_->actionRefresh);
+      registerShortcut("Main window", "Plugins", ui_->actionPlugins);
+
       ui_->menuWindow->addSeparator();
 
       // Setup the status bar
@@ -441,6 +454,11 @@ namespace gepetto {
       if (registeredSlots_.find(slot) != registeredSlots_.end()) {
         QObject::connect(obj, signal, registeredSlots_[slot], slot);
       }
+    }
+
+    void MainWindow::registerShortcut(QString widgetName, QString actionName, QAction* action)
+    {
+      shortcutFactory_->addBinding(widgetName, actionName, action);
     }
 
     void MainWindow::configurationValidationStatusChanged (bool valid)

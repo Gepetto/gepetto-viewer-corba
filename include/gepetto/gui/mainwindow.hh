@@ -17,6 +17,7 @@
 #include <gepetto/gui/dialog/pluginmanagerdialog.hh>
 
 #include <gepetto/gui/settings.hh>
+#include <gepetto/gui/shortcut-factory.hh>
 
 namespace Ui {
   class MainWindow;
@@ -157,6 +158,8 @@ signals:
 
         /// \}
 
+      void registerShortcut(QString widgetName, QString actionName, QAction* action);
+
         private slots:
           OSGWidget* onCreateView(QString name);
           OSGWidget* onCreateView();
@@ -181,6 +184,7 @@ signals:
 #if GEPETTO_GUI_HAS_PYTHONQT
         PythonWidget* pythonWidget_;
 #endif
+      ShortcutFactory* shortcutFactory_;
 
         WindowsManagerPtr_t osgViewerManagers_;
         CorbaServer* osgServer_;
