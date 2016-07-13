@@ -1,4 +1,6 @@
 #include <iostream>
+#include <QScrollArea>
+#include <QLabel>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QVBoxLayout>
@@ -33,11 +35,15 @@ namespace gepetto {
 
     void ShortcutFactory::open()
     {
-      QWidget* w = new QWidget(NULL, Qt::Window);
+      QScrollArea* s = new QScrollArea(NULL);
+      QWidget* w = new QWidget(s, Qt::Window);
       QVBoxLayout* l = new QVBoxLayout(w);
 
-      w->setAttribute(Qt::WA_DeleteOnClose);
-      w->resize(400, 500);
+      l->addWidget(new QLabel("Double click on the button to change the shortcut."));
+      s->setWidget(w);
+      s->setAttribute(Qt::WA_DeleteOnClose);
+      s->setWidgetResizable(true);
+      s->resize(400, 500);
       for (MapBindings::iterator it = widgetsBindings_.begin(); it != widgetsBindings_.end(); ++it) {
 	QGroupBox* g = new QGroupBox((*it).first, w);
 	QFormLayout* f = new QFormLayout(g);
@@ -46,7 +52,7 @@ namespace gepetto {
 	}
 	l->addWidget(g);
       }
-      w->show();
+      s->show();
     }
 
     void ShortcutFactory::writeShortcutsFile()
