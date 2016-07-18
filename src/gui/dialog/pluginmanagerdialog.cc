@@ -19,6 +19,7 @@ namespace gepetto {
               foreach (QDir dir, pluginDirs_) {
                   if (dir.exists(name)) {
                       filename = dir.absoluteFilePath(name);
+                      break;
                     }
                 }
             }
