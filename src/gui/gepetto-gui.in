@@ -1,7 +1,0 @@
-#!/bin/sh
-
-INSTALL_DIR="@CMAKE_INSTALL_PREFIX@"
-export LD_LIBRARY_PATH="${INSTALL_DIR}/lib/gepetto-gui-plugins:$LD_LIBRARY_PATH"
-export GEPETTO_GUI_SETTINGS_DIR="${INSTALL_DIR}/etc"
-
-${INSTALL_DIR}/lib/gepetto-gui $@

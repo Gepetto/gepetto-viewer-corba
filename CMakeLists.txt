@@ -107,7 +107,6 @@ SET(${PROJECT_NAME}_HEADERS
 config_files(
   include/gepetto/gui/config-dep.hh
   src/gui/main.cc
-  src/gui/gepetto-gui
   )
 
 ADD_SUBDIRECTORY(src)
