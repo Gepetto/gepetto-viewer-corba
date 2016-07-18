@@ -36,7 +36,7 @@ namespace po = boost::program_options;
 
 namespace gepetto {
   namespace gui {
-    Settings::Settings ()
+    Settings::Settings (const char* installDir)
       : configurationFile ("settings")
       , predifinedRobotConf ("robots")
       , predifinedEnvConf ("environments")
@@ -44,12 +44,44 @@ namespace gepetto {
       , noPlugin (false)
       , startGepettoCorbaServer (true)
       , refreshRate (30)
-      , captureDirectory ("/tmp/hpp-gui")
+      , captureDirectory ()
       , captureFilename ("screenshot")
       , captureExtension ("png")
+      , installDirectory (installDir)
 
       , mw (0)
-    {}
+    {
+      QDir user (QDir::home());
+      const char path[] = "Pictures/hpp-gui";
+      user.mkpath (path);
+      user.cd (path);
+      captureDirectory = user.absolutePath().toStdString();
+    }
+
+    void Settings::setupPaths () const
+    {
+      QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+      if (env.contains ("GEPETTO_GUI_SETTINGS_DIR")) {
+        QSettings::setPath(QSettings::IniFormat,
+            QSettings::SystemScope, env.value("GEPETTO_GUI_SETTINGS_DIR"));
+        QSettings::setPath(QSettings::NativeFormat,
+            QSettings::SystemScope, env.value("GEPETTO_GUI_SETTINGS_DIR"));
+      } else {
+        QSettings::setPath(QSettings::IniFormat,
+            QSettings::SystemScope, installDirectory + "/etc");
+        QSettings::setPath(QSettings::NativeFormat,
+            QSettings::SystemScope, installDirectory + "/etc");
+      }
+
+      if (env.contains ("GEPETTO_GUI_PLUGIN_DIRS")) {
+        foreach (QString p, env.value("GEPETTO_GUI_PLUGIN_DIRS").split(':')) {
+          PluginManager::addPluginDir (p + "/gepetto-gui-plugins");
+        }
+      }
+      foreach (QString p, env.value("LD_LIBRARY_PATH").split(':')) {
+        PluginManager::addPluginDir (p + "/gepetto-gui-plugins");
+      }
+    }
 
     int Settings::fromArgv(const int argc, char * const argv[])
     {

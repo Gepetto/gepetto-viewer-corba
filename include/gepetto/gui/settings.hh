@@ -32,8 +32,16 @@ namespace gepetto {
 
       std::string captureDirectory, captureFilename, captureExtension;
 
+      QString installDirectory;
+
       /// Set up default values
-      Settings ();
+      Settings (const char* installDirectory);
+
+      /// Setup paths to find setting files and plugins.
+      /// \note The environment variable
+      /// GEPETTO_GUI_PLUGIN_DIRS, LD_LIBRARY_PATH
+      /// and GEPETTO_GUI_SETTINGS_DIR are read.
+      void setupPaths () const;
 
       /// Update values accordingly with command arguments
       int fromArgv (const int argc, char* const argv[]);
