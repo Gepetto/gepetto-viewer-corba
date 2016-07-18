@@ -1,4 +1,4 @@
-# Copyright (c) 2014 LAAS-CNRS
+# Copyright (c) 2014-2016 LAAS-CNRS
 # Author: Mathieu Geisert
 #
 # This file is part of SceneViewer-corba.
@@ -116,6 +116,7 @@ INSTALL (FILES
 # Standalone corba server
 ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
 TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
+PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server omniORB4)
 #TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
 
 INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)

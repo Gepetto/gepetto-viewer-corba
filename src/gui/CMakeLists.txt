@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015 CNRS
+# Copyright (c) 2015-2016 CNRS
 # Authors: Joseph Mirabel
 #
 #
@@ -81,6 +81,7 @@ PKG_CONFIG_USE_DEPENDENCY(gepetto-gui gepetto-viewer)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openthreads)
 PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph-osgQt)
+PKG_CONFIG_USE_DEPENDENCY(gepetto-gui omniORB4)
 IF (GEPETTO_GUI_HAS_PYTHONQT)
   TARGET_LINK_LIBRARIES(gepetto-gui ${PYTHONQT_LIBRARIES})
 ENDIF (GEPETTO_GUI_HAS_PYTHONQT)
