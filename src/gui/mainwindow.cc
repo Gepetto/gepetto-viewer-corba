@@ -60,11 +60,10 @@ namespace gepetto {
       worker_.start();
 
       collisionLabel_ = new QLabel("No collisions.");
-      setupInterface();
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
-      insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
 #endif
+      setupInterface();
     }
 
     MainWindow::~MainWindow()
@@ -370,6 +369,9 @@ namespace gepetto {
       ui_->dockWidget_log->toggleViewAction ()->setIcon(QIcon::fromTheme("window-new"));
       ui_->dockWidget_log->toggleViewAction ()->setShortcut(Qt::CTRL + Qt::ALT + Qt::Key_L);
       ui_->menuWindow->addAction(ui_->dockWidget_log->toggleViewAction ());
+#if GEPETTO_GUI_HAS_PYTHONQT
+      insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
+#endif
 
       ui_->menuWindow->addSeparator();
 
