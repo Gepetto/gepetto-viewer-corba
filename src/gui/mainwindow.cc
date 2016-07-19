@@ -61,10 +61,10 @@ namespace gepetto {
 
       collisionLabel_ = new QLabel("No collisions.");
       shortcutFactory_ = new ShortcutFactory;
-      setupInterface();
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
 #endif
+      setupInterface();
       connect(ui_->actionChange_shortcut, SIGNAL(triggered()), shortcutFactory_, SLOT(open()));
     }
 
@@ -374,6 +374,7 @@ namespace gepetto {
       ui_->menuWindow->addAction(ui_->dockWidget_log->toggleViewAction ());
 #if GEPETTO_GUI_HAS_PYTHONQT
       insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
+      registerShortcut("Python console", "Toggle view", pythonWidget_->toggleViewAction());
 #endif
 
       registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
