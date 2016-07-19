@@ -6,6 +6,7 @@
 #include "gepetto/gui/windows-manager.hh"
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/tree-item.hh"
+#include "gepetto/gui/shortcut-factory.hh"
 #include "gepetto/gui/dialog/dialogloadrobot.hh"
 #include "gepetto/gui/dialog/dialogloadenvironment.hh"
 #include "gepetto/gui/plugin-interface.hh"

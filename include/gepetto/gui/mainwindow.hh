@@ -17,7 +17,6 @@
 #include <gepetto/gui/dialog/pluginmanagerdialog.hh>
 
 #include <gepetto/gui/settings.hh>
-#include <gepetto/gui/shortcut-factory.hh>
 
 namespace Ui {
   class MainWindow;
