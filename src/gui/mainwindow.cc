@@ -380,13 +380,13 @@ namespace gepetto {
 
       registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
       registerShortcut("Body tree widget", "Toggle view", ui_->dockWidget_bodyTree->toggleViewAction ());
-      registerShortcut("Main window", "Load robot", ui_->actionLoad_robot_from_file);
-      registerShortcut("Main window", "Load environment", ui_->actionLoad_environment);
-      registerShortcut("Main window", "Change shortcut", ui_->actionChange_shortcut);
-      registerShortcut("Main window", "Quit", ui_->actionQuit);
-      registerShortcut("Main window", "Reset connection", ui_->actionReconnect);
-      registerShortcut("Main window", "Refresh", ui_->actionRefresh);
-      registerShortcut("Main window", "Plugins", ui_->actionPlugins);
+      registerShortcut("Main window", ui_->actionLoad_robot_from_file);
+      registerShortcut("Main window", ui_->actionLoad_environment);
+      registerShortcut("Main window", ui_->actionChange_shortcut);
+      registerShortcut("Main window", ui_->actionQuit);
+      registerShortcut("Main window", ui_->actionReconnect);
+      registerShortcut("Main window", ui_->actionRefresh);
+      registerShortcut("Main window", ui_->actionPlugins);
 
       ui_->menuWindow->addSeparator();
 
@@ -461,6 +461,11 @@ namespace gepetto {
     void MainWindow::registerShortcut(QString widgetName, QString actionName, QAction* action)
     {
       shortcutFactory_->addBinding(widgetName, actionName, action);
+    }
+
+    void MainWindow::registerShortcut(QString widgetName, QAction* action)
+    {
+      shortcutFactory_->addBinding(widgetName, action->text(), action);
     }
 
     void MainWindow::configurationValidationStatusChanged (bool valid)

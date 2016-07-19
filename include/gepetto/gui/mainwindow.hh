@@ -158,6 +158,7 @@ signals:
         /// \}
 
       void registerShortcut(QString widgetName, QString actionName, QAction* action);
+      void registerShortcut(QString widgetName, QAction* action);
 
         private slots:
           OSGWidget* onCreateView(QString name);
