@@ -6,6 +6,7 @@
 #include "gepetto/gui/windows-manager.hh"
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/tree-item.hh"
+#include "gepetto/gui/shortcut-factory.hh"
 #include "gepetto/gui/dialog/dialogloadrobot.hh"
 #include "gepetto/gui/dialog/dialogloadenvironment.hh"
 #include "gepetto/gui/plugin-interface.hh"
@@ -60,10 +61,12 @@ namespace gepetto {
       worker_.start();
 
       collisionLabel_ = new QLabel("No collisions.");
+      shortcutFactory_ = new ShortcutFactory;
 #if GEPETTO_GUI_HAS_PYTHONQT
       pythonWidget_ = new PythonWidget(this);
 #endif
       setupInterface();
+      connect(ui_->actionChange_shortcut, SIGNAL(triggered()), shortcutFactory_, SLOT(open()));
     }
 
     MainWindow::~MainWindow()
@@ -72,6 +75,7 @@ namespace gepetto {
       removeDockWidget(pythonWidget_);
       delete pythonWidget_;
 #endif
+      delete shortcutFactory_;
       pluginManager()->clearPlugins();
       osgViewerManagers_.reset();
       worker_.quit();
@@ -371,7 +375,18 @@ namespace gepetto {
       ui_->menuWindow->addAction(ui_->dockWidget_log->toggleViewAction ());
 #if GEPETTO_GUI_HAS_PYTHONQT
       insertDockWidget(pythonWidget_, Qt::BottomDockWidgetArea, Qt::Horizontal);
+      registerShortcut("Python console", "Toggle view", pythonWidget_->toggleViewAction());
 #endif
+
+      registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
+      registerShortcut("Body tree widget", "Toggle view", ui_->dockWidget_bodyTree->toggleViewAction ());
+      registerShortcut("Main window", ui_->actionLoad_robot_from_file);
+      registerShortcut("Main window", ui_->actionLoad_environment);
+      registerShortcut("Main window", ui_->actionChange_shortcut);
+      registerShortcut("Main window", ui_->actionQuit);
+      registerShortcut("Main window", ui_->actionReconnect);
+      registerShortcut("Main window", ui_->actionRefresh);
+      registerShortcut("Main window", ui_->actionPlugins);
 
       ui_->menuWindow->addSeparator();
 
@@ -441,6 +456,16 @@ namespace gepetto {
       if (registeredSlots_.find(slot) != registeredSlots_.end()) {
         QObject::connect(obj, signal, registeredSlots_[slot], slot);
       }
+    }
+
+    void MainWindow::registerShortcut(QString widgetName, QString actionName, QAction* action)
+    {
+      shortcutFactory_->addBinding(widgetName, actionName, action);
+    }
+
+    void MainWindow::registerShortcut(QString widgetName, QAction* action)
+    {
+      shortcutFactory_->addBinding(widgetName, action->text(), action);
     }
 
     void MainWindow::configurationValidationStatusChanged (bool valid)

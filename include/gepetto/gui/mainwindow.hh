@@ -149,13 +149,37 @@ signals:
         /// Open the plugin manager dialog.
         void onOpenPluginManager ();
 
+        /// Register an object slot that can be accessible without knowing the class definition.
+        /// \param slot slot's name
+        /// \param obj object's instance
         void registerSlot(const char *slot, QObject* obj);
 
+        /// Get the instance of object which holds the slot.
+        /// \param slot slot's name
+        /// \return object's instance
         QObject* getFromSlot(const char *slot);
 
+        /// Connect an object's signal to a registered slot.
+        /// \param slot slot's name
+        /// \param signal signal's name
+        /// \param obj object's instance
         void connectSlot(const char *slot, const char *signal, QObject* obj);
 
+        /// Register an action on which users can change the shortcut to trigger it.
+        /// \param widgetName widget's name that handle the action
+        /// \param actionName action's name
+        /// \param action action to modify
+        void registerShortcut(QString widgetName, QString actionName, QAction* action);
+
+
+        /// Register an action on which users can change the shortcut to trigger it.
+        /// User action->text() as action name.
+        /// \param widgetName widget's name that handle the action
+        /// \param action action to modify
+        void registerShortcut(QString widgetName, QAction* action);
+
         /// \}
+
 
         private slots:
           OSGWidget* onCreateView(QString name);
@@ -181,6 +205,7 @@ signals:
 #if GEPETTO_GUI_HAS_PYTHONQT
         PythonWidget* pythonWidget_;
 #endif
+      ShortcutFactory* shortcutFactory_;
 
         WindowsManagerPtr_t osgViewerManagers_;
         CorbaServer* osgServer_;

@@ -11,6 +11,7 @@ namespace gepetto {
     class PickHandler;
     class BodyTreeWidget;
     class BodyTreeItem;
+    class ShortcutFactory;
 
     class ViewerCorbaServer;
 

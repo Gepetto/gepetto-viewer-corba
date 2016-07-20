@@ -51,7 +51,7 @@ namespace gepetto {
             std::string name,
             MainWindow* parent = 0,
             Qt::WindowFlags f = 0,
-            osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::Viewer::SingleThreaded );
+            osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::Viewer::ThreadPerContext );
 
         virtual ~OSGWidget();
 

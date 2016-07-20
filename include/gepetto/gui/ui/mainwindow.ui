@@ -53,6 +53,7 @@
     <addaction name="actionLoad_robot_from_file"/>
     <addaction name="actionLoad_environment"/>
     <addaction name="separator"/>
+    <addaction name="actionChange_shortcut"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -417,6 +418,11 @@
    </property>
    <property name="text">
     <string>Fetch configuration</string>
+   </property>
+  </action>
+  <action name="actionChange_shortcut">
+   <property name="text">
+    <string>Change &amp;shortcut</string>
    </property>
   </action>
  </widget>
