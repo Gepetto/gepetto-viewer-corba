@@ -131,10 +131,9 @@ namespace gepetto {
                   if (n) {
                       if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
                         continue;
-                      select (n);
                       osg::Vec3d p = it->getWorldIntersectPoint();
                       QVector3D pWF (p[0],p[1],p[2]);
-                      parent_->emitSelected(QString::fromStdString(n->getID ()), pWF);
+                      parent_->emitClicked(QString::fromStdString(n->getID ()), pWF);
                       return nodes;
                       // nodes.push_back(n);
                       // break;

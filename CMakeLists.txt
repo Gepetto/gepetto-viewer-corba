@@ -81,6 +81,7 @@ SET (${PROJECT_NAME}_HEADERS_MOC
   ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/pluginmanagerdialog.hh
   ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
   ${CMAKE_SOURCE_DIR}/include/gepetto/gui/shortcut-factory.hh
+  ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-handler.hh
   )
 SET (${PROJECT_NAME}_HEADERS_NO_MOC
   ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
