@@ -9,6 +9,8 @@
 
 namespace gepetto {
   namespace gui {
+    /// Base class to define selection mode.
+    /// \note The class has no pure virtual method in order to be used in python.
     class SelectionMode : public QObject
     {
       Q_OBJECT
@@ -24,7 +26,11 @@ namespace gepetto {
       void selectedBodies(QStringList selectedBodies);
 
     public slots:
+      /// Slot called when a body is selected.
+      /// \param name body's name
+      /// \param position click position
       virtual void onSelect(QString name, QVector3D position) { Q_UNUSED(name)emit selectedBodies(QStringList());}
+
       virtual QString getName() { return "None"; }
 
     protected:
@@ -32,6 +38,7 @@ namespace gepetto {
       WindowsManagerPtr_t wsm_;
     };
 
+    /// Class that allows to select one body.
     class UniqueSelection : public SelectionMode
     {
       Q_OBJECT
@@ -69,6 +76,8 @@ namespace gepetto {
       ~SelectionHandler();
 
     public slots:
+      /// Add a mode to the list of available mode.
+      /// \param mode mode to add
       void addMode(SelectionMode *mode);
 
     private slots:
