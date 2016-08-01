@@ -1223,7 +1223,8 @@ namespace graphics {
         return true;
     }
   
-  bool WindowsManager::setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) const
+  bool WindowsManager::setStaticTransform (const char* nodeName,
+      const ::gepetto::corbaserver::Transform transform)
   {
     const std::string name (nodeName);
     std::map<std::string, NodePtr_t>::const_iterator it = nodes_.find(name);

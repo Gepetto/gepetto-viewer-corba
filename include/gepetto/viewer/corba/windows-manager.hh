@@ -212,7 +212,7 @@ namespace graphics {
             virtual bool deleteLandmark(const char* nodeNameCorba);
 
             virtual bool getStaticTransform (const char* nodeName, ::gepetto::corbaserver::Transform transform) const;
-            virtual bool setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) const;
+            virtual bool setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform);
 
             virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
             virtual bool setScale(const char* nodeNameCorba, const value_type* scale);
