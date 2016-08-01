@@ -92,7 +92,7 @@ class Plugin(QtGui.QDockWidget):
 
     ### If present, this function is called when a new OSG Widget is created.
     def osgWidget(self, osgWindow):
-        osgWindow.connect('selected(QString,QVector3D)', self.selected)
+        osgWindow.connect('clicked(QString,QVector3D)', self.selected)
 
     def resetConnection(self):
         self.client = Client()
