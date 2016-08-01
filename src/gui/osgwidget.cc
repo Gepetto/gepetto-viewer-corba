@@ -101,13 +101,13 @@ namespace gepetto {
       traits_ptr->doubleBuffer = true;
       traits_ptr->vsync = true;
       //  traits_ptr->sharedContext = 0;
-      //  traits_ptr->sampleBuffers = 1;
-      //  traits_ptr->samples = 1;
 
       traits_ptr->alpha = ds->getMinimumNumAlphaBits();
       traits_ptr->stencil = ds->getMinimumNumStencilBits();
       traits_ptr->sampleBuffers = ds->getMultiSamples();
       traits_ptr->samples = ds->getNumMultiSamples();
+      traits_ptr->sampleBuffers = 4;
+      traits_ptr->samples = 4;
 
       graphicsWindow_ = new osgQt::GraphicsWindowQt ( traits_ptr );
 
