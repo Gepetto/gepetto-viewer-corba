@@ -113,7 +113,6 @@ namespace graphics {
             WindowsManager ();
             WindowID addWindow (std::string winName, WindowManagerPtr_t newWindow);
 
-            bool nodeExists (const std::string& name);
             template <typename NodeContainer_t>
               std::size_t getNodes
               (const gepetto::corbaserver::Names_t& name, NodeContainer_t& nodes);
@@ -148,6 +147,8 @@ namespace graphics {
 
             virtual bool attachCameraToNode(const char* nodeNameCorba, const WindowID windowId);
             virtual bool detachCamera(const WindowID windowId);
+
+            virtual bool nodeExists (const std::string& name);
 
             virtual bool addFloor(const char* floorNameCorba);
 
