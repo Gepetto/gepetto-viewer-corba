@@ -1234,8 +1234,9 @@ namespace graphics {
     
     const osgVector3 p(transform[0],transform[1],transform[2]);
     const osgQuat q(transform[4],transform[5],transform[6],transform[3]);
-    
+    mtx_.lock();
     it->second->setStaticTransform(p,q);
+    mtx_.unlock();
     return true;
   }
 
