@@ -1222,6 +1222,22 @@ namespace graphics {
         for (int i = 0; i < 3; ++i) transform[4+i] = (value_type)q[i];
         return true;
     }
+  
+  bool WindowsManager::setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) const
+  {
+    const std::string name (nodeName);
+    std::map<std::string, NodePtr_t>::const_iterator it = nodes_.find(name);
+    if (it == nodes_.end ()) {
+      std::cout << "Node \"" << name << "\" doesn't exist." << std::endl;
+      return false;
+    }
+    
+    const osgVector3 p(transform[0],transform[1],transform[2]);
+    const osgQuat q(transform[4],transform[5],transform[6],transform[3]);
+    
+    it->second->setStaticTransform(p,q);
+    return true;
+  }
 
     bool WindowsManager::setVisibility (const char* nodeNameCorba,
             const char* visibilityModeCorba)
