@@ -298,6 +298,11 @@ typedef sequence<Position> PositionSeq;
     /// get the static transform of the node
     /// \param input nodeName : name of the node
     boolean getStaticTransform(in string nodeName, out Transform configuration) raises (Error);
+    
+    /// set the static transform of the node
+    /// \param input nodeName : name of the node
+    /// \param input configuration : static configuration of the node
+    boolean setStaticTransform(in string nodeName, in Transform configuration) raises (Error);
 
     /// Change the visibility of a node. If this node is a group node, visibility mode will be apply to all children.
     /// \param input nodeName : name of the node.
