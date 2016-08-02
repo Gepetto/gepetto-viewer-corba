@@ -37,6 +37,7 @@ SET (${PROJECT_NAME}_SOURCES
   dialog/dialogloadenvironment.cc
   dialog/pluginmanagerdialog.cc
   shortcut-factory.cc
+  selection-handler.cc
   )
 
 IF(GEPETTO_GUI_HAS_PYTHONQT)

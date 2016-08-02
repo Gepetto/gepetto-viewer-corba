@@ -71,11 +71,11 @@ namespace gepetto {
 
     MainWindow::~MainWindow()
     {
+      delete shortcutFactory_;
 #if GEPETTO_GUI_HAS_PYTHONQT
       removeDockWidget(pythonWidget_);
       delete pythonWidget_;
 #endif
-      delete shortcutFactory_;
       pluginManager()->clearPlugins();
       osgViewerManagers_.reset();
       worker_.quit();

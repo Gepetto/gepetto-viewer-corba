@@ -113,6 +113,15 @@ namespace graphics {
           }
       }
 
+      bool GraphicalInterface::nodeExists(const char* nodeName)
+      {
+	try {
+	  return windowsManager_->nodeExists(nodeName);
+	} catch (const std::exception& exc) {
+	  throw Error(exc.what());
+	}
+      }
+
       bool GraphicalInterface::addFloor (const char* floorNameCorba)
           throw (Error)
       {

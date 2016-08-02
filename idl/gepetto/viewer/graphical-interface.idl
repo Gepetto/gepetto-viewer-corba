@@ -89,6 +89,10 @@ typedef sequence<Position> PositionSeq;
     /// \param input windowId : ID of the window
     boolean detachCamera(in unsigned long windowId) raises (Error);
 
+    /// Check if nodeName is an existing node.
+    /// \param nodeName name of the node
+    boolean nodeExists(in string nodeName) raises (Error);
+
     /// create a floor called floorName.
     /// \param input floorName : name of the floor.
     boolean addFloor(in string floorName) raises (Error);

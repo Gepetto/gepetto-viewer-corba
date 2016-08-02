@@ -93,6 +93,8 @@ class Plugin(QtGui.QDockWidget):
         self.setWidget (mainWidget)
         self.main = mainWindow
 
+        self.main.registerShortcut(self.windowTitle, self.toggleViewAction())
+
     def resetConnection(self):
         self.client = Client()
         self.gui = self.client.gui

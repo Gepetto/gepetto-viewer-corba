@@ -62,6 +62,8 @@ public:
   virtual bool attachCameraToNode(const char* nodeName, const WindowID windowId);
   virtual bool detachCamera(const WindowID windowId);
 
+  virtual bool nodeExists(const char* nodeName);
+
   virtual bool addFloor(const char* floorName) throw (Error);
 
   virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const value_type* color) throw (Error);
