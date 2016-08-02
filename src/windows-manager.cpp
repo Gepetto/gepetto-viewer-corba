@@ -171,7 +171,7 @@ namespace graphics {
       return it->second;
     }
 
-    inline bool WindowsManager::nodeExists (const std::string& name)
+    bool WindowsManager::nodeExists (const std::string& name)
     {
       std::map <std::string, NodePtr_t>::const_iterator it = nodes_.find (name);
       return (it != nodes_.end ());
