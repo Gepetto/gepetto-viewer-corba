@@ -94,7 +94,6 @@ signals:
         osg::ref_ptr<PickHandler> pickHandler_;
         WindowsManager::WindowID wid_;
         graphics::WindowManagerPtr_t wm_;
-        SelectionHandler* selectionHandler_;
         RenderThread render_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;

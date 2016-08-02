@@ -10,6 +10,7 @@
 #include "gepetto/gui/dialog/dialogloadrobot.hh"
 #include "gepetto/gui/dialog/dialogloadenvironment.hh"
 #include "gepetto/gui/plugin-interface.hh"
+#include "gepetto/gui/selection-handler.hh"
 
 #include <gepetto/gui/meta.hh>
 #include <gepetto/gui/config-dep.hh>
@@ -67,6 +68,12 @@ namespace gepetto {
 #endif
       setupInterface();
       connect(ui_->actionChange_shortcut, SIGNAL(triggered()), shortcutFactory_, SLOT(open()));
+
+      selectionHandler_ = new SelectionHandler(osgViewerManagers_);
+      selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
+      selectionHandler_->addMode(new MultiSelection(osgViewerManagers_));
+
+      ui_->osgToolBar->addWidget(selectionHandler_);
     }
 
     MainWindow::~MainWindow()
@@ -222,6 +229,7 @@ namespace gepetto {
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
+	selectionHandler_->setParentOSG(centralWidget());
       }
       osgWindows_.append(osgWidget);
       emit viewCreated(osgWidget);
