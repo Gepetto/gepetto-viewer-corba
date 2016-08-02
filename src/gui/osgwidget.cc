@@ -37,7 +37,6 @@
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/bodytreewidget.hh>
 #include <gepetto/gui/pick-handler.hh>
-#include <gepetto/gui/selection-handler.hh>
 
 namespace gepetto {
   namespace gui {
@@ -85,7 +84,6 @@ namespace gepetto {
         , pickHandler_ (new PickHandler (this, wsm_))
         , wid_ (-1)
         , wm_ ()
-        , selectionHandler_(new SelectionHandler(wsm_, this))
         , viewer_ (new osgViewer::Viewer)
         , screenCapture_ ()
         , mode_ (CAMERA_MANIPULATION)
@@ -145,7 +143,6 @@ namespace gepetto {
 
       QGLWidget* glWidget = graphicsWindow_->getGLWidget();
       QVBoxLayout* hblayout = new QVBoxLayout (this);
-      hblayout->addWidget(selectionHandler_);
       hblayout->setContentsMargins(1,1,1,1);
       setLayout (hblayout);
       hblayout->addWidget(glWidget);
@@ -158,10 +155,7 @@ namespace gepetto {
       parent->bodyTree()->connect(this,
           SIGNAL (clicked(QString,QVector3D)), SLOT (selectBodyByName(QString)));
       parent->connect(this, SIGNAL (clicked(QString,QVector3D)),
-          SLOT (requestSelectJointFromBodyName(QString)));
-
-      selectionHandler_->addMode(new UniqueSelection(wsm_));
-      selectionHandler_->addMode(new MultiSelection(wsm_));
+		      SLOT (requestSelectJointFromBodyName(QString)));
     }
 
     OSGWidget::~OSGWidget()

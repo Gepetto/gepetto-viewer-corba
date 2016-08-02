@@ -206,6 +206,7 @@ signals:
         PythonWidget* pythonWidget_;
 #endif
       ShortcutFactory* shortcutFactory_;
+      SelectionHandler* selectionHandler_;
 
         WindowsManagerPtr_t osgViewerManagers_;
         CorbaServer* osgServer_;
