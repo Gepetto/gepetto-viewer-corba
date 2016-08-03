@@ -1,5 +1,6 @@
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
+#include <gepetto/gui/pick-handler.hh>
 
 #include <boost/regex.hpp>
 
@@ -36,7 +37,6 @@
 
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/bodytreewidget.hh>
-#include <gepetto/gui/pick-handler.hh>
 
 namespace gepetto {
   namespace gui {
@@ -196,9 +196,9 @@ namespace gepetto {
       //        wsm_->lock().unlock();
     }
 
-    void OSGWidget::emitClicked(QString name, QVector3D positionInWorldFrame)
+    void OSGWidget::emitClicked(QString name, QVector3D positionInWorldFrame, QKeyEvent* event)
     {
-      emit clicked (name, positionInWorldFrame);
+      emit clicked (name, positionInWorldFrame, event);
     }
 
     void OSGWidget::onHome()

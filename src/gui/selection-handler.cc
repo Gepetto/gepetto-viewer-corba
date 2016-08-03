@@ -12,7 +12,8 @@ namespace gepetto {
     SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, QWidget *parent)
       : QComboBox(parent),
 	osg_(NULL),
-	wsm_(wsm)
+	wsm_(wsm),
+	index_(-1)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), SLOT(changeMode(int)));
     }
@@ -33,13 +34,16 @@ namespace gepetto {
 	foreach(QString name, selected_) {
 	  wsm_->setHighlight(name.toStdString().c_str(), 0);	
 	}
-	modes_[index]->reset();
-	disconnect(osg_, SIGNAL(clicked(QString, QVector3D)),
-		   modes_[index], SLOT(onSelect(QString, QVector3D)));
-	disconnect(modes_[index], SIGNAL(selectedBodies(QStringList)),
-		   this, SLOT(getBodies(QStringList)));
-	connect(osg_, SIGNAL(clicked(QString, QVector3D)),
-		modes_[index], SLOT(onSelect(QString, QVector3D)));
+	if (index_ != -1) {
+	  modes_[index_]->reset();
+	  disconnect(osg_, SIGNAL(clicked(QString, QVector3D, QKeyEvent*)),
+		     modes_[index_], SLOT(onSelect(QString, QVector3D, QKeyEvent*)));
+	  disconnect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
+		     this, SLOT(getBodies(QStringList)));
+	}
+	index_ = index;
+	connect(osg_, SIGNAL(clicked(QString, QVector3D, QKeyEvent*)),
+		modes_[index], SLOT(onSelect(QString, QVector3D, QKeyEvent*)));
 	connect(modes_[index], SIGNAL(selectedBodies(QStringList)),
 		SLOT(getBodies(QStringList)));
       }
@@ -65,7 +69,7 @@ namespace gepetto {
     {
     }
 
-    void UniqueSelection::onSelect(QString name, QVector3D position)
+    void UniqueSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
     {
       if (currentSelected_ == name) return;
       if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 0);
@@ -89,10 +93,18 @@ namespace gepetto {
       selectedBodies_ = QStringList();
     }
 
-    void MultiSelection::onSelect(QString name, QVector3D position)
+    void MultiSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
     {
       if (currentSelected_ == name) return;
-      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 7);
+      if (!event || event->key() != Qt::Key_Control) {
+	foreach (QString n, selectedBodies_) {
+	  wsm_->setHighlight(n.toStdString().c_str(), 0);
+	}
+	selectedBodies_.clear();
+      }
+      else if (currentSelected_ != "") {
+	wsm_->setHighlight(currentSelected_.toStdString().c_str(), 7);
+      }
       currentSelected_ = name;
       wsm_->setHighlight(name.toStdString().c_str(), 8);
       selectedBodies_ << name;
