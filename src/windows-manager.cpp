@@ -214,11 +214,9 @@ namespace graphics {
     void WindowsManager::initParent (const std::string& nodeName,
             NodePtr_t node)
     {
-        GroupNodePtr_t groupNode = groupNodes_
-            [WindowsManager::parentName (nodeName)];
-        if (groupNode) {
+        GroupNodePtr_t groupNode = getScene(parentName(nodeName));
+        if (groupNode)
             groupNode->addChild (node);
-        }
     }
 
     void WindowsManager::addNode (const std::string& nodeName, NodePtr_t node)
