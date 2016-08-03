@@ -45,33 +45,53 @@ FOREACH(IDL ${IDL_SOURCES})
 
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL_UNDERSCORE}_idl.py
     DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver)
+
+  INSTALL(FILES ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver)
 ENDFOREACH()
 
-ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
-ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
+IF(NOT CLIENT_ONLY)
 
-ADD_LIBRARY(${LIBRARY_NAME}
-  SHARED
-  graphical-interface.impl.cpp
-  graphical-interface.impl.hh
-  windows-manager.cpp
-  server.cc
-  client.cc
-  server-private.cc
-  server-private.hh
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
-)
+  ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
+  ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
 
-ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
-ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
+  ADD_LIBRARY(${LIBRARY_NAME}
+    SHARED
+    graphical-interface.impl.cpp
+    graphical-interface.impl.hh
+    windows-manager.cpp
+    server.cc
+    client.cc
+    server-private.cc
+    server-private.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
+  )
 
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} gepetto-viewer)
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} urdfdom)
-TARGET_LINK_LIBRARIES(${LIBRARY_NAME} ${Boost_LIBRARIES})
+  ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
+  ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
 
-INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
+  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
+  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} gepetto-viewer)
+  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} urdfdom)
+  TARGET_LINK_LIBRARIES(${LIBRARY_NAME} ${Boost_LIBRARIES})
+
+  INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
+
+  # Standalone corba server
+  ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
+  TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server omniORB4)
+  #TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
+
+  INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
+
+ELSE(NOT CLIENT_ONLY)
+
+  ADD_CUSTOM_TARGET(generate_idl_cpp ALL DEPENDS ${ALL_IDL_CPP_STUBS})
+  ADD_CUSTOM_TARGET(generate_idl_python ALL DEPENDS ${ALL_IDL_PYTHON_STUBS})
+
+ENDIF(NOT CLIENT_ONLY)
 
 MAKE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba)
 
@@ -102,21 +122,3 @@ INSTALL(
   ${CMAKE_CURRENT_SOURCE_DIR}/../blender/gepettoimport.py
   DESTINATION ${PYTHON_SITELIB}/gepetto/blender
   )
-INSTALL(
-  FILES
-  ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/graphical-interface.idl
-  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver
-)
-
-INSTALL (FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba
-  )
-
-# Standalone corba server
-ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
-TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
-PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server omniORB4)
-#TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
-
-INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
