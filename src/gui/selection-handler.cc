@@ -9,45 +9,50 @@
 
 namespace gepetto {
   namespace gui {
-    SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, OSGWidget *parent)
-      : QWidget(parent),
-	osg_(parent),
-	index_(0),
-	wsm_(wsm)
+    SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, QWidget *parent)
+      : QComboBox(parent),
+	osg_(NULL),
+	wsm_(wsm),
+	index_(-1)
     {
-      QHBoxLayout* layout = new QHBoxLayout(this);
-      setMaximumHeight(0);
-
-      QAction* changeMode = new QAction(this);
-      changeMode->setShortcut(Qt::Key_U);
-      connect(changeMode, SIGNAL(triggered()), SLOT(changeMode()));
-      addAction(changeMode);
+      connect(this, SIGNAL(currentIndexChanged(int)), SLOT(changeMode(int)));
     }
 
     SelectionHandler::~SelectionHandler()
     {
     }
 
-    void SelectionHandler::changeMode()
+    void SelectionHandler::setParentOSG(OSGWidget* parent)
     {
-      foreach(QString name, selected_) {
-	wsm_->setHighlight(name.toStdString().c_str(), 0);	
+      osg_ = parent;
+      changeMode(currentIndex());
+    }
+
+    void SelectionHandler::changeMode(int index)
+    {
+      if (osg_ != NULL) {
+	foreach(QString name, selected_) {
+	  wsm_->setHighlight(name.toStdString().c_str(), 0);	
+	}
+	if (index_ != -1) {
+	  modes_[index_]->reset();
+	  disconnect(osg_, SIGNAL(clicked(QString, QVector3D, QKeyEvent*)),
+		     modes_[index_], SLOT(onSelect(QString, QVector3D, QKeyEvent*)));
+	  disconnect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
+		     this, SLOT(getBodies(QStringList)));
+	}
+	index_ = index;
+	connect(osg_, SIGNAL(clicked(QString, QVector3D, QKeyEvent*)),
+		modes_[index], SLOT(onSelect(QString, QVector3D, QKeyEvent*)));
+	connect(modes_[index], SIGNAL(selectedBodies(QStringList)),
+		SLOT(getBodies(QStringList)));
       }
-      modes_[index_]->reset();
-      disconnect(osg_, SIGNAL(clicked(QString, QVector3D)),
-		 modes_[index_], SLOT(onSelect(QString, QVector3D)));
-      disconnect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
-		 this, SLOT(getBodies(QStringList)));
-      index_ = (index_ + 1) % modes_.size();
-      connect(osg_, SIGNAL(clicked(QString, QVector3D)),
-	      modes_[index_], SLOT(onSelect(QString, QVector3D)));
-      connect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
-	      SLOT(getBodies(QStringList)));
     }
 
     void SelectionHandler::addMode(SelectionMode* mode)
     {
       modes_.push_back(mode);
+      addItem(mode->getName());
     }
 
     void SelectionHandler::getBodies(QStringList selectedBodies)
@@ -64,7 +69,7 @@ namespace gepetto {
     {
     }
 
-    void UniqueSelection::onSelect(QString name, QVector3D position)
+    void UniqueSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
     {
       if (currentSelected_ == name) return;
       if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 0);
@@ -88,10 +93,18 @@ namespace gepetto {
       selectedBodies_ = QStringList();
     }
 
-    void MultiSelection::onSelect(QString name, QVector3D position)
+    void MultiSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
     {
       if (currentSelected_ == name) return;
-      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 3);
+      if (!event || event->key() != Qt::Key_Control) {
+	foreach (QString n, selectedBodies_) {
+	  wsm_->setHighlight(n.toStdString().c_str(), 0);
+	}
+	selectedBodies_.clear();
+      }
+      else if (currentSelected_ != "") {
+	wsm_->setHighlight(currentSelected_.toStdString().c_str(), 7);
+      }
       currentSelected_ = name;
       wsm_->setHighlight(name.toStdString().c_str(), 8);
       selectedBodies_ << name;

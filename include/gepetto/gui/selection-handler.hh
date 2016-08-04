@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QVector3D>
+#include <QKeyEvent>
 
 #include <gepetto/gui/fwd.hh>
 
@@ -29,7 +30,7 @@ namespace gepetto {
       /// Slot called when a body is selected.
       /// \param name body's name
       /// \param position click position
-      virtual void onSelect(QString name, QVector3D position) { Q_UNUSED(name)emit selectedBodies(QStringList());}
+      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event) { Q_UNUSED(name)emit selectedBodies(QStringList());}
 
       virtual QString getName() { return "None"; }
 
@@ -47,7 +48,7 @@ namespace gepetto {
       ~UniqueSelection();
 
     public slots:
-      virtual void onSelect(QString name, QVector3D position);
+      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event);
       virtual QString getName() { return "Unique"; }
     };
 
@@ -61,19 +62,21 @@ namespace gepetto {
       virtual void reset();
 
     public slots:
-      virtual void onSelect(QString name, QVector3D position);
+      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event);
       virtual QString getName() { return "Multi"; }
 
     protected:
       QStringList selectedBodies_;
     };
 
-    class SelectionHandler : public QWidget
+    class SelectionHandler : public QComboBox
     {
       Q_OBJECT
     public:
-      SelectionHandler(WindowsManagerPtr_t wsm, OSGWidget* parent);
+      SelectionHandler(WindowsManagerPtr_t wsm, QWidget* parent = 0);
       ~SelectionHandler();
+
+      void setParentOSG(OSGWidget* parent);
 
     public slots:
       /// Add a mode to the list of available mode.
@@ -82,15 +85,15 @@ namespace gepetto {
 
     private slots:
       void getBodies(QStringList selectedBodies);
-      void changeMode();
+      void changeMode(int index);
 
     private:
       void initWidget();
 
       std::vector<SelectionMode *> modes_;
       OSGWidget* osg_;
-      WindowsManagerPtr_t wsm_;
       int index_;
+      WindowsManagerPtr_t wsm_;
       QStringList selected_;
     };
   }

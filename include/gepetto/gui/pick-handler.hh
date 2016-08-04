@@ -8,6 +8,7 @@
 #include <QModelIndex>
 
 #include <gepetto/gui/fwd.hh>
+#include <gepetto/gui/qt-osg-keyboard.hh>
 
 namespace gepetto {
   namespace gui {
@@ -33,10 +34,12 @@ namespace gepetto {
 
     private:
       std::list <graphics::NodePtr_t> computeIntersection (osgGA::GUIActionAdapter& aa,
-                                                           const float& x, const float& y);
+                                                           const float& x, const float& y,
+							   int modMask);
 
       void setCameraToSelected (osgGA::GUIActionAdapter& aa, bool zoom);
 
+      QtOsgKeyboard mapper_;
       WindowsManagerPtr_t wsm_;
       OSGWidget* parent_;
       graphics::NodePtr_t last_;

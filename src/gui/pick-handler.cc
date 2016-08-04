@@ -50,7 +50,7 @@ namespace gepetto {
               pushed_ = false;
               if ((int)floor(lastX_ - ea.getX()+0.05) == 0
                   && (int)floor(lastY_ - ea.getY() + 0.5) == 0) {
-                computeIntersection(aa, ea.getX(), ea.getY());
+                computeIntersection(aa, ea.getX(), ea.getY(), ea.getModKeyMask());
                 return true;
               }
             }
@@ -96,7 +96,8 @@ namespace gepetto {
     }
 
     std::list<graphics::NodePtr_t> PickHandler::computeIntersection(osgGA::GUIActionAdapter &aa,
-                                                                    const float &x, const float &y)
+                                                                    const float &x, const float &y,
+								    int modKeyMask)
     {
       std::list<graphics::NodePtr_t> nodes;
       osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
@@ -133,7 +134,8 @@ namespace gepetto {
                         continue;
                       osg::Vec3d p = it->getWorldIntersectPoint();
                       QVector3D pWF (p[0],p[1],p[2]);
-                      parent_->emitClicked(QString::fromStdString(n->getID ()), pWF);
+                      parent_->emitClicked(QString::fromStdString(n->getID ()), pWF,
+					   mapper_.remapModKey(modKeyMask));
                       return nodes;
                       // nodes.push_back(n);
                       // break;
