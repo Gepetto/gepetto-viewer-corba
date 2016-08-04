@@ -258,7 +258,7 @@ namespace graphics {
     }
 
     UrdfFile::UrdfFile (const std::string& f)
-      : filename (f) {
+      : filename (urdfParser::getFilename(f)) {
         struct stat buffer;
         if (stat (filename.c_str(), &buffer) != 0) {
           perror (filename.c_str());
