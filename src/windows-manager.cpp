@@ -721,7 +721,9 @@ namespace graphics {
             ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
             std::size_t i = 0;
             for (i = 0; i < pos.length (); ++i) {
-              values->push_back (::osg::Vec3 (pos[i][0],pos[i][1],pos[i][2]));
+	      using CORBA::ULong;
+              values->push_back (::osg::Vec3 (pos[(ULong)i][0],pos[(ULong)i][1],
+					      pos[(ULong)i][2]));
             }
             LeafNodeLinePtr_t curve = LeafNodeLine::create
                 (curveName, values, getColor (colorCorba));
@@ -1478,10 +1480,10 @@ namespace graphics {
             res.push_back(posQuat.first.x());
             res.push_back(posQuat.first.y());
             res.push_back(posQuat.first.z());
-            res.push_back(posQuat.second.w());
-            res.push_back(posQuat.second.x());
-            res.push_back(posQuat.second.y());
-            res.push_back(posQuat.second.z());
+            res.push_back((value_type)posQuat.second.w());
+            res.push_back((value_type)posQuat.second.x());
+            res.push_back((value_type)posQuat.second.y());
+            res.push_back((value_type)posQuat.second.z());
         }
         return res;
     }

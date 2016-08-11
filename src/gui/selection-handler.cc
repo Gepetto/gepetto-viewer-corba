@@ -12,8 +12,8 @@ namespace gepetto {
     SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, QWidget *parent)
       : QComboBox(parent),
 	osg_(NULL),
-	wsm_(wsm),
-	index_(-1)
+	index_(-1),
+	wsm_(wsm)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), SLOT(changeMode(int)));
     }
@@ -69,7 +69,8 @@ namespace gepetto {
     {
     }
 
-    void UniqueSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
+    void UniqueSelection::onSelect(QString name, QVector3D /*position*/,
+				   QKeyEvent* /*event*/)
     {
       if (currentSelected_ == name) return;
       if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 0);
@@ -93,7 +94,8 @@ namespace gepetto {
       selectedBodies_ = QStringList();
     }
 
-    void MultiSelection::onSelect(QString name, QVector3D position, QKeyEvent* event)
+    void MultiSelection::onSelect(QString name, QVector3D /*position*/,
+				  QKeyEvent* event)
     {
       if (currentSelected_ == name) return;
       if (!event || event->key() != Qt::Key_Control) {

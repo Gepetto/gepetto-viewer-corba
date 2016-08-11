@@ -376,7 +376,7 @@ namespace graphics {
 
       gepetto::corbaserver::Names_t* fromStringVector(const std::vector<std::string>& input)
       {
-          ULong size = input.size ();
+	ULong size = (ULong) input.size ();
           char** nameList = gepetto::corbaserver::Names_t::allocbuf(size);
           gepetto::corbaserver::Names_t *jointNames = new gepetto::corbaserver::Names_t (size, size, nameList);
           for (std::size_t i = 0; i < input.size (); ++i)
@@ -684,9 +684,9 @@ namespace graphics {
       gepetto::corbaserver::floatSeq *dofArray;
       std::size_t dim = config.size();
       dofArray = new gepetto::corbaserver::floatSeq();
-      dofArray->length(dim);
+      dofArray->length((ULong) dim);
       for(std::size_t i=0; i<dim; i++)
-          (*dofArray)[i] = config[i];
+	(*dofArray)[(ULong)i] = config[i];
       return dofArray;
 	} catch (const std::exception& exc) {
 	  throw Error (exc.what ());

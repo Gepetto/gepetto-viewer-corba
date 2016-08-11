@@ -30,7 +30,11 @@ namespace gepetto {
       /// Slot called when a body is selected.
       /// \param name body's name
       /// \param position click position
-      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event) { Q_UNUSED(name)emit selectedBodies(QStringList());}
+      virtual void onSelect(QString name, QVector3D /*position*/,
+			    QKeyEvent* /*event*/)
+      {
+	Q_UNUSED(name) emit selectedBodies(QStringList());
+      }
 
       virtual QString getName() { return "None"; }
 
