@@ -258,7 +258,7 @@ namespace graphics {
     }
 
     UrdfFile::UrdfFile (const std::string& f)
-      : filename (f) {
+      : filename (urdfParser::getFilename(f)) {
         struct stat buffer;
         if (stat (filename.c_str(), &buffer) != 0) {
           perror (filename.c_str());
@@ -972,14 +972,12 @@ namespace graphics {
 
     bool WindowsManager::addURDF (const char* urdfNameCorba,
             const char* urdfPathCorba,
-            const char* urdfPackagePathCorba)
+            const char* /*urdfPackagePathCorba*/)
     {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
-        const std::string urdfPackagePath (urdfPackagePathCorba);
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
-          GroupNodePtr_t urdf = urdfParser::parse
-            (urdfName, urdfPath, urdfPackagePath);
+          GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath);
           NodePtr_t link;
           for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
             link = urdf->getChild (i);
@@ -1005,14 +1003,13 @@ namespace graphics {
     }
 
     bool WindowsManager::addUrdfCollision (const char* urdfNameCorba,
-            const char* urdfPathCorba, const char* urdfPackagePathCorba)
+            const char* urdfPathCorba, const char* /*urdfPackagePathCorba*/)
     {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
-        const std::string urdfPackagePath (urdfPackagePathCorba);
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
             GroupNodePtr_t urdf = urdfParser::parse
-                (urdfName, urdfPath, urdfPackagePath, "collision");
+                (urdfName, urdfPath, "collision");
             NodePtr_t link;
             for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
                 link = urdf->getChild (i);
@@ -1039,20 +1036,18 @@ namespace graphics {
 
     void WindowsManager::addUrdfObjects (const char* urdfNameCorba,
             const char* urdfPathCorba,
-            const char* urdfPackagePathCorba,
+            const char* /*urdfPackagePathCorba*/,
             bool visual)
     {
         const std::string urdfName (urdfNameCorba);
         const std::string urdfPath (urdfPathCorba);
-        const std::string urdfPackagePath (urdfPackagePathCorba);
         if (urdfName == "") {
             throw gepetto::Error ("Parameter nodeName cannot be empty in "
                     "idl request addUrdfObjects.");
         }
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
           GroupNodePtr_t urdf = urdfParser::parse
-            (urdfName, urdfPath, urdfPackagePath,
-             visual ? "visual" : "collision", "object");
+            (urdfName, urdfPath, visual ? "visual" : "collision", "object");
           NodePtr_t link;
           for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
             link = urdf->getChild (i);

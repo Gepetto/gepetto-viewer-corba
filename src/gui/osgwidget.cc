@@ -153,8 +153,8 @@ namespace gepetto {
       render_.start ();
 
       parent->bodyTree()->connect(this,
-          SIGNAL (clicked(QString,QVector3D)), SLOT (selectBodyByName(QString)));
-      parent->connect(this, SIGNAL (clicked(QString,QVector3D)),
+          SIGNAL (clicked(QString,QVector3D,QKeyEvent*)), SLOT (selectBodyByName(QString)));
+      parent->connect(this, SIGNAL (clicked(QString,QVector3D,QKeyEvent*)),
 		      SLOT (requestSelectJointFromBodyName(QString)));
     }
 
