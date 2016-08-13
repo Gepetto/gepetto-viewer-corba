@@ -9,7 +9,7 @@
 // See the COPYING file for more information.
 
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
-# define SCENVIEWER_CORBASERVER_SERVER_PRIVATE_HH
+# define SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 
 # include "graphical-interface.impl.hh"
 # include "gepetto/viewer/corba/fwd.hh"
