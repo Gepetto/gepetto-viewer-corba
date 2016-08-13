@@ -75,20 +75,20 @@ namespace gepetto {
     }
 
     OSGWidget::OSGWidget(WindowsManagerPtr_t wm,
-        std::string name,
-        MainWindow *parent, Qt::WindowFlags f ,
-        osgViewer::ViewerBase::ThreadingModel threadingModel)
-      : QWidget( parent, f )
-        , graphicsWindow_()
-        , wsm_ (wm)
-        , pickHandler_ (new PickHandler (this, wsm_))
-        , wid_ (-1)
-        , wm_ ()
-        , viewer_ (new osgViewer::Viewer)
-        , screenCapture_ ()
-        , mode_ (CAMERA_MANIPULATION)
-        , selectionFinished_( true )
-        , infoBox_ (this)
+                         const std::string & name,
+                         MainWindow *parent, Qt::WindowFlags f ,
+                         osgViewer::ViewerBase::ThreadingModel threadingModel)
+    : QWidget( parent, f )
+    , graphicsWindow_()
+    , wsm_ (wm)
+    , pickHandler_ (new PickHandler (this, wsm_))
+    , wid_ (-1)
+    , wm_ ()
+    , viewer_ (new osgViewer::Viewer)
+    , screenCapture_ ()
+    , mode_ (CAMERA_MANIPULATION)
+    , selectionFinished_( true )
+    , infoBox_ (this)
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
       osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits);

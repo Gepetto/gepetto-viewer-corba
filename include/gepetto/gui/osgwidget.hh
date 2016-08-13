@@ -48,10 +48,10 @@ namespace gepetto {
         };
 
         OSGWidget( WindowsManagerPtr_t wm,
-            std::string name,
-            MainWindow* parent = 0,
-            Qt::WindowFlags f = 0,
-            osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::Viewer::ThreadPerContext );
+                  const std::string & name,
+                  MainWindow* parent = 0,
+                  Qt::WindowFlags f = 0,
+                  osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::Viewer::ThreadPerContext );
 
         virtual ~OSGWidget();
 
