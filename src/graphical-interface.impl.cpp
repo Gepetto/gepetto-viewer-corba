@@ -702,13 +702,22 @@ namespace graphics {
 				}
 			}
       
-      bool GraphicalInterface::setBackgroundColor(const WindowID windowId,const value_type* colorCorba) throw (Error)
+      bool GraphicalInterface::setBackgroundColor1(const WindowID windowId,const value_type* colorCorba) throw (Error)
       {
           try {
-              return windowsManager_->setBackgroundColor (windowId,colorCorba);
+              return windowsManager_->setBackgroundColor1 (windowId,colorCorba);
           } catch (const std::exception& exc) {
               throw Error (exc.what ());
           }
+      }
+      
+      bool GraphicalInterface::setBackgroundColor2(const WindowID windowId,const value_type* colorCorba) throw (Error)
+      {
+        try {
+          return windowsManager_->setBackgroundColor2 (windowId,colorCorba);
+        } catch (const std::exception& exc) {
+          throw Error (exc.what ());
+        }
       }
 
     } //end namespace impl

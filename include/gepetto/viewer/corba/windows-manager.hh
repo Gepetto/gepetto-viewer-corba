@@ -232,7 +232,8 @@ namespace graphics {
             virtual bool writeBlenderScript (const char* filename, const std::list<std::string>& nodename);
             virtual bool writeNodeFile (const char* nodename, const char* filename);
             virtual bool writeWindowFile (const WindowID windowId, const char* filename);
-            virtual bool setBackgroundColor(const WindowID windowId,const value_type* colorCorba);
+            virtual bool setBackgroundColor1(const WindowID windowId,const value_type* colorCorba);
+            virtual bool setBackgroundColor2(const WindowID windowId,const value_type* colorCorba);
             
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
