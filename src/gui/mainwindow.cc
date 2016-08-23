@@ -291,7 +291,7 @@ namespace gepetto {
         } catch (std::runtime_error& exc) {
           log (exc.what ());
         }
-        bodyTree()->addBodyToTree(osgViewerManagers_->getScene(ed.envName_.toStdString()));
+        bodyTree()->addBodyToTree(osgViewerManagers_->getGroup(ed.envName_.toStdString()));
 
         QString what = QString ("Loading environment ") + ed.name_;
         WorkItem* item;

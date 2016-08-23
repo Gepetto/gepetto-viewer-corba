@@ -20,6 +20,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <algorithm>
+
 #include <boost/thread.hpp>
 
 #include <osgDB/WriteFile>
@@ -48,7 +50,22 @@
 
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
+#define RETURN_IF_NODE_EXISTS(name)                                            \
+  if (nodeExists(name)) {                                                      \
+    std::cout << "\"" << name << "\" already exist." << std::endl;             \
+    return false;                                                              \
+  }
+
 namespace graphics {
+    namespace {
+      struct ApplyConfigurationFunctor {
+        void operator() (const NodeConfiguration& nc) const
+        {
+            nc.node->applyConfiguration ( nc.position, nc.quat);
+        }
+      };
+    }
+
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
         mtx_ (), rate_ (20), newNodeConfigurations_ (),
@@ -177,10 +194,18 @@ namespace graphics {
       return (it != nodes_.end ());
     }
 
-    NodePtr_t WindowsManager::getNode (const std::string& name) const
+    NodePtr_t WindowsManager::getNode (const std::string& name,
+        bool throwIfDoesntExist) const
     {
       std::map <std::string, NodePtr_t>::const_iterator it = nodes_.find (name);
-      if (it == nodes_.end ()) return NodePtr_t();
+      if (it == nodes_.end ()) {
+        if (throwIfDoesntExist) {
+          std::ostringstream oss;
+          oss << "No node with name \"" << name << "\".";
+          throw gepetto::Error (oss.str ().c_str ());
+        } else
+          return NodePtr_t();
+      }
       return it->second;
     }
 
@@ -214,7 +239,7 @@ namespace graphics {
     void WindowsManager::initParent (const std::string& nodeName,
             NodePtr_t node)
     {
-        GroupNodePtr_t groupNode = getScene(parentName(nodeName));
+        GroupNodePtr_t groupNode = getGroup(parentName(nodeName));
         if (groupNode)
             groupNode->addChild (node);
     }
@@ -241,8 +266,6 @@ namespace graphics {
             boost::this_thread::sleep (boost::posix_time::milliseconds (rate_));
         }
     }
-
-
 
     osgQuat WindowsManager::corbaConfToOsgQuat (const value_type* configCorba)
     {
@@ -321,11 +344,9 @@ namespace graphics {
     {
         mtx_.lock ();
         //refresh scene with the new configuration
-        for (std::list<NodeConfiguration>::iterator it =
-                newNodeConfigurations_.begin ();
-                it != newNodeConfigurations_.end (); it++) {
-            (*it).node->applyConfiguration ( (*it).position, (*it).quat);
-        }
+        std::for_each(newNodeConfigurations_.begin(),
+            newNodeConfigurations_.end(),
+            ApplyConfigurationFunctor());
         newNodeConfigurations_.clear ();
         mtx_.unlock ();
         if (autoCaptureTransform_) captureTransform ();
@@ -334,7 +355,7 @@ namespace graphics {
     void WindowsManager::createScene (const char* sceneNameCorba)
     {
         std::string sceneName (sceneNameCorba);
-        if (nodes_.find (sceneName) != nodes_.end ()) {
+        if (nodeExists(sceneName)) {
             std::ostringstream oss;
             oss << "A scene with name, \"" << sceneName << "\" already exists.";
             throw gepetto::Error (oss.str ().c_str ());
@@ -349,39 +370,25 @@ namespace graphics {
 
     void WindowsManager::createSceneWithFloor (const char* sceneNameCorba)
     {
+        createScene(sceneNameCorba);
         std::string sceneName (sceneNameCorba);
-        if (nodes_.find (sceneName) != nodes_.end ()) {
-            std::ostringstream oss;
-            oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw gepetto::Error (oss.str ().c_str ());
-        }
-        else {
-            GroupNodePtr_t mainNode = GroupNode::create (sceneName);
-            std::string floorName = sceneName + "/floor";
-            LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
-            mtx_.lock();
-            addGroup (sceneName, mainNode);
-            addNode (floorName, floor);
-            mainNode->addChild (floor);
-            mtx_.unlock();
-        }
+        addFloor((sceneName + "/floor").c_str());
     }
 
     bool WindowsManager::addSceneToWindow (const char* sceneNameCorba,
             WindowID windowId)
     {
         std::string sceneName (sceneNameCorba);
-        if (windowId < windowManagers_.size () &&
-                groupNodes_.find (sceneName) != groupNodes_.end () ) {
+        GroupNodePtr_t group = getGroup(sceneName, true);
+        if (windowId < windowManagers_.size ()) {
             mtx_.lock();
-            windowManagers_[windowId]->addNode (groupNodes_[sceneName]);
+            windowManagers_[windowId]->addNode (group);
             mtx_.unlock();
             return true;
         }
         else {
-            std::cout << "Window ID \"" << windowId
-                << "\" and/or scene name \"" << sceneName
-                << "\" doesn't exist." << std::endl;
+            std::cout << "Window ID " << windowId
+                << " doesn't exist." << std::endl;
             return false;
         }
     }
@@ -389,14 +396,13 @@ namespace graphics {
      bool WindowsManager::attachCameraToNode(const char* nodeNameCorba, const WindowID windowId)
      {
         const std::string nodeName (nodeNameCorba);
-        if (nodes_.find (nodeName) == nodes_.end () || windowId > windowManagers_.size()) {
-    	  std::cout << "Node \"" << nodeName << "\" and/or Window ID" << windowId
-		    << "doesn't exist."
-  		    << std::endl;
+        NodePtr_t node = getNode(nodeName, true);
+        if (windowId > windowManagers_.size()) {
+    	  std::cout << "Window ID" << windowId << "doesn't exist." << std::endl;
   	  return false;
         }
   	mtx_.lock();
-	windowManagers_[windowId]->attachCameraToNode(nodes_[nodeName].get());
+	windowManagers_[windowId]->attachCameraToNode(node.get());
    	mtx_.unlock();
 	return true;
      }
@@ -417,19 +423,13 @@ namespace graphics {
     bool WindowsManager::addFloor(const char* floorNameCorba)
     {
         std::string floorName(floorNameCorba);
-        if (nodes_.find (floorName) != nodes_.end ()) {
-            std::cout << "You need to choose an other name, \"" << floorName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
-            mtx_.lock();
-            WindowsManager::initParent (floorName, floor);
-            addNode (floorName, floor);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(floorName);
+        LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
+        mtx_.lock();
+        WindowsManager::initParent (floorName, floor);
+        addNode (floorName, floor);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addBox (const char* boxNameCorba,
@@ -439,21 +439,16 @@ namespace graphics {
             const value_type* colorCorba)
     {
         std::string boxName (boxNameCorba);
-        if (nodes_.find (boxName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << boxName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeBoxPtr_t box = LeafNodeBox::create
-                (boxName, osgVector3 (boxSize1, boxSize2, boxSize3),
-                 getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (boxName, box);
-            addNode (boxName, box);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(boxName);
+
+        LeafNodeBoxPtr_t box = LeafNodeBox::create
+          (boxName, osgVector3 (boxSize1, boxSize2, boxSize3),
+           getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (boxName, box);
+        addNode (boxName, box);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addCapsule (const char* capsuleNameCorba,
@@ -462,20 +457,15 @@ namespace graphics {
             const value_type* colorCorba)
     {
         const std::string capsuleName (capsuleNameCorba);
-        if (nodes_.find (capsuleName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \""
-                << capsuleName << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create
-                (capsuleName, radius, height, getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (capsuleName, capsule);
-            addNode (capsuleName, capsule);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(capsuleName);
+
+        LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create
+          (capsuleName, radius, height, getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (capsuleName, capsule);
+        addNode (capsuleName, capsule);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addArrow (const char* arrowNameCorba,
@@ -484,20 +474,15 @@ namespace graphics {
             const value_type* colorCorba)
     {
         const std::string arrowName (arrowNameCorba);
-        if (nodes_.find (arrowName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \""
-                << arrowName << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeArrowPtr_t arrow = LeafNodeArrow::create
-                (arrowName,getColor (colorCorba), radius, length);
-            mtx_.lock();
-            WindowsManager::initParent (arrowName, arrow);
-            addNode (arrowName, arrow);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(arrowName);
+
+        LeafNodeArrowPtr_t arrow = LeafNodeArrow::create
+          (arrowName,getColor (colorCorba), radius, length);
+        mtx_.lock();
+        WindowsManager::initParent (arrowName, arrow);
+        addNode (arrowName, arrow);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addRod (const char* rodNameCorba,
@@ -508,87 +493,63 @@ namespace graphics {
             ){
 
       const std::string rodName (rodNameCorba);
-      if (nodes_.find (rodName) != nodes_.end ()) {
-          std::cout << "You need to chose an other name, \"" << rodName
-              << "\" already exist." << std::endl;
-          return false;
-      }
-      else {
-          NodeRodPtr_t rod = NodeRod::create(rodName,getColor(colorCorba),radius,length,maxCapsule);
-          mtx_.lock();
-          WindowsManager::initParent (rodName, rod);
-          addNode (rodName, rod);
-          for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
-            addNode(rod->getCapsuleName(i),rod->getCapsule(i));
-          mtx_.unlock();
-          return true;
-      }
+      RETURN_IF_NODE_EXISTS(rodName);
+
+      NodeRodPtr_t rod = NodeRod::create(rodName,getColor(colorCorba),radius,length,maxCapsule);
+      mtx_.lock();
+      WindowsManager::initParent (rodName, rod);
+      addNode (rodName, rod);
+      for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
+        addNode(rod->getCapsuleName(i),rod->getCapsule(i));
+      mtx_.unlock();
+      return true;
     }
 
     bool WindowsManager::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(std::exception){
         const std::string capsuleName (capsuleNameCorba);
-        if (nodes_.find (capsuleName) == nodes_.end ()) {
-            std::cout  << capsuleName << "\" doesn't exist." << std::endl;
-            return false;
+        NodePtr_t node = getNode(capsuleName, true);
+        try{
+          LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
+          cap->resize(newHeight);
+        }catch (const std::exception& exc) {
+          std::cout <<capsuleName << "isn't a capsule."  << std::endl;
+          return false;
         }
-        else{
-            NodePtr_t node = nodes_[capsuleName];
-            try{
-                LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
-                cap->resize(newHeight);
-            }catch (const std::exception& exc) {
-                std::cout <<capsuleName << "isn't a capsule."  << std::endl;
-                return false;
-            }
-            return true;
-        }
+        return true;
     }
 
     bool WindowsManager::resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception){
         const std::string arrowName (arrowNameCorba);
-        if (nodes_.find (arrowName) == nodes_.end ()) {
-            std::cout  << arrowName << "\" doesn't exist." << std::endl;
-            return false;
+        NodePtr_t node = getNode(arrowName, true);
+        try{
+          LeafNodeArrowPtr_t arrow = boost::dynamic_pointer_cast<LeafNodeArrow>(node);
+          arrow->resize(newRadius,newLength);
+        }catch (const std::exception& exc) {
+          std::cout <<arrowName << "isn't an arrow."  << std::endl;
+          return false;
         }
-        else{
-            NodePtr_t node = nodes_[arrowName];
-            try{
-                LeafNodeArrowPtr_t arrow = boost::dynamic_pointer_cast<LeafNodeArrow>(node);
-                arrow->resize(newRadius,newLength);
-            }catch (const std::exception& exc) {
-                std::cout <<arrowName << "isn't an arrow."  << std::endl;
-                return false;
-            }
 
-            return true;
-        }
+        return true;
     }
-
 
     bool WindowsManager::addMesh (const char* meshNameCorba,
             const char* meshPathCorba)
     {
         std::string meshName (meshNameCorba);
         std::string meshPath (meshPathCorba);
-        if (nodes_.find (meshName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << meshName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            try {
-                LeafNodeColladaPtr_t mesh = LeafNodeCollada::create
-                    (meshName, meshPath);
-	        mtx_.lock();
-                WindowsManager::initParent (meshName, mesh);
-                addNode (meshName, mesh);
-		mtx_.unlock();
-                return true;
-            } catch (const std::exception& exc) {
-                std::cout << exc.what() << std::endl;
-		mtx_.unlock();
-                return false;
-            }
+        RETURN_IF_NODE_EXISTS(meshName);
+        try {
+          LeafNodeColladaPtr_t mesh = LeafNodeCollada::create
+            (meshName, meshPath);
+          mtx_.lock();
+          WindowsManager::initParent (meshName, mesh);
+          addNode (meshName, mesh);
+          mtx_.unlock();
+          return true;
+        } catch (const std::exception& exc) {
+          std::cout << exc.what() << std::endl;
+          mtx_.unlock();
+          return false;
         }
     }
 
@@ -597,20 +558,15 @@ namespace graphics {
             const value_type*)
     {
         std::string coneName (coneNameCorba);
-        if (nodes_.find (coneName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << coneName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeConePtr_t cone = LeafNodeCone::create
-                (coneName, radius, height);
-            mtx_.lock();
-            WindowsManager::initParent (coneName, cone);
-            addNode (coneName, cone);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(coneName);
+
+        LeafNodeConePtr_t cone = LeafNodeCone::create
+          (coneName, radius, height);
+        mtx_.lock();
+        WindowsManager::initParent (coneName, cone);
+        addNode (coneName, cone);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addCylinder (const char* cylinderNameCorba,
@@ -619,20 +575,15 @@ namespace graphics {
             const value_type* colorCorba)
     {
         std::string cylinderName (cylinderNameCorba);
-        if (nodes_.find (cylinderName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << cylinderName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
-                (cylinderName, radius, height, getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (cylinderName, cylinder);
-            addNode (cylinderName, cylinder);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(cylinderName);
+
+        LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
+          (cylinderName, radius, height, getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (cylinderName, cylinder);
+        addNode (cylinderName, cylinder);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addSphere (const char* sphereNameCorba,
@@ -640,20 +591,15 @@ namespace graphics {
             const value_type* colorCorba)
     {
         std::string sphereName (sphereNameCorba);
-        if (nodes_.find (sphereName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << sphereName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
-                (sphereName, radius, getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (sphereName, sphere);
-            addNode (sphereName, sphere);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(sphereName);
+
+        LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
+          (sphereName, radius, getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (sphereName, sphere);
+        addNode (sphereName, sphere);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addLight (const char* lightNameCorba,
@@ -662,21 +608,16 @@ namespace graphics {
             const value_type* colorCorba)
     {
         std::string lightName (lightNameCorba);
-        if (nodes_.find (lightName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << lightName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            LeafNodeLightPtr_t light = LeafNodeLight::create
-                (lightName, radius, getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (lightName, light);
-            addNode (lightName, light);
-            light->setRoot (windowManagers_[wid]->getScene ());
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(lightName);
+
+        LeafNodeLightPtr_t light = LeafNodeLight::create
+          (lightName, radius, getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (lightName, light);
+        addNode (lightName, light);
+        light->setRoot (windowManagers_[wid]->getScene ());
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addLine (const char* lineNameCorba,
@@ -685,22 +626,17 @@ namespace graphics {
             const value_type* colorCorba)
     {
         std::string lineName (lineNameCorba);
-        if (nodes_.find (lineName) != nodes_.end ()) {
-            std::cout << "You need to chose an other name, \"" << lineName
-                << "\" already exist." << std::endl;
-            return false;
-        }
-        else {
-            osgVector3 pos1 (posCorba1[0], posCorba1[1], posCorba1[2]);
-            osgVector3 pos2 (posCorba2[0], posCorba2[1], posCorba2[2]);
-            LeafNodeLinePtr_t line = LeafNodeLine::create
-                (lineName, pos1, pos2, getColor (colorCorba));
-            mtx_.lock();
-            WindowsManager::initParent (lineName, line);
-            addNode (lineName, line);
-            mtx_.unlock();
-            return true;
-        }
+        RETURN_IF_NODE_EXISTS(lineName);
+
+        osgVector3 pos1 (posCorba1[0], posCorba1[1], posCorba1[2]);
+        osgVector3 pos2 (posCorba2[0], posCorba2[1], posCorba2[2]);
+        LeafNodeLinePtr_t line = LeafNodeLine::create
+          (lineName, pos1, pos2, getColor (colorCorba));
+        mtx_.lock();
+        WindowsManager::initParent (lineName, line);
+        addNode (lineName, line);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addCurve (const char* curveNameCorba,
@@ -1459,32 +1395,34 @@ namespace graphics {
       }
     }
 
-    GroupNodePtr_t WindowsManager::getScene (const std::string sceneName)
+    GroupNodePtr_t WindowsManager::getGroup (const std::string groupName,
+        bool throwIfDoesntExist) const
     {
-        std::map<std::string, GroupNodePtr_t>::iterator it =
-            groupNodes_.find (sceneName);
-        if (it == groupNodes_.end ())
+        std::map<std::string, GroupNodePtr_t>::const_iterator it =
+            groupNodes_.find (groupName);
+        if (it == groupNodes_.end ()) {
+          if (throwIfDoesntExist) {
+            std::ostringstream oss;
+            oss << "No group with name \"" << groupName << "\".";
+            throw gepetto::Error (oss.str ().c_str ());
+          } else
             return GroupNodePtr_t ();
+        }
         return it->second;
     }
 
     WindowsManager::configuration_t WindowsManager::getNodeGlobalTransform(const std::string nodeName)
     {
         configuration_t res;
-        std::map<std::string, NodePtr_t>::iterator it =
-            nodes_.find (nodeName);
-        if (it != nodes_.end ())
-        {
-            NodePtr_t node = it->second;
-            std::pair<osgVector3, osgQuat> posQuat = node->getGlobalTransform();
-            res.push_back(posQuat.first.x());
-            res.push_back(posQuat.first.y());
-            res.push_back(posQuat.first.z());
-            res.push_back((value_type)posQuat.second.w());
-            res.push_back((value_type)posQuat.second.x());
-            res.push_back((value_type)posQuat.second.y());
-            res.push_back((value_type)posQuat.second.z());
-        }
+        NodePtr_t node = getNode(nodeName, true);
+        std::pair<osgVector3, osgQuat> posQuat = node->getGlobalTransform();
+        res.push_back(posQuat.first.x());
+        res.push_back(posQuat.first.y());
+        res.push_back(posQuat.first.z());
+        res.push_back((value_type)posQuat.second.w());
+        res.push_back((value_type)posQuat.second.x());
+        res.push_back((value_type)posQuat.second.y());
+        res.push_back((value_type)posQuat.second.z());
         return res;
     }
     

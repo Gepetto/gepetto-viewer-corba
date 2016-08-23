@@ -76,13 +76,14 @@ namespace graphics {
 
         private:
             typedef std::vector <WindowManagerPtr_t> WindowManagerVector_t;
+            typedef std::vector<NodeConfiguration> NodeConfigurations_t;
             WindowManagerVector_t windowManagers_;
             std::map<std::string, NodePtr_t> nodes_;
             std::map<std::string, GroupNodePtr_t> groupNodes_;
             std::map<std::string, RoadmapViewerPtr_t> roadmapNodes_;
             boost::mutex mtx_;
             int rate_;
-            std::list<NodeConfiguration> newNodeConfigurations_;
+            NodeConfigurations_t newNodeConfigurations_;
             BlenderFrameCapture blenderCapture_;
             bool autoCaptureTransform_;
 
@@ -237,8 +238,8 @@ namespace graphics {
             
 
             WindowManagerPtr_t getWindowManager (const WindowID wid);
-            GroupNodePtr_t getScene (const std::string sceneName);
-            NodePtr_t getNode (const std::string& nodeName) const;
+            GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;
+            NodePtr_t getNode (const std::string& nodeName, bool throwIfDoesntExist = false) const;
             configuration_t getNodeGlobalTransform(const std::string nodeName);
     };
 } /* namespace graphics */

@@ -121,7 +121,7 @@ namespace gepetto {
       model_->clear();
       std::vector <std::string> sceneNames = osg_->getSceneList ();
       for (unsigned int i = 0; i < sceneNames.size(); ++i) {
-        graphics::GroupNodePtr_t group = osg_->getScene(sceneNames[i]);
+        graphics::GroupNodePtr_t group = osg_->getGroup(sceneNames[i]);
         if (!group) continue;
         addBodyToTree(group);
       }

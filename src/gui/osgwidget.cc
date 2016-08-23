@@ -185,7 +185,7 @@ namespace gepetto {
       wsm_->addSceneToWindow(rn.constData(), wid_);
       MainWindow* w = dynamic_cast <MainWindow*> (parentWidget());
       if (w) {
-        w->bodyTree()->addBodyToTree (wsm_->getScene (robotName.toStdString()));
+        w->bodyTree()->addBodyToTree (wsm_->getGroup (robotName.toStdString()));
       }
     }
 
