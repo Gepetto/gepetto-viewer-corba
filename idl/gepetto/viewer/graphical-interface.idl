@@ -6,9 +6,6 @@ module gepetto {
     string msg;
   };
 
-  /// Sequence of names
-  typedef sequence <string> Names_t;
-
 module corbaserver {
 
 // Comments :
@@ -301,7 +298,7 @@ typedef sequence<Position> PositionSeq;
 
     /// get the static transform of the node
     /// \param input nodeName : name of the node
-    boolean getStaticTransform(in string nodeName, out Transform configuration) raises (Error);
+    Transform getStaticTransform(in string nodeName) raises (Error);
     
     /// set the static transform of the node
     /// \param input nodeName : name of the node
@@ -383,7 +380,7 @@ typedef sequence<Position> PositionSeq;
     /// Return the Position + Quaternion orientation of an object in the global frame
     /// \param input nodeName : name of the node.
     /// \return a length 7 array
-    floatSeq getNodeGlobalTransform(in string nodeName) raises (Error);
+    Transform getNodeGlobalTransform(in string nodeName) raises (Error);
 
     /// Delete node from visualiser
     /// \param all if nodeName is a group node and all is True, nodes
