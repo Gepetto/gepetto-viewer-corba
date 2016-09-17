@@ -5,14 +5,14 @@
 #define GEPETTO_GUI_BODYTREE_DECL_FEATURE(func, ArgType) \
   public slots: \
     void func (ArgType arg)
-#define GEPETTO_GUI_BODYTREE_IMPL_FEATURE(func, ArgType, CorbaType, WindowsManagerFunc) \
+#define GEPETTO_GUI_BODYTREE_IMPL_FEATURE(func, ArgType, OutType, WindowsManagerFunc) \
   void BodyTreeWidget::func (ArgType arg) { \
     WindowsManagerPtr_t wsm = MainWindow::instance()->osg(); \
     foreach (const QModelIndex& index, view_->selectionModel ()->selectedIndexes ()) { \
       const BodyTreeItem *item = dynamic_cast <const BodyTreeItem*> \
         (model_->itemFromIndex (index)); \
-      if (item) wsm->WindowsManagerFunc (item->node()->getID().c_str(), \
-                                         Traits<CorbaType>::from (arg).in()); \
+      if (item) wsm->WindowsManagerFunc (item->node()->getID(), \
+                                         convertTo<OutType>::from(arg)); \
       else \
         qDebug() << model_->itemFromIndex(index)->text() << "is not a BodyTreeItem"; \
     } \

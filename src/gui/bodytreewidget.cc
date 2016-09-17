@@ -171,9 +171,9 @@ namespace gepetto {
     }
 
     GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setTransparency, int, int, setAlpha)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, CORBA::String_var, setVisibility)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, CORBA::String_var, setWireFrameMode)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, gepetto::corbaserver::Color_var, setColor)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, gepetto::corbaserver::Position_var, setScale)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, std::string, setVisibility)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, std::string, setWireFrameMode)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, WindowsManager::Color_t, setColor)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, int, setScale)
   }
 }
