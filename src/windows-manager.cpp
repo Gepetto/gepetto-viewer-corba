@@ -597,7 +597,7 @@ namespace graphics {
     }
 
     bool WindowsManager::addCurve (const std::string& curveName,
-            const PositionSeq& pos,
+            const Vec3ArrayPtr_t& pos,
             const Color_t& color)
     {
         if (nodes_.find (curveName) != nodes_.end ()) {
@@ -606,18 +606,11 @@ namespace graphics {
             return false;
         }
         else {
-            if (pos.length () < 2) {
+            if (pos->size () < 2) {
               std::cout << "Need at least two points" << std::endl;
               return false;
             }
-            ::osg::Vec3ArrayRefPtr values = new ::osg::Vec3Array;
-            std::size_t i = 0;
-            for (i = 0; i < pos.length (); ++i) {
-	      using CORBA::ULong;
-              values->push_back (::osg::Vec3 (pos[(ULong)i][0],pos[(ULong)i][1],
-					      pos[(ULong)i][2]));
-            }
-            LeafNodeLinePtr_t curve = LeafNodeLine::create (curveName, values, color);
+            LeafNodeLinePtr_t curve = LeafNodeLine::create (curveName, pos, color);
             curve->setMode (GL_LINE_STRIP);
             mtx_.lock();
             WindowsManager::initParent (curveName, curve);

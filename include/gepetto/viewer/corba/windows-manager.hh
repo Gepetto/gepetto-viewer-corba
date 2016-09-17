@@ -69,6 +69,7 @@ namespace graphics {
             // Typedef for position and color values.
             typedef osg::Vec3f::value_type value_type;
             typedef osgVector4 Color_t;
+            typedef ::osg::Vec3ArrayRefPtr Vec3ArrayPtr_t;
             typedef unsigned int WindowID;
 
             typedef std::map <std::string, WindowID> WindowIDMap_t;
@@ -76,8 +77,6 @@ namespace graphics {
 
             typedef std::map <std::string, UrdfFile> UrdfFileMap_t;
             UrdfFileMap_t urdfFileMap_;
-
-            typedef gepetto::corbaserver::PositionSeq PositionSeq;
 
         private:
             typedef std::vector <WindowManagerPtr_t> WindowManagerVector_t;
@@ -178,7 +177,7 @@ namespace graphics {
 
             virtual bool addLine(const std::string& lineName, const osgVector3& pos1, const osgVector3& pos2, const Color_t& color);
 
-            virtual bool addCurve(const std::string& curveName, const PositionSeq& pos, const Color_t& color);
+            virtual bool addCurve(const std::string& curveName, const Vec3ArrayPtr_t& pos, const Color_t& color);
 
             /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
             /// possible values

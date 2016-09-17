@@ -71,8 +71,13 @@ namespace graphics {
         };
         template <> struct traits<POSITION_SEQ> {
           typedef const GraphicalInterface::PositionSeq& In_t;
-          typedef       In_t    Out_t;
-          static Out_t op (In_t in) { return in; }
+          typedef       ::osg::Vec3ArrayRefPtr           Out_t;
+          static inline Out_t op (In_t in) {
+            Out_t out = new ::osg::Vec3Array;
+            for (CORBA::ULong i = 0; i < in.length (); ++i)
+              out->push_back (::osg::Vec3 (in[i][0],in[i][1],in[i][2]));
+            return out;
+          }
         };
         template <> struct traits<STRING> {
           typedef std::string Out_t;
