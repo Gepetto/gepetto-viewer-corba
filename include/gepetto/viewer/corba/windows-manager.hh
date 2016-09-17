@@ -98,8 +98,6 @@ namespace graphics {
             static LightingMode getLight(const std::string& lightName);
             NodePtr_t find (const std::string name, GroupNodePtr_t group = GroupNodePtr_t());
             void initParent(const std::string& nodeName, NodePtr_t node);
-            void addNode(const std::string& nodeName, NodePtr_t node);
-            void addGroup(const std::string& groupName, GroupNodePtr_t group);
             void threadRefreshing(WindowManagerPtr_t window);
             bool urdfUpToDate (const std::string nodeName,
                 const std::string filename);
@@ -241,10 +239,14 @@ namespace graphics {
             virtual bool setBackgroundColor2(const WindowID windowId,const Color_t& color);
             
 
-            WindowManagerPtr_t getWindowManager (const WindowID wid);
+            WindowManagerPtr_t getWindowManager (const WindowID wid, bool throwIfDoesntExist = false) const;
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;
             NodePtr_t getNode (const std::string& nodeName, bool throwIfDoesntExist = false) const;
-            Configuration getNodeGlobalTransform(const std::string nodeName);
+            Configuration getNodeGlobalTransform(const std::string nodeName) const;
+
+            /// Warning, the mutex should be locked before and unlocked after this opertations.
+            void addNode(const std::string& nodeName, NodePtr_t node, bool initParent = false);
+            void addGroup(const std::string& groupName, GroupNodePtr_t group, bool initParent = false);
     };
 } /* namespace graphics */
 
