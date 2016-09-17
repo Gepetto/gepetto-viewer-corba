@@ -59,8 +59,8 @@ namespace graphics {
           static Ret_t ret (const Out_t& in) {
             Ret_t ret = new GraphicalInterface::Transform();
             // dofArray->length(7);
-            for(std::size_t i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
-            for(std::size_t i=0; i<4; i++) ret[(ULong)i+3] = (float)in.quat[i];
+            for(int i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
+            for(int i=0; i<4; i++) ret[(ULong)i+3] = (float)in.quat[i];
             return ret;
           }
         };
@@ -139,33 +139,30 @@ namespace graphics {
         };
       }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wvariadic-macros"
 #define CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
 #define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
-#pragma GCC diagnostic pop
 
 #define IIF(c) PRIMITIVE_CAT(IIF_, c)
 #define IIF_0(t, ...) __VA_ARGS__
 #define IIF_1(t, ...) t
 
-#define PROBE(x) x, 1 
+#define PROBE(x) x, 1
 
-#define CHECK(...) CHECK_N(__VA_ARGS__, 0)
+#define CHECK(...) CHECK_N(__VA_ARGS__, 0, 0)
 #define CHECK_N(x, n, ...) n
 
-#define TYPE_VOID () // gwiazdorrr is now enabled
+#define TYPE_VOID () // Detect VOID
 
 #define TYPE_PROBE(type)            TYPE_PROBE_PROXY( TYPE_##type )  // concatenate prefix with user name
-#define TYPE_PROBE_PROXY(...)       TYPE_PROBE_PRIMIVIE(__VA_ARGS__) // expand arguments
+#define TYPE_PROBE_PROXY(val)       TYPE_PROBE_PRIMIVIE(val)         // expand arguments
 #define TYPE_PROBE_PRIMIVIE(x)      TYPE_PROBE_COMBINE_ x            // merge
-#define TYPE_PROBE_COMBINE_(...)    PROBE(~)                         // if merge successful, expand to probe
+#define TYPE_PROBE_COMBINE_()       PROBE(~)                         // if merge successful, expand to probe
 
 #define IS_VOID(type) CHECK(TYPE_PROBE(type))
 
 
 #define WRITE_RET_T(T)  traits<T>::Ret_t
-#define WRITE_RET_OP(T) IIF( IS_VOID(T) ) ( /* nothing */, return traits<T>::ret)
+#define WRITE_RET_OP(T) IIF( IS_VOID(T) ) ( ;/* nothing */, return traits<T>::ret)
 
 #define WRITE_INPUT_ARG(T, n) traits< T >::In_t arg##n
 #define WRITE_INPUT_ARGS_1(T0               ) WRITE_INPUT_ARG(T0, 0)
