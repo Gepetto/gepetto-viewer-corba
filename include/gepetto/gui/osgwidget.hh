@@ -59,8 +59,6 @@ namespace gepetto {
 
 signals:
       void clicked (QString name, QVector3D positionInWorldFrame, QKeyEvent* event);
-        void requestMotion (graphics::NodePtr_t node, graphics::Node::Arrow direction,
-            float speed);
 
         public slots:
         /// Load an urdf file in the viewer.
