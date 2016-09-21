@@ -35,6 +35,8 @@ namespace gepetto {
 
         void setParentGroup (const std::string& parent);
 
+        virtual ~BodyTreeItem() {};
+
       public:
         void attachToWindow (unsigned int windowID);
 
