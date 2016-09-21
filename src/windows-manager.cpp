@@ -52,7 +52,13 @@
 
 #define RETURN_IF_NODE_EXISTS(name)                                            \
   if (nodeExists(name)) {                                                      \
-    std::cout << "\"" << name << "\" already exist." << std::endl;             \
+    std::cout << "\"" << name << "\" already exists." << std::endl;            \
+    return false;                                                              \
+  }
+
+#define RETURN_IF_NODE_DOES_NOT_EXIST(name)                                    \
+  if (!nodeExists(name)) {                                                     \
+    std::cout << "\"" << name << "\" doesn't exist." << std::endl;             \
     return false;                                                              \
   }
 
@@ -997,11 +1003,7 @@ namespace graphics {
     bool WindowsManager::addLandmark (const std::string& nodeName,
             float size)
     {
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        RETURN_IF_NODE_DOES_NOT_EXIST(nodeName);
 	mtx_.lock();
         nodes_[nodeName]->addLandmark (size);
 	mtx_.unlock();
@@ -1010,11 +1012,7 @@ namespace graphics {
 
     bool WindowsManager::deleteLandmark (const std::string& nodeName)
     {
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        RETURN_IF_NODE_DOES_NOT_EXIST(nodeName);
 	mtx_.lock();
         nodes_[nodeName]->deleteLandmark ();
 	mtx_.unlock();
@@ -1060,15 +1058,9 @@ namespace graphics {
 
     bool WindowsManager::setScale(const std::string& nodeName, const osgVector3& scale)
     {
-        osg::Vec3d vecScale(scale[0],scale[1],scale[2]);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
-
+        RETURN_IF_NODE_DOES_NOT_EXIST(nodeName);
         mtx_.lock();
-        nodes_[nodeName]->setScale(vecScale);
+        nodes_[nodeName]->setScale(scale);
         mtx_.unlock();
         return true;
     }

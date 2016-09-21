@@ -15,18 +15,17 @@ namespace gepetto {
       return WindowsManagerPtr_t (new WindowsManager(bodyTree));
     }
 
-    WindowsManager::WindowID WindowsManager::createWindow(const char *windowNameCorba)
+    WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName)
     {
-      return MainWindow::instance()->delayedCreateView(QString (windowNameCorba))->windowID();
+      return MainWindow::instance()->delayedCreateView(windowName)->windowID();
     }
 
-    WindowsManager::WindowID WindowsManager::createWindow(const char *windowNameCorba,
+    WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName,
                                                           osgViewer::Viewer *viewer,
                                                           osg::GraphicsContext *gc)
     {
-      std::string wn (windowNameCorba);
       graphics::WindowManagerPtr_t newWindow = graphics::WindowManager::create (viewer, gc);
-      WindowID windowId = addWindow (wn, newWindow);
+      WindowID windowId = addWindow (windowName, newWindow);
       return windowId;
     }
 

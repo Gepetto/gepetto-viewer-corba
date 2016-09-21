@@ -31,8 +31,8 @@ namespace gepetto {
 
         static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
-        WindowID createWindow(const char *windowNameCorba);
-        WindowID createWindow(const char *windowNameCorba,
+        WindowID createWindow(const std::string& windowNameCorba);
+        WindowID createWindow(const std::string& windowNameCorba,
                               osgViewer::Viewer* viewer,
                               osg::GraphicsContext *gc);
 

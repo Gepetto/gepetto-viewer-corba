@@ -115,26 +115,6 @@ namespace gepetto {
       return selectBodyByName (QString::fromStdString (bodyName));
     }
 
-    void BodyTreeWidget::reloadBodyTree()
-    {
-      /*
-      model_->clear();
-      std::vector <std::string> sceneNames = osg_->getSceneList ();
-      for (unsigned int i = 0; i < sceneNames.size(); ++i) {
-        graphics::GroupNodePtr_t group = osg_->getGroup(sceneNames[i]);
-        if (!group) continue;
-        addBodyToTree(group);
-      }
-      */
-      qDebug() << "Call to reloadBodyTree does not do anything.";
-    }
-
-    void BodyTreeWidget::addBodyToTree(graphics::GroupNodePtr_t /*group*/)
-    {
-      // model_->appendRow(new BodyTreeItem (this, group));
-      qDebug() << "addBodyToTree does nothing.";
-    }
-
     QList<BodyTreeItem*> BodyTreeWidget::selectedBodies() const
     {
       QList<BodyTreeItem*> list;

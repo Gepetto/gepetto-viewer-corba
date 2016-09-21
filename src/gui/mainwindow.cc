@@ -187,7 +187,7 @@ namespace gepetto {
       logError (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
-    OSGWidget *MainWindow::delayedCreateView(QString name)
+    OSGWidget *MainWindow::delayedCreateView(const std::string& name)
     {
       delayedCreateView_.lock();
       emit createView(name);
@@ -202,23 +202,23 @@ namespace gepetto {
     }
 
     OSGWidget *MainWindow::onCreateView() {
-      return onCreateView ("hpp_gui_window_" + QString::number(osgWindows_.size()));
+      std::stringstream ss; ss << "hpp_gui_window_" << osgWindows_.size();
+      return onCreateView (ss.str());
     }
 
-    OSGWidget *MainWindow::onCreateView(QString objName)
+    OSGWidget *MainWindow::onCreateView(const std::string& objName)
     {
-      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, objName.toStdString(),
-          this, 0);
+      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, objName, this, 0);
       if (!osgWindows_.empty()) {
         QDockWidget* dockOSG = new QDockWidget (
             tr("OSG Viewer") + " " + QString::number (osgWindows_.size()), this);
-        osgWidget->setObjectName(objName);
+        osgWidget->setObjectName(objName.c_str());
         dockOSG->setWidget(osgWidget);
         addDockWidget(Qt::RightDockWidgetArea, dockOSG);
       } else {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        centralWidget_->setObjectName(objName);
+        centralWidget_->setObjectName(objName.c_str());
         setCentralWidget(centralWidget_);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
