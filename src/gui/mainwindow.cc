@@ -281,18 +281,15 @@ namespace gepetto {
         QDir d (ed.packagePath_); d.cd("urdf");
         QString urdfFile = d.absoluteFilePath(ed.urdfFilename_ + ".urdf");
         try {
-          osgViewerManagers_->addUrdfObjects(
-              Traits<QString>::to_corba(ed.envName_).in(),
-              Traits<QString>::to_corba(urdfFile   ).in(),
-              Traits<QString>::to_corba(ed.mesh_   ).in(),
-              true);
-          osgViewerManagers_->addSceneToWindow(
-              Traits<QString>::to_corba(ed.envName_).in(),
-              centralWidget_->windowID());
+          osgViewerManagers_->addUrdfObjects(ed.envName_.toStdString(),
+                                             urdfFile   .toStdString(),
+                                             ed.mesh_   .toStdString(),
+                                             true);
+          osgViewerManagers_->addSceneToWindow(ed.envName_.toStdString(),
+                                               centralWidget_->windowID());
         } catch (std::runtime_error& exc) {
           log (exc.what ());
         }
-        bodyTree()->addBodyToTree(osgViewerManagers_->getGroup(ed.envName_.toStdString()));
 
         QString what = QString ("Loading environment ") + ed.name_;
         WorkItem* item;

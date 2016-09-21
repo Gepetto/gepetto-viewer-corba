@@ -32,7 +32,7 @@ namespace gepetto {
     {
       if (osg_ != NULL) {
 	foreach(QString name, selected_) {
-	  wsm_->setHighlight(name.toStdString().c_str(), 0);	
+	  wsm_->setHighlight(name.toStdString(), 0);	
 	}
 	if (index_ != -1) {
 	  modes_[index_]->reset();
@@ -73,9 +73,9 @@ namespace gepetto {
 				   QKeyEvent* /*event*/)
     {
       if (currentSelected_ == name) return;
-      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString().c_str(), 0);
+      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString(), 0);
       currentSelected_ = name;
-      wsm_->setHighlight(name.toStdString().c_str(), 8);
+      wsm_->setHighlight(name.toStdString(), 8);
       emit selectedBodies(QStringList() << name);
     }
 
@@ -100,15 +100,15 @@ namespace gepetto {
       if (currentSelected_ == name) return;
       if (!event || event->key() != Qt::Key_Control) {
 	foreach (QString n, selectedBodies_) {
-	  wsm_->setHighlight(n.toStdString().c_str(), 0);
+	  wsm_->setHighlight(n.toStdString(), 0);
 	}
 	selectedBodies_.clear();
       }
       else if (currentSelected_ != "") {
-	wsm_->setHighlight(currentSelected_.toStdString().c_str(), 7);
+	wsm_->setHighlight(currentSelected_.toStdString(), 7);
       }
       currentSelected_ = name;
-      wsm_->setHighlight(name.toStdString().c_str(), 8);
+      wsm_->setHighlight(name.toStdString(), 8);
       selectedBodies_ << name;
       emit selectedBodies(selectedBodies_);
     }

@@ -136,7 +136,7 @@ namespace gepetto {
       viewer_->addEventHandler(new osgViewer::HelpHandler);
       viewer_->addEventHandler(pickHandler_);
 
-      wid_ = wm->createWindow (name.c_str(), viewer_, graphicsWindow_.get());
+      wid_ = wm->createWindow (name, viewer_, graphicsWindow_.get());
       wm_ = wsm_->getWindowManager (wid_);
 
       viewer_->setThreadingModel(threadingModel);
@@ -227,7 +227,7 @@ namespace gepetto {
 
     void OSGWidget::attachToWindow(const std::string nodeName)
     {
-      wsm_->addSceneToWindow(nodeName.c_str(), wid_);
+      wsm_->addSceneToWindow(nodeName, wid_);
     }
 
     osgGA::EventQueue* OSGWidget::getEventQueue() const

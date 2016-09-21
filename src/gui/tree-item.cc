@@ -80,49 +80,48 @@ namespace gepetto {
 
     void BodyTreeItem::setViewingMode(QString mode)
     {
-      MainWindow::instance()->osg()->setWireFrameMode (node_->getID().c_str(),
+      MainWindow::instance()->osg()->setWireFrameMode (node_->getID(),
           mode.toLocal8Bit().data());
     }
 
     void BodyTreeItem::setVisibilityMode(QString mode)
     {
-      MainWindow::instance()->osg()->setVisibility (node_->getID().c_str(),
+      MainWindow::instance()->osg()->setVisibility (node_->getID(),
           mode.toLocal8Bit().data());
     }
 
     void BodyTreeItem::attachToWindow(unsigned int windowID)
     {
-      MainWindow::instance()->osg()->addSceneToWindow (node_->getID().c_str(), windowID);
+      MainWindow::instance()->osg()->addSceneToWindow (node_->getID(), windowID);
     }
 
     void BodyTreeItem::removeFromGroup()
     {
       if (parentGroup_.empty()) return;
-      MainWindow::instance()->osg()->removeFromGroup (node_->getID().c_str(),
-          parentGroup_.c_str());
+      MainWindow::instance()->osg()->removeFromGroup (node_->getID(), parentGroup_);
       QStandardItem::parent()->removeRow(row());
     }
 
     void BodyTreeItem::removeAll()
     {
       MainWindow* main = MainWindow::instance();
-      main->osg()->deleteNode(node_->getID().c_str(), true);
+      main->osg()->deleteNode(node_->getID(), true);
     }
 
     void BodyTreeItem::remove()
     {
       MainWindow* main = MainWindow::instance();
-      main->osg()->deleteNode(node_->getID().c_str(), false);
+      main->osg()->deleteNode(node_->getID(), false);
     }
 
     void BodyTreeItem::addLandmark()
     {
-      MainWindow::instance()->osg()->addLandmark(node_->getID().c_str(), 0.05f);
+      MainWindow::instance()->osg()->addLandmark(node_->getID(), 0.05f);
     }
 
     void BodyTreeItem::deleteLandmark()
     {
-      MainWindow::instance()->osg()->deleteLandmark(node_->getID().c_str());
+      MainWindow::instance()->osg()->deleteLandmark(node_->getID());
     }
   } // namespace gui
 } // namespace gepetto
