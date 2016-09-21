@@ -234,27 +234,41 @@ namespace graphics {
       return nodes.size() - l;
     }
 
-    void WindowsManager::initParent (const std::string& nodeName,
-            NodePtr_t node)
+    void WindowsManager::initParent (NodePtr_t node, GroupNodePtr_t parent)
     {
-        GroupNodePtr_t groupNode = getGroup(parentName(nodeName));
-        if (groupNode)
-            groupNode->addChild (node);
+      if (parent && !parent->hasChild(node)) parent->addChild (node);
     }
 
     void WindowsManager::addNode (const std::string& nodeName, NodePtr_t node,
-        bool callInitParent)
+        bool guessParent)
     {
-        if (callInitParent) initParent(nodeName, node);
-        nodes_[nodeName] = node;
+      GroupNodePtr_t parent;
+      if (guessParent) parent = getGroup(parentName(nodeName));
+      addNode(nodeName, node, parent);
+    }
+
+    void WindowsManager::addNode (const std::string& nodeName, NodePtr_t node,
+        GroupNodePtr_t parent)
+    {
+      initParent (node, parent);
+      nodes_[nodeName] = node;
     }
 
     void WindowsManager::addGroup (const std::string& groupName,
             GroupNodePtr_t group,
-            bool callInitParent)
+            bool guessParent)
     {
-        addNode(groupName, group, callInitParent);
-        groupNodes_[groupName] = group;
+      GroupNodePtr_t parent;
+      if (guessParent) parent = getGroup(parentName(groupName));
+      addGroup (groupName, group, parent);
+    }
+
+    void WindowsManager::addGroup(const std::string& groupName,
+        GroupNodePtr_t group, GroupNodePtr_t parent)
+    {
+      initParent (group, parent);
+      nodes_[groupName] = group;
+      groupNodes_[groupName] = group;
     }
 
     void WindowsManager::threadRefreshing (WindowManagerPtr_t window)
@@ -800,22 +814,24 @@ namespace graphics {
     {
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
           GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath);
+          mtx_.lock();
+          addGroup (urdfName, urdf, true);
           NodePtr_t link;
           for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
             link = urdf->getChild (i);
-            nodes_[link->getID ()] = link;
             GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
                 <GroupNode> (link));
             if (groupNode) {
+              addGroup(link->getID(), groupNode, urdf);
               for (std::size_t j=0; j < groupNode->getNumOfChildren ();
                   ++j) {
                 NodePtr_t object (groupNode->getChild (j));
-                nodes_ [object->getID ()] = object;
+                addNode(object->getID (), object, groupNode);
               }
+            } else {
+              addNode(link->getID(), link, urdf);
             }
           }
-          mtx_.lock();
-          addGroup (urdfName, urdf, true);
           registerUrdfNode (urdfName, urdfPath);
           mtx_.unlock();
           return true;
@@ -829,22 +845,24 @@ namespace graphics {
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
             GroupNodePtr_t urdf = urdfParser::parse
                 (urdfName, urdfPath, "collision");
+            mtx_.lock();
+            addGroup (urdfName, urdf, true);
             NodePtr_t link;
             for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
                 link = urdf->getChild (i);
-                nodes_[link->getID ()] = link;
 		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
 					  <GroupNode> (link));
-		if (groupNode) {
+                if (groupNode) {
+                  addGroup(link->getID(), groupNode, urdf);
 		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
 		       ++j) {
 		    NodePtr_t object (groupNode->getChild (j));
-		    nodes_ [object->getID ()] = object;
+                    addNode(object->getID (), object, groupNode);
 		  }
-		}
+		} else {
+                  addNode(link->getID(), link, urdf);
+                }
             }
-            mtx_.lock();
-            addGroup (urdfName, urdf, true);
             registerUrdfNode (urdfName, urdfPath);
             mtx_.unlock();
             return true;
@@ -864,22 +882,24 @@ namespace graphics {
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
           GroupNodePtr_t urdf = urdfParser::parse
             (urdfName, urdfPath, visual ? "visual" : "collision", "object");
+          mtx_.lock();
+          addGroup (urdfName, urdf, true);
           NodePtr_t link;
           for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
             link = urdf->getChild (i);
-            nodes_[link->getID ()] = link;
             GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
                 <GroupNode> (link));
             if (groupNode) {
+              addGroup(link->getID(), groupNode, urdf);
               for (std::size_t j=0; j < groupNode->getNumOfChildren ();
                   ++j) {
                 NodePtr_t object (groupNode->getChild (j));
-                nodes_ [object->getID ()] = object;
+                addNode(object->getID (), object, groupNode);
               }
+            } else {
+              addNode(link->getID(), link, urdf);
             }
           }
-          mtx_.lock();
-          addGroup (urdfName, urdf, true);
           registerUrdfNode (urdfName, urdfPath);
           mtx_.unlock();
         }

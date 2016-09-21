@@ -97,7 +97,7 @@ namespace graphics {
             static WireFrameMode getWire(const std::string& wireName);
             static LightingMode getLight(const std::string& lightName);
             NodePtr_t find (const std::string name, GroupNodePtr_t group = GroupNodePtr_t());
-            void initParent(const std::string& nodeName, NodePtr_t node);
+            void initParent(NodePtr_t node, GroupNodePtr_t parent);
             void threadRefreshing(WindowManagerPtr_t window);
             bool urdfUpToDate (const std::string nodeName,
                 const std::string filename);
@@ -119,6 +119,12 @@ namespace graphics {
             template <typename Iterator, typename NodeContainer_t> 
               std::size_t getNodes
               (const Iterator& begin, const Iterator& end, NodeContainer_t& nodes);
+
+            /// Warning, the mutex should be locked before and unlocked after this opertations.
+            void addNode (const std::string& nodeName, NodePtr_t node, bool guessParent = false);
+            virtual void addNode (const std::string& nodeName, NodePtr_t node, GroupNodePtr_t parent);
+            void addGroup(const std::string& groupName, GroupNodePtr_t group, bool guessParent = false);
+            virtual void addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent);
 
         public:
             static WindowsManagerPtr_t create ();
@@ -243,10 +249,6 @@ namespace graphics {
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;
             NodePtr_t getNode (const std::string& nodeName, bool throwIfDoesntExist = false) const;
             Configuration getNodeGlobalTransform(const std::string nodeName) const;
-
-            /// Warning, the mutex should be locked before and unlocked after this opertations.
-            void addNode(const std::string& nodeName, NodePtr_t node, bool initParent = false);
-            void addGroup(const std::string& groupName, GroupNodePtr_t group, bool initParent = false);
     };
 } /* namespace graphics */
 
