@@ -50,7 +50,7 @@ namespace gepetto {
       osg()->createScene("hpp-gui");
 
       // Setup the main OSG widget
-      connect (this, SIGNAL (createView(QString)), SLOT (onCreateView(QString)));
+      connect (this, SIGNAL (createView(std::string)), SLOT (onCreateView(std::string)));
 
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 

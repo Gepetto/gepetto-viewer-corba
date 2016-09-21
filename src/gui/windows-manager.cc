@@ -122,8 +122,14 @@ namespace gepetto {
       BodyTreeItemMap_t::iterator _nodes = nodeItemMap_.find(nodeName);
       assert (_nodes != nodeItemMap_.end());
       for (std::size_t i = 0; i < _nodes->second.first.size(); ++i) {
-        bodyTree_->model()->takeRow(_nodes->second.first[i]->row());
-        delete _nodes->second.first[i];
+        BodyTreeItem* bti = _nodes->second.first[i];
+        QStandardItem* parent = bti->QStandardItem::parent(); 
+        if (parent == NULL) {
+          bodyTree_->model()->takeRow(bti->row());
+        } else {
+          parent->takeRow(bti->row());
+        }
+        delete bti;
         _nodes->second.first[i] = NULL;
       }
       nodeItemMap_.erase(_nodes);
