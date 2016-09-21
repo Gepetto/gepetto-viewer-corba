@@ -47,16 +47,17 @@ namespace gepetto {
 
       virtual ~BodyTreeWidget () {}
 
-      /// Add a group to the body tree.
-      /// \param group group to add
-      void addBodyToTree (graphics::GroupNodePtr_t group);
-
       /// Display the value in the slider.
       /// \param alpha alpha value to convert
       void changeAlphaValue(const float& alpha);
 
       /// Get the body tree view.
       QTreeView* view ();
+
+      QStandardItemModel* model()
+      {
+        return model_;
+      }
 
     public slots:
       /// \addtogroup available_in_python Python API
@@ -69,9 +70,6 @@ namespace gepetto {
       /// Triggered when an item is selected in the body tree view.
       /// \param bodyName name of the body
       void selectBodyByName (const std::string& bodyName);
-
-      /// Reload the body tree.
-      void reloadBodyTree ();
 
       /// Get selected bodies
       QList<BodyTreeItem*> selectedBodies() const;

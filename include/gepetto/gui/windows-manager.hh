@@ -20,20 +20,44 @@ namespace gepetto {
       }
     };
 
-    class WindowsManager : public graphics::WindowsManager
+    class WindowsManager : public QObject, public graphics::WindowsManager
     {
+      Q_OBJECT
+
       public:
         typedef graphics::WindowsManager Parent_t;
+        typedef graphics::NodePtr_t      NodePtr_t;
+        typedef graphics::GroupNodePtr_t GroupNodePtr_t;
 
-        static WindowsManagerPtr_t create ();
+        static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
         WindowID createWindow(const char *windowNameCorba);
         WindowID createWindow(const char *windowNameCorba,
                               osgViewer::Viewer* viewer,
                               osg::GraphicsContext *gc);
 
+        bool addToGroup(const std::string& nodeName, const std::string& groupName);
+        bool removeFromGroup (const std::string& nodeName, const std::string& groupName);
+        bool deleteNode (const std::string& nodeName, bool all);
+
       protected:
-        WindowsManager ();
+        WindowsManager (BodyTreeWidget* bodyTree);
+
+        virtual void addNode (const std::string& nodeName, NodePtr_t node, GroupNodePtr_t parent);
+        virtual void addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent);
+
+      private:
+        typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
+        typedef std::pair<BodyTreeItems_t, bool> BodyTreeItemsAndGroup_t;
+        typedef std::map<std::string, BodyTreeItemsAndGroup_t> BodyTreeItemMap_t;
+        BodyTreeWidget* bodyTree_;
+        BodyTreeItemMap_t nodeItemMap_;
+
+        bool initParent (NodePtr_t node, GroupNodePtr_t parent, bool isGroup);
+        void addToGroup (const std::string& nodeName, const std::string& groupName,
+                         const NodePtr_t&   node,     const BodyTreeItems_t& groups,
+                         bool isGroup);
+        void deleteBodyItem(const std::string& nodeName);
     };
   } // namespace gui
 } // namespace gepetto

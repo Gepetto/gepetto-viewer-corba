@@ -38,9 +38,6 @@ namespace gepetto {
       public:
         void attachToWindow (unsigned int windowID);
 
-      protected:
-        void init ();
-
         public slots:
           void setViewingMode (QString mode);
         void setVisibilityMode (QString mode);

@@ -17,7 +17,6 @@ namespace gepetto {
       vmMapper_ (),
       vizMapper_ ()
     {
-      init();
       setEditable(false);
       connect (&vmMapper_, SIGNAL (mapped (QString)), SLOT(setViewingMode(QString)));
       connect (&vizMapper_, SIGNAL (mapped (QString)), SLOT(setVisibilityMode(QString)));
@@ -79,18 +78,6 @@ namespace gepetto {
       parentGroup_ = parent;
     }
 
-    void BodyTreeItem::init ()
-    {
-      graphics::GroupNodePtr_t gn = boost::dynamic_pointer_cast <graphics::GroupNode> (node_);
-      if (gn) {
-        for (size_t i = 0; i < gn->getNumOfChildren(); ++i) {
-          BodyTreeItem* item = new BodyTreeItem (this, gn->getChild(i));
-          item->setParentGroup (gn->getID());
-          appendRow(item);
-        }
-      }
-    }
-
     void BodyTreeItem::setViewingMode(QString mode)
     {
       MainWindow::instance()->osg()->setWireFrameMode (node_->getID().c_str(),
@@ -120,14 +107,12 @@ namespace gepetto {
     {
       MainWindow* main = MainWindow::instance();
       main->osg()->deleteNode(node_->getID().c_str(), true);
-      main->bodyTree()->reloadBodyTree();
     }
 
     void BodyTreeItem::remove()
     {
       MainWindow* main = MainWindow::instance();
       main->osg()->deleteNode(node_->getID().c_str(), false);
-      main->bodyTree()->reloadBodyTree();
     }
 
     void BodyTreeItem::addLandmark()

@@ -183,10 +183,6 @@ namespace gepetto {
           uf.constData(),
           md.constData());
       wsm_->addSceneToWindow(rn.constData(), wid_);
-      MainWindow* w = dynamic_cast <MainWindow*> (parentWidget());
-      if (w) {
-        w->bodyTree()->addBodyToTree (wsm_->getGroup (robotName.toStdString()));
-      }
     }
 
     void OSGWidget::paintEvent( QPaintEvent* /* paintEvent */ )

@@ -72,7 +72,6 @@ namespace gepetto {
       view_->setModel(model_);
       view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-      connect (main, SIGNAL(refresh()), SLOT(reloadBodyTree()));
       connect (view_, SIGNAL (customContextMenuRequested(QPoint)), SLOT(customContextMenu(QPoint)));
 
       toolBox_->removeItem(0);
@@ -118,6 +117,7 @@ namespace gepetto {
 
     void BodyTreeWidget::reloadBodyTree()
     {
+      /*
       model_->clear();
       std::vector <std::string> sceneNames = osg_->getSceneList ();
       for (unsigned int i = 0; i < sceneNames.size(); ++i) {
@@ -125,11 +125,14 @@ namespace gepetto {
         if (!group) continue;
         addBodyToTree(group);
       }
+      */
+      qDebug() << "Call to reloadBodyTree does not do anything.";
     }
 
-    void BodyTreeWidget::addBodyToTree(graphics::GroupNodePtr_t group)
+    void BodyTreeWidget::addBodyToTree(graphics::GroupNodePtr_t /*group*/)
     {
-      model_->appendRow(new BodyTreeItem (this, group));
+      // model_->appendRow(new BodyTreeItem (this, group));
+      qDebug() << "addBodyToTree does nothing.";
     }
 
     QList<BodyTreeItem*> BodyTreeWidget::selectedBodies() const

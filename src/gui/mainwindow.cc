@@ -28,13 +28,17 @@ namespace gepetto {
       settings_ (settings),
       ui_(new ::Ui::MainWindow),
       centralWidget_ (),
-      osgViewerManagers_ (WindowsManager::create()),
+      osgViewerManagers_ (),
       osgServer_ (NULL),
       backgroundQueue_(),
       worker_ ()
     {
       MainWindow::instance_ = this;
       ui_->setupUi(this);
+
+      // Setup the body tree view
+      osgViewerManagers_ = WindowsManager::create(ui_->bodyTreeContent);
+      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->toolBox);
 
       if (settings_->startGepettoCorbaServer) {
         osgServer_ = new CorbaServer (new ViewerServerProcess (
@@ -44,9 +48,6 @@ namespace gepetto {
       }
       // This scene contains elements required for User Interaction.
       osg()->createScene("hpp-gui");
-
-      // Setup the body tree view
-      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->toolBox);
 
       // Setup the main OSG widget
       connect (this, SIGNAL (createView(QString)), SLOT (onCreateView(QString)));
