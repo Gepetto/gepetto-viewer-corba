@@ -29,7 +29,14 @@ namespace graphics {
         osgVector3 position;
         osgQuat quat;
         Configuration() {}
-        explicit Configuration(const float* a) : position(a[0],a[1],a[2]), quat(a[3],a[4],a[5],a[6]) {}
+        /// \param XYZW when false, the 4 last parameters are a quaternion (w,x,y,z)
+        ///             otherwise, a quaternion (x,y,z,w)
+        explicit Configuration(const float* a, bool XYZW)
+          : position(a[0],a[1],a[2])
+          , quat(a[(XYZW ? 3 : 4)],
+                 a[(XYZW ? 4 : 5)],
+                 a[(XYZW ? 5 : 6)],
+                 a[(XYZW ? 6 : 3)]) {}
         Configuration(const osgVector3& p, const osgQuat& q) : position(p), quat(q) {}
     };
     struct NodeConfiguration : Configuration {
