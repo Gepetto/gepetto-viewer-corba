@@ -47,9 +47,11 @@ namespace gepetto {
       Parent_t::addGroup (groupName, group, parent);
       if (!parent || !initParent(group, parent, true)) {
         // Consider it a root group
-        BodyTreeItem* bti = new BodyTreeItem (bodyTree_, group);
+        BodyTreeItem* bti = new BodyTreeItem (NULL, group);
         nodeItemMap_[groupName].first.push_back(bti);
         nodeItemMap_[groupName].second = true;
+        if (bti->thread() != bodyTree_->thread())
+          bti->moveToThread(bodyTree_->thread());
         bodyTree_->model()->appendRow(bti);
       }
     }
@@ -58,10 +60,12 @@ namespace gepetto {
         const NodePtr_t& node, const BodyTreeItems_t& groups, bool isGroup)
     {
       for(std::size_t i = 0; i < groups.size(); ++i) {
-        BodyTreeItem* bti = new BodyTreeItem (bodyTree_, node);
+        BodyTreeItem* bti = new BodyTreeItem (NULL, node);
         nodeItemMap_[nodeName].first.push_back(bti);
         nodeItemMap_[nodeName].second = isGroup;
         bti->setParentGroup(groupName);
+        if (bti->thread() != bodyTree_->thread())
+          bti->moveToThread(bodyTree_->thread());
         groups[i]->appendRow(bti);
       }
     }
