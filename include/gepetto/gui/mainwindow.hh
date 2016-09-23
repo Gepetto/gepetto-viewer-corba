@@ -228,4 +228,6 @@ signals:
   } // namespace gui
 } // namespace gepetto
 
+Q_DECLARE_METATYPE (std::string)
+
 #endif // GEPETTO_GUI_MAINWINDOW_HH
