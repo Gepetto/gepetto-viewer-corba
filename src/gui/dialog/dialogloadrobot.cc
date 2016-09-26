@@ -63,7 +63,7 @@ namespace gepetto {
           ui_->robotName->text(),
           ui_->rootJointType->currentText(),
           ui_->modelName->text(),
-          ui_->packagePath->text(),
+          ui_->packageName->text(),
           ui_->urdfSuffix->text(),
           ui_->srdfSuffix->text());
       done(QDialog::Accepted);
