@@ -836,8 +836,7 @@ namespace graphics {
     }
 
     bool WindowsManager::addURDF (const std::string& urdfName,
-            const std::string& urdfPath,
-            const std::string& /*urdfPackagePathCorba*/)
+            const std::string& urdfPath)
     {
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
           GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath);
@@ -866,8 +865,15 @@ namespace graphics {
         return false;
     }
 
+    bool WindowsManager::addURDF (const std::string& urdfName,
+            const std::string& urdfPath,
+            const std::string& /*urdfPackagePath*/)
+    {
+      return addURDF(urdfName, urdfPath);
+    }
+
     bool WindowsManager::addUrdfCollision (const std::string& urdfName,
-            const std::string& urdfPath, const std::string& /*urdfPackagePathCorba*/)
+            const std::string& urdfPath)
     {
         if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
             GroupNodePtr_t urdf = urdfParser::parse
@@ -897,9 +903,14 @@ namespace graphics {
         return false;
     }
 
+    bool WindowsManager::addUrdfCollision (const std::string& urdfName,
+            const std::string& urdfPath, const std::string& /*urdfPackagePath*/)
+    {
+      return addUrdfCollision (urdfName, urdfPath);
+    }
+
     void WindowsManager::addUrdfObjects (const std::string& urdfName,
             const std::string& urdfPath,
-            const std::string& /*urdfPackagePathCorba*/,
             bool visual)
     {
         if (urdfName == "") {
@@ -930,6 +941,14 @@ namespace graphics {
           registerUrdfNode (urdfName, urdfPath);
           mtx_.unlock();
         }
+    }
+
+    void WindowsManager::addUrdfObjects (const std::string& urdfName,
+            const std::string& urdfPath,
+            const std::string& /*urdfPackagePath*/,
+            bool visual)
+    {
+      return addUrdfObjects (urdfName, urdfPath, visual);
     }
 
     bool WindowsManager::addToGroup (const std::string& nodeName,

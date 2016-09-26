@@ -16,19 +16,17 @@ namespace gepetto {
 
       public:
         struct RobotDefinition {
-          QString name_, robotName_, urdfSuf_, srdfSuf_, mesh_, package_, packagePath_, modelName_, rootJointType_;
+          QString name_, robotName_, urdfSuf_, srdfSuf_, package_, modelName_, rootJointType_;
           RobotDefinition () : rootJointType_ ("Freeflyer") {}
           RobotDefinition (QString name,
               QString robotName,
               QString rootJointType,
               QString modelName,
               QString package,
-              QString packagePath,
               QString urdfSuffix,
-              QString srdfSuffix,
-              QString meshDirectory) :
-            name_(name), robotName_ (robotName), urdfSuf_(urdfSuffix), srdfSuf_(srdfSuffix), mesh_(meshDirectory),
-            package_ (package), packagePath_(packagePath), modelName_ (modelName),
+              QString srdfSuffix) :
+            name_(name), robotName_ (robotName), urdfSuf_(urdfSuffix), srdfSuf_(srdfSuffix),
+            package_ (package), modelName_ (modelName),
             rootJointType_ (rootJointType){}
         };
 
@@ -40,10 +38,8 @@ namespace gepetto {
             QString rootJointType,
             QString modelName,
             QString package,
-            QString packagePath,
             QString urdfSuffix,
-            QString srdfSuffix,
-            QString meshDirectory);
+            QString srdfSuffix);
         static QList <RobotDefinition> getRobotDefinitions ();
 
         RobotDefinition getSelectedRobotDescription () {
@@ -52,8 +48,6 @@ namespace gepetto {
 
         private slots:
           void accept();
-        void meshSelect();
-        void packagePathSelect();
         void robotSelect(int index);
 
       private:

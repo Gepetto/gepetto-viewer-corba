@@ -174,15 +174,13 @@ namespace gepetto {
     }
 
     void OSGWidget::loadURDF(const QString robotName,
-        const QString urdf_file_path,
-        const QString meshDataRootDir)
+        const QString urdf_file_path)
     {
       QByteArray rn = robotName.toLocal8Bit();
       QByteArray uf = urdf_file_path.toLocal8Bit();
-      QByteArray md = meshDataRootDir.toLocal8Bit();
       wsm_->addURDF(rn.constData(),
           uf.constData(),
-          md.constData());
+          "");
       wsm_->addSceneToWindow(rn.constData(), wid_);
     }
 

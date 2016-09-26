@@ -249,10 +249,9 @@ namespace gepetto {
         createCentralWidget();
         DialogLoadRobot::RobotDefinition rd = d->getSelectedRobotDescription();
 
-        QDir dir (rd.packagePath_); dir.cd("urdf");
-        QString urdfFile = dir.absoluteFilePath(rd.modelName_ + rd.urdfSuf_ + ".urdf");
+        QString urdfFile = QString("package://%1/urdf/%2%3.urdf").arg(rd.package_).arg(rd.modelName_).arg(rd.urdfSuf_);
         try {
-          centralWidget_->loadURDF(rd.robotName_, urdfFile, rd.mesh_);
+          centralWidget_->loadURDF(rd.robotName_, urdfFile);
         } catch (std::runtime_error& exc) {
           logError (exc.what ());
         }
@@ -281,12 +280,10 @@ namespace gepetto {
         createCentralWidget();
         DialogLoadEnvironment::EnvironmentDefinition ed = e->getSelectedDescription();
 
-        QDir d (ed.packagePath_); d.cd("urdf");
-        QString urdfFile = d.absoluteFilePath(ed.urdfFilename_ + ".urdf");
+        QString urdfFile = QString("package://%1/urdf/%2.urdf").arg(ed.package_).arg(ed.urdfFilename_);
         try {
           osgViewerManagers_->addUrdfObjects(ed.envName_.toStdString(),
                                              urdfFile   .toStdString(),
-                                             ed.mesh_   .toStdString(),
                                              true);
           osgViewerManagers_->addSceneToWindow(ed.envName_.toStdString(),
                                                centralWidget_->windowID());

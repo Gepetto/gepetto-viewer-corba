@@ -205,12 +205,21 @@ namespace graphics {
 
             virtual bool addNodeToRoadmap(const std::string& nameRoadmap, const Configuration& configuration);
 
+            virtual bool addURDF(const std::string& urdfName, const std::string& urdfPath);
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
             virtual bool addURDF(const std::string& urdfName, const std::string& urdfPath, const std::string& urdfPackagePath);
 
+            virtual bool addUrdfCollision (const std::string& urdfName,
+                    const std::string& urdfPath) ;
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
             virtual bool addUrdfCollision (const std::string& urdfName,
                     const std::string& urdfPath,
                     const std::string& urdfPackagePath) ;
 
+            virtual void addUrdfObjects (const std::string& urdfName,
+                    const std::string& urdfPath,
+                    bool visual) ;
+            /// \deprecated Argument urdfPackagePathCorba is ignored.
             virtual void addUrdfObjects (const std::string& urdfName,
                     const std::string& urdfPath,
                     const std::string& urdfPackagePath,

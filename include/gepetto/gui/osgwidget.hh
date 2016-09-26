@@ -64,10 +64,8 @@ signals:
         /// Load an urdf file in the viewer.
         /// \param robotName name of the robot
         /// \param udrf_file_path path to the urdf file
-        /// \param meshDataRootDir path to the mesh directory
           void loadURDF (const QString robotName,
-              const QString urdf_file_path,
-              const QString meshDataRootDir);
+              const QString urdf_file_path);
 
         /// Replace the camera at her home position.
         virtual void onHome();
