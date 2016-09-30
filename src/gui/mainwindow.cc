@@ -50,7 +50,7 @@ namespace gepetto {
       osg()->createScene("hpp-gui");
 
       // Setup the main OSG widget
-      connect (this, SIGNAL (createView(std::string)), SLOT (onCreateView(std::string)));
+      connect (this, SIGNAL (createViewOnMainThread(std::string)), SLOT (createView(std::string)));
 
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 
@@ -187,13 +187,22 @@ namespace gepetto {
       logError (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
-    OSGWidget *MainWindow::delayedCreateView(const std::string& name)
+    OSGWidget *MainWindow::createView(const std::string& name)
     {
-      delayedCreateView_.lock();
-      emit createView(name);
-      delayedCreateView_.lock();
-      delayedCreateView_.unlock();
-      return osgWindows_.last();
+      if (thread() != QThread::currentThread()) {
+        delayedCreateView_.lock();
+        emit createViewOnMainThread(name);
+        delayedCreateView_.lock();
+        delayedCreateView_.unlock();
+        return osgWindows_.last();
+      } else {
+        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0);
+        osgWidget->setObjectName(name.c_str());
+        addOSGWidget (osgWidget);
+        emit viewCreated(osgWidget);
+        delayedCreateView_.unlock();
+        return osgWidget;
+      }
     }
 
     void MainWindow::requestRefresh()
@@ -201,24 +210,21 @@ namespace gepetto {
       emit refresh ();
     }
 
-    OSGWidget *MainWindow::onCreateView() {
+    void MainWindow::createDefaultView() {
       std::stringstream ss; ss << "hpp_gui_window_" << osgWindows_.size();
-      return onCreateView (ss.str());
+      createView (ss.str());
     }
 
-    OSGWidget *MainWindow::onCreateView(const std::string& objName)
+    void MainWindow::addOSGWidget(OSGWidget* osgWidget)
     {
-      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, objName, this, 0);
       if (!osgWindows_.empty()) {
         QDockWidget* dockOSG = new QDockWidget (
             tr("OSG Viewer") + " " + QString::number (osgWindows_.size()), this);
-        osgWidget->setObjectName(objName.c_str());
         dockOSG->setWidget(osgWidget);
         addDockWidget(Qt::RightDockWidgetArea, dockOSG);
       } else {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        centralWidget_->setObjectName(objName.c_str());
         setCentralWidget(centralWidget_);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
@@ -230,12 +236,9 @@ namespace gepetto {
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-	selectionHandler_->setParentOSG(centralWidget());
+        selectionHandler_->setParentOSG(centralWidget());
       }
       osgWindows_.append(osgWidget);
-      emit viewCreated(osgWidget);
-      delayedCreateView_.unlock();
-      return osgWidget;
     }
 
     void MainWindow::openLoadRobotDialog()
@@ -415,7 +418,7 @@ namespace gepetto {
     void MainWindow::createCentralWidget()
     {
       if (!osgWindows_.empty()) return;
-      onCreateView();
+      createDefaultView();
     }
 
     void MainWindow::requestApplyCurrentConfiguration()

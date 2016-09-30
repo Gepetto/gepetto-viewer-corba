@@ -17,7 +17,7 @@ namespace gepetto {
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName)
     {
-      return MainWindow::instance()->delayedCreateView(windowName)->windowID();
+      return MainWindow::instance()->createView(windowName)->windowID();
     }
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName,

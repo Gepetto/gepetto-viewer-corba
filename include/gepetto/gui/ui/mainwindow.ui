@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>754</width>
-     <height>23</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -146,7 +146,7 @@
            <x>0</x>
            <y>0</y>
            <width>254</width>
-           <height>129</height>
+           <height>127</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -160,8 +160,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>236</width>
-               <height>80</height>
+               <width>238</width>
+               <height>83</height>
               </rect>
              </property>
              <attribute name="label">
@@ -446,7 +446,7 @@
    <sender>actionCreate_view</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>onCreateView()</slot>
+   <slot>createDefaultView()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -540,7 +540,7 @@
   </connection>
  </connections>
  <slots>
-  <slot>onCreateView()</slot>
+  <slot>createDefaultView()</slot>
   <slot>openLoadRobotDialog()</slot>
   <slot>showTreeContextMenu(QPoint)</slot>
   <slot>updateJointTree(QModelIndex)</slot>

@@ -86,7 +86,9 @@ namespace gepetto {
 
 signals:
         void sendToBackground (WorkItem* item);
-        void createView (const std::string& name);
+        /// You should not need to call this function.
+        /// Use MainWindow::createView(const std::string&)
+        void createViewOnMainThread(const std::string& name);
         /// Triggered when an OSGWidget is created.
         void viewCreated (OSGWidget* widget);
         void refresh ();
@@ -124,7 +126,7 @@ signals:
           /// \param text text to log
           void logJobFailed  (int id, const QString& text);
 
-        OSGWidget* delayedCreateView (const std::string& name = "");
+        OSGWidget* createView (const std::string& name);
         /// Request a refresh of the interface.
         /// \param refreshType tells what to refresh. See RefreshType
         void requestRefresh ();
@@ -182,8 +184,8 @@ signals:
 
 
         private slots:
-          OSGWidget* onCreateView(const std::string& name);
-          OSGWidget* onCreateView();
+          void addOSGWidget(OSGWidget* osgWidget);
+          void createDefaultView();
         void openLoadRobotDialog ();
         void openLoadEnvironmentDialog ();
         void activateCollision(bool activate);
