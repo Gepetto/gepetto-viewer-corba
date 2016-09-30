@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include <PythonQt/PythonQtClassInfo.h>
+#include <PythonQt/PythonQt_QtBindings.h>
 
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
@@ -32,7 +33,7 @@ namespace gepetto {
             QDockWidget("&PythonQt console", parent)
         {
             PythonQt::init(PythonQt::RedirectStdOut);
-            PythonQt_QtAll::init();
+            PythonQt_init_QtBindings();
             mainContext_ = PythonQt::self()->getMainModule();
             PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
             sys.evalScript ("argv = ['gepetto-gui']");
@@ -86,6 +87,9 @@ namespace gepetto {
         void PythonWidget::loadModulePlugin(QString moduleName) {
           PythonQt* pqt = PythonQt::self();
           PythonQtObjectPtr module = pqt->importModule (moduleName);
+          if (pqt->handleError()) {
+            return;
+          }
           if (module.isNull()) {
             qDebug() << "Enable to load module" << moduleName;
             return;
