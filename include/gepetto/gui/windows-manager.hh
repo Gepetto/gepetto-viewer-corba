@@ -40,6 +40,8 @@ namespace gepetto {
         bool removeFromGroup (const std::string& nodeName, const std::string& groupName);
         bool deleteNode (const std::string& nodeName, bool all);
 
+        public slots:
+          int createWindow(QString windowName);
       protected:
         WindowsManager (BodyTreeWidget* bodyTree);
 

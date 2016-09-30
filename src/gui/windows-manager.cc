@@ -15,6 +15,11 @@ namespace gepetto {
       return WindowsManagerPtr_t (new WindowsManager(bodyTree));
     }
 
+    int WindowsManager::createWindow(QString windowName)
+    {
+      return createWindow(windowName.toStdString());
+    }
+
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName)
     {
       return MainWindow::instance()->createView(windowName)->windowID();
