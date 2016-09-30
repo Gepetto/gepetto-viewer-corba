@@ -146,6 +146,7 @@ namespace gepetto {
       hblayout->setContentsMargins(1,1,1,1);
       setLayout (hblayout);
       hblayout->addWidget(glWidget);
+      setMinimumSize(10,10);
 
       render_.viewerPtr = viewer_;
       render_.wsm_ = wsm_;
