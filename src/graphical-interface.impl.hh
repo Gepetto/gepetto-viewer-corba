@@ -95,6 +95,9 @@ public:
   virtual bool setCurveMode(const char* curveName, const char* modeName) throw (Error);
 
   virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color) throw (Error);
+  virtual bool setTexture (const char* nodeName, const char* filename)
+    throw (Error);
+
   virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color) throw (Error);
 
   virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis) throw (Error);

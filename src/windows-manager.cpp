@@ -746,6 +746,27 @@ namespace graphics {
         }
     }
 
+  bool WindowsManager::setTexture (const char* nodeName,
+				   const char* filename)
+  {
+    NodePtr_t node (getNode (nodeName, true));
+    LeafNodeFacePtr_t faceNode (boost::dynamic_pointer_cast <LeafNodeFace>
+				(node));
+    if (!faceNode) {
+      std::ostringstream oss;
+      oss << "Node " << nodeName << " is not a face";
+      throw std::invalid_argument (oss.str ());
+    }
+    if (faceNode->nbVertices () != 4) {
+      std::ostringstream oss;
+      oss << "Face should have 4 vertices to apply texture. "
+	  << nodeName << " has " << faceNode->nbVertices () << ".";
+      throw std::runtime_error (oss.str ());
+    }
+    faceNode->setTexture (filename);
+    return true;
+  }
+
     bool WindowsManager::addXYZaxis (const char* nodeNameCorba,const value_type* colorCorba, float radius, float sizeAxis)
     {
 

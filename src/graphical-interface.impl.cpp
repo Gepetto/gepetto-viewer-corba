@@ -337,6 +337,16 @@ namespace graphics {
 	}
       }
 
+      bool GraphicalInterface::setTexture (const char* nodeName,
+					   const char* filename) throw (Error)
+      {
+	try {
+	  return windowsManager_->setTexture (nodeName, filename);
+	} catch (const std::exception& exc) {
+	  throw Error (exc.what ());
+	}
+      }
+
       bool GraphicalInterface::addXYZaxis(const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis)
           throw (Error)
       {

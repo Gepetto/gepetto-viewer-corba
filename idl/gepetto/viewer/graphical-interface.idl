@@ -180,6 +180,12 @@ typedef sequence<Position> PositionSeq;
     /// \param input RGBAcolor : color of the face.
     boolean addSquareFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Position pos4, in Color RGBAcolor) raises (Error);
 
+    /// Set a texture to a face
+    /// \param nodeName name of the node containing the face
+    /// \param filename where the image is stored
+    /// \note Node should be a square face.
+    boolean setTexture (in string nodeName, in string filename) raises (Error);
+
     /// create a three vertices face called faceName.
     /// \param input faceName : name of the face.
     /// \param input pos1, pos2, pos3 : position of the vertices.
