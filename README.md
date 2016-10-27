@@ -76,11 +76,11 @@ For convenience, robots and environments can be predefined.
 OPTIONS=""
 
 # PR2 from hpp_tutorial
-gepetto-gui -g ${OPTIONS} --add-robot "PR2-hpp_tutorial,pr2,planar,pr2,hpp_tutorial,"`rospack find hpp_tutorial`",,_manipulation,"`rospack find pr2_description| sed 's/pr2_description$//'`
+gepetto-gui -g ${OPTIONS} --add-robot "PR2-hpp_tutorial,pr2,planar,pr2,hpp_tutorial,,_manipulation"
 # HRP2
-gepetto-gui -g ${OPTIONS} --add-robot "HRP2,hrp2,freeflyer,hrp2_14,hrp2_14_description,"`rospack find hrp2_14_description`",,,"`rospack find hrp2_14_description| sed 's/hrp2_14_description$//'`
+gepetto-gui -g ${OPTIONS} --add-robot "HRP2,hrp2,freeflyer,hrp2_14,hrp2_14_description,,"
 # Romeo
-gepetto-gui -g ${OPTIONS} --add-robot "Romeo,romeo,freeflyer,romeo,romeo_description,"`rospack find romeo_description`",,H37V1,"`rospack find romeo_description| sed 's/romeo_description$//'`
+gepetto-gui -g ${OPTIONS} --add-robot "Romeo,romeo,freeflyer,romeo,romeo_description,,H37V1"
 ```
 
 * Environments:
@@ -90,7 +90,7 @@ gepetto-gui -g ${OPTIONS} --add-robot "Romeo,romeo,freeflyer,romeo,romeo_descrip
 OPTIONS=""
 
 # Kitchen
-gepetto-gui -g ${OPTIONS} --add-env "Kitchen,kitchen,iai_maps,"`rospack find iai_maps`",kitchen_area,"`rospack find iai_maps| sed 's/iai_maps$//'`
+gepetto-gui -g ${OPTIONS} --add-env "Kitchen,kitchen,iai_maps,kitchen_area"
 ```
 
 ###### Manually
@@ -102,20 +102,16 @@ RobotName=pr2
 ModelName=pr2
 RootJointType=planar
 Package=hpp_tutorial
-PackagePath=${CMAKE_INSTALL_PREFIX}/share/hpp_tutorial
 URDFSuffix=
 SRDFSuffix=_manipulation
-MeshDirectory=/opt/ros/hydro/share/
 
 [HRP2]
 RobotName=hrp2_14
 ModelName=hrp2_14
 RootJointType=freeflyer
 Package=hrp2_14_description
-PackagePath=${CMAKE_INSTALL_PREFIX}/share/hrp2_14_description
 URDFSuffix=
 SRDFSuffix=
-MeshDirectory=${CMAKE_INSTALL_PREFIX}/share/
 ```
 
 Open `${CMAKE_INSTALL_PREFIX}/etc/gepetto-gui/environments.conf` and write:
@@ -123,9 +119,7 @@ Open `${CMAKE_INSTALL_PREFIX}/etc/gepetto-gui/environments.conf` and write:
 [Kitchen]
 RobotName=Kitchen
 Package=iai_maps
-PackagePath=${CMAKE_INSTALL_PREFIX}/share/iai_maps
 URDFFilename=kitchen_area
-MeshDirectory=${CMAKE_INSTALL_PREFIX}/share/
 ```
 
 Note: Do not forget to replace `${CMAKE_INSTALL_PREFIX}` by a relevant path.
