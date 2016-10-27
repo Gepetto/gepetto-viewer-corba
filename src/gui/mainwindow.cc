@@ -147,11 +147,19 @@ namespace gepetto {
 
     void MainWindow::log(const QString &text)
     {
+      if (thread() != QThread::currentThread()) {
+        emit logString(text);
+        return;
+      }
       ui_->logText->insertHtml("<hr/><font color=black>"+text+"</font>");
     }
 
     void MainWindow::logError(const QString &text)
     {
+      if (thread() != QThread::currentThread()) {
+        emit logErrorString(text);
+        return;
+      }
       if (!ui_->dockWidget_log->isVisible()) {
         ui_->dockWidget_log->show();
       }
@@ -174,17 +182,17 @@ namespace gepetto {
 
     void MainWindow::logJobStarted(int id, const QString &text)
     {
-      log (QString ("Starting job ") + QString::number (id) + ": " + text);
+      emit logString (QString ("Starting job ") + QString::number (id) + ": " + text);
     }
 
     void MainWindow::logJobDone(int id, const QString &text)
     {
-      log (QString ("Job ") + QString::number (id) + " done: " + text);
+      emit logString (QString ("Job ") + QString::number (id) + " done: " + text);
     }
 
     void MainWindow::logJobFailed(int id, const QString &text)
     {
-      logError (QString ("Job ") + QString::number (id) + " failed: " + text);
+      emit logErrorString (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
     OSGWidget *MainWindow::createView(const std::string& name)
@@ -410,6 +418,9 @@ namespace gepetto {
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
       connect (ui_->actionFetch_configuration, SIGNAL (triggered ()), SLOT(requestApplyCurrentConfiguration()));
+
+      connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));
+      connect (this, SIGNAL(logErrorString(QString)), SLOT(logError(QString)));
     }
 
     void MainWindow::createCentralWidget()

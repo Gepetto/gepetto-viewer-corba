@@ -96,6 +96,9 @@ signals:
         void configurationValidation();
         void selectJointFromBodyName(const QString bodyName);
 
+        void logString(QString msg);
+        void logErrorString(QString msg);
+
         public slots:
           /// \addtogroup available_in_python Python API
           /// These slots are available for Python scripting in plugins
