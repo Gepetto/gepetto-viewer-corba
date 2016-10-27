@@ -136,7 +136,7 @@ namespace gepetto {
       viewer_->addEventHandler(new osgViewer::HelpHandler);
       viewer_->addEventHandler(pickHandler_);
 
-      wid_ = wm->createWindow (name.c_str(), viewer_, graphicsWindow_.get());
+      wid_ = wm->createWindow (name, viewer_, graphicsWindow_.get());
       wm_ = wsm_->getWindowManager (wid_);
 
       viewer_->setThreadingModel(threadingModel);
@@ -146,6 +146,7 @@ namespace gepetto {
       hblayout->setContentsMargins(1,1,1,1);
       setLayout (hblayout);
       hblayout->addWidget(glWidget);
+      setMinimumSize(10,10);
 
       render_.viewerPtr = viewer_;
       render_.wsm_ = wsm_;
@@ -183,10 +184,6 @@ namespace gepetto {
           uf.constData(),
           md.constData());
       wsm_->addSceneToWindow(rn.constData(), wid_);
-      MainWindow* w = dynamic_cast <MainWindow*> (parentWidget());
-      if (w) {
-        w->bodyTree()->addBodyToTree (wsm_->getGroup (robotName.toStdString()));
-      }
     }
 
     void OSGWidget::paintEvent( QPaintEvent* /* paintEvent */ )
@@ -231,7 +228,7 @@ namespace gepetto {
 
     void OSGWidget::attachToWindow(const std::string nodeName)
     {
-      wsm_->addSceneToWindow(nodeName.c_str(), wid_);
+      wsm_->addSceneToWindow(nodeName, wid_);
     }
 
     osgGA::EventQueue* OSGWidget::getEventQueue() const

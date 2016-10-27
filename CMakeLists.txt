@@ -85,12 +85,12 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/shortcut-factory.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-handler.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/windows-manager.hh
     )
   SET (${PROJECT_NAME}_HEADERS_NO_MOC
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/meta.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/windows-manager.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
     ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh
     )

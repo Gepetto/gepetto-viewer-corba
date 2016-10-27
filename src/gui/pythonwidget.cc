@@ -2,6 +2,7 @@
 
 #include <QFileDialog>
 #include <PythonQt/PythonQtClassInfo.h>
+#include <PythonQt/PythonQt_QtBindings.h>
 
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
@@ -32,13 +33,14 @@ namespace gepetto {
             QDockWidget("&PythonQt console", parent)
         {
             PythonQt::init(PythonQt::RedirectStdOut);
-            PythonQt_QtAll::init();
+            PythonQt_init_QtBindings();
             mainContext_ = PythonQt::self()->getMainModule();
             PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
             sys.evalScript ("argv = ['gepetto-gui']");
             console_ = new PythonQtScriptingConsole(NULL, mainContext_);
-            PythonQt::self()->registerQObjectClassNames(QStringList() << "BodyTreeWidget" << "BodyTreeItem");
+            PythonQt::self()->registerQObjectClassNames(QStringList() << "BodyTreeWidget" << "BodyTreeItem" << "WindowsManager");
             mainContext_.addObject("mainWindow", MainWindow::instance());
+            mainContext_.addObject("windowsManager", MainWindow::instance()->osg().get());
             console_->QTextEdit::clear();
             console_->consoleMessage(
                     "PythonQt command prompt\n"
@@ -85,12 +87,16 @@ namespace gepetto {
         void PythonWidget::loadModulePlugin(QString moduleName) {
           PythonQt* pqt = PythonQt::self();
           PythonQtObjectPtr module = pqt->importModule (moduleName);
+          if (pqt->handleError()) {
+            return;
+          }
           if (module.isNull()) {
             qDebug() << "Enable to load module" << moduleName;
             return;
           }
           module.evalScript("from PythonQt import QtGui");
           module.addObject("mainWindow", MainWindow::instance());
+          module.addObject("windowsManager", MainWindow::instance()->osg().get());
           module.addObject("_menuPlugin", MainWindow::instance()->pluginMenu());
           QString var = "pluginInstance";
           module.evalScript (var + " = Plugin(mainWindow)");

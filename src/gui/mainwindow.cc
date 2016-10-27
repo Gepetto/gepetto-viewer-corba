@@ -28,13 +28,17 @@ namespace gepetto {
       settings_ (settings),
       ui_(new ::Ui::MainWindow),
       centralWidget_ (),
-      osgViewerManagers_ (WindowsManager::create()),
+      osgViewerManagers_ (),
       osgServer_ (NULL),
       backgroundQueue_(),
       worker_ ()
     {
       MainWindow::instance_ = this;
       ui_->setupUi(this);
+
+      // Setup the body tree view
+      osgViewerManagers_ = WindowsManager::create(ui_->bodyTreeContent);
+      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->toolBox);
 
       if (settings_->startGepettoCorbaServer) {
         osgServer_ = new CorbaServer (new ViewerServerProcess (
@@ -45,11 +49,8 @@ namespace gepetto {
       // This scene contains elements required for User Interaction.
       osg()->createScene("hpp-gui");
 
-      // Setup the body tree view
-      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->toolBox);
-
       // Setup the main OSG widget
-      connect (this, SIGNAL (createView(QString)), SLOT (onCreateView(QString)));
+      connect (this, SIGNAL (createViewOnMainThread(std::string)), SLOT (createView(std::string)));
 
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 
@@ -186,13 +187,22 @@ namespace gepetto {
       logError (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
-    OSGWidget *MainWindow::delayedCreateView(QString name)
+    OSGWidget *MainWindow::createView(const std::string& name)
     {
-      delayedCreateView_.lock();
-      emit createView(name);
-      delayedCreateView_.lock();
-      delayedCreateView_.unlock();
-      return osgWindows_.last();
+      if (thread() != QThread::currentThread()) {
+        delayedCreateView_.lock();
+        emit createViewOnMainThread(name);
+        delayedCreateView_.lock();
+        delayedCreateView_.unlock();
+        return osgWindows_.last();
+      } else {
+        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0);
+        osgWidget->setObjectName(name.c_str());
+        addOSGWidget (osgWidget);
+        emit viewCreated(osgWidget);
+        delayedCreateView_.unlock();
+        return osgWidget;
+      }
     }
 
     void MainWindow::requestRefresh()
@@ -200,24 +210,21 @@ namespace gepetto {
       emit refresh ();
     }
 
-    OSGWidget *MainWindow::onCreateView() {
-      return onCreateView ("hpp_gui_window_" + QString::number(osgWindows_.size()));
+    void MainWindow::createDefaultView() {
+      std::stringstream ss; ss << "hpp_gui_window_" << osgWindows_.size();
+      createView (ss.str());
     }
 
-    OSGWidget *MainWindow::onCreateView(QString objName)
+    void MainWindow::addOSGWidget(OSGWidget* osgWidget)
     {
-      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, objName.toStdString(),
-          this, 0);
       if (!osgWindows_.empty()) {
         QDockWidget* dockOSG = new QDockWidget (
             tr("OSG Viewer") + " " + QString::number (osgWindows_.size()), this);
-        osgWidget->setObjectName(objName);
         dockOSG->setWidget(osgWidget);
         addDockWidget(Qt::RightDockWidgetArea, dockOSG);
       } else {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        centralWidget_->setObjectName(objName);
         setCentralWidget(centralWidget_);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
@@ -229,12 +236,9 @@ namespace gepetto {
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-	selectionHandler_->setParentOSG(centralWidget());
+        selectionHandler_->setParentOSG(centralWidget());
       }
       osgWindows_.append(osgWidget);
-      emit viewCreated(osgWidget);
-      delayedCreateView_.unlock();
-      return osgWidget;
     }
 
     void MainWindow::openLoadRobotDialog()
@@ -280,18 +284,15 @@ namespace gepetto {
         QDir d (ed.packagePath_); d.cd("urdf");
         QString urdfFile = d.absoluteFilePath(ed.urdfFilename_ + ".urdf");
         try {
-          osgViewerManagers_->addUrdfObjects(
-              Traits<QString>::to_corba(ed.envName_).in(),
-              Traits<QString>::to_corba(urdfFile   ).in(),
-              Traits<QString>::to_corba(ed.mesh_   ).in(),
-              true);
-          osgViewerManagers_->addSceneToWindow(
-              Traits<QString>::to_corba(ed.envName_).in(),
-              centralWidget_->windowID());
+          osgViewerManagers_->addUrdfObjects(ed.envName_.toStdString(),
+                                             urdfFile   .toStdString(),
+                                             ed.mesh_   .toStdString(),
+                                             true);
+          osgViewerManagers_->addSceneToWindow(ed.envName_.toStdString(),
+                                               centralWidget_->windowID());
         } catch (std::runtime_error& exc) {
           log (exc.what ());
         }
-        bodyTree()->addBodyToTree(osgViewerManagers_->getGroup(ed.envName_.toStdString()));
 
         QString what = QString ("Loading environment ") + ed.name_;
         WorkItem* item;
@@ -417,7 +418,7 @@ namespace gepetto {
     void MainWindow::createCentralWidget()
     {
       if (!osgWindows_.empty()) return;
-      onCreateView();
+      createDefaultView();
     }
 
     void MainWindow::requestApplyCurrentConfiguration()

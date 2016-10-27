@@ -10,74 +10,56 @@
 
 namespace gepetto {
   namespace gui {
-    template <> struct Traits <gepetto::corbaserver::Color_var> {
-      typedef gepetto::corbaserver::Color_var type;
-      static inline type from (const float* in) {
-        type out = new float[4];
-        convertSequence <float, float> (in, out.inout(), 4);
-        return out;
-      }
-      static inline type from (const double* in) {
-        type out = new float[4];
-        convertSequence <double, float> (in, out.inout(), 4);
-        return out;
-      }
-      static inline type from (const QColor& in) {
-        qreal v[4];
-        in.getRgbF(&v[0],&v[1],&v[2],&v[3]);
-        return from (v);
-      }
-    };
-    template <> struct Traits <gepetto::corbaserver::Position_var> {
-      typedef gepetto::corbaserver::Position_var type;
-      static inline type from (const float* in) {
-        type out = new float[4];
-        convertSequence <float, float> (in, out.inout(), 4);
-        return out;
-      }
-      static inline type from (const double* in) {
-        type out = new float[4];
-        convertSequence <double, float> (in, out.inout(), 4);
-        return out;
-      }
-      static inline type from (const QVector3D& in) {
-        qreal v[3]; v[0] = in.x(); v[1] = in.y(); v[2] = in.z();
-        return from (v);
-      }
-      static inline type from (const int& in) {
-        qreal v[3]; v[0] = in / (qreal)50; v[1] = v[0]; v[2] = v[0];
-        return from (v);
-      }
-
-    };
-
-    template <> struct Traits <int> {
-      struct type {
-          float value;
-          const float& in() { return value; }
-      };
-
-      static inline type from(const int& in) {
-          type out;
-          out.value = (float)(in / 100.0);
-          return out;
+    template <> struct convertTo<graphics::WindowsManager::Color_t> {
+      typedef graphics::WindowsManager::Color_t T;
+      typedef typename T::value_type v_t;
+      static inline T from (const QColor& in) {
+        T v((v_t)in.redF(), (v_t)in.greenF(), (v_t)in.blueF(), (v_t)in.alphaF());
+        // in.getRgbF(&v[0],&v[1],&v[2],&v[3]);
+        return v;
       }
     };
 
-    class WindowsManager : public graphics::WindowsManager
+    class WindowsManager : public QObject, public graphics::WindowsManager
     {
+      Q_OBJECT
+
       public:
         typedef graphics::WindowsManager Parent_t;
+        typedef graphics::NodePtr_t      NodePtr_t;
+        typedef graphics::GroupNodePtr_t GroupNodePtr_t;
 
-        static WindowsManagerPtr_t create ();
+        static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
-        WindowID createWindow(const char *windowNameCorba);
-        WindowID createWindow(const char *windowNameCorba,
+        WindowID createWindow(const std::string& windowName);
+        WindowID createWindow(const std::string& windowName,
                               osgViewer::Viewer* viewer,
                               osg::GraphicsContext *gc);
 
+        bool addToGroup(const std::string& nodeName, const std::string& groupName);
+        bool removeFromGroup (const std::string& nodeName, const std::string& groupName);
+        bool deleteNode (const std::string& nodeName, bool all);
+
+        public slots:
+          int createWindow(QString windowName);
       protected:
-        WindowsManager ();
+        WindowsManager (BodyTreeWidget* bodyTree);
+
+        virtual void addNode (const std::string& nodeName, NodePtr_t node, GroupNodePtr_t parent);
+        virtual void addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent);
+
+      private:
+        typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
+        typedef std::pair<BodyTreeItems_t, bool> BodyTreeItemsAndGroup_t;
+        typedef std::map<std::string, BodyTreeItemsAndGroup_t> BodyTreeItemMap_t;
+        BodyTreeWidget* bodyTree_;
+        BodyTreeItemMap_t nodeItemMap_;
+
+        bool initParent (NodePtr_t node, GroupNodePtr_t parent, bool isGroup);
+        void addToGroup (const std::string& nodeName, const std::string& groupName,
+                         const NodePtr_t&   node,     const BodyTreeItems_t& groups,
+                         bool isGroup);
+        void deleteBodyItem(const std::string& nodeName);
     };
   } // namespace gui
 } // namespace gepetto

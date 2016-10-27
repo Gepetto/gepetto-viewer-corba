@@ -17,7 +17,6 @@ namespace gepetto {
       vmMapper_ (),
       vizMapper_ ()
     {
-      init();
       setEditable(false);
       connect (&vmMapper_, SIGNAL (mapped (QString)), SLOT(setViewingMode(QString)));
       connect (&vizMapper_, SIGNAL (mapped (QString)), SLOT(setVisibilityMode(QString)));
@@ -79,65 +78,50 @@ namespace gepetto {
       parentGroup_ = parent;
     }
 
-    void BodyTreeItem::init ()
-    {
-      graphics::GroupNodePtr_t gn = boost::dynamic_pointer_cast <graphics::GroupNode> (node_);
-      if (gn) {
-        for (size_t i = 0; i < gn->getNumOfChildren(); ++i) {
-          BodyTreeItem* item = new BodyTreeItem (this, gn->getChild(i));
-          item->setParentGroup (gn->getID());
-          appendRow(item);
-        }
-      }
-    }
-
     void BodyTreeItem::setViewingMode(QString mode)
     {
-      MainWindow::instance()->osg()->setWireFrameMode (node_->getID().c_str(),
+      MainWindow::instance()->osg()->setWireFrameMode (node_->getID(),
           mode.toLocal8Bit().data());
     }
 
     void BodyTreeItem::setVisibilityMode(QString mode)
     {
-      MainWindow::instance()->osg()->setVisibility (node_->getID().c_str(),
+      MainWindow::instance()->osg()->setVisibility (node_->getID(),
           mode.toLocal8Bit().data());
     }
 
     void BodyTreeItem::attachToWindow(unsigned int windowID)
     {
-      MainWindow::instance()->osg()->addSceneToWindow (node_->getID().c_str(), windowID);
+      MainWindow::instance()->osg()->addSceneToWindow (node_->getID(), windowID);
     }
 
     void BodyTreeItem::removeFromGroup()
     {
       if (parentGroup_.empty()) return;
-      MainWindow::instance()->osg()->removeFromGroup (node_->getID().c_str(),
-          parentGroup_.c_str());
+      MainWindow::instance()->osg()->removeFromGroup (node_->getID(), parentGroup_);
       QStandardItem::parent()->removeRow(row());
     }
 
     void BodyTreeItem::removeAll()
     {
       MainWindow* main = MainWindow::instance();
-      main->osg()->deleteNode(node_->getID().c_str(), true);
-      main->bodyTree()->reloadBodyTree();
+      main->osg()->deleteNode(node_->getID(), true);
     }
 
     void BodyTreeItem::remove()
     {
       MainWindow* main = MainWindow::instance();
-      main->osg()->deleteNode(node_->getID().c_str(), false);
-      main->bodyTree()->reloadBodyTree();
+      main->osg()->deleteNode(node_->getID(), false);
     }
 
     void BodyTreeItem::addLandmark()
     {
-      MainWindow::instance()->osg()->addLandmark(node_->getID().c_str(), 0.05f);
+      MainWindow::instance()->osg()->addLandmark(node_->getID(), 0.05f);
     }
 
     void BodyTreeItem::deleteLandmark()
     {
-      MainWindow::instance()->osg()->deleteLandmark(node_->getID().c_str());
+      MainWindow::instance()->osg()->deleteLandmark(node_->getID());
     }
   } // namespace gui
 } // namespace gepetto

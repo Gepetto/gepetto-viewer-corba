@@ -25,10 +25,22 @@
 
 namespace graphics {
 
-    struct NodeConfiguration {
-        NodePtr_t node;
+    struct Configuration {
         osgVector3 position;
         osgQuat quat;
+        Configuration() {}
+        /// \param XYZW when false, the 4 last parameters are a quaternion (w,x,y,z)
+        ///             otherwise, a quaternion (x,y,z,w)
+        explicit Configuration(const float* a, bool XYZW)
+          : position(a[0],a[1],a[2])
+          , quat(a[(XYZW ? 3 : 4)],
+                 a[(XYZW ? 4 : 5)],
+                 a[(XYZW ? 5 : 6)],
+                 a[(XYZW ? 6 : 3)]) {}
+        Configuration(const osgVector3& p, const osgQuat& q) : position(p), quat(q) {}
+    };
+    struct NodeConfiguration : Configuration {
+        NodePtr_t node;
     };
 
     struct BlenderFrameCapture {
@@ -63,7 +75,8 @@ namespace graphics {
         public:
             // Typedef for position and color values.
             typedef osg::Vec3f::value_type value_type;
-            typedef std::vector<float> configuration_t;
+            typedef osgVector4 Color_t;
+            typedef ::osg::Vec3ArrayRefPtr Vec3ArrayPtr_t;
             typedef unsigned int WindowID;
 
             typedef std::map <std::string, WindowID> WindowIDMap_t;
@@ -71,8 +84,6 @@ namespace graphics {
 
             typedef std::map <std::string, UrdfFile> UrdfFileMap_t;
             UrdfFileMap_t urdfFileMap_;
-
-            typedef gepetto::corbaserver::PositionSeq PositionSeq;
 
         private:
             typedef std::vector <WindowManagerPtr_t> WindowManagerVector_t;
@@ -88,18 +99,13 @@ namespace graphics {
             bool autoCaptureTransform_;
 
             static osgVector4 getColor(const std::string& colorName);
-            static osgVector4 getColor(const float* color);
             static std::string parentName(const std::string& name);
             static VisibilityMode getVisibility(const std::string& visibilityName);
             static WireFrameMode getWire(const std::string& wireName);
             static LightingMode getLight(const std::string& lightName);
             NodePtr_t find (const std::string name, GroupNodePtr_t group = GroupNodePtr_t());
-            void initParent(const std::string& nodeName, NodePtr_t node);
-            void addNode(const std::string& nodeName, NodePtr_t node);
-            void addGroup(const std::string& groupName, GroupNodePtr_t group);
+            void initParent(NodePtr_t node, GroupNodePtr_t parent);
             void threadRefreshing(WindowManagerPtr_t window);
-            static osgQuat corbaConfToOsgQuat(const value_type* configurationCorba);
-            static osgVector3 corbaConfToOsgVec3(const value_type* configurationCorba);
             bool urdfUpToDate (const std::string nodeName,
                 const std::string filename);
             void registerUrdfNode (const std::string nodeName,
@@ -121,13 +127,19 @@ namespace graphics {
               std::size_t getNodes
               (const Iterator& begin, const Iterator& end, NodeContainer_t& nodes);
 
+            /// Warning, the mutex should be locked before and unlocked after this opertations.
+            void addNode (const std::string& nodeName, NodePtr_t node, bool guessParent = false);
+            virtual void addNode (const std::string& nodeName, NodePtr_t node, GroupNodePtr_t parent);
+            void addGroup(const std::string& groupName, GroupNodePtr_t group, bool guessParent = false);
+            virtual void addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent);
+
         public:
             static WindowsManagerPtr_t create ();
 
             virtual ~WindowsManager () {};
 
             virtual std::vector<std::string> getNodeList();
-            virtual std::vector<std::string> getGroupNodeList(const char* group);
+            virtual std::vector<std::string> getGroupNodeList(const std::string& group);
             virtual std::vector<std::string> getSceneList();
             virtual std::vector<std::string> getWindowList();
 
@@ -139,109 +151,112 @@ namespace graphics {
             virtual bool setRate(const int& rate);
             virtual void refresh();
 
-            virtual WindowID createWindow(const char* windowNameCorba);
-            virtual WindowID getWindowID (const char* windowNameCorba);
+            virtual WindowID createWindow(const std::string& windowName);
+            virtual WindowID getWindowID (const std::string& windowName);
 
-            virtual void createScene(const char* sceneNameCorba);
-            virtual void createSceneWithFloor(const char* sceneNameCorba);
-            virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId);
+            virtual void createScene(const std::string& sceneName);
+            virtual void createSceneWithFloor(const std::string& sceneName);
+            virtual bool addSceneToWindow(const std::string& sceneName, const WindowID windowId);
 
-            virtual bool attachCameraToNode(const char* nodeNameCorba, const WindowID windowId);
+            virtual bool attachCameraToNode(const std::string& nodeName, const WindowID windowId);
             virtual bool detachCamera(const WindowID windowId);
 
             virtual bool nodeExists (const std::string& name);
 
-            virtual bool addFloor(const char* floorNameCorba);
+            virtual bool addFloor(const std::string& floorName);
 
-            virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const value_type* color);
+            virtual bool addBox(const std::string& boxName, const float& boxSize1, const float& boxSize2, const float& boxSize3, const Color_t& color);
 
-            virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color);
+            virtual bool addCapsule(const std::string& capsuleName, float radius, float height, const Color_t& color);
 
-            virtual  bool addArrow (const char* arrowNameCorba,const float radius, const float length,  const value_type* colorCorba);
+            virtual  bool addArrow (const std::string& arrowName,const float radius, const float length,  const Color_t& color);
 
-            virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba,const float radius,const float length, short maxCapsule);
+            virtual bool addRod (const std::string& rodName, const Color_t& color,const float radius,const float length, short maxCapsule);
 
-            virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw (std::exception);
-            virtual bool resizeArrow(const char* arrowNameCorba ,float newRadius, float newLength) throw(std::exception);
+            virtual bool resizeCapsule(const std::string& capsuleName, float newHeight) throw (std::exception);
+            virtual bool resizeArrow(const std::string& arrowName ,float newRadius, float newLength) throw(std::exception);
 
-            virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba);
+            virtual bool addMesh(const std::string& meshName, const std::string& meshPath);
 
-            virtual bool addCone(const char* coneName, float radius, float height, const value_type* color);
+            virtual bool addCone(const std::string& coneName, float radius, float height, const Color_t& color);
 
-            virtual bool addCylinder(const char* cylinderName, float radius, float height, const value_type* color);
+            virtual bool addCylinder(const std::string& cylinderName, float radius, float height, const Color_t& color);
 
-            virtual bool addSphere(const char* sphereName, float radius, const value_type* color);
+            virtual bool addSphere(const std::string& sphereName, float radius, const Color_t& color);
 
-            virtual bool addLight(const char* lightName, const WindowID wid, float radius, const value_type* color);
+            virtual bool addLight(const std::string& lightName, const WindowID wid, float radius, const Color_t& color);
 
-            virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color);
+            virtual bool addLine(const std::string& lineName, const osgVector3& pos1, const osgVector3& pos2, const Color_t& color);
 
-            virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color);
+            virtual bool addCurve(const std::string& curveName, const Vec3ArrayPtr_t& pos, const Color_t& color);
 
             /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
             /// possible values
-            virtual bool setCurveMode (const char* curveName, const GLenum mode);
+            virtual bool setCurveMode (const std::string& curveName, const GLenum mode);
 
-            virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color);
-      virtual bool setTexture (const char* nodeName, const char* filename);
-            virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color);
-            virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis);
+            virtual bool addSquareFace(const std::string& faceName, const osgVector3& pos1, const osgVector3& pos2, const osgVector3& pos3, const osgVector3& pos4, const Color_t& color);
+            virtual bool setTexture (const std::string& nodeName, const std::string& filename);
+            virtual bool addTriangleFace(const std::string& faceName, const osgVector3& pos1, const osgVector3& pos2, const osgVector3& pos3, const Color_t& color);
+            virtual bool addXYZaxis (const std::string& nodeName, const Color_t& color, float radius, float sizeAxis);
 
-            virtual bool createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba);
+            virtual bool createRoadmap(const std::string& name,const Color_t& colorNode, float radius, float sizeAxis, const Color_t& colorEdge);
 
-            virtual bool addEdgeToRoadmap(const char* nameRoadmapCorba, const value_type* posFromCorba, const value_type* posToCorba);
+            virtual bool addEdgeToRoadmap(const std::string& nameRoadmap, const osgVector3& posFrom, const osgVector3& posTo);
 
-            virtual bool addNodeToRoadmap(const char* nameRoadmapCorba, const value_type* configuration);
+            virtual bool addNodeToRoadmap(const std::string& nameRoadmap, const Configuration& configuration);
 
-            virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba);
+            virtual bool addURDF(const std::string& urdfName, const std::string& urdfPath, const std::string& urdfPackagePath);
 
-            virtual bool addUrdfCollision (const char* urdfNameCorba,
-                    const char* urdfPathCorba,
-                    const char* urdfPackagePathCorba) ;
+            virtual bool addUrdfCollision (const std::string& urdfName,
+                    const std::string& urdfPath,
+                    const std::string& urdfPackagePath) ;
 
-            virtual void addUrdfObjects (const char* urdfNameCorba,
-                    const char* urdfPathCorba,
-                    const char* urdfPackagePathCorba,
+            virtual void addUrdfObjects (const std::string& urdfName,
+                    const std::string& urdfPath,
+                    const std::string& urdfPackagePath,
                     bool visual) ;
 
-            virtual bool createGroup(const char* groupNameCorba);
-            virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba);
-            virtual bool removeFromGroup (const char* nodeNameCorba, const char* groupNameCorba);
-            virtual bool deleteNode (const char* nodeNameCorba, bool all);
+            virtual bool createGroup(const std::string& groupName);
+            virtual bool addToGroup(const std::string& nodeName, const std::string& groupName);
+            virtual bool removeFromGroup (const std::string& nodeName, const std::string& groupName);
+            virtual bool deleteNode (const std::string& nodeName, bool all);
 
-            virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration);
+            virtual bool applyConfiguration(const std::string& nodeName, const Configuration& configuration);
 
-            virtual bool addLandmark(const char* nodeNameCorba, float size);
-            virtual bool deleteLandmark(const char* nodeNameCorba);
+            virtual bool addLandmark(const std::string& nodeName, float size);
+            virtual bool deleteLandmark(const std::string& nodeName);
 
-            virtual bool getStaticTransform (const char* nodeName, ::gepetto::corbaserver::Transform transform) const;
-            virtual bool setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform);
+            virtual Configuration getStaticTransform (const std::string& nodeName) const;
+            virtual bool setStaticTransform (const std::string& nodeName, const Configuration& transform);
 
-            virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba);
-            virtual bool setScale(const char* nodeNameCorba, const value_type* scale);
-            virtual bool setColor(const char* nodeNameCorba, const value_type* color);
-            virtual bool setWireFrameMode(const char* nodeNameCorba, const char* wireFrameModeCorba);
-            virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
-            virtual bool setHighlight(const char* nodeNameCorba, int state);
-            virtual bool setAlpha(const char *nodeNameCorba, const float& alpha);
+            virtual bool setVisibility(const std::string& nodeName, const std::string& visibilityMode);
+            virtual bool setScale(const std::string& nodeName, const osgVector3& scale);
+            virtual bool setScale(const std::string& nodeName, const float& scale);
+            virtual bool setScale(const std::string& nodeName, const int& scalePercentage);
+            virtual bool setColor(const std::string& nodeName, const Color_t& color);
+            virtual bool setWireFrameMode(const std::string& nodeName, const std::string& wireFrameMode);
+            virtual bool setLightingMode(const std::string& nodeName, const std::string& lightingMode);
+            virtual bool setHighlight(const std::string& nodeName, int state);
+            virtual bool setAlpha(const std::string& nodeName, const float& alpha);
+            virtual bool setAlpha(const std::string& nodeName, const int& alphaPercentage);
 
-            virtual bool startCapture (const WindowID windowId, const char* filename,
-                    const char* extension);
+            virtual bool startCapture (const WindowID windowId, const std::string& filename,
+                    const std::string& extension);
             virtual bool stopCapture (const WindowID windowId);
-            virtual bool setCaptureTransform (const char* filename, const std::list<std::string>& nodename);
+            virtual bool setCaptureTransform (const std::string& filename, const std::vector<std::string>& nodename);
             virtual void captureTransformOnRefresh (bool autoCapture);
             virtual void captureTransform ();
-            virtual bool writeBlenderScript (const char* filename, const std::list<std::string>& nodename);
-            virtual bool writeNodeFile (const char* nodename, const char* filename);
-            virtual bool writeWindowFile (const WindowID windowId, const char* filename);
-            virtual bool setBackgroundColor1(const WindowID windowId,const value_type* colorCorba);
-            virtual bool setBackgroundColor2(const WindowID windowId,const value_type* colorCorba);
+            virtual bool writeBlenderScript (const std::string& filename, const std::vector<std::string>& nodename);
+            virtual bool writeNodeFile (const std::string& nodename, const std::string& filename);
+            virtual bool writeWindowFile (const WindowID windowId, const std::string& filename);
+            virtual bool setBackgroundColor1(const WindowID windowId,const Color_t& color);
+            virtual bool setBackgroundColor2(const WindowID windowId,const Color_t& color);
             
 
-            WindowManagerPtr_t getWindowManager (const WindowID wid);
+            WindowManagerPtr_t getWindowManager (const WindowID wid, bool throwIfDoesntExist = false) const;
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;
             NodePtr_t getNode (const std::string& nodeName, bool throwIfDoesntExist = false) const;
-            configuration_t getNodeGlobalTransform(const std::string nodeName);
+            Configuration getNodeGlobalTransform(const std::string nodeName) const;
     };
 } /* namespace graphics */
 
