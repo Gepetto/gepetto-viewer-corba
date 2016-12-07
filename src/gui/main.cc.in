@@ -17,7 +17,10 @@ void setupApplication ()
   QCoreApplication::setOrganizationDomain("https://github.com/jmirabel/gepetto-viewer-corba");
   QCoreApplication::setApplicationName("gepetto-gui");
   QCoreApplication::setApplicationVersion("@PROJECT_VERSION@");
-
+  
+  QStringList theme_paths;
+  theme_paths << "/usr/local/share/icons/";
+  QIcon::setThemeSearchPaths(theme_paths);
   QIcon::setThemeName("oxygen");
 
   qRegisterMetaType<std::string>("std::string");
