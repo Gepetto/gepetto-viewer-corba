@@ -19,9 +19,11 @@ void setupApplication ()
   QCoreApplication::setApplicationName("gepetto-gui");
   QCoreApplication::setApplicationVersion("@PROJECT_VERSION@");
   
-  QStringList theme_paths;
-  theme_paths << "/usr/local/share/icons/";
-  QIcon::setThemeSearchPaths(theme_paths);
+  QStringList theme_paths = QIcon::themeSearchPaths();
+  if (!theme_paths.contains("/usr/local/share/icons/")) {
+    theme_paths.prepend("/usr/local/share/icons/");
+    QIcon::setThemeSearchPaths(theme_paths);
+  }
   QIcon::setThemeName("oxygen");
 
   qRegisterMetaType<std::string>("std::string");
@@ -33,8 +35,8 @@ int main(int argc, char *argv[])
 
   SafeApplication a(argc, argv);
   a.setStyle(new QCleanlooksStyle);
-  QIcon app_icon(":/img/gepetto.png");
-  a.setWindowIcon(app_icon);
+  QPixmap pixmap(":/img/gepetto.png");
+  a.setWindowIcon(pixmap);
 
   setupApplication();
 
@@ -53,12 +55,12 @@ int main(int argc, char *argv[])
   }
   settings.fromFiles ();
 
-  QPixmap pixmap(":/img/gepetto.png");
   QSplashScreen splash(pixmap);
   splash.show();
   a.processEvents ();
 
   MainWindow w (&settings);
+  w.setWindowIcon (pixmap);
   settings.setMainWindow (&w);
   settings.initPlugins ();
   w.connect (&a, SIGNAL (log(QString)), SLOT (logError(const QString&)));
