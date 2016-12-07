@@ -3,6 +3,7 @@
 #include <QCleanlooksStyle>
 #include <QProcessEnvironment>
 #include <QSplashScreen>
+#include <QIcon>
 
 #include "gepetto/gui/safeapplication.hh"
 #include "gepetto/gui/mainwindow.hh"
@@ -32,6 +33,8 @@ int main(int argc, char *argv[])
 
   SafeApplication a(argc, argv);
   a.setStyle(new QCleanlooksStyle);
+  QIcon app_icon(":/img/gepetto.png");
+  a.setWindowIcon(app_icon);
 
   setupApplication();
 
