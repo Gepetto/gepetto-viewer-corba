@@ -16,13 +16,12 @@
 
 #include <gepetto/gui/settings.hh>
 
-#include <boost/program_options.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-
 #include <QSettings>
 #include <QDir>
 #include <QtDebug>
+
+#include <osg/DisplaySettings>
+#include <osg/ArgumentParser>
 
 #include <gepetto/gui/dialog/dialogloadrobot.hh>
 #include <gepetto/gui/dialog/dialogloadenvironment.hh>
@@ -31,8 +30,6 @@
 #if GEPETTO_GUI_HAS_PYTHONQT
 # include <gepetto/gui/pythonwidget.hh>
 #endif
-
-namespace po = boost::program_options;
 
 namespace gepetto {
   namespace gui {
@@ -85,104 +82,66 @@ namespace gepetto {
 
     int Settings::fromArgv(const int argc, char * const argv[])
     {
-      typedef std::vector <std::string> Strings_t;
-
-      bool help = false;
       bool genAndQuit = false;
       int retVal = 0;
 
       // Declare the supported options.
-      po::options_description desc("Options");
-      desc.add_options()
-          ("help,h", "produce help message")
-          ("verbose,v", "activate verbose output")
-          ("generate-config-files,g", "generate configuration files and quit")
+      osg::ArgumentParser arguments((int*)&argc, (char**)argv);
+      osg::ApplicationUsage* au (arguments.getApplicationUsage());
+      au->setApplicationName(arguments.getApplicationName());
+      au->setCommandLineUsage(arguments.getApplicationName()+" [options]");
 
-          ("config-file,c",
-           po::value<std::string>(&configurationFile),
-           "set the configuration file (do not include .conf)")
+      osg::ApplicationUsage::Type help (arguments.readHelpType());
+      au->addCommandLineOption("-v or --verbose",  "Activate verbose output");
+      au->addCommandLineOption("-g or --generate-config-files", "generate configuration files and quit");
+      au->addCommandLineOption("-c or --config-file", "set the configuration file (do not include .conf)", configurationFile);
+      au->addCommandLineOption("--predefined-robots", "set the predefined robots configuration file (do not include .conf)", predifinedRobotConf);
+      au->addCommandLineOption("--predefined-environments", "set the predefined environments configuration file (do not include .conf)", predifinedEnvConf);
+      au->addCommandLineOption("--add-robot", "Add a robot (a list of comma sperated string)");
+      au->addCommandLineOption("--add-env", "Add an environment (a list of comma sperated string)");
+      au->addCommandLineOption("-p or --load-plugin", "load the plugin");
+      au->addCommandLineOption("-q or --load-pyplugin", "load the PythonQt module as a plugin");
+      au->addCommandLineOption("-P or --no-plugin", "do not load any plugin");
+      au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
+      au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
 
-          ("predefined-robots",
-           po::value<std::string>(&predifinedRobotConf),
-           "set the predefined robots configuration file (do not include .conf)")
+      osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+      ds->readCommandLine (arguments); // populate the help message.
 
-          ("predefined-environments",
-           po::value<std::string>(&predifinedEnvConf),
-           "set the predefined environments configuration file (do not include .conf)")
+      verbose =                 (arguments.read("-v") || arguments.read("--verbose"));
+      genAndQuit =              (arguments.read("-g") || arguments.read("--generate-config-files"));
+      noPlugin =                (arguments.read("-P") || arguments.read("--no-plugin"));
+      autoWriteSettings =       (arguments.read("-w") || arguments.read("--auto-write-settings"));
+      startGepettoCorbaServer = (arguments.read("--no-viewer-server"));
 
-          ("add-robot", po::value <Strings_t>(),
-           "Add a robot (a list of comma sperated string)")
+      std::string opt;
+      while (arguments.read ("--add-robot", opt))
+        addRobotFromString (opt);
+      while (arguments.read ("--add-env", opt))
+        addEnvFromString (opt);
+      while (arguments.read ("--load-plugin", opt))
+        addPlugin (QString::fromStdString(opt), !noPlugin);
+      while (arguments.read ("--load-pyplugin", opt))
+        addPyPlugin (QString::fromStdString(opt), !noPlugin);
 
-          ("add-env", po::value <Strings_t>(),
-           "Add an environment (a list of comma sperated string)")
+      if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
+      if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
+      if (arguments.read("--predefined-environments", predifinedEnvConf)) {}
 
-          ("load-plugin,p", po::value <Strings_t>(),
-           "load the plugin")
+      arguments.reportRemainingOptionsAsUnrecognized(osg::ArgumentParser::BENIGN);
+      if (arguments.errors(osg::ArgumentParser::CRITICAL)) {
+        arguments.writeErrorMessages(std::cout);
+        retVal = 2;
+      } else if (arguments.errors(osg::ArgumentParser::BENIGN)) {
+        arguments.writeErrorMessages(std::cout);
+      }
 
-          ("load-pyplugin,q", po::value <Strings_t>(),
-           "load the PythonQt module as a plugin")
+      if (genAndQuit && retVal < 1) retVal = 1;
 
-          ("no-plugin,P", "do not load any plugin")
-
-          ("auto-write-settings,w", "write the settings in the configuration file")
-
-          ("no-viewer-server", "do not start the Gepetto Viewer server")
-          ;
-
-      po::variables_map vm;
-      po::parsed_options parsed = po::command_line_parser(argc, argv)
-          .options(desc)
-          .allow_unregistered()
-          .run();
-      po::store(parsed, vm);
-      po::notify (vm);
-
-      Strings_t unrecognized =
-          po::collect_unrecognized (parsed.options, po::exclude_positional);
-
-      help = (vm.count ("help") > 0);
-      if (vm.count ("verbose") > 0) verbose = true;
-      if (vm.count ("no-plugin") > 0) noPlugin = true;
-      if (vm.count ("auto-write-settings") > 0) autoWriteSettings = true;
-      if (vm.count ("generate-config-files") > 0) genAndQuit = true;
-      if (vm.count ("no-viewer-server") > 0) startGepettoCorbaServer = false;
-      if (vm.count ("add-robot") > 0) {
-          const Strings_t& rbts = vm["add-robot"].as <Strings_t> ();
-          for (Strings_t::const_iterator it = rbts.begin();
-               it != rbts.end(); ++it)
-            addRobotFromString (*it);
-        }
-      if (vm.count ("add-env") > 0) {
-          const Strings_t& envs = vm["add-env"].as <Strings_t> ();
-          for (Strings_t::const_iterator it = envs.begin();
-               it != envs.end(); ++it)
-            addEnvFromString (*it);
-        }
-      if (vm.count ("load-plugin") > 0) {
-          const Strings_t& envs = vm["load-plugin"].as <Strings_t> ();
-          for (Strings_t::const_iterator it = envs.begin();
-               it != envs.end(); ++it)
-            addPlugin (QString::fromStdString(*it), !noPlugin);
-        }
-      if (vm.count ("load-pyplugin") > 0) {
-          const Strings_t& envs = vm["load-pyplugin"].as <Strings_t> ();
-          for (Strings_t::const_iterator it = envs.begin();
-               it != envs.end(); ++it)
-            addPyPlugin (QString::fromStdString(*it), !noPlugin);
-        }
-
-      if (help || genAndQuit) retVal = 1;
-      if (unrecognized.size () > 0) {
-          std::cout << "Unrecognized options:\n";
-          for (std::size_t i = 0; i < unrecognized.size (); ++i)
-            std::cout << unrecognized[i] << "\n";
-          std::cout << "\n";
-          help = true;
-          verbose = true;
-          retVal = 2;
-        }
-
-      if (help) std::cout << desc << std::endl;
+      if (help != osg::ApplicationUsage::NO_HELP) {
+        au->write(std::cout, help, 80, true);
+        if (retVal < 1) retVal = 1;
+      }
       if (verbose) print (std::cout) << std::endl;
       if (genAndQuit) writeSettings ();
 
