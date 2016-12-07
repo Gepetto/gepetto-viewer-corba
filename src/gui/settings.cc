@@ -106,6 +106,14 @@ namespace gepetto {
       au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
 
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+      // This should not be done here. Two osg built-in way:
+      // - Environment variable OSG_MULTI_SAMPLES  : a bit tedious
+      // - Command line option --samples           : slight better with an alias
+#ifndef DISABLE_SAMPLING
+      ds->setNumMultiSamples(4);
+#else
+      ds->setNumMultiSamples(0);
+#endif
       ds->readCommandLine (arguments); // populate the help message.
 
       verbose =                 (arguments.read("-v") || arguments.read("--verbose"));
