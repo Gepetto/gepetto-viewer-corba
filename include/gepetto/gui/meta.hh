@@ -5,6 +5,14 @@
 
 namespace gepetto {
   namespace gui {
+    template <typename T> struct convertTo {
+      static inline       T& from (      T& t) { return t; }
+      static inline const T& from (const T& t) { return t; }
+    };
+    template <> struct convertTo<std::string> {
+      static inline std::string from (const QString& in) { return in.toStdString(); };
+    };
+
     template <typename T> struct Traits;
 
     template <> struct Traits <CORBA::String_var> {

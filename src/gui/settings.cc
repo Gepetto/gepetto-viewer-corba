@@ -253,24 +253,14 @@ namespace gepetto {
         foreach (QString name, robot.childGroups()) {
           robot.beginGroup(name);
           QString robotName = robot.value("RobotName", name).toString();
-          QDir packagePath (robot.value("PackagePath", "").toString());
-          QString meshDirectory;
-          if (packagePath.exists()) {
-            QDir meshDir = packagePath; meshDir.cdUp();
-            meshDirectory = robot.value("MeshDirectory", meshDir.absolutePath()).toString();
-          } else {
-            meshDirectory = robot.value("MeshDirectory", "").toString();
-          }
           DialogLoadRobot::addRobotDefinition(
               name,
               robotName,
               robot.value("RootJointType", "freeflyer").toString(),
               robot.value("ModelName", robotName).toString(),
-              robot.value("Package", packagePath.dirName()).toString(),
-              packagePath.path(),
+              robot.value("Package", "").toString(),
               robot.value("URDFSuffix", "").toString(),
-              robot.value("SRDFSuffix", "").toString(),
-              meshDirectory
+              robot.value("SRDFSuffix", "").toString()
               );
           robot.endGroup();
         }
@@ -290,23 +280,13 @@ namespace gepetto {
         foreach (QString name, env.childGroups()) {
           env.beginGroup(name);
           QString envName = env.value("EnvironmentName", name).toString();
-          QDir packagePath (env.value("PackagePath", "").toString());
-          QString meshDirectory;
-          if (packagePath.exists()) {
-            QDir meshDir = packagePath; meshDir.cdUp();
-            meshDirectory = env.value("MeshDirectory", meshDir.absolutePath()).toString();
-          } else {
-            meshDirectory = env.value("MeshDirectory", "").toString();
-          }
           DialogLoadEnvironment::addEnvironmentDefinition(
               name,
               envName,
-              env.value("Package", packagePath.dirName()).toString(),
-              packagePath.path(),
+              env.value("Package", "").toString(),
               env.value("URDFFilename").toString(),
 	      env.value("URDFSuffix").toString(),
-	      env.value("SRDFSuffix").toString(),
-              meshDirectory
+	      env.value("SRDFSuffix").toString()
               );
           env.endGroup();
         }
@@ -352,10 +332,8 @@ namespace gepetto {
           robot.setValue("ModelName", rd.modelName_);
           robot.setValue("RootJointType", rd.rootJointType_);
           robot.setValue("Package", rd.package_);
-          robot.setValue("PackagePath", rd.packagePath_);
           robot.setValue("URDFSuffix", rd.urdfSuf_);
           robot.setValue("SRDFSuffix", rd.srdfSuf_);
-          robot.setValue("MeshDirectory", rd.mesh_);
           robot.endGroup();
         }
       log (QString("Wrote configuration file ") + robot.fileName());
@@ -375,9 +353,7 @@ namespace gepetto {
           env.beginGroup(ed.name_);
           env.setValue("RobotName", ed.envName_);
           env.setValue("Package", ed.package_);
-          env.setValue("PackagePath", ed.packagePath_);
           env.setValue("URDFFilename", ed.urdfFilename_);
-          env.setValue("MeshDirectory", ed.mesh_);
           env.endGroup();
         }
       log (QString ("Wrote configuration file ") + env.fileName());
@@ -421,14 +397,14 @@ namespace gepetto {
     {
       QString rbt = QString::fromStdString(rbtStr);
       QStringList split = rbt.split(",", QString::KeepEmptyParts);
-      if (split.size() != 9) {
-          logError ("Robot string is not of length 9");
+      if (split.size() != 7) {
+          logError ("Robot string is not of length 7");
           logError (rbt);
           return;
         }
       DialogLoadRobot::addRobotDefinition(split[0], split[1],
           split[2].toLower(), split[3], split[4],
-          split[5], split[6], split[7], split[8]);
+          split[5], split[6]);
     }
 
     void Settings::addEnvFromString (const std::string& envStr)
@@ -441,7 +417,7 @@ namespace gepetto {
           return;
         }
       DialogLoadEnvironment::addEnvironmentDefinition(split[0],
-	  split[1], split[2], split[3], split[4], split[5], split[6], split[7]);
+	  split[1], split[2], split[3], split[4], split[5]);
     }
 
     void Settings::addPlugin (const QString& plg, bool init)

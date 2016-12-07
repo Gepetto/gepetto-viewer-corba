@@ -49,7 +49,7 @@ namespace gepetto {
 
         OSGWidget( WindowsManagerPtr_t wm,
                   const std::string & name,
-                  MainWindow* parent = 0,
+                  MainWindow* parent,
                   Qt::WindowFlags f = 0,
                   osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::Viewer::ThreadPerContext );
 
@@ -59,17 +59,13 @@ namespace gepetto {
 
 signals:
       void clicked (QString name, QVector3D positionInWorldFrame, QKeyEvent* event);
-        void requestMotion (graphics::NodePtr_t node, graphics::Node::Arrow direction,
-            float speed);
 
         public slots:
         /// Load an urdf file in the viewer.
         /// \param robotName name of the robot
         /// \param udrf_file_path path to the urdf file
-        /// \param meshDataRootDir path to the mesh directory
           void loadURDF (const QString robotName,
-              const QString urdf_file_path,
-              const QString meshDataRootDir);
+              const QString urdf_file_path);
 
         /// Replace the camera at her home position.
         virtual void onHome();

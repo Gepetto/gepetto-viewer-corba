@@ -72,7 +72,6 @@ namespace gepetto {
       view_->setModel(model_);
       view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-      connect (main, SIGNAL(refresh()), SLOT(reloadBodyTree()));
       connect (view_, SIGNAL (customContextMenuRequested(QPoint)), SLOT(customContextMenu(QPoint)));
 
       toolBox_->removeItem(0);
@@ -116,22 +115,6 @@ namespace gepetto {
       return selectBodyByName (QString::fromStdString (bodyName));
     }
 
-    void BodyTreeWidget::reloadBodyTree()
-    {
-      model_->clear();
-      std::vector <std::string> sceneNames = osg_->getSceneList ();
-      for (unsigned int i = 0; i < sceneNames.size(); ++i) {
-        graphics::GroupNodePtr_t group = osg_->getGroup(sceneNames[i]);
-        if (!group) continue;
-        addBodyToTree(group);
-      }
-    }
-
-    void BodyTreeWidget::addBodyToTree(graphics::GroupNodePtr_t group)
-    {
-      model_->appendRow(new BodyTreeItem (this, group));
-    }
-
     QList<BodyTreeItem*> BodyTreeWidget::selectedBodies() const
     {
       QList<BodyTreeItem*> list;
@@ -171,9 +154,9 @@ namespace gepetto {
     }
 
     GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setTransparency, int, int, setAlpha)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, CORBA::String_var, setVisibility)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, CORBA::String_var, setWireFrameMode)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, gepetto::corbaserver::Color_var, setColor)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, gepetto::corbaserver::Position_var, setScale)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, std::string, setVisibility)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, std::string, setWireFrameMode)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, WindowsManager::Color_t, setColor)
+    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, int, setScale)
   }
 }

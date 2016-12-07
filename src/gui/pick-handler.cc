@@ -171,6 +171,10 @@ namespace gepetto {
     void PickHandler::bodyTreeCurrentChanged (const QModelIndex &current,
         const QModelIndex &/*previous*/)
     {
+      if (!current.isValid()) {
+        select (graphics::NodePtr_t());
+        return;
+      }
       BodyTreeItem *item = dynamic_cast <BodyTreeItem*> (
           qobject_cast <const QStandardItemModel*>
           (current.model())->itemFromIndex(current)

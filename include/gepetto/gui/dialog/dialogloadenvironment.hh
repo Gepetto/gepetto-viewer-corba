@@ -19,27 +19,23 @@ namespace gepetto {
         ~DialogLoadEnvironment();
 
         struct EnvironmentDefinition {
-          QString name_, envName_, urdfFilename_, mesh_, package_, packagePath_, urdfSuf_,
+          QString name_, envName_, urdfFilename_, package_, urdfSuf_,
 	    srdfSuf_;
           EnvironmentDefinition () {}
           EnvironmentDefinition (QString name, QString envName,
-	    QString package, QString packagePath,
-	    QString urdfFilename, QString urdfSuffix, QString srdfSuffix,
-	    QString meshDirectory) :
+	    QString package,
+	    QString urdfFilename, QString urdfSuffix, QString srdfSuffix) :
             name_(name), envName_ (envName), urdfFilename_(urdfFilename),
-            mesh_(meshDirectory), package_ (package), packagePath_ (packagePath),
-	    urdfSuf_(urdfSuffix), srdfSuf_(srdfSuffix)
+            package_ (package), urdfSuf_(urdfSuffix), srdfSuf_(srdfSuffix)
           {}
         };
 
         static void addEnvironmentDefinition (QString name,
             QString envName,
             QString package,
-            QString packagePath,
             QString urdfFilename,
 	    QString urdfSuffix,
-	    QString srdfSuffix,
-            QString meshDirectory);
+	    QString srdfSuffix);
         static QList <EnvironmentDefinition> getEnvironmentDefinitions ();
 
         EnvironmentDefinition getSelectedDescription () {
@@ -48,8 +44,6 @@ namespace gepetto {
 
         private slots:
           void accept();
-        void meshSelect();
-        void packagePathSelect();
         void envSelect(int index);
 
       private:

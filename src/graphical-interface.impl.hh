@@ -31,11 +31,14 @@ class GraphicalInterface :
 private:
     WindowsManagerPtr_t windowsManager_;
     typedef gepetto::Error Error;
-    typedef CORBA::ULong WindowID;
     typedef graphics::WindowsManager::value_type value_type;
+    typedef gepetto::corbaserver::Transform_slice Transform_slice;
 
 public:
+    typedef CORBA::ULong WindowID;
+    typedef gepetto::corbaserver::Transform Transform;
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
+    typedef gepetto::corbaserver::Position Position;
     typedef gepetto::corbaserver::Color Color;
     typedef gepetto::corbaserver::Names_t Names_t;
 
@@ -59,20 +62,20 @@ public:
   virtual void createSceneWithFloor(const char* sceneNameCorba)  throw (Error);
   virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId)  throw (Error);
 
-  virtual bool attachCameraToNode(const char* nodeName, const WindowID windowId);
-  virtual bool detachCamera(const WindowID windowId);
+  virtual bool attachCameraToNode(const char* nodeName, const WindowID windowId) throw (Error);
+  virtual bool detachCamera(const WindowID windowId) throw (Error);
 
-  virtual bool nodeExists(const char* nodeName);
+  virtual bool nodeExists(const char* nodeName) throw (Error);
 
   virtual bool addFloor(const char* floorName) throw (Error);
 
-  virtual bool addBox(const char* boxName, float boxSize1, float boxSize2, float boxSize3, const value_type* color) throw (Error);
+  virtual bool addBox(const char* boxName, const float boxSize1, const float boxSize2, const float boxSize3, const Color color) throw (Error);
 
-  virtual bool addCapsule(const char* capsuleName, float radius, float height, const value_type* color) throw (Error);
+  virtual bool addCapsule(const char* capsuleName, float radius, float height, const Color color) throw (Error);
 
-  virtual  bool addArrow (const char* arrowNameCorba, float radius, float length,const value_type* colorCorba) throw (Error);
+  virtual  bool addArrow (const char* arrowNameCorba, float radius, float length,const Color colorCorba) throw (Error);
 
-  virtual bool addRod (const char* rodNameCorba, const value_type* colorCorba, const float radius, const float length,short maxCapsule) throw (Error);
+  virtual bool addRod (const char* rodNameCorba, const Color colorCorba, const float radius, const float length,short maxCapsule) throw (Error);
 
   virtual bool resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error);
 
@@ -80,29 +83,27 @@ public:
 
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
-  virtual bool addCone(const char* coneName, float radius, float height, const value_type* color) throw (Error);
+  virtual bool addCone(const char* coneName, float radius, float height, const Color color) throw (Error);
 
-  virtual bool addCylinder(const char* cylinderName, float radius, float height, const value_type* color) throw (Error);
+  virtual bool addCylinder(const char* cylinderName, float radius, float height, const Color color) throw (Error);
 
-  virtual bool addSphere(const char* sphereName, float radius, const value_type* color) throw (Error);
+  virtual bool addSphere(const char* sphereName, float radius, const Color color) throw (Error);
 
-  virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const value_type* color) throw (Error);
+  virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const Color color) throw (Error);
 
-  virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const value_type* color) throw (Error);
+  virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const Color color) throw (Error);
 
-  virtual bool addCurve(const char* curveName, const PositionSeq& pos, const value_type* color) throw (Error);
+  virtual bool addCurve(const char* curveName, const PositionSeq& pos, const Color color) throw (Error);
 
   virtual bool setCurveMode(const char* curveName, const char* modeName) throw (Error);
 
-  virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const value_type* color) throw (Error);
-  virtual bool setTexture (const char* nodeName, const char* filename)
-    throw (Error);
+  virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const Color color) throw (Error);
+  virtual bool setTexture (const char* nodeName, const char* filename) throw (Error);
+  virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const Color color) throw (Error);
 
-  virtual bool addTriangleFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* color) throw (Error);
+  virtual bool addXYZaxis (const char* nodeNameCorba, const Color colorCorba, float radius, float sizeAxis) throw (Error);
 
-  virtual bool addXYZaxis (const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis) throw (Error);
-
-  virtual bool createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba) throw(Error);
+  virtual bool createRoadmap(const char* nameCorba,const Color colorNodeCorba, float radius, float sizeAxis, const Color colorEdgeCorba) throw(Error);
 
   virtual bool addEdgeToRoadmap(const char* nameRoadmap, const value_type* posFrom, const value_type* posTo) throw(Error);
 
@@ -131,7 +132,7 @@ public:
   virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
-  virtual bool getStaticTransform (const char* nodeName, ::gepetto::corbaserver::Transform transform) throw (Error);
+  virtual Transform_slice* getStaticTransform (const char* nodeName) throw (Error);
   virtual bool setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) throw (Error);
 
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
@@ -150,10 +151,10 @@ public:
   virtual bool writeBlenderScript (const char* filename, const Names_t& nodeNames) throw (Error);
   virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
   virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
-  virtual gepetto::corbaserver::floatSeq* getNodeGlobalTransform(const char* nodeName) throw (Error);
-	virtual void deleteNode (const char* nodeName, bool all) throw (Error);
-  virtual bool setBackgroundColor1(const WindowID windowId,const value_type* colorCorba) throw (Error);
-  virtual bool setBackgroundColor2(const WindowID windowId,const value_type* colorCorba) throw (Error);
+  virtual Transform_slice* getNodeGlobalTransform(const char* nodeName) throw (Error);
+  virtual void deleteNode (const char* nodeName, bool all) throw (Error);
+  virtual bool setBackgroundColor1(const WindowID windowId,const Color colorCorba) throw (Error);
+  virtual bool setBackgroundColor2(const WindowID windowId,const Color colorCorba) throw (Error);
     
 }; // end of class
 

@@ -19,6 +19,8 @@ void setupApplication ()
   QCoreApplication::setApplicationVersion("@PROJECT_VERSION@");
 
   QIcon::setThemeName("oxygen");
+
+  qRegisterMetaType<std::string>("std::string");
 }
 
 int main(int argc, char *argv[])

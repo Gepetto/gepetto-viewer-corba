@@ -13,722 +13,382 @@ namespace graphics {
   namespace corbaServer {
     namespace impl {
       namespace {
+        typedef GraphicalInterface::WindowID WindowID;
+        using gepetto::corbaserver::Names_t;
+        using gepetto::corbaserver::Transform_slice;
+
         template <typename Input, typename Output>
           void to (const Input& in, Output& out) {
             for (CORBA::ULong i = 0; i < in.length(); ++i)
               out.push_back ((typename Output::value_type)in[i]);
           }
+
+        template <typename Iterator>
+        Names_t* toNames_t(Iterator begin, const Iterator& end)
+        {
+          ULong size = (ULong) std::distance (begin, end);
+          char** nameList = Names_t::allocbuf(size);
+          Names_t *names = new Names_t (size, size, nameList);
+          for (ULong i = 0; i < size; ++i)
+          {
+            const std::string& name = *begin;
+            nameList [i] = (char*) malloc (sizeof(char)*(name.length ()+1));
+            strcpy (nameList [i], name.c_str ());
+            ++begin;
+          }
+          return names;
+        }
+
+        enum ArgType { STRING, STRING_LIST, COLOR,
+          TRANSFORM, POSITION, POSITION_SEQ,
+          FLOAT, SHORT, LONG, WINDOW_ID, BOOL, VOID,
+          GLMODE
+        };
+
+        template <int what> struct traits {};
+        template <> struct traits<COLOR> {
+          typedef       WindowsManager::Color_t   Out_t;
+          typedef const GraphicalInterface::Color In_t;
+          static Out_t op (In_t color) { return Out_t (color[0], color[1], color[2], color[3]); }
+        };
+        template <> struct traits<TRANSFORM> {
+          typedef const GraphicalInterface::Transform  In_t;
+          typedef       Configuration  Out_t;
+          typedef       Transform_slice* Ret_t;
+          static Out_t op  (In_t in) { return Out_t(in, false); /* false means (w,x,y,z) -> (x,y,z,w) */ }
+          static Ret_t ret (const Out_t& in) {
+            Ret_t ret = new GraphicalInterface::Transform();
+            // dofArray->length(7);
+            for(int i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
+            // for(int i=0; i<3; i++) ret[(ULong)i+3] = (float)in.quat[i];
+            ret[(ULong)3] = (float)in.quat[3]; // W
+            for(int i=0; i<3; i++) ret[(ULong)i+4] = (float)in.quat[i]; // XYZ
+            return ret;
+          }
+        };
+        template <> struct traits<POSITION> {
+          typedef       osgVector3    Out_t;
+          typedef const GraphicalInterface::Position In_t;
+          static Out_t op (In_t pos) { return Out_t (pos[0], pos[1], pos[2]); }
+        };
+        template <> struct traits<POSITION_SEQ> {
+          typedef const GraphicalInterface::PositionSeq& In_t;
+          typedef       ::osg::Vec3ArrayRefPtr           Out_t;
+          static inline Out_t op (In_t in) {
+            Out_t out = new ::osg::Vec3Array;
+            for (CORBA::ULong i = 0; i < in.length (); ++i)
+              out->push_back (::osg::Vec3 (in[i][0],in[i][1],in[i][2]));
+            return out;
+          }
+        };
+        template <> struct traits<STRING> {
+          typedef std::string Out_t;
+          typedef const char* In_t;
+          static Out_t op (In_t in) { return Out_t (in); }
+        };
+        template <> struct traits<STRING_LIST> {
+          typedef std::vector<std::string> Out_t;
+          typedef const Names_t& In_t;
+          typedef Names_t* Ret_t;
+          static Out_t op (In_t in) { Out_t nodes; to (in, nodes); return nodes; }
+          static Ret_t ret (const Out_t& in) { return toNames_t(in.begin(), in.end()); }
+        };
+        template <> struct traits<FLOAT> {
+          typedef const float& Out_t;
+          typedef const float  In_t;
+          typedef const float& OpIn_t;
+          static const float& op (const float& in) { return in; }
+          static       float& op (      float& in) { return in; }
+        };
+        template <> struct traits<SHORT> {
+          typedef const short& Out_t;
+          typedef const short  In_t;
+          static const short& op (const short& in) { return in; }
+          static       short& op (      short& in) { return in; }
+        };
+        template <> struct traits<LONG> {
+          typedef int Out_t;
+          typedef CORBA::Long  In_t;
+          static int op (const In_t& in) { return in; }
+        };
+        template <> struct traits<WINDOW_ID> {
+          typedef       WindowsManager::WindowID  Out_t;
+          typedef const WindowID  In_t;
+          typedef       WindowID  Ret_t;
+          static Out_t op  (In_t & in) { return in; }
+          static Ret_t ret (Out_t  in) { return in; }
+        };
+        template <> struct traits<BOOL> {
+          typedef bool In_t;
+          typedef In_t Out_t;
+          typedef In_t Ret_t;
+          static Out_t op (In_t in) { return in; }
+          static Ret_t ret (Out_t in) { return in; }
+        };
+        template <> struct traits<VOID> {
+          typedef void Ret_t;
+        };
+        template <> struct traits<GLMODE> {
+          typedef       GLenum Out_t;
+          typedef const char*  In_t;
+          static Out_t op (In_t modeName) {
+              if      (strcasecmp (modeName, "lines")          == 0) return GL_LINES;
+              else if (strcasecmp (modeName, "line_strip")     == 0) return GL_LINE_STRIP;
+              else if (strcasecmp (modeName, "line_loop")      == 0) return GL_LINE_LOOP;
+              else if (strcasecmp (modeName, "polygon")        == 0) return GL_POLYGON;
+              else if (strcasecmp (modeName, "quads")          == 0) return GL_QUADS;
+              else if (strcasecmp (modeName, "quad_strip")     == 0) return GL_QUAD_STRIP;
+              else if (strcasecmp (modeName, "triangle_strip") == 0) return GL_TRIANGLE_STRIP;
+              else if (strcasecmp (modeName, "triangles")      == 0) return GL_TRIANGLES;
+              else if (strcasecmp (modeName, "triangle_fan")   == 0) return GL_TRIANGLE_FAN;
+              else throw gepetto::Error ("Unknown mode name");
+        }
+        };
       }
 
-      using gepetto::Names_t;
+#define CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
+#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
+
+#define IIF(c) PRIMITIVE_CAT(IIF_, c)
+#define IIF_0(t, ...) __VA_ARGS__
+#define IIF_1(t, ...) t
+
+#define PROBE(x) x, 1
+
+#define CHECK(...) CHECK_N(__VA_ARGS__, 0, 0)
+#define CHECK_N(x, n, ...) n
+
+#define TYPE_VOID () // Detect VOID
+
+#define TYPE_PROBE(type)            TYPE_PROBE_PROXY( TYPE_##type )  // concatenate prefix with user name
+#define TYPE_PROBE_PROXY(val)       TYPE_PROBE_PRIMIVIE(val)         // expand arguments
+#define TYPE_PROBE_PRIMIVIE(x)      TYPE_PROBE_COMBINE_ x            // merge
+#define TYPE_PROBE_COMBINE_()       PROBE(~)                         // if merge successful, expand to probe
+
+#define IS_VOID(type) CHECK(TYPE_PROBE(type))
+
+
+#define WRITE_RET_T(T)  traits<T>::Ret_t
+#define WRITE_RET_OP(T) IIF( IS_VOID(T) ) ( ;/* nothing */, return traits<T>::ret)
+
+#define WRITE_INPUT_ARG(T, n) traits< T >::In_t arg##n
+#define WRITE_INPUT_ARGS_1(T0               ) WRITE_INPUT_ARG(T0, 0)
+#define WRITE_INPUT_ARGS_2(T0,T1            ) WRITE_INPUT_ARGS_1(T0            ), WRITE_INPUT_ARG(T1,1)
+#define WRITE_INPUT_ARGS_3(T0,T1,T2         ) WRITE_INPUT_ARGS_2(T0,T1         ), WRITE_INPUT_ARG(T2,2)
+#define WRITE_INPUT_ARGS_4(T0,T1,T2,T3      ) WRITE_INPUT_ARGS_3(T0,T1,T2      ), WRITE_INPUT_ARG(T3,3)
+#define WRITE_INPUT_ARGS_5(T0,T1,T2,T3,T4   ) WRITE_INPUT_ARGS_4(T0,T1,T2,T3   ), WRITE_INPUT_ARG(T4,4)
+#define WRITE_INPUT_ARGS_6(T0,T1,T2,T3,T4,T5) WRITE_INPUT_ARGS_5(T0,T1,T2,T3,T4), WRITE_INPUT_ARG(T5,5)
+
+#define WRITE_OP_ARG(T,n) traits<T>::op(arg##n)
+#define WRITE_OP_ARGS_1(T0               ) WRITE_OP_ARG(T0,0)
+#define WRITE_OP_ARGS_2(T0,T1            ) WRITE_OP_ARGS_1(T0            ), WRITE_OP_ARG(T1,1)
+#define WRITE_OP_ARGS_3(T0,T1,T2         ) WRITE_OP_ARGS_2(T0,T1         ), WRITE_OP_ARG(T2,2)
+#define WRITE_OP_ARGS_4(T0,T1,T2,T3      ) WRITE_OP_ARGS_3(T0,T1,T2      ), WRITE_OP_ARG(T3,3)
+#define WRITE_OP_ARGS_5(T0,T1,T2,T3,T4   ) WRITE_OP_ARGS_4(T0,T1,T2,T3   ), WRITE_OP_ARG(T4,4)
+#define WRITE_OP_ARGS_6(T0,T1,T2,T3,T4,T5) WRITE_OP_ARGS_5(T0,T1,T2,T3,T4), WRITE_OP_ARG(T5,5)
+
+#define BIND_TO_WINDOWS_MANAGER_0(Ret, Func      )                             \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (                  ) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func (                ));                  \
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_1(Ret, Func, T0)                             \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_1(T0)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_1(T0) ));                  \
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_2(Ret, Func, T0, T1)     \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_2(T0, T1)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_2(T0, T1) ));\
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_3(Ret, Func, T0, T1, T2)     \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_3(T0, T1, T2)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_3(T0, T1, T2) ));\
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_4(Ret, Func, T0, T1, T2, T3)     \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_4(T0, T1, T2, T3)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_4(T0, T1, T2, T3) ));\
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_5(Ret, Func, T0, T1, T2, T3, T4)     \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_5(T0, T1, T2, T3, T4)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_5(T0, T1, T2, T3, T4) ));\
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
+
+#define BIND_TO_WINDOWS_MANAGER_6(Ret, Func, T0,T1,T2,T3,T4,T5)     \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_6(T0,T1,T2,T3,T4,T5)) throw (Error)          \
+      {                                                                        \
+          try {                                                                \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_6(T0,T1,T2,T3,T4,T5) ));\
+          } catch (const std::exception& exc) {                                \
+              throw Error (exc.what ());                                       \
+          }                                                                    \
+      }
 
       GraphicalInterface::GraphicalInterface (corbaServer::Server* server) :
 	windowsManager_ (server->windowsManager ())
       {
       }
 
-      bool GraphicalInterface::setRate (CORBA::Long rate) throw (Error)
-      {
-	try {
-          return windowsManager_->setRate (rate);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, setRate, LONG)
 
-      GraphicalInterface::WindowID GraphicalInterface::createWindow (const char* windowNameCorba)
-	throw (Error)
-      {
-	try {
-          return windowsManager_->createWindow (windowNameCorba);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(WINDOW_ID, createWindow, STRING)
 
-      GraphicalInterface::WindowID GraphicalInterface::getWindowID (const char* windowNameCorba)
-	throw (Error)
-      {
-	try {
-          return windowsManager_->getWindowID (windowNameCorba);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(WINDOW_ID, getWindowID, STRING)
 
-      void GraphicalInterface::refresh () throw (Error)
-      {
-	try {
-          return windowsManager_->refresh ();
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_0(VOID, refresh)
 
-      void GraphicalInterface::createScene (const char* sceneNameCorba)
-          throw (Error)
-      {
-	try {
-          return windowsManager_->createScene (sceneNameCorba);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(VOID, createScene, STRING)
 
-      void GraphicalInterface::createSceneWithFloor (const char* sceneNameCorba)
-          throw (Error)
-          {
-              try {
-                  return windowsManager_->createSceneWithFloor (sceneNameCorba);
-              } catch (const std::exception& exc) {
-                  throw Error (exc.what ());
-              }
-          }
+      BIND_TO_WINDOWS_MANAGER_1(VOID, createSceneWithFloor, STRING)
 
-      bool GraphicalInterface::addSceneToWindow (const char* sceneNameCorba,
-              WindowID windowId) throw (Error)
-      {
-          try {
-              return windowsManager_->addSceneToWindow (sceneNameCorba, windowId);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, addSceneToWindow, STRING, WINDOW_ID)
 
-      bool GraphicalInterface::attachCameraToNode(const char* nodeName, const WindowID windowId)
-      {
-          try {
-              return windowsManager_->attachCameraToNode (nodeName, windowId);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, attachCameraToNode, STRING, WINDOW_ID)
 
-      bool GraphicalInterface::detachCamera(const WindowID windowId)
-      {
-          try {
-              return windowsManager_->detachCamera (windowId);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, detachCamera, WINDOW_ID)
 
-      bool GraphicalInterface::nodeExists(const char* nodeName)
-      {
-	try {
-	  return windowsManager_->nodeExists(nodeName);
-	} catch (const std::exception& exc) {
-	  throw Error(exc.what());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, nodeExists, STRING)
 
-      bool GraphicalInterface::addFloor (const char* floorNameCorba)
-          throw (Error)
-      {
-          try {
-            return windowsManager_->addFloor (floorNameCorba);
-          } catch (const std::exception& exc) {
-            throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, addFloor, STRING)
 
+      BIND_TO_WINDOWS_MANAGER_5(BOOL, addBox    , STRING, FLOAT, FLOAT, FLOAT, COLOR)
 
-      bool GraphicalInterface::addBox (const char* boxNameCorba,
-				       const float boxSize1,
-				       const float boxSize2,
-				       const float boxSize3,
-                       const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addBox (boxNameCorba, boxSize1, boxSize2, boxSize3,
-                      colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addCapsule, STRING, FLOAT, FLOAT, COLOR)
 
-      bool GraphicalInterface::addCapsule (const char* capsuleNameCorba,
-              const float radius,
-              const float height,
-              const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addCapsule (capsuleNameCorba, radius, height,
-                      colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addArrow  , STRING, FLOAT, FLOAT, COLOR)
 
-      bool GraphicalInterface::addArrow (const char* arrowNameCorba,
-              float radius,
-              float length,
-              const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addArrow (arrowNameCorba, radius, length,
-                      colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_5(BOOL, addRod    , STRING, COLOR, FLOAT, FLOAT, SHORT)
 
-      bool GraphicalInterface::addRod (const char* rodNameCorba,
-              const value_type* colorCorba,
-              const float radius,
-              const float length,
-              short maxCapsule
-              ) throw (Error)
-      {
-          try {
-              return windowsManager_->addRod (rodNameCorba, colorCorba,radius, length,
-                      maxCapsule);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, resizeCapsule, STRING, FLOAT)
 
-      bool GraphicalInterface::resizeCapsule(const char* capsuleNameCorba, float newHeight) throw(Error){
-          try{
-              return windowsManager_->resizeCapsule(capsuleNameCorba,newHeight);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, resizeArrow, STRING, FLOAT, FLOAT)
 
-      bool GraphicalInterface::resizeArrow(const char* arrowNameCorba, float newRadius, float newLength) throw(Error){
-          try{
-              return windowsManager_->resizeArrow(arrowNameCorba,newRadius, newLength);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, addMesh, STRING, STRING)
 
-      bool GraphicalInterface::addMesh (const char* meshNameCorba,
-					const char* meshPathCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addMesh (meshNameCorba, meshPathCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addCone, STRING, FLOAT, FLOAT, COLOR)
 
-      bool GraphicalInterface::addCone (const char* coneNameCorba,
-					const float radius, const float height,
-					const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addCone (coneNameCorba, radius, height,
-                      colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setTexture, STRING, STRING)
 
-      bool GraphicalInterface::addCylinder (const char* cylinderNameCorba,
-					    const float radius,
-					    const float height,
-                        const value_type* colorCorba)
-          throw (Error)
-      {
-          try {
-              return windowsManager_->addCylinder (cylinderNameCorba, radius, height,
-                      colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addCylinder, STRING, FLOAT, FLOAT, COLOR)
 
-      bool GraphicalInterface::addSphere (const char* sphereNameCorba,
-					  const float radius,
-                      const value_type* colorCorba)
-          throw (Error)
-      {
-          try {
-              return windowsManager_->addSphere (sphereNameCorba, radius, colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, addSphere, STRING, FLOAT, COLOR)
 
-      bool GraphicalInterface::addLight (const char* lightNameCorba,
-                                         const WindowID windowId,
-                                         const float radius,
-                                         const value_type* colorCorba)
-          throw (Error)
-      {
-          try {
-              return windowsManager_->addLight (lightNameCorba, windowId,
-                  radius, colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addLight, STRING, WINDOW_ID, FLOAT, COLOR)
 
-      bool GraphicalInterface::addLine (const char* lineNameCorba,
-					const value_type* posCorba1,
-					const value_type* posCorba2,
-					const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addLine ( lineNameCorba, posCorba1, posCorba2, colorCorba) ;
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addLine, STRING, POSITION, POSITION, COLOR)
 
-      bool GraphicalInterface::addCurve (const char* curveNameCorba,
-					 const PositionSeq& pos,
-					 const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->addCurve ( curveNameCorba, pos, colorCorba) ;
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, addCurve, STRING, POSITION_SEQ, COLOR)
 
-      bool GraphicalInterface::setCurveMode(const char* curveName,
-          const char* modeName) throw (Error)
-      {
-          try {
-              GLenum mode;
-              if      (strcasecmp (modeName, "lines") == 0) mode = GL_LINES;
-              else if (strcasecmp (modeName, "line_strip") == 0) mode = GL_LINE_STRIP;
-              else if (strcasecmp (modeName, "line_loop") == 0) mode = GL_LINE_LOOP;
-              else if (strcasecmp (modeName, "polygon") == 0) mode = GL_POLYGON;
-              else if (strcasecmp (modeName, "quads") == 0) mode = GL_QUADS;
-              else if (strcasecmp (modeName, "quad_strip") == 0) mode = GL_QUAD_STRIP;
-              else if (strcasecmp (modeName, "triangle_strip") == 0) mode = GL_TRIANGLE_STRIP;
-              else if (strcasecmp (modeName, "triangles") == 0) mode = GL_TRIANGLES;
-              else if (strcasecmp (modeName, "triangle_fan") == 0) mode = GL_TRIANGLE_FAN;
-              else throw Error ("Unknown mode name");
-              return windowsManager_->setCurveMode (curveName, mode) ;
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setCurveMode, STRING, GLMODE)
 
-      bool GraphicalInterface::addTriangleFace (const char* faceNameCorba,
-						const value_type* posCorba1,
-						const value_type* posCorba2,
-						const value_type* posCorba3,
-						const value_type* colorCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->addTriangleFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, colorCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_5(BOOL, addTriangleFace, STRING, POSITION, POSITION, POSITION, COLOR)
 
-      bool GraphicalInterface::addSquareFace (const char* faceNameCorba,
-					      const value_type* posCorba1,
-					      const value_type* posCorba2,
-					      const value_type* posCorba3,
-					      const value_type* posCorba4,
-					      const value_type* colorCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->addSquareFace ( faceNameCorba, posCorba1, posCorba2, posCorba3, posCorba4, colorCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_6(BOOL, addSquareFace, STRING, POSITION, POSITION, POSITION, POSITION, COLOR)
 
-      bool GraphicalInterface::setTexture (const char* nodeName,
-					   const char* filename) throw (Error)
-      {
-	try {
-	  return windowsManager_->setTexture (nodeName, filename);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::addXYZaxis(const char* nodeNameCorba, const value_type* colorCorba, float radius, float sizeAxis)
-          throw (Error)
-      {
-          try {
-              return windowsManager_->addXYZaxis (nodeNameCorba,colorCorba,radius,sizeAxis);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(BOOL, addXYZaxis, STRING, COLOR, FLOAT, FLOAT)
 
       /** initialise the roadmap (graphical roadmap)*/
-      bool GraphicalInterface::createRoadmap(const char* nameCorba,const value_type* colorNodeCorba, float radius, float sizeAxis, const value_type* colorEdgeCorba) throw(Error){
-          try {
-              return windowsManager_->createRoadmap (nameCorba,colorNodeCorba,radius,sizeAxis,colorEdgeCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_5(BOOL, createRoadmap, STRING, COLOR, FLOAT, FLOAT, COLOR)
 
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, addEdgeToRoadmap, STRING, POSITION, POSITION)
 
-      bool GraphicalInterface::addEdgeToRoadmap(const char* nameRoadmap, const value_type* posFrom, const value_type* posTo) throw(Error){
-          try {
-              return windowsManager_->addEdgeToRoadmap (nameRoadmap,posFrom,posTo);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, addNodeToRoadmap, STRING, TRANSFORM)
 
-      bool GraphicalInterface::addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration) throw(Error){
-          try {
-              return windowsManager_->addNodeToRoadmap (nameRoadmap,configuration);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_0(STRING_LIST, getNodeList)
+      BIND_TO_WINDOWS_MANAGER_1(STRING_LIST, getGroupNodeList, STRING)
+      BIND_TO_WINDOWS_MANAGER_0(STRING_LIST, getSceneList)
+      BIND_TO_WINDOWS_MANAGER_0(STRING_LIST, getWindowList)
 
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, createGroup, STRING)
 
-      gepetto::corbaserver::Names_t* fromStringVector(const std::vector<std::string>& input)
-      {
-	ULong size = (ULong) input.size ();
-          char** nameList = gepetto::corbaserver::Names_t::allocbuf(size);
-          gepetto::corbaserver::Names_t *jointNames = new gepetto::corbaserver::Names_t (size, size, nameList);
-          for (std::size_t i = 0; i < input.size (); ++i)
-          {
-              std::string name = input[i];
-              nameList [i] =
-                      (char*) malloc (sizeof(char)*(name.length ()+1));
-              strcpy (nameList [i], name.c_str ());
-          }
-          return jointNames;
-      }
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, addURDF, STRING, STRING, STRING)
 
-      gepetto::corbaserver::Names_t *GraphicalInterface::getNodeList() throw (Error)
-      {
-        try {
-          return fromStringVector(windowsManager_->getNodeList ());
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, addUrdfCollision, STRING, STRING, STRING)
 
-      gepetto::corbaserver::Names_t *GraphicalInterface::getGroupNodeList(const char* group) throw (Error)
-      {
-        try {
-          return fromStringVector(windowsManager_->getGroupNodeList(group));
-    } catch (const std::exception& exc) {
-      throw Error (exc.what ());
-    }
-      }
+      BIND_TO_WINDOWS_MANAGER_4(VOID, addUrdfObjects, STRING, STRING, STRING, BOOL)
 
-      gepetto::corbaserver::Names_t *GraphicalInterface::getSceneList() throw (Error)
-      {
-        try {
-          return fromStringVector(windowsManager_->getSceneList());
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, addToGroup, STRING, STRING)
 
-      gepetto::corbaserver::Names_t* GraphicalInterface::getWindowList () throw (Error)
-      {
-	try {
-          return fromStringVector(windowsManager_->getWindowList ());
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, removeFromGroup, STRING, STRING)
 
-      bool GraphicalInterface::createGroup (const char* groupNameCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->createGroup ( groupNameCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, applyConfiguration, STRING, TRANSFORM)
 
-      bool GraphicalInterface::addURDF (const char* urdfNameCorba,
-					const char* urdfPathCorba,
-					const char* urdfPackagePathCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->addURDF ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, addLandmark, STRING, FLOAT)
 
-      bool GraphicalInterface::addUrdfCollision (const char* urdfNameCorba, const char* urdfPathCorba,
-       const char* urdfPackagePathCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->addUrdfCollision ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, deleteLandmark, STRING)
 
-      void GraphicalInterface::addUrdfObjects (const char* urdfNameCorba,
-					       const char* urdfPathCorba,
-					       const char* urdfPackagePathCorba,
-					       bool visual) throw (Error)
-      {
-	try {
-      return windowsManager_->addUrdfObjects ( urdfNameCorba, urdfPathCorba, urdfPackagePathCorba, visual) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_1(TRANSFORM, getStaticTransform, STRING)
 
-      bool GraphicalInterface::addToGroup (const char* nodeNameCorba,
-					   const char* groupNameCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->addToGroup ( nodeNameCorba, groupNameCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setStaticTransform, STRING, TRANSFORM)
 
-      bool GraphicalInterface::removeFromGroup (const char* nodeNameCorba,
-                       const char* groupNameCorba) throw (Error)
-      {
-    try {
-      return windowsManager_->removeFromGroup ( nodeNameCorba, groupNameCorba) ;
-    } catch (const std::exception& exc) {
-      throw Error (exc.what ());
-    }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setVisibility, STRING, STRING)
 
-      bool GraphicalInterface::applyConfiguration (const char* nodeNameCorba, const value_type* configurationCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->applyConfiguration ( nodeNameCorba, configurationCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setScale, STRING, POSITION)
 
-      bool GraphicalInterface::addLandmark (const char* nodeNameCorba,
-					    float size) throw (Error)
-      {
-	try {
-      return windowsManager_->addLandmark ( nodeNameCorba, size) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setColor, STRING, COLOR)
 
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setWireFrameMode, STRING, STRING)
 
-      bool GraphicalInterface::deleteLandmark (const char* nodeNameCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->deleteLandmark ( nodeNameCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setLightingMode, STRING, STRING)
 
-      bool GraphicalInterface::getStaticTransform (const char* nodeName,  ::gepetto::corbaserver::Transform transform) throw (Error)
-      {
-        try {
-          return windowsManager_->getStaticTransform ( nodeName, transform) ;
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setHighlight, STRING, LONG)
+
+      BIND_TO_WINDOWS_MANAGER_3(BOOL, startCapture, WINDOW_ID, STRING, STRING)
+
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, stopCapture, WINDOW_ID)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setCaptureTransform, STRING, STRING_LIST)
+
+      BIND_TO_WINDOWS_MANAGER_1(VOID, captureTransformOnRefresh, BOOL)
+
+      BIND_TO_WINDOWS_MANAGER_0(VOID, captureTransform)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, writeBlenderScript, STRING, STRING_LIST)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, writeNodeFile, STRING, STRING)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, writeWindowFile, WINDOW_ID, STRING)
       
-      bool GraphicalInterface::setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) throw (Error)
-      {
-        try {
-          return windowsManager_->setStaticTransform(nodeName,transform) ;
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
+      BIND_TO_WINDOWS_MANAGER_1(TRANSFORM, getNodeGlobalTransform, STRING)
 
-      bool GraphicalInterface::setVisibility (const char* nodeNameCorba,
-					      const char* visibilityModeCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->setVisibility ( nodeNameCorba, visibilityModeCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(VOID, deleteNode, STRING, BOOL)
 
-      bool GraphicalInterface::setScale (const char* nodeNameCorba,
-                          const value_type* scale) throw (Error)
-      {
-    try {
-      return windowsManager_->setScale ( nodeNameCorba, scale) ;
-    } catch (const std::exception& exc) {
-      throw Error (exc.what ());
-    }
-      }
-
-      bool GraphicalInterface::setColor(const char* nodeNameCorba,
-          const Color color) throw (Error)
-      {
-        try {
-          return windowsManager_->setColor ( nodeNameCorba, color) ;
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
-
-      bool GraphicalInterface::setWireFrameMode (const char* nodeNameCorba,
-						 const char* wireFrameModeCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->setWireFrameMode ( nodeNameCorba, wireFrameModeCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::setLightingMode (const char* nodeNameCorba,
-						const char* lightingModeCorba) throw (Error)
-      {
-	try {
-      return windowsManager_->setLightingMode ( nodeNameCorba, lightingModeCorba) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::setHighlight (const char* nodeNameCorba,
-                                             ::CORBA::Long state) throw (Error)
-      {
-	try {
-          return windowsManager_->setHighlight ( nodeNameCorba, state) ;
-        } catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::startCapture (const WindowID windowId, const char* filename,
-          const char* extension) throw (Error)
-      {
-	try {
-      return windowsManager_->startCapture ( windowId, filename, extension) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::stopCapture (const WindowID windowId) throw (Error)
-      {
-	try {
-      return windowsManager_->stopCapture ( windowId) ;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::setCaptureTransform (const char* filename,
-          const Names_t& nodeNames) throw (Error)
-      {
-        try {
-          std::list <std::string> nodes;
-          to (nodeNames, nodes);
-          return windowsManager_->setCaptureTransform (filename, nodes);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      void GraphicalInterface::captureTransformOnRefresh (bool autoCapture)
-        throw (Error)
-      {
-	try {
-          return windowsManager_->captureTransformOnRefresh (autoCapture);
-        } catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      void GraphicalInterface::captureTransform () throw (Error)
-      {
-	try {
-          return windowsManager_->captureTransform ();
-        } catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::writeBlenderScript (const char* filename,
-          const Names_t& nodeNames) throw (Error)
-      {
-        try {
-          std::list <std::string> nodes;
-          to (nodeNames, nodes);
-          return windowsManager_->writeBlenderScript (filename, nodes);
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
-
-      bool GraphicalInterface::writeNodeFile (const char* nodeName,
-          const char* filename) throw (Error)
-      {
-        try {
-          return windowsManager_->writeNodeFile (nodeName, filename);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-      bool GraphicalInterface::writeWindowFile (const WindowID windowId,
-          const char* filename) throw (Error)
-      {
-        try {
-          return windowsManager_->writeWindowFile (windowId, filename);
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setBackgroundColor1, WINDOW_ID, COLOR)
       
-      gepetto::corbaserver::floatSeq* GraphicalInterface::getNodeGlobalTransform(const char* nodeName) throw (Error)
-      {
-	try {
-      WindowsManager::configuration_t config = windowsManager_->getNodeGlobalTransform(nodeName);
-      if(config.size() != 7) throw std::runtime_error("No Node name ." + std::string(nodeName));
-      gepetto::corbaserver::floatSeq *dofArray;
-      std::size_t dim = config.size();
-      dofArray = new gepetto::corbaserver::floatSeq();
-      dofArray->length((ULong) dim);
-      for(std::size_t i=0; i<dim; i++)
-	(*dofArray)[(ULong)i] = config[i];
-      return dofArray;
-	} catch (const std::exception& exc) {
-	  throw Error (exc.what ());
-	}
-      }
-
-			void GraphicalInterface::deleteNode (const char* nodeName, bool all) throw (Error)
-			{
-				try {
-					windowsManager_->deleteNode (nodeName, all);
-				} catch (const std::exception& exc) {
-	  			throw Error (exc.what ());
-				}
-			}
-      
-      bool GraphicalInterface::setBackgroundColor1(const WindowID windowId,const value_type* colorCorba) throw (Error)
-      {
-          try {
-              return windowsManager_->setBackgroundColor1 (windowId,colorCorba);
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
-      
-      bool GraphicalInterface::setBackgroundColor2(const WindowID windowId,const value_type* colorCorba) throw (Error)
-      {
-        try {
-          return windowsManager_->setBackgroundColor2 (windowId,colorCorba);
-        } catch (const std::exception& exc) {
-          throw Error (exc.what ());
-        }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setBackgroundColor2, WINDOW_ID, COLOR)
 
     } //end namespace impl
   } //end namespace corbaServer

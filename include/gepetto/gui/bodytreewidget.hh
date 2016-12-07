@@ -5,14 +5,14 @@
 #define GEPETTO_GUI_BODYTREE_DECL_FEATURE(func, ArgType) \
   public slots: \
     void func (ArgType arg)
-#define GEPETTO_GUI_BODYTREE_IMPL_FEATURE(func, ArgType, CorbaType, WindowsManagerFunc) \
+#define GEPETTO_GUI_BODYTREE_IMPL_FEATURE(func, ArgType, OutType, WindowsManagerFunc) \
   void BodyTreeWidget::func (ArgType arg) { \
     WindowsManagerPtr_t wsm = MainWindow::instance()->osg(); \
     foreach (const QModelIndex& index, view_->selectionModel ()->selectedIndexes ()) { \
       const BodyTreeItem *item = dynamic_cast <const BodyTreeItem*> \
         (model_->itemFromIndex (index)); \
-      if (item) wsm->WindowsManagerFunc (item->node()->getID().c_str(), \
-                                         Traits<CorbaType>::from (arg).in()); \
+      if (item) wsm->WindowsManagerFunc (item->node()->getID(), \
+                                         convertTo<OutType>::from(arg)); \
       else \
         qDebug() << model_->itemFromIndex(index)->text() << "is not a BodyTreeItem"; \
     } \
@@ -47,16 +47,17 @@ namespace gepetto {
 
       virtual ~BodyTreeWidget () {}
 
-      /// Add a group to the body tree.
-      /// \param group group to add
-      void addBodyToTree (graphics::GroupNodePtr_t group);
-
       /// Display the value in the slider.
       /// \param alpha alpha value to convert
       void changeAlphaValue(const float& alpha);
 
       /// Get the body tree view.
       QTreeView* view ();
+
+      QStandardItemModel* model()
+      {
+        return model_;
+      }
 
     public slots:
       /// \addtogroup available_in_python Python API
@@ -69,9 +70,6 @@ namespace gepetto {
       /// Triggered when an item is selected in the body tree view.
       /// \param bodyName name of the body
       void selectBodyByName (const std::string& bodyName);
-
-      /// Reload the body tree.
-      void reloadBodyTree ();
 
       /// Get selected bodies
       QList<BodyTreeItem*> selectedBodies() const;

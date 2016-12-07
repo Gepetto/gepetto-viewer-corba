@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>418</height>
+    <width>436</width>
+    <height>303</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Select a predifined robot or enter your own descrption files.</string>
+      <string>Select a predifined robot or enter your own description files.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -89,27 +89,8 @@
       <string>Details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>URDF Suffix</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="urdfSuffix"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="packagePath"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="packageName"/>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="urdfFilename"/>
+       <widget class="QLineEdit" name="srdfSuffix"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_4">
@@ -122,6 +103,25 @@
        </widget>
       </item>
       <item row="4" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>URDF Suffix</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="urdfSuffix"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="packageName"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="urdfFilename"/>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>URDF filename</string>
@@ -131,24 +131,7 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QPushButton" name="pushButton_mesh">
-        <property name="text">
-         <string>Mesh directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="pushButton_package">
-        <property name="text">
-         <string>Package path</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="meshDirectory"/>
-      </item>
-      <item row="6" column="0">
+      <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>SRDF Suffix</string>
@@ -157,9 +140,6 @@
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="srdfSuffix"/>
       </item>
      </layout>
     </widget>
@@ -171,11 +151,7 @@
   <tabstop>envName</tabstop>
   <tabstop>pushButton_details</tabstop>
   <tabstop>packageName</tabstop>
-  <tabstop>pushButton_package</tabstop>
-  <tabstop>packagePath</tabstop>
   <tabstop>urdfFilename</tabstop>
-  <tabstop>pushButton_mesh</tabstop>
-  <tabstop>meshDirectory</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -225,38 +201,6 @@
     <hint type="destinationlabel">
      <x>219</x>
      <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_package</sender>
-   <signal>clicked()</signal>
-   <receiver>DialogLoadEnvironment</receiver>
-   <slot>packagePathSelect()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>94</x>
-     <y>223</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>219</x>
-     <y>163</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_mesh</sender>
-   <signal>clicked()</signal>
-   <receiver>DialogLoadEnvironment</receiver>
-   <slot>meshSelect()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>94</x>
-     <y>293</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>219</x>
-     <y>163</y>
     </hint>
    </hints>
   </connection>

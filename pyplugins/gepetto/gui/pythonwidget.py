@@ -29,6 +29,8 @@ class _NodeCreator (QtGui.QWidget):
         # Add box
         box.addWidget(self.bindFunctionToButton("Add box", self.addBox))
 
+        box.addWidget(self.bindFunctionToButton("Create window", self.createWindow))
+
         self.update()
 
     def update(self):
@@ -58,6 +60,9 @@ class _NodeCreator (QtGui.QWidget):
         self.plugin.client.gui.addBox(str(self.nodeName.text), 1, 1, 1, [1, 0, 0, 1])
         self.refreshBodyTree()
 
+    def createWindow (self):
+        self.plugin.windowsManager.createWindow(str(self.nodeName.text))
+
     def createGroup (self):
         self.plugin.client.gui.createGroup(str(self.nodeName.text))
         self.groupNodes.addItem(self.nodeName.text)
@@ -81,18 +86,24 @@ class Plugin(QtGui.QDockWidget):
             super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow)
         else:
             super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow, flags)
+        self.setObjectName("Gepetto Viewer plugin")
         self.client = Client()
         # Initialize the widget
         self.tabWidget = QtGui.QTabWidget(self)
+        # This avoids having a widget bigger than what it needs. It avoids having
+        # a big dock widget and a small osg widget when creating the main osg widget.
+        p = Qt.QSizePolicy.Maximum
+        self.tabWidget.setSizePolicy(Qt.QSizePolicy(p,p))
         self.setWidget (self.tabWidget)
         self.nodeCreator = _NodeCreator(self, self)
         self.tabWidget.addTab (self.nodeCreator, "Node Creator")
         self.main = mainWindow
+        self.windowsManager = windowsManager
         mainWindow.connect('refresh()', self.refresh)
 
     ### If present, this function is called when a new OSG Widget is created.
     def osgWidget(self, osgWindow):
-        osgWindow.connect('clicked(QString,QVector3D)', self.selected)
+        osgWindow.connect('clicked(QString,QVector3D,QKeyEvent*)', self.selected)
 
     def resetConnection(self):
         self.client = Client()
