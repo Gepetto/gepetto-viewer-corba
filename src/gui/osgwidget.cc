@@ -91,7 +91,7 @@ namespace gepetto {
     , infoBox_ (this)
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-      osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits);
+      osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
       traits_ptr->windowName = "Gepetto Viewer";
       traits_ptr->x = this->x();
       traits_ptr->y = this->y();
@@ -101,13 +101,6 @@ namespace gepetto {
       traits_ptr->doubleBuffer = true;
       traits_ptr->vsync = true;
       //  traits_ptr->sharedContext = 0;
-
-      traits_ptr->alpha = ds->getMinimumNumAlphaBits();
-      traits_ptr->stencil = ds->getMinimumNumStencilBits();
-      traits_ptr->sampleBuffers = ds->getMultiSamples();
-      traits_ptr->samples = ds->getNumMultiSamples();
-      traits_ptr->sampleBuffers = 4;
-      traits_ptr->samples = 4;
 
       graphicsWindow_ = new osgQt::GraphicsWindowQt ( traits_ptr );
 

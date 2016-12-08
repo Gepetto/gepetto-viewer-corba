@@ -45,6 +45,11 @@ SET(${PROJECT_NAME}_HEADERS
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
+OPTION(DISABLE_SAMPLING "Activate this option if your computer have no graphic card or a small one" OFF)
+if(DISABLE_SAMPLING)
+  ADD_DEFINITIONS(-DDISABLE_SAMPLING)
+endif()
+
 SETUP_PROJECT ()
 
 # Dependencies
@@ -56,7 +61,7 @@ IF(NOT CLIENT_ONLY)
   ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
   ADD_REQUIRED_DEPENDENCY("urdfdom")
 
-  SET(BOOST_COMPONENTS program_options system thread regex)
+  SET(BOOST_COMPONENTS system thread regex)
   SEARCH_FOR_BOOST ()
 
   FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
