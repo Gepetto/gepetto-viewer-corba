@@ -120,7 +120,7 @@ namespace gepetto {
       genAndQuit =              (arguments.read("-g") || arguments.read("--generate-config-files"));
       noPlugin =                (arguments.read("-P") || arguments.read("--no-plugin"));
       autoWriteSettings =       (arguments.read("-w") || arguments.read("--auto-write-settings"));
-      startGepettoCorbaServer = (arguments.read("--no-viewer-server"));
+      startGepettoCorbaServer = (!arguments.read("--no-viewer-server"));
 
       std::string opt;
       while (arguments.read ("--add-robot", opt))
