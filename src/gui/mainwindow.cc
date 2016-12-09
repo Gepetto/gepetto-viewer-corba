@@ -325,6 +325,13 @@ namespace gepetto {
       }
     }
 
+    void MainWindow::closeConnection()
+    {
+      foreach (CorbaInterface* e, pluginManager()->get <CorbaInterface> ()) {
+        e->closeConnection ();
+      }
+    }
+
     void MainWindow::about()
     {
       QString devString;
@@ -417,6 +424,7 @@ namespace gepetto {
       connect (collisionIndicator_, SIGNAL (mouseClickEvent()), SLOT(requestConfigurationValidation()));
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
+      connect (ui_->actionClose_connections, SIGNAL (triggered ()), SLOT(closeConnection()));
       connect (ui_->actionFetch_configuration, SIGNAL (triggered ()), SLOT(requestApplyCurrentConfiguration()));
 
       connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));

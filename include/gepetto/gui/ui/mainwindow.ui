@@ -67,6 +67,8 @@
     </property>
     <addaction name="actionRefresh"/>
     <addaction name="actionPlugins"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_connections"/>
     <addaction name="actionReconnect"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -97,6 +99,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionPlugins"/>
+   <addaction name="actionClose_connections"/>
    <addaction name="actionReconnect"/>
    <addaction name="actionRefresh"/>
    <addaction name="actionFetch_configuration"/>
@@ -404,7 +407,7 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Reset connection</string>
+    <string>Reset connections</string>
    </property>
    <property name="shortcut">
     <string>Shift+F5</string>
@@ -423,6 +426,14 @@
   <action name="actionChange_shortcut">
    <property name="text">
     <string>Change &amp;shortcut</string>
+   </property>
+  </action>
+  <action name="actionClose_connections">
+   <property name="icon">
+    <iconset theme="network-disconnect"/>
+   </property>
+   <property name="text">
+    <string>Close connections</string>
    </property>
   </action>
  </widget>

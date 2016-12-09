@@ -196,6 +196,7 @@ signals:
         void handleWorkerDone (int id);
 
         void resetConnection ();
+        void closeConnection ();
         void about ();
 
       private:
