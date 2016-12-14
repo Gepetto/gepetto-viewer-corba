@@ -52,14 +52,16 @@
 
 #define RETURN_IF_NODE_EXISTS(name)                                            \
   if (nodeExists(name)) {                                                      \
-    std::cout << "\"" << name << "\" already exists." << std::endl;            \
-    return false;                                                              \
+    std::ostringstream oss;                                                    \
+    oss << "Node \"" << name << "\" already exists.";                          \
+    throw gepetto::Error (oss.str ().c_str ());				\
   }
 
 #define RETURN_IF_NODE_DOES_NOT_EXIST(name)                                    \
   if (!nodeExists(name)) {                                                     \
-    std::cout << "\"" << name << "\" doesn't exist." << std::endl;             \
-    return false;                                                              \
+    std::ostringstream oss;                                                    \
+    oss << "Node \"" << name << "\" does not exist.";                          \
+    throw gepetto::Error (oss.str ().c_str ());				       \
   }
 
 namespace graphics {
