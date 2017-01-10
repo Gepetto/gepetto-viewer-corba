@@ -390,6 +390,11 @@ namespace graphics {
       
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setBackgroundColor2, WINDOW_ID, COLOR)
 
+      BIND_TO_WINDOWS_MANAGER_1(TRANSFORM,getCameraTransform,WINDOW_ID)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL,setCameraTransform,WINDOW_ID,TRANSFORM)
+
+
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics

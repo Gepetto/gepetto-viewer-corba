@@ -402,6 +402,15 @@ typedef sequence<Position> PositionSeq;
     /// \param input windowId : ID of the window
     /// \param input RGBAcolor : desired color
     boolean setBackgroundColor2(in unsigned long windowId,in Color RGBAcolor);
+
+		/// get the matrix transform of the current position of the camera
+		/// \param input windowId : ID of the window
+		Transform getCameraTransform(in unsigned long windowId) raises (Error);
+
+		/// set the matrix transform of the current camera
+		/// \param input windowId : ID of the window
+		/// \param input configuration : the desired configuration of the camera
+		boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
   };
 };
 };

@@ -151,11 +151,14 @@ public:
   virtual bool writeBlenderScript (const char* filename, const Names_t& nodeNames) throw (Error);
   virtual bool writeNodeFile (const char* nodename, const char* filename) throw (Error);
   virtual bool writeWindowFile (const WindowID windowId, const char* filename) throw (Error);
+
   virtual Transform_slice* getNodeGlobalTransform(const char* nodeName) throw (Error);
   virtual void deleteNode (const char* nodeName, bool all) throw (Error);
   virtual bool setBackgroundColor1(const WindowID windowId,const Color colorCorba) throw (Error);
   virtual bool setBackgroundColor2(const WindowID windowId,const Color colorCorba) throw (Error);
-    
+  virtual Transform_slice* getCameraTransform(const WindowID windowId) throw (Error);
+  virtual bool setCameraTransform(const WindowID windowId, const value_type *configurationCorba)throw (Error);
+
 }; // end of class
 
 } /* namespace impl */
