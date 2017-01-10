@@ -24,13 +24,7 @@ namespace gepetto {
       virtual bool handle( const osgGA::GUIEventAdapter&  ea,
                                  osgGA::GUIActionAdapter& aa );
 
-      void select (graphics::NodePtr_t node);
-
       void getUsage (osg::ApplicationUsage &usage);
-
-    private slots:
-      void bodyTreeCurrentChanged (const QModelIndex &current,
-          const QModelIndex &previous);
 
     private:
       std::list <graphics::NodePtr_t> computeIntersection (osgGA::GUIActionAdapter& aa,
@@ -42,7 +36,6 @@ namespace gepetto {
       QtOsgKeyboard mapper_;
       WindowsManagerPtr_t wsm_;
       OSGWidget* parent_;
-      graphics::NodePtr_t last_;
       bool pushed_;
       float lastX_, lastY_;
     };

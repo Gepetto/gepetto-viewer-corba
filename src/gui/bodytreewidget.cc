@@ -5,6 +5,7 @@
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/osgwidget.hh>
 #include <gepetto/gui/meta.hh>
+#include <gepetto/gui/selection-event.hh>
 
 #include <QSignalMapper>
 #include <QColorDialog>
@@ -73,6 +74,9 @@ namespace gepetto {
       view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
       connect (view_, SIGNAL (customContextMenuRequested(QPoint)), SLOT(customContextMenu(QPoint)));
+      connect (view_->selectionModel(),
+          SIGNAL (currentChanged(QModelIndex,QModelIndex)),
+          SLOT (currentChanged(QModelIndex,QModelIndex)));
 
       toolBox_->removeItem(0);
       addSlider(toolBox_, "Transparency", this, SLOT(setTransparency(int)));
@@ -113,6 +117,51 @@ namespace gepetto {
     {
       qDebug () << "Use QString instead of std::string";
       return selectBodyByName (QString::fromStdString (bodyName));
+    }
+
+    void BodyTreeWidget::handleSelectionEvent (const SelectionEvent* event)
+    {
+      disconnect (view_->selectionModel(),
+          SIGNAL (currentChanged(QModelIndex,QModelIndex)),
+          this, SLOT (currentChanged(QModelIndex,QModelIndex)));
+      if (event->node()) {
+        QList<QStandardItem*> matches;
+        matches = model_->findItems(event->nodeName(), Qt::MatchFixedString
+                                      | Qt::MatchCaseSensitive
+                                      | Qt::MatchRecursive);
+        if (matches.empty())
+          view_->clearSelection();
+        else {
+          qDebug() << event->modKey();
+          if (event->modKey() == Qt::ControlModifier)
+            view_->selectionModel()->setCurrentIndex
+                (matches.first()->index(),
+                 QItemSelectionModel::Toggle);
+          else
+            view_->selectionModel()->select(matches.first()->index(), QItemSelectionModel::ClearAndSelect);
+        }
+      } else
+        view_->clearSelection();
+      connect (view_->selectionModel(),
+          SIGNAL (currentChanged(QModelIndex,QModelIndex)),
+          SLOT (currentChanged(QModelIndex,QModelIndex)));
+    }
+
+    void BodyTreeWidget::currentChanged (const QModelIndex &current,
+        const QModelIndex &/*previous*/)
+    {
+      // TODO
+      // if (!current.isValid()) {
+      // deselect
+      // }
+      BodyTreeItem *item = dynamic_cast <BodyTreeItem*> (
+          qobject_cast <const QStandardItemModel*>
+          (view_->model())->itemFromIndex(current)
+         );
+      if (item) {
+        SelectionEvent *event = new SelectionEvent(SelectionEvent::FromBodyTree, item->node(), QApplication::keyboardModifiers());
+        MainWindow::instance()->centralWidget()->emitClicked(event);
+      }
     }
 
     QList<BodyTreeItem*> BodyTreeWidget::selectedBodies() const

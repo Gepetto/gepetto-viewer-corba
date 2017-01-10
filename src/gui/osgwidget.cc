@@ -37,6 +37,7 @@
 
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/bodytreewidget.hh>
+#include <gepetto/gui/selection-event.hh>
 
 namespace gepetto {
   namespace gui {
@@ -145,11 +146,6 @@ namespace gepetto {
       render_.wsm_ = wsm_;
       render_.refreshRate = parent->settings_->refreshRate;
       render_.start ();
-
-      parent->bodyTree()->connect(this,
-          SIGNAL (clicked(QString,QVector3D,QKeyEvent*)), SLOT (selectBodyByName(QString)));
-      parent->connect(this, SIGNAL (clicked(QString,QVector3D,QKeyEvent*)),
-		      SLOT (requestSelectJointFromBodyName(QString)));
     }
 
     OSGWidget::~OSGWidget()
@@ -184,9 +180,14 @@ namespace gepetto {
       //        wsm_->lock().unlock();
     }
 
-    void OSGWidget::emitClicked(QString name, QVector3D positionInWorldFrame, QKeyEvent* event)
+    void OSGWidget::emitClicked(SelectionEvent* event)
     {
-      emit clicked (name, positionInWorldFrame, event);
+      emit clicked (event);
+      if (event->type() != SelectionEvent::FromBodyTree) {
+        MainWindow* main = MainWindow::instance();
+        main->bodyTree()->handleSelectionEvent(event);
+        main->requestSelectJointFromBodyName(event->nodeName());
+      }
     }
 
     void OSGWidget::onHome()

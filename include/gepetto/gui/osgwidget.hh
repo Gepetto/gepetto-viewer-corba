@@ -58,7 +58,7 @@ namespace gepetto {
         WindowsManager::WindowID windowID () const;
 
 signals:
-      void clicked (QString name, QVector3D positionInWorldFrame, QKeyEvent* event);
+      void clicked (SelectionEvent* event);
 
         public slots:
         /// Load an urdf file in the viewer.
@@ -76,13 +76,13 @@ signals:
         void cameraManipulationMode ();
         void addFloor();
         void attachToWindow (const std::string nodeName);
+        void emitClicked (SelectionEvent* event);
 
       protected:
 
         virtual void paintEvent( QPaintEvent* paintEvent );
 
       private:
-      void emitClicked (QString name, QVector3D positionInWorldFrame, QKeyEvent* event);
         osgGA::EventQueue* getEventQueue() const;
 
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;

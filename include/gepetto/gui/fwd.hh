@@ -13,6 +13,7 @@ namespace gepetto {
     class BodyTreeItem;
     class ShortcutFactory;
     class SelectionHandler;
+    class SelectionEvent;
 
     class ViewerCorbaServer;
 

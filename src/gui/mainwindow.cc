@@ -71,8 +71,8 @@ namespace gepetto {
       connect(ui_->actionChange_shortcut, SIGNAL(triggered()), shortcutFactory_, SLOT(open()));
 
       selectionHandler_ = new SelectionHandler(osgViewerManagers_);
-      selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
       selectionHandler_->addMode(new MultiSelection(osgViewerManagers_));
+      selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
 
       ui_->osgToolBar->addWidget(selectionHandler_);
     }

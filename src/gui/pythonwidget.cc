@@ -38,7 +38,11 @@ namespace gepetto {
             PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
             sys.evalScript ("argv = ['gepetto-gui']");
             console_ = new PythonQtScriptingConsole(NULL, mainContext_);
-            PythonQt::self()->registerQObjectClassNames(QStringList() << "BodyTreeWidget" << "BodyTreeItem" << "WindowsManager");
+            PythonQt::self()->registerQObjectClassNames(QStringList()
+                << "BodyTreeWidget"
+                << "BodyTreeItem"
+                << "SelectionEvent"
+                << "WindowsManager");
             mainContext_.addObject("mainWindow", MainWindow::instance());
             mainContext_.addObject("windowsManager", MainWindow::instance()->osg().get());
             console_->QTextEdit::clear();

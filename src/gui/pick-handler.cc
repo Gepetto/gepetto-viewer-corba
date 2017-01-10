@@ -12,11 +12,13 @@
 #include <iostream>
 #include <boost/regex.hpp>
 
+#include <gepetto/gui/selection-event.hh>
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/osgwidget.hh>
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/bodytreewidget.hh>
 #include <gepetto/gui/tree-item.hh>
+#include <gepetto/gui/selection-handler.hh>
 
 namespace gepetto {
   namespace gui {
@@ -24,16 +26,10 @@ namespace gepetto {
       : QObject (parent)
       , wsm_ (wsm)
       , parent_ (parent)
-      , last_ ()
       , pushed_ (false)
       , lastX_ (0)
       , lastY_ (0)
-    {
-      MainWindow* main = MainWindow::instance ();
-      connect (main->bodyTree ()->view ()->selectionModel(),
-          SIGNAL (currentChanged(QModelIndex,QModelIndex)),
-          SLOT (bodyTreeCurrentChanged(QModelIndex,QModelIndex)));
-    }
+    {}
 
     PickHandler::~PickHandler()
     {
@@ -80,14 +76,6 @@ namespace gepetto {
       return false;
     }
 
-    void PickHandler::select (graphics::NodePtr_t node)
-    {
-      if (last_ == node) return;
-      if (last_) last_->setHighlightState (0);
-      last_ = node;
-      if (last_) last_->setHighlightState (8);
-    }
-
     void PickHandler::getUsage (osg::ApplicationUsage& usage)
     {
       usage.addKeyboardMouseBinding ("Right click", "Select node");
@@ -119,7 +107,7 @@ namespace gepetto {
           camera->accept( iv );
 
           if( !intersector->containsIntersections() ) {
-            select (graphics::NodePtr_t());
+            parent_->emitClicked(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
             return nodes;
           }
 
@@ -132,30 +120,34 @@ namespace gepetto {
                   if (n) {
                       if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
                         continue;
-                      osg::Vec3d p = it->getWorldIntersectPoint();
-                      QVector3D pWF (p[0],p[1],p[2]);
-                      parent_->emitClicked(QString::fromStdString(n->getID ()), pWF,
-					   mapper_.remapModKey(modKeyMask));
+                      SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
+                                                                 n,
+                                                                 mapper_.getQtModKey(modKeyMask));
+                      event->setupIntersection(*it);
+                      parent_->emitClicked(event);
                       return nodes;
                       // nodes.push_back(n);
                       // break;
                     }
                 }
             }
-          // emit parent_->selected (nodes.front()->getID ());
         }
-      select (graphics::NodePtr_t());
+      parent_->emitClicked(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
       return nodes;
     }
 
     void PickHandler::setCameraToSelected (osgGA::GUIActionAdapter &aa,
         bool zoom)
     {
-      if (!last_) return;
+      MainWindow* main = MainWindow::instance();
+      graphics::NodePtr_t last = main->osg()->getNode(
+            main->selectionHandler()->mode()->currentBody().toStdString()
+            );
+      if (!last) return;
       osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
       if(!viewer) return;
 
-      const osg::BoundingSphere& bs = last_->asGroup()->getBound ();
+      const osg::BoundingSphere& bs = last->asGroup()->getBound ();
       osg::Vec3f eye, center, up;
       viewer->getCameraManipulator()->getInverseMatrix ()
         .getLookAt (eye, center, up);
@@ -166,24 +158,6 @@ namespace gepetto {
       viewer->getCameraManipulator()->setByInverseMatrix (
           osg::Matrixd::lookAt (eye, bs.center(), up)
           );
-    }
-
-    void PickHandler::bodyTreeCurrentChanged (const QModelIndex &current,
-        const QModelIndex &/*previous*/)
-    {
-      if (!current.isValid()) {
-        select (graphics::NodePtr_t());
-        return;
-      }
-      BodyTreeItem *item = dynamic_cast <BodyTreeItem*> (
-          qobject_cast <const QStandardItemModel*>
-          (current.model())->itemFromIndex(current)
-         );
-      if (item) {
-        wsm_->lock ().lock();
-        select (item->node ());
-        wsm_->lock ().unlock();
-      }
     }
   }
 }

@@ -72,7 +72,7 @@ namespace gepetto {
         mKeyMap[Qt::Key_Insert        ] = osgGA::GUIEventAdapter::KEY_KP_Insert;
         //mKeyMap[Qt::Key_Delete        ] = osgGA::GUIEventAdapter::KEY_KP_Delete;
 
-	modKeyMap[osgGA::GUIEventAdapter::MODKEY_CTRL ] = Qt::Key_Control;
+	modKeyMap[osgGA::GUIEventAdapter::MODKEY_CTRL ] = Qt::ControlModifier;
       }
 
       ~QtOsgKeyboard()
@@ -81,7 +81,7 @@ namespace gepetto {
 
       int remapKey(QKeyEvent* event)
       {
-        KeyMap::iterator itr = mKeyMap.find(event->key());
+        KeyMap::iterator itr = mKeyMap.find((Qt::Key)event->key());
         if (itr == mKeyMap.end())
 	  {
             return int(*(event->text().toLatin1().data()));
@@ -104,19 +104,26 @@ namespace gepetto {
       QKeyEvent* remapModKey(int modMask)
       {
 	if (modMask == 0)
-	  return NULL;
-	for (ModKeyMap::iterator itr = modKeyMap.begin(); itr != modKeyMap.end(); ++itr) {
-	  if (itr->first == modMask)
-	    return new QKeyEvent(QEvent::KeyPress, itr->second, 0);
-	}	
+          return NULL;
+        ModKeyMap::const_iterator it = modKeyMap.find(modMask);
+        if (it != modKeyMap.end())
+          return new QKeyEvent(QEvent::KeyPress, it->second, 0);
 	return NULL;
       }
 
+      Qt::KeyboardModifiers getQtModKey(int modMask)
+      {
+        ModKeyMap::const_iterator it = modKeyMap.find(modMask);
+        if (it != modKeyMap.end())
+          return it->second;
+	return Qt::NoModifier;
+      }
+
     private:
-      typedef std::map<unsigned int, int> KeyMap;
+      typedef std::map<Qt::Key, int> KeyMap;
       KeyMap mKeyMap;
 
-      typedef std::map<int, unsigned int> ModKeyMap;
+      typedef std::map<int, Qt::KeyboardModifiers> ModKeyMap;
       ModKeyMap modKeyMap;
     };
   }

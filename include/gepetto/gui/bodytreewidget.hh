@@ -59,6 +59,12 @@ namespace gepetto {
         return model_;
       }
 
+      /// Handle a selection event
+      ///
+      /// Does not re-emit a selection event when the body tree selection
+      /// is updated.
+      void handleSelectionEvent (const SelectionEvent* event);
+
     public slots:
       /// \addtogroup available_in_python Python API
       /// \{
@@ -100,6 +106,9 @@ namespace gepetto {
       /// Display the context menu for one item.
       /// \param pos position of the item
       void customContextMenu (const QPoint& pos);
+
+      void currentChanged (const QModelIndex &current,
+                           const QModelIndex &previous);
 
     private:
       QTreeView* view_;

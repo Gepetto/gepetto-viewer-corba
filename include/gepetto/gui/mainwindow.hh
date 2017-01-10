@@ -62,6 +62,11 @@ namespace gepetto {
         /// Get
         WindowsManagerPtr_t osg () const;
 
+        SelectionHandler* selectionHandler()
+        {
+          return selectionHandler_;
+        }
+
         /// Get the central widget.
         OSGWidget* centralWidget() const;
 

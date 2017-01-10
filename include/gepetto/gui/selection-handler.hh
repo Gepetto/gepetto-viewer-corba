@@ -23,6 +23,8 @@ namespace gepetto {
 
       virtual void reset() { currentSelected_ = ""; }
 
+      QString currentBody () { return currentSelected_; }
+
     signals:
       void selectedBodies(QStringList selectedBodies);
 
@@ -30,11 +32,7 @@ namespace gepetto {
       /// Slot called when a body is selected.
       /// \param name body's name
       /// \param position click position
-      virtual void onSelect(QString name, QVector3D /*position*/,
-			    QKeyEvent* /*event*/)
-      {
-	Q_UNUSED(name) emit selectedBodies(QStringList());
-      }
+      virtual void onSelect(SelectionEvent* event) = 0;
 
       virtual QString getName() { return "None"; }
 
@@ -52,7 +50,7 @@ namespace gepetto {
       ~UniqueSelection();
 
     public slots:
-      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event);
+      virtual void onSelect(SelectionEvent* event);
       virtual QString getName() { return "Unique"; }
     };
 
@@ -66,7 +64,7 @@ namespace gepetto {
       virtual void reset();
 
     public slots:
-      virtual void onSelect(QString name, QVector3D position, QKeyEvent* event);
+      virtual void onSelect(SelectionEvent* event);
       virtual QString getName() { return "Multi"; }
 
     protected:
@@ -81,6 +79,8 @@ namespace gepetto {
       ~SelectionHandler();
 
       void setParentOSG(OSGWidget* parent);
+
+      SelectionMode* mode ();
 
     public slots:
       /// Add a mode to the list of available mode.
