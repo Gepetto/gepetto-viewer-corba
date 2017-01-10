@@ -1352,20 +1352,20 @@ namespace graphics {
     return true;
   }
 
-  bool WindowsManager::getCameraTransform(const WindowID windowId,osg::Vec3d& pos,osg::Quat& rot){
+  Configuration WindowsManager::getCameraTransform(const WindowID windowId){
+    osg::Quat rot;
+    osg::Vec3d pos;
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
     mtx_.lock();
     wm->getCameraTransform(pos,rot);
     mtx_.unlock();
-    return true;
+    return Configuration(pos,rot);
   }
 
-  bool WindowsManager::setCameraTransform(const WindowID windowId,const value_type* configurationCorba){
-    osg::Vec3d pos = WindowsManager::corbaConfToOsgVec3 (configurationCorba);
-    osg::Quat rot =  WindowsManager::corbaConfToOsgQuat (configurationCorba);
+  bool WindowsManager::setCameraTransform(const WindowID windowId,const Configuration& configuration){
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
     mtx_.lock();
-    wm->setCameraTransform(pos,rot);
+    wm->setCameraTransform(configuration.position,configuration.quat);
     mtx_.unlock();
     return true;
   }

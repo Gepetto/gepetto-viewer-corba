@@ -156,7 +156,7 @@ public:
   virtual void deleteNode (const char* nodeName, bool all) throw (Error);
   virtual bool setBackgroundColor1(const WindowID windowId,const Color colorCorba) throw (Error);
   virtual bool setBackgroundColor2(const WindowID windowId,const Color colorCorba) throw (Error);
-  virtual gepetto::corbaserver::floatSeq* getCameraTransform(const WindowID windowId) throw (Error);
+  virtual Transform_slice* getCameraTransform(const WindowID windowId) throw (Error);
   virtual bool setCameraTransform(const WindowID windowId, const value_type *configurationCorba)throw (Error);
 
 }; // end of class

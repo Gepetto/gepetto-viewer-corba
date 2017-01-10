@@ -405,7 +405,7 @@ typedef sequence<Position> PositionSeq;
 
 		/// get the matrix transform of the current position of the camera
 		/// \param input windowId : ID of the window
-		floatSeq getCameraTransform(in unsigned long windowId) raises (Error);
+		Transform getCameraTransform(in unsigned long windowId) raises (Error);
 
 		/// set the matrix transform of the current camera
 		/// \param input windowId : ID of the window

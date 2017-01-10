@@ -390,37 +390,10 @@ namespace graphics {
       
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setBackgroundColor2, WINDOW_ID, COLOR)
 
-      gepetto::corbaserver::floatSeq* GraphicalInterface::getCameraTransform(const WindowID windowId)throw (Error)
-      {
-          try {
-              osg::Quat rotation;
-              osg::Vec3d position;
-              windowsManager_->getCameraTransform (windowId,position,rotation);
-              gepetto::corbaserver::floatSeq *value;
-              value = new gepetto::corbaserver::floatSeq();
-              value->length((ULong) 7);
-              (*value)[(ULong)0] = (value_type)position.x();
-              (*value)[(ULong)1] = (value_type)position.y();
-              (*value)[(ULong)2] = (value_type)position.z();
-              (*value)[(ULong)3] = (value_type)rotation.w();
-              (*value)[(ULong)4] = (value_type)rotation.x();
-              (*value)[(ULong)5] = (value_type)rotation.y();
-              (*value)[(ULong)6] = (value_type)rotation.z();
-              return value;
-          } catch (const std::exception& exc) {
-              throw Error (exc.what ());
-          }
-      }
+      BIND_TO_WINDOWS_MANAGER_1(TRANSFORM,getCameraTransform,WINDOW_ID)
 
-      bool GraphicalInterface::setCameraTransform(const WindowID windowId,const value_type* configurationCorba)throw (Error)
-      {
-        try {
-            windowsManager_->setCameraTransform (windowId,configurationCorba);
-            return true;
-        } catch (const std::exception& exc) {
-            throw Error (exc.what ());
-        }
-      }
+      BIND_TO_WINDOWS_MANAGER_2(BOOL,setCameraTransform,WINDOW_ID,TRANSFORM)
+
 
     } //end namespace impl
   } //end namespace corbaServer
