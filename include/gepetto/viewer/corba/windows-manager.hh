@@ -260,7 +260,9 @@ namespace graphics {
             virtual bool writeWindowFile (const WindowID windowId, const std::string& filename);
             virtual bool setBackgroundColor1(const WindowID windowId,const Color_t& color);
             virtual bool setBackgroundColor2(const WindowID windowId,const Color_t& color);
-            
+            virtual bool getCameraTransform(const WindowID windowId,osg::Vec3d& pos,osg::Quat& rot);
+            virtual bool setCameraTransform(const WindowID windowId,const value_type* configurationCorba);
+
 
             WindowManagerPtr_t getWindowManager (const WindowID wid, bool throwIfDoesntExist = false) const;
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;

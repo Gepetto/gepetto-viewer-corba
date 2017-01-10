@@ -1351,5 +1351,24 @@ namespace graphics {
     mtx_.unlock();
     return true;
   }
+
+  bool WindowsManager::getCameraTransform(const WindowID windowId,osg::Vec3d& pos,osg::Quat& rot){
+    WindowManagerPtr_t wm = getWindowManager(windowId, true);
+    mtx_.lock();
+    wm->getCameraTransform(pos,rot);
+    mtx_.unlock();
+    return true;
+  }
+
+  bool WindowsManager::setCameraTransform(const WindowID windowId,const value_type* configurationCorba){
+    osg::Vec3d pos = WindowsManager::corbaConfToOsgVec3 (configurationCorba);
+    osg::Quat rot =  WindowsManager::corbaConfToOsgQuat (configurationCorba);
+    WindowManagerPtr_t wm = getWindowManager(windowId, true);
+    mtx_.lock();
+    wm->setCameraTransform(pos,rot);
+    mtx_.unlock();
+    return true;
+  }
+
   
 } // namespace graphics
