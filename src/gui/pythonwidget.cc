@@ -95,6 +95,7 @@ namespace gepetto {
             return;
           }
           if (module.isNull()) {
+            pqt->handleError();
             qDebug() << "Enable to load module" << moduleName;
             return;
           }
