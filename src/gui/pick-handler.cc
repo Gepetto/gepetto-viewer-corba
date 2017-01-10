@@ -98,12 +98,11 @@ namespace gepetto {
           // wsm_->lock().lock();
           osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
               new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
-          intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
+          intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
 
           osgUtil::IntersectionVisitor iv( intersector );
 
           osg::Camera* camera = viewer->getCamera();
-
           camera->accept( iv );
 
           if( !intersector->containsIntersections() ) {
@@ -111,26 +110,23 @@ namespace gepetto {
             return nodes;
           }
 
-          osgUtil::LineSegmentIntersector::Intersections intersections = intersector->getIntersections();
-
-          for(osgUtil::LineSegmentIntersector::Intersections::iterator it = intersections.begin();
-              it != intersections.end(); ++it) {
-              for (int i = (int) it->nodePath.size()-1; i >= 0 ; --i) {
-                  graphics::NodePtr_t n = wsm_->getNode(it->nodePath[i]->getName ());
-                  if (n) {
-                      if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
-                        continue;
-                      SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
-                                                                 n,
-                                                                 mapper_.getQtModKey(modKeyMask));
-                      event->setupIntersection(*it);
-                      parent_->emitClicked(event);
-                      return nodes;
-                      // nodes.push_back(n);
-                      // break;
-                    }
-                }
+          // Only one intersection. Otherwise, one has to loop on elements of
+          // intersector->getIntersections();
+          const osgUtil::LineSegmentIntersector::Intersection&
+            intersection = intersector->getFirstIntersection();
+          for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
+            graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
+            if (n) {
+              if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
+                continue;
+              SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
+                  n,
+                  mapper_.getQtModKey(modKeyMask));
+              event->setupIntersection(intersection);
+              parent_->emitClicked(event);
+              return nodes;
             }
+          }
         }
       parent_->emitClicked(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
       return nodes;
