@@ -100,10 +100,11 @@ class Plugin(QtGui.QDockWidget):
         self.main = mainWindow
         self.windowsManager = windowsManager
         mainWindow.connect('refresh()', self.refresh)
+        mainWindow.bodyTree().connect('bodySelected(SelectionEvent*)', self.selected)
 
     ### If present, this function is called when a new OSG Widget is created.
     def osgWidget(self, osgWindow):
-        osgWindow.connect('clicked(SelectionEvent*)', self.selected)
+        pass
 
     def resetConnection(self):
         self.client = Client()

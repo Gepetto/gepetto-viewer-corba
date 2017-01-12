@@ -57,9 +57,6 @@ namespace gepetto {
 
         WindowsManager::WindowID windowID () const;
 
-signals:
-      void clicked (SelectionEvent* event);
-
         public slots:
         /// Load an urdf file in the viewer.
         /// \param robotName name of the robot
@@ -76,7 +73,6 @@ signals:
         void cameraManipulationMode ();
         void addFloor();
         void attachToWindow (const std::string nodeName);
-        void emitClicked (SelectionEvent* event);
 
       protected:
 

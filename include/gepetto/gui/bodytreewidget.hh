@@ -59,11 +59,10 @@ namespace gepetto {
         return model_;
       }
 
-      /// Handle a selection event
-      ///
-      /// Does not re-emit a selection event when the body tree selection
-      /// is updated.
-      void handleSelectionEvent (const SelectionEvent* event);
+      void emitBodySelected (SelectionEvent* event);
+
+    signals:
+      void bodySelected (SelectionEvent* event);
 
     public slots:
       /// \addtogroup available_in_python Python API
@@ -111,6 +110,12 @@ namespace gepetto {
                            const QModelIndex &previous);
 
     private:
+      /// Handle a selection event
+      ///
+      /// Does not re-emit a selection event when the body tree selection
+      /// is updated.
+      void handleSelectionEvent (const SelectionEvent* event);
+
       QTreeView* view_;
       QStandardItemModel* model_;
       WindowsManagerPtr_t osg_;

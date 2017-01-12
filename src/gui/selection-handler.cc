@@ -4,16 +4,16 @@
 #include <QAction>
 #include <QDebug>
 
+#include <gepetto/gui/bodytreewidget.hh>
+#include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/selection-event.hh>
 #include <gepetto/gui/windows-manager.hh>
-#include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/selection-handler.hh"
 
 namespace gepetto {
   namespace gui {
     SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, QWidget *parent)
       : QComboBox(parent),
-	osg_(NULL),
 	index_(-1),
 	wsm_(wsm)
     {
@@ -24,12 +24,6 @@ namespace gepetto {
     {
     }
 
-    void SelectionHandler::setParentOSG(OSGWidget* parent)
-    {
-      osg_ = parent;
-      changeMode(currentIndex());
-    }
-
     SelectionMode* SelectionHandler::mode ()
     {
       assert(index_ >= 0 && index_ < (int)modes_.size());
@@ -38,23 +32,22 @@ namespace gepetto {
 
     void SelectionHandler::changeMode(int index)
     {
-      if (osg_ != NULL) {
-	foreach(QString name, selected_) {
-	  wsm_->setHighlight(name.toStdString(), 0);	
-	}
-	if (index_ != -1) {
-	  modes_[index_]->reset();
-	  disconnect(osg_, SIGNAL(clicked(SelectionEvent*)),
-		     modes_[index_], SLOT(onSelect(SelectionEvent*)));
-	  disconnect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
-		     this, SLOT(getBodies(QStringList)));
-	}
-	index_ = index;
-	connect(osg_, SIGNAL(clicked(SelectionEvent*)),
-		modes_[index], SLOT(onSelect(SelectionEvent*)));
-	connect(modes_[index], SIGNAL(selectedBodies(QStringList)),
-		SLOT(getBodies(QStringList)));
+      BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
+      foreach(QString name, selected_) {
+        wsm_->setHighlight(name.toStdString(), 0);
       }
+      if (index_ != -1) {
+        modes_[index_]->reset();
+        disconnect(bt, SIGNAL(bodySelected(SelectionEvent*)),
+                   modes_[index_], SLOT(onSelect(SelectionEvent*)));
+        disconnect(modes_[index_], SIGNAL(selectedBodies(QStringList)),
+                   this, SLOT(getBodies(QStringList)));
+      }
+      index_ = index;
+      connect(bt, SIGNAL(bodySelected(SelectionEvent*)),
+              modes_[index], SLOT(onSelect(SelectionEvent*)));
+      connect(modes_[index], SIGNAL(selectedBodies(QStringList)),
+              SLOT(getBodies(QStringList)));
     }
 
     void SelectionHandler::addMode(SelectionMode* mode)

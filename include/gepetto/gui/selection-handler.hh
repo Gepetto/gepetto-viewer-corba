@@ -78,8 +78,6 @@ namespace gepetto {
       SelectionHandler(WindowsManagerPtr_t wsm, QWidget* parent = 0);
       ~SelectionHandler();
 
-      void setParentOSG(OSGWidget* parent);
-
       SelectionMode* mode ();
 
     public slots:
@@ -95,7 +93,6 @@ namespace gepetto {
       void initWidget();
 
       std::vector<SelectionMode *> modes_;
-      OSGWidget* osg_;
       int index_;
       WindowsManagerPtr_t wsm_;
       QStringList selected_;

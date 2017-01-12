@@ -89,6 +89,7 @@ namespace gepetto {
                                                                     const float &x, const float &y,
 								    int modKeyMask)
     {
+      BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
       std::list<graphics::NodePtr_t> nodes;
       osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
       if( viewer )
@@ -108,7 +109,7 @@ namespace gepetto {
           camera->accept( iv );
 
           if( !intersector->containsIntersections() ) {
-            parent_->emitClicked(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
+            bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
             return nodes;
           }
 
@@ -125,12 +126,12 @@ namespace gepetto {
                   n,
                   mapper_.getQtModKey(modKeyMask));
               event->setupIntersection(intersection);
-              parent_->emitClicked(event);
+              bt->emitBodySelected(event);
               return nodes;
             }
           }
         }
-      parent_->emitClicked(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
+      bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
       return nodes;
     }
 

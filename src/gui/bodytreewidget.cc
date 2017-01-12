@@ -132,7 +132,6 @@ namespace gepetto {
         if (matches.empty())
           view_->clearSelection();
         else {
-          qDebug() << event->modKey();
           if (event->modKey() == Qt::ControlModifier)
             view_->selectionModel()->setCurrentIndex
                 (matches.first()->index(),
@@ -145,6 +144,16 @@ namespace gepetto {
       connect (view_->selectionModel(),
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           SLOT (currentChanged(QModelIndex,QModelIndex)));
+    }
+
+    void BodyTreeWidget::emitBodySelected(SelectionEvent* event)
+    {
+      emit bodySelected (event);
+      if (event->type() != SelectionEvent::FromBodyTree) {
+        MainWindow* main = MainWindow::instance();
+        handleSelectionEvent(event);
+        main->requestSelectJointFromBodyName(event->nodeName());
+      }
     }
 
     void BodyTreeWidget::currentChanged (const QModelIndex &current,
@@ -160,7 +169,7 @@ namespace gepetto {
          );
       if (item) {
         SelectionEvent *event = new SelectionEvent(SelectionEvent::FromBodyTree, item->node(), QApplication::keyboardModifiers());
-        MainWindow::instance()->centralWidget()->emitClicked(event);
+        emit bodySelected(event);
       }
     }
 

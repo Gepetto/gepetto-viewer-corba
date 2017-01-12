@@ -36,7 +36,6 @@
 #include <gepetto/viewer/OSGManipulator/keyboard-manipulator.h>
 
 #include <gepetto/gui/windows-manager.hh>
-#include <gepetto/gui/bodytreewidget.hh>
 #include <gepetto/gui/selection-event.hh>
 
 namespace gepetto {
@@ -178,16 +177,6 @@ namespace gepetto {
 //        wsm_->lock().lock();
 //        viewer_->frame();
       //        wsm_->lock().unlock();
-    }
-
-    void OSGWidget::emitClicked(SelectionEvent* event)
-    {
-      emit clicked (event);
-      if (event->type() != SelectionEvent::FromBodyTree) {
-        MainWindow* main = MainWindow::instance();
-        main->bodyTree()->handleSelectionEvent(event);
-        main->requestSelectJointFromBodyName(event->nodeName());
-      }
     }
 
     void OSGWidget::onHome()
