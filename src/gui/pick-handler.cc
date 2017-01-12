@@ -104,6 +104,7 @@ namespace gepetto {
           intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
 
           osgUtil::IntersectionVisitor iv( intersector );
+          iv.setTraversalMask(graphics::IntersectionBit);
 
           osg::Camera* camera = viewer->getCamera();
           camera->accept( iv );
@@ -118,6 +119,7 @@ namespace gepetto {
           const osgUtil::LineSegmentIntersector::Intersection&
             intersection = intersector->getFirstIntersection();
           for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
+            if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
             graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
             if (n) {
               if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
