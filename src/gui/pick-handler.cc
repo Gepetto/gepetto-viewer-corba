@@ -6,6 +6,8 @@
 
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 
 #include <osgViewer/Viewer>
 
@@ -76,7 +78,7 @@ namespace gepetto {
       return false;
     }
 
-    void PickHandler::getUsage (osg::ApplicationUsage& usage)
+    void PickHandler::getUsage (osg::ApplicationUsage& usage) const
     {
       usage.addKeyboardMouseBinding ("Right click", "Select node");
       usage.addKeyboardMouseBinding ('z', "Move camera on selected node");
@@ -147,13 +149,29 @@ namespace gepetto {
       osg::Vec3f eye, center, up;
       viewer->getCameraManipulator()->getInverseMatrix ()
         .getLookAt (eye, center, up);
-      if (zoom) {
-        eye.normalize();
-        eye *= 1 + bs.radius ();
+
+      osgGA::TrackballManipulator* tbm = dynamic_cast<osgGA::TrackballManipulator*>(viewer->getCameraManipulator());
+      if (!tbm) {
+        osgGA::KeySwitchMatrixManipulator* ksm = dynamic_cast<osgGA::KeySwitchMatrixManipulator*>(viewer->getCameraManipulator());
+        if (ksm) {
+          tbm = dynamic_cast<osgGA::TrackballManipulator*>(ksm->getCurrentMatrixManipulator());
+        }
       }
-      viewer->getCameraManipulator()->setByInverseMatrix (
-          osg::Matrixd::lookAt (eye, bs.center(), up)
-          );
+      if (tbm) {
+        tbm->setCenter(bs.center());
+        if (zoom) tbm->setDistance(3 * bs.radius());
+      } else {
+        if (zoom) {
+          osg::Vec3f tmp = center - eye;
+          tmp.normalize();
+          eye = bs.center() - tmp * 3 * bs.radius();
+        } else {
+          eye += bs.center() - center;
+        }
+        viewer->getCameraManipulator()->setByInverseMatrix (
+            osg::Matrixd::lookAt (eye, bs.center(), up)
+            );
+      }
     }
   }
 }

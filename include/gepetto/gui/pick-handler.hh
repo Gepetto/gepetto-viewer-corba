@@ -24,7 +24,7 @@ namespace gepetto {
       virtual bool handle( const osgGA::GUIEventAdapter&  ea,
                                  osgGA::GUIActionAdapter& aa );
 
-      void getUsage (osg::ApplicationUsage &usage);
+      void getUsage (osg::ApplicationUsage &usage) const;
 
     private:
       std::list <graphics::NodePtr_t> computeIntersection (osgGA::GUIActionAdapter& aa,
