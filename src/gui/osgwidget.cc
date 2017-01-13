@@ -86,9 +86,6 @@ namespace gepetto {
     , wm_ ()
     , viewer_ (new osgViewer::Viewer)
     , screenCapture_ ()
-    , mode_ (CAMERA_MANIPULATION)
-    , selectionFinished_( true )
-    , infoBox_ (this)
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
       osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
@@ -134,7 +131,8 @@ namespace gepetto {
 
       viewer_->setThreadingModel(threadingModel);
 
-      QGLWidget* glWidget = graphicsWindow_->getGLWidget();
+      osgQt::GLWidget* glWidget = graphicsWindow_->getGLWidget();
+      //glWidget->setForwardKeyEvents(true);
       QVBoxLayout* hblayout = new QVBoxLayout (this);
       hblayout->setContentsMargins(1,1,1,1);
       setLayout (hblayout);
@@ -172,34 +170,9 @@ namespace gepetto {
       wsm_->addSceneToWindow(rn.constData(), wid_);
     }
 
-    void OSGWidget::paintEvent( QPaintEvent* /* paintEvent */ )
-    {
-//        wsm_->lock().lock();
-//        viewer_->frame();
-      //        wsm_->lock().unlock();
-    }
-
     void OSGWidget::onHome()
     {
       viewer_->home ();
-    }
-
-    void OSGWidget::changeMode(Mode mode)
-    {
-      mode_ = mode;
-      infoBox_.setMode (mode);
-    }
-
-    void OSGWidget::selectionMode()
-    {
-      mode_ = NODE_SELECTION;
-      infoBox_.setMode(NODE_SELECTION);
-    }
-
-    void OSGWidget::cameraManipulationMode()
-    {
-      mode_ = CAMERA_MANIPULATION;
-      infoBox_.setMode(CAMERA_MANIPULATION);
     }
 
     void OSGWidget::addFloor()
@@ -210,113 +183,6 @@ namespace gepetto {
     void OSGWidget::attachToWindow(const std::string nodeName)
     {
       wsm_->addSceneToWindow(nodeName, wid_);
-    }
-
-    osgGA::EventQueue* OSGWidget::getEventQueue() const
-    {
-      osgGA::EventQueue* eventQueue = viewer_->getEventQueue();
-
-      if( eventQueue )
-        return( eventQueue );
-      else
-        throw( std::runtime_error( "Unable to obtain valid event queue") );
-    }
-
-    std::list <graphics::NodePtr_t> OSGWidget::processSelection()
-    {
-      NodeList nodes;
-      QRect selectionRectangle = makeRectangle( selectionStart_, selectionEnd_ );
-      int widgetHeight         = this->height();
-
-      double xMin = selectionRectangle.left();
-      double xMax = selectionRectangle.right();
-      double yMin = widgetHeight - selectionRectangle.bottom();
-      double yMax = widgetHeight - selectionRectangle.top();
-
-      osg::ref_ptr<osgUtil::PolytopeIntersector> polytopeIntersector
-        = new osgUtil::PolytopeIntersector( osgUtil::PolytopeIntersector::WINDOW,
-            xMin, yMin,
-            xMax, yMax );
-
-      // This limits the amount of intersections that are reported by the
-      // polytope intersector. Using this setting, a single drawable will
-      // appear at most once while calculating intersections. This is the
-      // preferred and expected behaviour.
-      polytopeIntersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_ONE_PER_DRAWABLE );
-
-      osgUtil::IntersectionVisitor iv( polytopeIntersector );
-
-      osg::ref_ptr<osg::Camera> camera = viewer_->getCamera();
-
-      if( !camera )
-        throw std::runtime_error( "Unable to obtain valid camera for selection processing" );
-
-      camera->accept( iv );
-
-      if( !polytopeIntersector->containsIntersections() )
-        return nodes;
-
-      osgUtil::PolytopeIntersector::Intersections intersections = polytopeIntersector->getIntersections();
-
-      for(osgUtil::PolytopeIntersector::Intersections::iterator it = intersections.begin();
-          it != intersections.end(); ++it) {
-        for (int i = (int) it->nodePath.size()-1; i >= 0 ; --i) {
-          graphics::NodePtr_t n = wsm_->getNode(it->nodePath[i]->getName ());
-          if (n) {
-            if (boost::regex_match (n->getID().c_str(), boost::regex ("^.*_[0-9]+$")))
-              continue;
-            nodes.push_back(n);
-            break;
-          }
-        }
-      }
-      return nodes;
-    }
-
-    OSGWidget::InfoBox::InfoBox(QWidget *parent) :
-      size_ (16,16),
-      selection_ (QIcon::fromTheme("edit-select").pixmap(size_)),
-      record_ (QIcon::fromTheme("media-record").pixmap(size_)),
-      label_ (new QLabel (parent))
-    {
-      label_->setAutoFillBackground(true);
-      label_->hide();
-      label_->setGeometry(QRect (QPoint(0,0), size_));
-    }
-
-    void OSGWidget::InfoBox::normalMode()
-    {
-      label_->hide();
-    }
-
-    void OSGWidget::InfoBox::selectionMode()
-    {
-      label_->show();
-      label_->setPixmap(selection_);
-    }
-
-    void OSGWidget::InfoBox::recordMode()
-    {
-      label_->show();
-      label_->setPixmap(record_);
-    }
-
-    void OSGWidget::InfoBox::setMode(OSGWidget::Mode mode)
-    {
-      switch (mode) {
-        case CAMERA_MANIPULATION:
-          normalMode();
-          break;
-        case NODE_SELECTION:
-          selectionMode();
-          break;
-        case NODE_MOTION:
-          selectionMode();
-          break;
-        default:
-          normalMode();
-          break;
-      }
     }
 
     void RenderThread::run()

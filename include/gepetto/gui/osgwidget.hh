@@ -39,14 +39,6 @@ namespace gepetto {
     {
       Q_OBJECT
       public:
-        typedef std::list <graphics::NodePtr_t> NodeList;
-
-        enum Mode {
-          CAMERA_MANIPULATION,
-          NODE_SELECTION,
-          NODE_MOTION
-        };
-
         OSGWidget( WindowsManagerPtr_t wm,
                   const std::string & name,
                   MainWindow* parent,
@@ -67,20 +59,10 @@ namespace gepetto {
         /// Replace the camera at her home position.
         virtual void onHome();
 
-        /// Change
-        void changeMode (Mode mode);
-        void selectionMode ();
-        void cameraManipulationMode ();
         void addFloor();
         void attachToWindow (const std::string nodeName);
 
-      protected:
-
-        virtual void paintEvent( QPaintEvent* paintEvent );
-
       private:
-        osgGA::EventQueue* getEventQueue() const;
-
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
         WindowsManagerPtr_t wsm_;
         osg::ref_ptr<PickHandler> pickHandler_;
@@ -89,29 +71,6 @@ namespace gepetto {
         RenderThread render_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
-
-        QPoint selectionStart_;
-        QPoint selectionEnd_;
-        graphics::NodePtr_t selectedNode_;
-
-        Mode mode_;
-        bool selectionFinished_;
-
-        std::list <graphics::NodePtr_t> processPoint ();
-        std::list <graphics::NodePtr_t> processSelection();
-
-        struct InfoBox {
-          QSize size_;
-          QPixmap selection_, record_;
-          QLabel* label_;
-
-          InfoBox (QWidget* parent);
-          void normalMode ();
-          void selectionMode ();
-          void recordMode ();
-          void setMode (Mode mode);
-        };
-        InfoBox infoBox_;
 
         friend class PickHandler;
     };
