@@ -53,9 +53,8 @@ namespace gepetto {
     {
       move(QCursor::pos());
       selectAll();
-      setFocus(Qt::OtherFocusReason);
-      // completer_->setCompletionPrefix(text());
-      completer_->complete();
+      // completer_->complete();
+      // setFocus(Qt::OtherFocusReason);
     }
 
     bool ActionSearchBar::trigger ( const QString& s )
