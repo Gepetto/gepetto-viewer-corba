@@ -28,10 +28,15 @@ namespace gepetto {
 
     void ActionSearchBar::addAction (QAction* action)
     {
-      actions_[action->text()] = action;
-      model_->setStringList(
-          model_->stringList() << action->text()
-          );
+      QString t = action->text();
+      t.remove('&');
+      if (actions_.contains(t)) {
+        actions_[t] = action;
+      } else {
+        actions_[t] = action;
+        model_->setStringList( model_->stringList() << t );
+        qDebug() << t;
+      }
     }
 
     void ActionSearchBar::keyPressEvent ( QKeyEvent* event )

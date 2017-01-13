@@ -110,6 +110,7 @@ namespace gepetto {
       dock->toggleViewAction ()->setIcon(QIcon::fromTheme("window-new"));
       dock->adjustSize();
       ui_->menuWindow->addAction(dock->toggleViewAction ());
+      actionSearchBar_->addAction(dock->toggleViewAction ());
     }
 
     void MainWindow::removeDockWidget(QDockWidget *dock)
