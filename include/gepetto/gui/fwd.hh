@@ -14,6 +14,7 @@ namespace gepetto {
     class ShortcutFactory;
     class SelectionHandler;
     class SelectionEvent;
+    class ActionSearchBar;
 
     class ViewerCorbaServer;
 

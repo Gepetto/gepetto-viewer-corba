@@ -39,6 +39,8 @@ SET (${PROJECT_NAME}_SOURCES
   shortcut-factory.cc
   selection-handler.cc
   selection-event.cc
+  action-search-bar.cc
+  node-action.cc
   )
 
 IF(GEPETTO_GUI_HAS_PYTHONQT)
