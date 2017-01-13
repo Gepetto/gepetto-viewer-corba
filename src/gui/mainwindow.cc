@@ -241,8 +241,6 @@ namespace gepetto {
         pythonWidget_->addToContext("osg", centralWidget_);
 #endif
         connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
-        connect(ui_->actionSelection, SIGNAL (triggered()), centralWidget_, SLOT (selectionMode()));
-        connect(ui_->actionCamera_control_mode, SIGNAL (triggered()), centralWidget_, SLOT (cameraManipulationMode()));
         ui_->osgToolBar->show();
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
