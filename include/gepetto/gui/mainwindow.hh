@@ -230,6 +230,8 @@ signals:
 
         QStandardItemModel *bodyTreeModel_;
 
+        ActionSearchBar* actionSearchBar_;
+
         QMutex delayedCreateView_;
         QStringList robotNames_;
         QStringList lastBodiesInCollision_;

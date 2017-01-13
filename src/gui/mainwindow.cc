@@ -11,6 +11,8 @@
 #include "gepetto/gui/dialog/dialogloadenvironment.hh"
 #include "gepetto/gui/plugin-interface.hh"
 #include "gepetto/gui/selection-handler.hh"
+#include "gepetto/gui/action-search-bar.hh"
+#include "gepetto/gui/node-action.hh"
 
 #include <gepetto/gui/meta.hh>
 #include <gepetto/gui/config-dep.hh>
@@ -31,7 +33,8 @@ namespace gepetto {
       osgViewerManagers_ (),
       osgServer_ (NULL),
       backgroundQueue_(),
-      worker_ ()
+      worker_ (),
+      actionSearchBar_ (new ActionSearchBar(this))
     {
       MainWindow::instance_ = this;
       ui_->setupUi(this);
@@ -245,6 +248,7 @@ namespace gepetto {
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
       }
+      osgWidget->addAction(actionSearchBar_->showAction());
       osgWindows_.append(osgWidget);
     }
 
@@ -428,6 +432,16 @@ namespace gepetto {
 
       connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));
       connect (this, SIGNAL(logErrorString(QString)), SLOT(logError(QString)));
+
+      // actionSearchBar_->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
+      actionSearchBar_->setWindowFlags(Qt::Popup);
+      actionSearchBar_->addAction(new NodeAction(NodeAction::VISIBILITY_ON,  "Show node", this));
+      actionSearchBar_->addAction(new NodeAction(NodeAction::VISIBILITY_OFF, "Hide node", this));
+      actionSearchBar_->addAction(new NodeAction(NodeAction::ALWAYS_ON_TOP, "Always on top", this));
+      actionSearchBar_->addAction(ui_->actionFetch_configuration);
+      actionSearchBar_->addAction(ui_->actionClose_connections);
+      actionSearchBar_->addAction(ui_->actionReconnect);
+      actionSearchBar_->addAction(ui_->actionRefresh);
     }
 
     void MainWindow::createCentralWidget()
