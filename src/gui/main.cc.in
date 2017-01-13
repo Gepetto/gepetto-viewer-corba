@@ -5,12 +5,16 @@
 #include <QSplashScreen>
 #include <QIcon>
 
+#include <QItemSelection>
+
 #include "gepetto/gui/safeapplication.hh"
 #include "gepetto/gui/mainwindow.hh"
 #include "gepetto/gui/dialog/pluginmanagerdialog.hh"
 #include "gepetto/gui/settings.hh"
 
 using namespace gepetto::gui;
+
+Q_DECLARE_METATYPE(QItemSelection)
 
 void setupApplication ()
 {
@@ -27,6 +31,7 @@ void setupApplication ()
   QIcon::setThemeName("oxygen");
 
   qRegisterMetaType<std::string>("std::string");
+  qRegisterMetaType<QItemSelection>("QItemSelection");
 }
 
 int main(int argc, char *argv[])
