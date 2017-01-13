@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector3D>
 #include <QObject>
+#include <QAtomicInt>
 
 #include <gepetto/viewer/node.h>
 
@@ -23,6 +24,7 @@ namespace gepetto {
           , node_ (node)
           , modKey_ (modKey)
           , hasIntersection_ (false)
+          , c_ (-1)
         {
           if (node)
             nodeName_ = QString::fromStdString(node->getID());
@@ -32,6 +34,7 @@ namespace gepetto {
           : type_ (t)
           , modKey_ (modKey)
           , hasIntersection_ (false)
+          , c_ (-1)
         {}
 
         void setupIntersection(const osgUtil::LineSegmentIntersector::Intersection& it);
@@ -39,6 +42,10 @@ namespace gepetto {
         const graphics::NodePtr_t& node () const { return node_; }
 
         void modKey (const Qt::KeyboardModifiers& m) { modKey_ = m; }
+
+        /// Set this to the number of slots that will receive the event.
+        /// \warning Not thread-safe
+        void setCounter(int c) { c_ = c; }
 
       public slots:
         Type                  type    () const { return type_; }
@@ -48,6 +55,11 @@ namespace gepetto {
         bool hasIntersection () { return hasIntersection_; }
         QVector3D normal(bool local) const { return (local ? localNormal_ : worldNormal_); }
         QVector3D point (bool local) const { return (local ? localPoint_  : worldPoint_ ); }
+        /// User must call this in slots using SelectionEvent.
+        /// This decreases the internal counter and destroys the object when it
+        /// reaches zero.
+        /// This is thread-safe.
+        void done ();
 
     private:
         Type type_;
@@ -57,6 +69,7 @@ namespace gepetto {
 
         bool hasIntersection_;
         QVector3D localPoint_, localNormal_, worldPoint_, worldNormal_;
+        QAtomicInt c_;
     };
   } // namespace gui
 } // namespace gepetto

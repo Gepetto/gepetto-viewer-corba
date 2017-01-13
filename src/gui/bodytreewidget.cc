@@ -148,12 +148,14 @@ namespace gepetto {
 
     void BodyTreeWidget::emitBodySelected(SelectionEvent* event)
     {
+      event->setCounter(receivers(SIGNAL(bodySelected(SelectionEvent*))) + 1);
       emit bodySelected (event);
       if (event->type() != SelectionEvent::FromBodyTree) {
         MainWindow* main = MainWindow::instance();
         handleSelectionEvent(event);
         main->requestSelectJointFromBodyName(event->nodeName());
       }
+      event->done();
     }
 
     void BodyTreeWidget::currentChanged (const QModelIndex &current,
@@ -169,7 +171,7 @@ namespace gepetto {
          );
       if (item) {
         SelectionEvent *event = new SelectionEvent(SelectionEvent::FromBodyTree, item->node(), QApplication::keyboardModifiers());
-        emit bodySelected(event);
+        emitBodySelected(event);
       }
     }
 

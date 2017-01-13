@@ -44,5 +44,13 @@ namespace gepetto {
       toQVector3(it.getLocalIntersectNormal(), localNormal_);
       toQVector3(it.getWorldIntersectNormal(), worldNormal_);
     }
+
+    void SelectionEvent::done()
+    {
+      c_.fetchAndAddAcquire(-1);
+      if (c_ == 0) {
+        deleteLater();
+      }
+    }
   }
 }

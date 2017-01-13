@@ -78,6 +78,7 @@ namespace gepetto {
       currentSelected_ = event->nodeName();
       wsm_->setHighlight(event->node()->getID(), 8);
       emit selectedBodies(QStringList() << currentSelected_);
+      event->done();
     }
 
     MultiSelection::MultiSelection(WindowsManagerPtr_t wsm)
@@ -126,6 +127,7 @@ namespace gepetto {
       }
       qDebug() << selectedBodies_;
       emit selectedBodies(selectedBodies_);
+      event->done();
     }
   }
 }
