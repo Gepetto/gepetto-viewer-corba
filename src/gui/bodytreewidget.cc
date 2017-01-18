@@ -6,6 +6,7 @@
 #include <gepetto/gui/osgwidget.hh>
 #include <gepetto/gui/meta.hh>
 #include <gepetto/gui/selection-event.hh>
+#include <gepetto/gui/node-action.hh>
 
 #include <QSignalMapper>
 #include <QColorDialog>
@@ -198,9 +199,8 @@ namespace gepetto {
           item->populateContextMenu (&contextMenu);
           QMenu* windows = contextMenu.addMenu(tr("Attach to window"));
           foreach (OSGWidget* w, main->osgWindows ()) {
-              JointAction* ja = new JointAction (w->objectName(), item->node()->getID(), windows);
+              NodeAction* ja = new NodeAction (w->objectName(), item->node(), w, windows);
               windows->addAction (ja);
-              w->connect(ja, SIGNAL(triggered(std::string)), SLOT(attachToWindow(std::string)));
             }
           contextMenu.exec(view_->mapToGlobal(pos));
         }

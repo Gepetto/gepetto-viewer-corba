@@ -19,6 +19,7 @@
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/selection-handler.hh>
 #include <gepetto/gui/windows-manager.hh>
+#include <gepetto/gui/osgwidget.hh>
 
 namespace gepetto {
   namespace gui {
@@ -51,6 +52,12 @@ namespace gepetto {
       , type_ (t)
     {}
 
+    NodeAction::NodeAction(const QString& text, graphics::NodePtr_t node, OSGWidget* window, QWidget* parent)
+      : NodeActionBase (text, node, parent)
+      , type_ (ATTACH_TO_WINDOW)
+      , window_ (window)
+    {}
+
     void NodeAction::act(bool)
     {
       graphics::NodePtr_t n = node();
@@ -64,6 +71,9 @@ namespace gepetto {
           break;
         case ALWAYS_ON_TOP:
           n->setVisibilityMode(graphics::ALWAYS_ON_TOP);
+          break;
+        case ATTACH_TO_WINDOW:
+          window_->attachToWindow(n->getID());
           break;
       }
     }

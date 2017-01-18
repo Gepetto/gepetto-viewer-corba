@@ -4,6 +4,7 @@
 #include <QAction>
 
 #include <gepetto/viewer/node.h>
+#include <gepetto/gui/fwd.hh>
 
 namespace gepetto {
   namespace gui {
@@ -30,18 +31,23 @@ namespace gepetto {
         enum Type {
           VISIBILITY_ON,
           VISIBILITY_OFF,
-          ALWAYS_ON_TOP
+          ALWAYS_ON_TOP,
+          ATTACH_TO_WINDOW
         };
 
         NodeAction(const Type& t, const QString& text, graphics::NodePtr_t node, QWidget* parent);
 
         NodeAction(const Type& t, const QString& text, QWidget* parent);
 
+        /// Attach to window
+        NodeAction(const QString& text, graphics::NodePtr_t node, OSGWidget* window, QWidget* parent);
+
       protected:
         void act(bool checked);
 
       private:
         const Type type_;
+        OSGWidget* window_;
     };
   }
 }
