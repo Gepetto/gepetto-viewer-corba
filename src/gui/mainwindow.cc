@@ -149,6 +149,11 @@ namespace gepetto {
       return &(settings_->pluginManager_);
     }
 
+    ActionSearchBar* MainWindow::actionSearchBar () const
+    {
+      return actionSearchBar_;
+    }
+
     void MainWindow::log(const QString &text)
     {
       if (thread() != QThread::currentThread()) {

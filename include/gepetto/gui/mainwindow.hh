@@ -76,6 +76,8 @@ namespace gepetto {
         /// Get the plugin manager.
         PluginManager* pluginManager ();
 
+        ActionSearchBar* actionSearchBar () const;
+
         /// Emit a signal to indicate that a job has been put in background.
         void emitSendToBackground (WorkItem* item);
 
