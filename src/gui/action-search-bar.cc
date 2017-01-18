@@ -35,7 +35,6 @@ namespace gepetto {
       } else {
         actions_[t] = action;
         model_->setStringList( model_->stringList() << t );
-        qDebug() << t;
       }
     }
 
