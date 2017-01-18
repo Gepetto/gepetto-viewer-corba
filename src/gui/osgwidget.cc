@@ -139,10 +139,8 @@ namespace gepetto {
       hblayout->addWidget(glWidget);
       setMinimumSize(10,10);
 
-      render_.viewerPtr = viewer_;
-      render_.wsm_ = wsm_;
-      render_.refreshRate = parent->settings_->refreshRate;
-      render_.start ();
+      connect( &timer_, SIGNAL(timeout()), this, SLOT(update()) );
+      timer_.start(parent->settings_->refreshRate);
     }
 
     OSGWidget::~OSGWidget()
@@ -152,6 +150,13 @@ namespace gepetto {
       pickHandler_ = NULL;
       wm_.reset();
       wsm_.reset();
+    }
+
+    void OSGWidget::paintEvent(QPaintEvent*)
+    {
+      wsm_->lock().lock();
+      viewer_->frame();
+      wsm_->lock().unlock();
     }
 
     graphics::WindowsManager::WindowID OSGWidget::windowID() const
@@ -184,23 +189,5 @@ namespace gepetto {
     {
       wsm_->addSceneToWindow(nodeName, wid_);
     }
-
-    void RenderThread::run()
-    {
-      if (viewerPtr) {
-          while (!viewerPtr->done ()) {
-              wsm_->lock ().lock();
-              viewerPtr->frame();
-              wsm_->lock ().unlock();
-              QThread::msleep(30);
-            }
-        }
-    }
-
-    RenderThread::~RenderThread() {
-      if (viewerPtr) viewerPtr->setDone(true);
-      wait();
-    }
-
   } // namespace gui
 } // namespace gepetto

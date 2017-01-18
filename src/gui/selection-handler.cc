@@ -45,7 +45,8 @@ namespace gepetto {
       }
       index_ = index;
       connect(bt, SIGNAL(bodySelected(SelectionEvent*)),
-              modes_[index], SLOT(onSelect(SelectionEvent*)));
+              modes_[index], SLOT(onSelect(SelectionEvent*)),
+              Qt::QueuedConnection);
       connect(modes_[index], SIGNAL(selectedBodies(QStringList)),
               SLOT(getBodies(QStringList)));
     }
