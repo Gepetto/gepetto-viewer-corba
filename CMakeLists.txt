@@ -83,7 +83,6 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ledindicator.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/plugin-interface.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/omniorbthread.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadrobot.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadenvironment.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/pluginmanagerdialog.hh
@@ -101,6 +100,7 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
     ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
     )
 
   SET(${PROJECT_NAME}_FORMS
