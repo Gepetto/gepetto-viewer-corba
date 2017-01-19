@@ -74,7 +74,8 @@ namespace gepetto {
 	PythonQt::cleanup();
       }
 
-        void PythonWidget::browseFile() {
+        void PythonWidget::browseFile()
+        {
             QFileDialog* fd = new QFileDialog;
 
             fd->setFileMode(QFileDialog::ExistingFile);
@@ -88,7 +89,9 @@ namespace gepetto {
             fd->deleteLater();
         }
 
-        void PythonWidget::loadModulePlugin(QString moduleName) {
+        void PythonWidget::loadModulePlugin(QString moduleName)
+        {
+          MainWindow* main = MainWindow::instance();
           PythonQt* pqt = PythonQt::self();
           PythonQtObjectPtr module = pqt->importModule (moduleName);
           if (pqt->handleError()) {
@@ -99,32 +102,22 @@ namespace gepetto {
             qDebug() << "Enable to load module" << moduleName;
             return;
           }
-          module.evalScript("from PythonQt import QtGui");
-          module.addObject("mainWindow", MainWindow::instance());
-          module.addObject("windowsManager", MainWindow::instance()->osg().get());
-          module.addObject("_menuPlugin", MainWindow::instance()->pluginMenu());
           QString var = "pluginInstance";
-          module.evalScript (var + " = Plugin(mainWindow)");
+
+          QVariantList args; args << QVariant::fromValue((QObject*)main);
+          QVariant instance = module.call("Plugin", args);
+          module.addVariable(var, instance);
+
+          QDockWidget* dw = qobject_cast<QDockWidget*>(instance.value<QObject*>());
+          if (dw) main->insertDockWidget(dw, Qt::RightDockWidgetArea);
+          // PythonQtObjectPtr dockPyObj (instance);
           PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
-//          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
-//          if (wrap->classInfo()->className() == "QDockWidget") {
-//            This solution would be better, but when deleting this dock widget,
-//            the program ends with a SEGV.
-//            Among other, wrap->classInfo() is sometimes NULL...
-//            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
-//            MainWindow::instance()->insertDockWidget(dock, Qt::RightDockWidgetArea);
-//          }
-          module.evalScript ("if issubclass (Plugin, QtGui.QDockWidget):\n"
-                             "  mainWindow.addDockWidget (1, " + var + ")\n"
-                             "  " + var + ".visible = False\n"
-                             "  " + var + ".toggleViewAction().setIcon(QtGui.QIcon.fromTheme('window-new'))\n"
-                             "  _menuPlugin.addAction (" + var + ".toggleViewAction())\n");
-          module.evalScript ("del _menuPlugin");
           addSignalHandlersToPlugin(dockPyObj);
           modules_[moduleName] = module;
         }
 
-        void PythonWidget::unloadModulePlugin(QString moduleName) {
+        void PythonWidget::unloadModulePlugin(QString moduleName)
+        {
           if (modules_.contains(moduleName)) {
             PythonQtObjectPtr module = modules_.value(moduleName);
             unloadModulePlugin(module);
@@ -132,19 +125,14 @@ namespace gepetto {
           }
         }
 
-        void PythonWidget::unloadModulePlugin(PythonQtObjectPtr module ) {
+        void PythonWidget::unloadModulePlugin(PythonQtObjectPtr module )
+        {
           PythonQt* pqt = PythonQt::self();
           QString var = "pluginInstance";
-          PythonQtObjectPtr dockPyObj = pqt->lookupObject(module,var);
-//          PythonQtInstanceWrapper* wrap = (PythonQtInstanceWrapper*) dockPyObj.object();
-//          if (wrap->classInfo()->className() == "QDockWidget") {
-//            this generates SEGV
-//            QDockWidget* dock = (QDockWidget*)wrap->_obj.data();
-//            MainWindow::instance()->removeDockWidget(dock);
-//          }
-          module.evalScript ("if issubclass (Plugin, QtGui.QDockWidget):\n"
-                             "  mainWindow.removeDockWidget (" + var + ")");
-          module.evalScript ("del " + var);
+          QVariant instance = pqt->getVariable(module, var);
+          QDockWidget* dw = qobject_cast<QDockWidget*>(instance.value<QObject*>());
+          if (dw) MainWindow::instance()->removeDockWidget(dw);
+          module.removeVariable (var);
         }
 
         void PythonWidget::addToContext(QString const& name, QObject* obj) {
