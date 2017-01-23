@@ -102,8 +102,9 @@ namespace gepetto {
             qDebug() << "Enable to load module" << moduleName;
             return;
           }
-          QString var = "pluginInstance";
+          module.addObject("windowsManager", main->osg().get());
 
+          QString var = "pluginInstance";
           QVariantList args; args << QVariant::fromValue((QObject*)main);
           QVariant instance = module.call("Plugin", args);
           module.addVariable(var, instance);
