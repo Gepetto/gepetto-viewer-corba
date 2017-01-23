@@ -51,13 +51,16 @@ class Client:
     self.__dict__[serviceName [0]] = client
 
 
-  def __init__(self, clients = defaultClients, url = "corbaloc:rir:/NameService"):
+  def __init__(self, clients = defaultClients, url = "corbaloc:rir:/NameService", host = None):
     """
     Initialize CORBA and create default clients.
     :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
                 For a remote corba server, use
                 url = "corbaloc:iiop:<host>:<port>/NameService"
+    :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
     """
+    if host is not None:
+        url = "corbaloc:iiop:" + str(host) + "/NameService"
     import sys
     self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
     obj = self.orb.string_to_object (url)
