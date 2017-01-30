@@ -164,6 +164,16 @@ namespace gepetto {
       return wid_;
     }
 
+    graphics::WindowManagerPtr_t OSGWidget::window() const
+    {
+      return wm_;
+    }
+
+    WindowsManagerPtr_t OSGWidget::osg() const
+    {
+      return wsm_;
+    }
+
     void OSGWidget::loadURDF(const QString robotName,
         const QString urdf_file_path)
     {

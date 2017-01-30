@@ -32,7 +32,8 @@ namespace gepetto {
           VISIBILITY_ON,
           VISIBILITY_OFF,
           ALWAYS_ON_TOP,
-          ATTACH_TO_WINDOW
+          ATTACH_TO_WINDOW,
+          ATTACH_CAMERA_TO_NODE
         };
 
         NodeAction(const Type& t, const QString& text, graphics::NodePtr_t node, QWidget* parent);
@@ -41,6 +42,9 @@ namespace gepetto {
 
         /// Attach to window
         NodeAction(const QString& text, graphics::NodePtr_t node, OSGWidget* window, QWidget* parent);
+
+        /// Attach camera to node
+        NodeAction(const QString& text, OSGWidget* window, QWidget* parent);
 
       protected:
         void act(bool checked);

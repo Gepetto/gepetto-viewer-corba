@@ -31,6 +31,10 @@ namespace gepetto {
 
         WindowsManager::WindowID windowID () const;
 
+        graphics::WindowManagerPtr_t window () const;
+
+        WindowsManagerPtr_t osg () const;
+
         public slots:
         /// Load an urdf file in the viewer.
         /// \param robotName name of the robot

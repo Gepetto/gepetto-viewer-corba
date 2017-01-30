@@ -251,6 +251,8 @@ namespace gepetto {
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
+
+        actionSearchBar_->addAction(new NodeAction("Attach camera to selected node", osgWidget, this));
       }
       osgWidget->addAction(actionSearchBar_->showAction());
       osgWindows_.append(osgWidget);

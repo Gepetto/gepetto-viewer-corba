@@ -58,6 +58,12 @@ namespace gepetto {
       , window_ (window)
     {}
 
+    NodeAction::NodeAction(const QString& text, OSGWidget* window, QWidget* parent)
+      : NodeActionBase (text, graphics::NodePtr_t(), parent)
+      , type_ (ATTACH_CAMERA_TO_NODE)
+      , window_ (window)
+    {}
+
     void NodeAction::act(bool)
     {
       graphics::NodePtr_t n = node();
@@ -73,7 +79,14 @@ namespace gepetto {
           n->setVisibilityMode(graphics::ALWAYS_ON_TOP);
           break;
         case ATTACH_TO_WINDOW:
+          window_->osg()->lock().lock();
           window_->attachToWindow(n->getID());
+          window_->osg()->lock().unlock();
+          break;
+        case ATTACH_CAMERA_TO_NODE:
+          window_->osg()->lock().lock();
+          window_->window()->attachCameraToNode(n);
+          window_->osg()->lock().unlock();
           break;
       }
     }
