@@ -406,7 +406,7 @@ namespace graphics {
   	  return false;
         }
   	mtx_.lock();
-	windowManagers_[windowId]->attachCameraToNode(node.get());
+	windowManagers_[windowId]->attachCameraToNode(node);
    	mtx_.unlock();
 	return true;
      }
