@@ -133,6 +133,7 @@ namespace graphics {
           typedef const char*  In_t;
           static Out_t op (In_t modeName) {
               if      (strcasecmp (modeName, "lines")          == 0) return GL_LINES;
+              else if (strcasecmp (modeName, "points")         == 0) return GL_POINTS;
               else if (strcasecmp (modeName, "line_strip")     == 0) return GL_LINE_STRIP;
               else if (strcasecmp (modeName, "line_loop")      == 0) return GL_LINE_LOOP;
               else if (strcasecmp (modeName, "polygon")        == 0) return GL_POLYGON;
