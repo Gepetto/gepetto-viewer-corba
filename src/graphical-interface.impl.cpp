@@ -367,6 +367,8 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setHighlight, STRING, LONG)
 
+      BIND_TO_WINDOWS_MANAGER_2(VOID, captureFrame, WINDOW_ID, STRING)
+
       BIND_TO_WINDOWS_MANAGER_3(BOOL, startCapture, WINDOW_ID, STRING, STRING)
 
       BIND_TO_WINDOWS_MANAGER_1(BOOL, stopCapture, WINDOW_ID)

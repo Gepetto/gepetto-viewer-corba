@@ -142,6 +142,7 @@ public:
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba)  throw (Error);
   virtual bool setHighlight(const char* nodeNameCorba, ::CORBA::Long state)  throw (Error);
 
+  virtual void captureFrame (const WindowID windowId, const char* filename) throw (Error);
   virtual bool startCapture (const WindowID windowId, const char* filename,
       const char* extension) throw (Error);
   virtual bool stopCapture (const WindowID windowId) throw (Error);

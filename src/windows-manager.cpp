@@ -1172,6 +1172,19 @@ namespace graphics {
         return true;
     }
 
+    void WindowsManager::captureFrame (const WindowID wid, const std::string& filename)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      mtx_.lock();
+      try {
+        wm->captureFrame (filename);
+      } catch (const std::exception& exc) {
+        mtx_.unlock();
+        throw;
+      }
+      mtx_.unlock();
+    }
+
     bool WindowsManager::startCapture (const WindowID windowId, const std::string& filename,
             const std::string& extension)
     {
