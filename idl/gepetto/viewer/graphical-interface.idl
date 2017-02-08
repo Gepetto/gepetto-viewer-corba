@@ -171,6 +171,8 @@ typedef sequence<Position> PositionSeq;
 
     boolean setCurveMode (in string curveName, in string mode) raises (Error);
 
+    boolean setCurveLineWidth (in string curveName, in float width) raises (Error);
+
     /// create a four vertices face called faceName.
     /// \param input faceName : name of the face.
     /// \param input pos1, pos2, pos3, pos4 : position of the vertices.
