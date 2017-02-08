@@ -660,6 +660,20 @@ namespace graphics {
         }
     }
 
+    bool WindowsManager::setCurveLineWidth (const std::string& curveName, const float& width)
+    {
+        NodePtr_t node = getNode (curveName, true);
+        LeafNodeLinePtr_t curve (boost::dynamic_pointer_cast <LeafNodeLine> (node));
+        if (!curve) {
+          std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
+          return false;
+        }
+        mtx_.lock();
+        curve->setLineWidth (width);
+        mtx_.unlock();
+        return true;
+    }
+
     bool WindowsManager::addTriangleFace (const std::string& faceName,
             const osgVector3& pos1,
             const osgVector3& pos2,
