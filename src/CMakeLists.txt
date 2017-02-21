@@ -82,6 +82,7 @@ IF(NOT CLIENT_ONLY)
   ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
   TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
   PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server omniORB4)
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server gepetto-viewer)
   #TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
 
   INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
