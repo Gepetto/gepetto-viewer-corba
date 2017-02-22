@@ -1233,7 +1233,7 @@ namespace graphics {
             blenderCapture_.nodes_);
         blenderCapture_.writer_visitor_->writer_ =
           new YamlTransformWriter (filename);
-        return nb == nodeNames.size();
+        return nb != nodeNames.size();
     }
 
     void WindowsManager::captureTransformOnRefresh (bool autoCapture)
