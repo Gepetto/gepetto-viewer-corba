@@ -51,6 +51,11 @@ def loadmotion (filename):
                 if currentObj:
                     currentObj.rotation_mode = 'QUATERNION'
                     posF = [float(x) for x in pos]
+                    if len(posF)>7:
+                        currentObj.dimensions[0]=posF[7]
+                        currentObj.keyframe_insert(data_path="scale",frame=frameId)
+                        if posF[7] <= 0:
+                            posF[3:7]=[1,0,0,0]
                     currentObj.location = posF[0:3]
                     currentObj.rotation_quaternion = posF[3:7]
                     currentObj.keyframe_insert (data_path="location", frame=frameId)
