@@ -1294,7 +1294,7 @@ namespace graphics {
         oss << "Window ID " << wid << " doesn't exist.";
         if (throwIfDoesntExist)
           throw std::invalid_argument (oss.str ());
-        std::cout << oss << std::endl;
+        std::cout << oss.str () << std::endl;
         return WindowManagerPtr_t ();
       }
     }

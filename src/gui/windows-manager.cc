@@ -79,7 +79,12 @@ namespace gepetto {
     {
       if (Parent_t::addToGroup(nodeName, groupName)) {
         NodePtr_t node = getNode(nodeName, false);
-        bool isGroup = getGroup(nodeName, false);
+        bool isGroup = true;
+        try {
+            getGroup(nodeName, true);
+        } catch (const gepetto::Error& exc) {
+            isGroup = false;
+        }
         assert(node);
         BodyTreeItemMap_t::const_iterator _groups = nodeItemMap_.find(groupName);
         assert(_groups != nodeItemMap_.end());
