@@ -25,7 +25,7 @@ namespace gepetto {
     void ShortcutFactory::addBinding(QString widgetName, QString actionName, QAction* action)
     {
       if (widgetsBindings_.find(widgetName) == widgetsBindings_.end()) {
-	widgetsBindings_.insert(std::make_pair<QString, BindingList>(widgetName, BindingList()));
+	widgetsBindings_.insert(std::make_pair(widgetName, BindingList()));
       }
       widgetsBindings_[widgetName].push_back(Binding(actionName, action));
       if (saved_.find(widgetName + "-" + actionName) != saved_.end()) {
@@ -83,7 +83,7 @@ namespace gepetto {
       foreach (QString name, robot.childGroups()) {
 	robot.beginGroup(name);
 	foreach (QString child, robot.childKeys()) {
-	  saved_.insert(std::make_pair<QString, QKeySequence>(name + "-" + child,
+	  saved_.insert(std::make_pair(name + "-" + child,
 							      robot.value(child, "").toString()));
 	}
 	robot.endGroup();
