@@ -1397,5 +1397,65 @@ namespace graphics {
     return true;
   }
 
-  
+  std::vector<std::string> WindowsManager::getPropertyNames(const std::string& nodeName) const
+  {
+    NodePtr_t node = getNode(nodeName, true);
+    const PropertyMap_t map = node->properties();
+    std::vector<std::string> names;
+    names.reserve(map.size());
+    for (PropertyMap_t::const_iterator _prop = map.begin(); _prop != map.end(); ++_prop)
+      names.push_back(_prop->first);
+    return names;
+  }
+
+  std::vector<std::string> WindowsManager::getPropertyTypes(const std::string& nodeName) const
+  {
+    NodePtr_t node = getNode(nodeName, true);
+    const PropertyMap_t map = node->properties();
+    std::vector<std::string> types;
+    types.reserve(map.size());
+    for (PropertyMap_t::const_iterator _prop = map.begin(); _prop != map.end(); ++_prop)
+      types.push_back(_prop->second->type());
+    return types;
+  }
+
+  template <typename Property_t>
+  Property_t WindowsManager::getProperty(const std::string& nodeName, const std::string& propName) const
+  {
+    NodePtr_t node = getNode(nodeName, true);
+    Property_t value;
+    if (!node->getProperty<Property_t>(propName, value)) {
+      throw std::invalid_argument ("Could not get the property");
+    }
+    return value;
+  }
+
+  template <typename Property_t>
+  void WindowsManager::setProperty(const std::string& nodeName, const std::string& propName, const Property_t& value) const
+  {
+    NodePtr_t node = getNode(nodeName, true);
+    if (!node->setProperty<Property_t>(propName, value)) {
+      throw std::invalid_argument ("Could not set the property");
+    }
+  }
+
+#define DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(Type,Name) \
+  Type WindowsManager::get ## Name ## Property(const std::string& nodeName, const std::string& propName) const \
+  { return getProperty<Type>(nodeName, propName); } \
+  void WindowsManager::set ## Name ## Property(const std::string& nodeName, const std::string& propName, const Type& value) const \
+  { setProperty<Type>(nodeName, propName, value); }
+
+#define INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(Type) \
+  template Type WindowsManager::getProperty<Type>(const std::string&, const std::string&) const; \
+  template void WindowsManager::setProperty<Type>(const std::string&, const std::string&, const Type&) const
+
+  INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(std::string);
+  INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector3);
+  INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector4);
+  INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(float);
+
+  DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(std::string, String)
+  DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector3, Vector3)
+  DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector4, Color)
+  DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(float, Float)
 } // namespace graphics

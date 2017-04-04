@@ -265,6 +265,20 @@ namespace graphics {
             virtual Configuration getCameraTransform(const WindowID windowId);
             virtual bool setCameraTransform(const WindowID windowId, const Configuration &configuration);
 
+            virtual std::vector<std::string> getPropertyNames(const std::string& nodeName) const;
+            virtual std::vector<std::string> getPropertyTypes(const std::string& nodeName) const;
+
+            template <typename Property_t> Property_t getProperty (const std::string& nodeName, const std::string& propName) const;
+            template <typename Property_t> void setProperty (const std::string& nodeName, const std::string& propName, const Property_t& value) const;
+
+            virtual std::string getStringProperty(const std::string& nodeName, const std::string& propName) const;
+            virtual void setStringProperty(const std::string& nodeName, const std::string& propName, const std::string& value) const;
+            virtual osgVector3 getVector3Property(const std::string& nodeName, const std::string& propName) const;
+            virtual void setVector3Property(const std::string& nodeName, const std::string& propName, const osgVector3& value) const;
+            virtual osgVector4 getColorProperty(const std::string& nodeName, const std::string& propName) const;
+            virtual void setColorProperty(const std::string& nodeName, const std::string& propName, const osgVector4& value) const;
+            virtual float getFloatProperty(const std::string& nodeName, const std::string& propName) const;
+            virtual void setFloatProperty(const std::string& nodeName, const std::string& propName, const float& value) const;
 
             WindowManagerPtr_t getWindowManager (const WindowID wid, bool throwIfDoesntExist = false) const;
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;
