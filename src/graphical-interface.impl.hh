@@ -39,7 +39,9 @@ public:
     typedef gepetto::corbaserver::Transform Transform;
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
     typedef gepetto::corbaserver::Position Position;
+    typedef gepetto::corbaserver::Position_slice Position_slice;
     typedef gepetto::corbaserver::Color Color;
+    typedef gepetto::corbaserver::Color_slice Color_slice;
     typedef gepetto::corbaserver::Names_t Names_t;
 
     /**
@@ -161,6 +163,17 @@ public:
   virtual Transform_slice* getCameraTransform(const WindowID windowId) throw (Error);
   virtual bool setCameraTransform(const WindowID windowId, const value_type *configurationCorba)throw (Error);
 
+  // ------------- Properties -------------------- //
+  virtual Names_t* getPropertyNames(const char* nodeName) throw (Error);
+  virtual Names_t* getPropertyTypes(const char* nodeName) throw (Error);
+  virtual char* getStringProperty(const char* nodeName, const char* propName) throw (Error);
+  virtual void setStringProperty(const char* nodeName, const char* propName, const char* value) throw (Error);
+  virtual Color_slice* getColorProperty(const char* nodeName, const char* propName) throw (Error);
+  virtual void setColorProperty(const char* nodeName, const char* propName, const Color value) throw (Error);
+  virtual Position_slice* getVector3Property(const char* nodeName, const char* propName) throw (Error);
+  virtual void setVector3Property(const char* nodeName, const char* propName, const Position value) throw (Error);
+  virtual float getFloatProperty(const char* nodeName, const char* propName) throw (Error);
+  virtual void setFloatProperty(const char* nodeName, const char* propName, float value) throw (Error);
 }; // end of class
 
 } /* namespace impl */

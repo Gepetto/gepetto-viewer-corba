@@ -415,6 +415,21 @@ typedef sequence<Position> PositionSeq;
 		/// \param input windowId : ID of the window
 		/// \param input configuration : the desired configuration of the camera
 		boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
+
+    Names_t getPropertyNames(in string nodeName) raises (Error);
+    Names_t getPropertyTypes(in string nodeName) raises (Error);
+
+    void setStringProperty(in string nodeName, in string propName, in string value) raises (Error);
+    string getStringProperty(in string nodeName, in string propName) raises (Error);
+
+    void setColorProperty(in string nodeName, in string propName, in Color value) raises (Error);
+    Color getColorProperty(in string nodeName, in string propName) raises (Error);
+
+    void setVector3Property(in string nodeName, in string propName, in Position value) raises (Error);
+    Position getVector3Property(in string nodeName, in string propName) raises (Error);
+
+    void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
+    float getFloatProperty(in string nodeName, in string propName) raises (Error);
   };
 };
 };
