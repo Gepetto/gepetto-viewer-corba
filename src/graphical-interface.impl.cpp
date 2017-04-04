@@ -23,6 +23,12 @@ namespace graphics {
               out.push_back ((typename Output::value_type)in[i]);
           }
 
+        template <typename Input, typename Output>
+          void to (const Input& in, Output& out, const int size) {
+            for (CORBA::ULong i = 0; i < size; ++i)
+              out[i] = in[i];
+          }
+
         template <typename Iterator>
         Names_t* toNames_t(Iterator begin, const Iterator& end)
         {
@@ -39,7 +45,7 @@ namespace graphics {
           return names;
         }
 
-        enum ArgType { STRING, STRING_LIST, COLOR,
+        enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR,
           TRANSFORM, POSITION, POSITION_SEQ,
           FLOAT, SHORT, LONG, WINDOW_ID, BOOL, VOID,
           GLMODE
@@ -49,7 +55,9 @@ namespace graphics {
         template <> struct traits<COLOR> {
           typedef       WindowsManager::Color_t   Out_t;
           typedef const GraphicalInterface::Color In_t;
+          typedef GraphicalInterface::Color_slice* Ret_t;
           static Out_t op (In_t color) { return Out_t (color[0], color[1], color[2], color[3]); }
+          static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Color_alloc(); to(in, r, 4); return r; }
         };
         template <> struct traits<TRANSFORM> {
           typedef const GraphicalInterface::Transform  In_t;
@@ -69,7 +77,9 @@ namespace graphics {
         template <> struct traits<POSITION> {
           typedef       osgVector3    Out_t;
           typedef const GraphicalInterface::Position In_t;
+          typedef GraphicalInterface::Color_slice* Ret_t;
           static Out_t op (In_t pos) { return Out_t (pos[0], pos[1], pos[2]); }
+          static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Position_alloc(); to(in, r, 3); return r; }
         };
         template <> struct traits<POSITION_SEQ> {
           typedef const GraphicalInterface::PositionSeq& In_t;
@@ -84,7 +94,9 @@ namespace graphics {
         template <> struct traits<STRING> {
           typedef std::string Out_t;
           typedef const char* In_t;
+          typedef char* Ret_t;
           static Out_t op (In_t in) { return Out_t (in); }
+          static Ret_t ret (const Out_t& in) { char *cstr = new char[in.length() + 1]; strcpy(cstr, in.c_str()); return cstr; }
         };
         template <> struct traits<STRING_LIST> {
           typedef std::vector<std::string> Out_t;
@@ -96,9 +108,11 @@ namespace graphics {
         template <> struct traits<FLOAT> {
           typedef const float& Out_t;
           typedef const float  In_t;
+          typedef float  Ret_t;
           typedef const float& OpIn_t;
           static const float& op (const float& in) { return in; }
           static       float& op (      float& in) { return in; }
+          static Ret_t ret (Out_t  in) { return in; }
         };
         template <> struct traits<SHORT> {
           typedef const short& Out_t;
@@ -133,6 +147,7 @@ namespace graphics {
           typedef const char*  In_t;
           static Out_t op (In_t modeName) {
               if      (strcasecmp (modeName, "lines")          == 0) return GL_LINES;
+              else if (strcasecmp (modeName, "points")         == 0) return GL_POINTS;
               else if (strcasecmp (modeName, "line_strip")     == 0) return GL_LINE_STRIP;
               else if (strcasecmp (modeName, "line_loop")      == 0) return GL_LINE_LOOP;
               else if (strcasecmp (modeName, "polygon")        == 0) return GL_POLYGON;
@@ -314,6 +329,8 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setCurveMode, STRING, GLMODE)
 
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, setCurveLineWidth, STRING, FLOAT)
+
       BIND_TO_WINDOWS_MANAGER_5(BOOL, addTriangleFace, STRING, POSITION, POSITION, POSITION, COLOR)
 
       BIND_TO_WINDOWS_MANAGER_6(BOOL, addSquareFace, STRING, POSITION, POSITION, POSITION, POSITION, COLOR)
@@ -366,6 +383,8 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setHighlight, STRING, LONG)
 
+      BIND_TO_WINDOWS_MANAGER_2(VOID, captureFrame, WINDOW_ID, STRING)
+
       BIND_TO_WINDOWS_MANAGER_3(BOOL, startCapture, WINDOW_ID, STRING, STRING)
 
       BIND_TO_WINDOWS_MANAGER_1(BOOL, stopCapture, WINDOW_ID)
@@ -394,7 +413,26 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL,setCameraTransform,WINDOW_ID,TRANSFORM)
 
+      // ------------- Properties -------------------- //
 
+      BIND_TO_WINDOWS_MANAGER_1(STRING_LIST,getPropertyNames,STRING)
+      BIND_TO_WINDOWS_MANAGER_1(STRING_LIST,getPropertyTypes,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_2(STRING,getStringProperty,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setStringProperty,STRING,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_2(POSITION,getVector3Property,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setVector3Property,STRING,STRING,POSITION)
+
+      BIND_TO_WINDOWS_MANAGER_2(COLOR,getColorProperty,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setColorProperty,STRING,STRING,COLOR)
+
+      BIND_TO_WINDOWS_MANAGER_2(FLOAT,getFloatProperty,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setFloatProperty,STRING,STRING,FLOAT)
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics
