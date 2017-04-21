@@ -374,17 +374,7 @@ namespace graphics {
 
     void WindowsManager::createScene (const std::string& sceneName)
     {
-        if (nodeExists(sceneName)) {
-            std::ostringstream oss;
-            oss << "A scene with name, \"" << sceneName << "\" already exists.";
-            throw gepetto::Error (oss.str ().c_str ());
-        }
-        else {
-            GroupNodePtr_t mainNode = GroupNode::create (sceneName);
-            mtx_.lock();
-            addGroup (sceneName, mainNode);
-            mtx_.unlock();
-        }
+      createGroup(sceneName);
     }
 
     void WindowsManager::createSceneWithFloor (const std::string& sceneName)
