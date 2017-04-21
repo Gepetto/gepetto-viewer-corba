@@ -433,6 +433,10 @@ namespace graphics {
       BIND_TO_WINDOWS_MANAGER_2(FLOAT,getFloatProperty,STRING,STRING)
 
       BIND_TO_WINDOWS_MANAGER_3(VOID,setFloatProperty,STRING,STRING,FLOAT)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL,getBoolProperty,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setBoolProperty,STRING,STRING,BOOL)
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics

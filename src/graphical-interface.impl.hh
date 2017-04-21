@@ -174,6 +174,8 @@ public:
   virtual void setVector3Property(const char* nodeName, const char* propName, const Position value) throw (Error);
   virtual float getFloatProperty(const char* nodeName, const char* propName) throw (Error);
   virtual void setFloatProperty(const char* nodeName, const char* propName, float value) throw (Error);
+  virtual bool getBoolProperty(const char* nodeName, const char* propName) throw (Error);
+  virtual void setBoolProperty(const char* nodeName, const char* propName, bool value) throw (Error);
 }; // end of class
 
 } /* namespace impl */

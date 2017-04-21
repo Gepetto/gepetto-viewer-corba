@@ -430,6 +430,9 @@ typedef sequence<Position> PositionSeq;
 
     void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
     float getFloatProperty(in string nodeName, in string propName) raises (Error);
+
+    void setBoolProperty(in string nodeName, in string propName, in boolean value) raises (Error);
+    boolean getBoolProperty(in string nodeName, in string propName) raises (Error);
   };
 };
 };
