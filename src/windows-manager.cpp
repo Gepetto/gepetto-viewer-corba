@@ -897,9 +897,8 @@ namespace graphics {
         const std::string& urdfPath, bool visual, bool linkFrame)
     {
       if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
-        GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath,
-            visual ? "visual" : "collision",
-            linkFrame ? "link" : "object");
+        GroupNodePtr_t urdf =
+          urdfParser::parse (urdfName, urdfPath, visual, linkFrame);
         mtx_.lock();
         addGroup (urdfName, urdf, true);
         NodePtr_t link;
@@ -1358,9 +1357,11 @@ namespace graphics {
   INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector3);
   INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector4);
   INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(float);
+  INSTANCIATE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(bool);
 
   DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(std::string, String)
   DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector3, Vector3)
   DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(osgVector4, Color)
   DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(float, Float)
+  DEFINE_WINDOWS_MANAGER_GET_SET_PROPERTY_FOR_TYPE(bool, Bool)
 } // namespace graphics
