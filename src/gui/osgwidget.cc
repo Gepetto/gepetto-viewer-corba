@@ -180,8 +180,7 @@ namespace gepetto {
       QByteArray rn = robotName.toLocal8Bit();
       QByteArray uf = urdf_file_path.toLocal8Bit();
       wsm_->addURDF(rn.constData(),
-          uf.constData(),
-          "");
+          uf.constData());
       wsm_->addSceneToWindow(rn.constData(), wid_);
     }
 
