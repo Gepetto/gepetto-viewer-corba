@@ -108,6 +108,8 @@ namespace graphics {
             void threadRefreshing(WindowManagerPtr_t window);
             bool urdfUpToDate (const std::string nodeName,
                 const std::string filename);
+            bool loadUDRF(const std::string& urdfName, const std::string& urdfPath,
+                bool visual, bool linkFrame);
             void registerUrdfNode (const std::string nodeName,
                 const std::string filename);
             bool urdfNodeMustBeAdded (const std::string& nodeName,

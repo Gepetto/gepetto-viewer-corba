@@ -844,31 +844,7 @@ namespace graphics {
     bool WindowsManager::addURDF (const std::string& urdfName,
             const std::string& urdfPath)
     {
-        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
-          GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath);
-          mtx_.lock();
-          addGroup (urdfName, urdf, true);
-          NodePtr_t link;
-          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-            link = urdf->getChild (i);
-            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-                <GroupNode> (link));
-            if (groupNode) {
-              addGroup(link->getID(), groupNode, urdf);
-              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-                  ++j) {
-                NodePtr_t object (groupNode->getChild (j));
-                addNode(object->getID (), object, groupNode);
-              }
-            } else {
-              addNode(link->getID(), link, urdf);
-            }
-          }
-          registerUrdfNode (urdfName, urdfPath);
-          mtx_.unlock();
-          return true;
-        }
-        return false;
+      return loadUDRF(urdfName, urdfPath, true, true);
     }
 
     bool WindowsManager::addURDF (const std::string& urdfName,
@@ -881,32 +857,7 @@ namespace graphics {
     bool WindowsManager::addUrdfCollision (const std::string& urdfName,
             const std::string& urdfPath)
     {
-        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
-            GroupNodePtr_t urdf = urdfParser::parse
-                (urdfName, urdfPath, "collision");
-            mtx_.lock();
-            addGroup (urdfName, urdf, true);
-            NodePtr_t link;
-            for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-                link = urdf->getChild (i);
-		GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-					  <GroupNode> (link));
-                if (groupNode) {
-                  addGroup(link->getID(), groupNode, urdf);
-		  for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-		       ++j) {
-		    NodePtr_t object (groupNode->getChild (j));
-                    addNode(object->getID (), object, groupNode);
-		  }
-		} else {
-                  addNode(link->getID(), link, urdf);
-                }
-            }
-            registerUrdfNode (urdfName, urdfPath);
-            mtx_.unlock();
-            return true;
-        }
-        return false;
+      return loadUDRF(urdfName, urdfPath, false, true);
     }
 
     bool WindowsManager::addUrdfCollision (const std::string& urdfName,
@@ -919,34 +870,7 @@ namespace graphics {
             const std::string& urdfPath,
             bool visual)
     {
-        if (urdfName == "") {
-            throw gepetto::Error ("Parameter nodeName cannot be empty in "
-                    "idl request addUrdfObjects.");
-        }
-        if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
-          GroupNodePtr_t urdf = urdfParser::parse
-            (urdfName, urdfPath, visual ? "visual" : "collision", "object");
-          mtx_.lock();
-          addGroup (urdfName, urdf, true);
-          NodePtr_t link;
-          for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
-            link = urdf->getChild (i);
-            GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
-                <GroupNode> (link));
-            if (groupNode) {
-              addGroup(link->getID(), groupNode, urdf);
-              for (std::size_t j=0; j < groupNode->getNumOfChildren ();
-                  ++j) {
-                NodePtr_t object (groupNode->getChild (j));
-                addNode(object->getID (), object, groupNode);
-              }
-            } else {
-              addNode(link->getID(), link, urdf);
-            }
-          }
-          registerUrdfNode (urdfName, urdfPath);
-          mtx_.unlock();
-        }
+      loadUDRF(urdfName, urdfPath, visual, false);
     }
 
     void WindowsManager::addUrdfObjects (const std::string& urdfName,
@@ -955,6 +879,37 @@ namespace graphics {
             bool visual)
     {
       return addUrdfObjects (urdfName, urdfPath, visual);
+    }
+
+    bool WindowsManager::loadUDRF(const std::string& urdfName,
+        const std::string& urdfPath, bool visual, bool linkFrame)
+    {
+      if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
+        GroupNodePtr_t urdf = urdfParser::parse (urdfName, urdfPath,
+            visual ? "visual" : "collision",
+            linkFrame ? "link" : "object");
+        mtx_.lock();
+        addGroup (urdfName, urdf, true);
+        NodePtr_t link;
+        for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
+          link = urdf->getChild (i);
+          GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+              <GroupNode> (link));
+          if (groupNode) {
+            addGroup(link->getID(), groupNode, urdf);
+            for (std::size_t j=0; j < groupNode->getNumOfChildren (); ++j) {
+              NodePtr_t object (groupNode->getChild (j));
+              addNode(object->getID (), object, groupNode);
+            }
+          } else {
+            addNode(link->getID(), link, urdf);
+          }
+        }
+        registerUrdfNode (urdfName, urdfPath);
+        mtx_.unlock();
+        return true;
+      }
+      return false;
     }
 
     bool WindowsManager::addToGroup (const std::string& nodeName,
