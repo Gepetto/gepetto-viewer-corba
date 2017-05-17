@@ -82,7 +82,7 @@ namespace graphics {
 
     WindowsManager::WindowsManager () :
         windowManagers_ (), nodes_ (), groupNodes_ (),roadmapNodes_(),
-        mtx_ (), rate_ (20), newNodeConfigurations_ (),
+        osgFrameMtx_ (), configListMtx_ (), rate_ (20), newNodeConfigurations_ (),
         autoCaptureTransform_ (false)
     {}
 
@@ -283,9 +283,9 @@ namespace graphics {
     {
         while (!window->done ())
         {
-            mtx_.lock ();
+            osgFrameMutex().lock ();
             window->frame ();
-            mtx_.unlock ();
+            osgFrameMutex().unlock ();
             boost::this_thread::sleep (boost::posix_time::milliseconds (rate_));
         }
     }
@@ -350,13 +350,15 @@ namespace graphics {
 
     void WindowsManager::refresh ()
     {
-        mtx_.lock ();
+        configListMtx_.lock ();
+        osgFrameMutex().lock ();
         //refresh scene with the new configuration
         std::for_each(newNodeConfigurations_.begin(),
             newNodeConfigurations_.end(),
             ApplyConfigurationFunctor());
+        osgFrameMutex().unlock ();
         newNodeConfigurations_.clear ();
-        mtx_.unlock ();
+        configListMtx_.unlock ();
         if (autoCaptureTransform_) captureTransform ();
     }
 
@@ -376,9 +378,9 @@ namespace graphics {
     {
         GroupNodePtr_t group = getGroup(sceneName, true);
         if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
+            osgFrameMutex().lock();
             windowManagers_[windowId]->addNode (group);
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return true;
         }
         else {
@@ -395,9 +397,9 @@ namespace graphics {
     	  std::cout << "Window ID" << windowId << "doesn't exist." << std::endl;
   	  return false;
         }
-  	mtx_.lock();
+  	osgFrameMutex().lock();
 	windowManagers_[windowId]->attachCameraToNode(node);
-   	mtx_.unlock();
+   	osgFrameMutex().unlock();
 	return true;
      }
 
@@ -408,9 +410,9 @@ namespace graphics {
   		    << std::endl;
   	  return false;
         }
-  	mtx_.lock();
+  	osgFrameMutex().lock();
 	windowManagers_[windowId]->detachCamera();
-   	mtx_.unlock();       
+   	osgFrameMutex().unlock();       
 	return true;
      }
 
@@ -418,9 +420,9 @@ namespace graphics {
     {
         THROW_IF_NODE_EXISTS(floorName);
         LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (floorName, floor, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -434,9 +436,9 @@ namespace graphics {
 
         LeafNodeBoxPtr_t box = LeafNodeBox::create
           (boxName, osgVector3 (boxSize1, boxSize2, boxSize3), color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (boxName, box, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -448,9 +450,9 @@ namespace graphics {
         THROW_IF_NODE_EXISTS(capsuleName);
 
         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create (capsuleName, radius, height, color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (capsuleName, capsule, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -462,9 +464,9 @@ namespace graphics {
         THROW_IF_NODE_EXISTS(arrowName);
 
         LeafNodeArrowPtr_t arrow = LeafNodeArrow::create (arrowName, color, radius, length);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (arrowName, arrow, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -477,11 +479,11 @@ namespace graphics {
       THROW_IF_NODE_EXISTS(rodName);
 
       NodeRodPtr_t rod = NodeRod::create(rodName,color,radius,length,maxCapsule);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (rodName, rod, true);
       for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
         addNode(rod->getCapsuleName(i),rod->getCapsule(i), false);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -521,9 +523,9 @@ namespace graphics {
           std::cout << exc.what() << std::endl;
           return false;
         }
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (meshName, mesh, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -535,9 +537,9 @@ namespace graphics {
 
         LeafNodeConePtr_t cone = LeafNodeCone::create
           (coneName, radius, height);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (coneName, cone, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -550,9 +552,9 @@ namespace graphics {
 
         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
           (cylinderName, radius, height, color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (cylinderName, cylinder, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -564,9 +566,9 @@ namespace graphics {
 
         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
           (sphereName, radius, color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (sphereName, sphere, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -580,10 +582,10 @@ namespace graphics {
         WindowManagerPtr_t wm = getWindowManager(wid, true);
         LeafNodeLightPtr_t light = LeafNodeLight::create
           (lightName, radius, color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (lightName, light, true);
         light->setRoot (wm->getScene ());
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -595,9 +597,9 @@ namespace graphics {
         THROW_IF_NODE_EXISTS(lineName);
 
         LeafNodeLinePtr_t line = LeafNodeLine::create (lineName, pos1, pos2, color);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addNode (lineName, line, true);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -612,9 +614,9 @@ namespace graphics {
       }
       LeafNodeLinePtr_t curve = LeafNodeLine::create (curveName, pos, color);
       curve->setMode (GL_LINE_STRIP);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (curveName, curve, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -631,9 +633,9 @@ namespace graphics {
               std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
               return false;
             }
-            mtx_.lock();
+            osgFrameMutex().lock();
             curve->setMode (mode);
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return true;
         }
     }
@@ -646,9 +648,9 @@ namespace graphics {
           std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
           return false;
         }
-        mtx_.lock();
+        osgFrameMutex().lock();
         curve->setLineWidth (width);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -661,9 +663,9 @@ namespace graphics {
       THROW_IF_NODE_EXISTS (faceName);
 
       LeafNodeFacePtr_t face = LeafNodeFace::create (faceName, pos1, pos2, pos3, color);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (faceName, face, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -678,9 +680,9 @@ namespace graphics {
 
       LeafNodeFacePtr_t face = LeafNodeFace::create
         (faceName, pos1, pos2, pos3, pos4, color);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (faceName, face, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -711,9 +713,9 @@ namespace graphics {
 
       LeafNodeXYZAxisPtr_t axis = LeafNodeXYZAxis::create
         (nodeName,color,radius,sizeAxis);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (nodeName, axis, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -722,9 +724,9 @@ namespace graphics {
       THROW_IF_NODE_EXISTS(roadmapName);
 
       RoadmapViewerPtr_t rm = RoadmapViewer::create(roadmapName,colorNode,radius,sizeAxis,colorEdge);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addNode (roadmapName, rm, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       roadmapNodes_[roadmapName]=rm;
       return true;
     }
@@ -738,9 +740,9 @@ namespace graphics {
         }
         else {
             RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
-          //  mtx_.lock(); mtx is now locked only when required in addEdge
-            rm_ptr->addEdge(posFrom,posTo,mtx_);
-         //   mtx_.unlock();
+          //  osgFrameMutex().lock(); mtx is now locked only when required in addEdge
+            rm_ptr->addEdge(posFrom,posTo,osgFrameMutex());
+         //   osgFrameMutex().unlock();
             return true;
         }
     }
@@ -754,9 +756,9 @@ namespace graphics {
         }
         else {
             RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
-           // mtx_.lock();
-            rm_ptr->addNode(conf.position,conf.quat,mtx_);
-           // mtx_.unlock();
+           // osgFrameMutex().lock();
+            rm_ptr->addNode(conf.position,conf.quat,osgFrameMutex());
+           // osgFrameMutex().unlock();
             return true;
         }
     }
@@ -819,9 +821,9 @@ namespace graphics {
       THROW_IF_NODE_EXISTS(groupName);
 
       GroupNodePtr_t groupNode = GroupNode::create (groupName);
-      mtx_.lock();
+      osgFrameMutex().lock();
       addGroup (groupName, groupNode, true);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
 
@@ -887,7 +889,7 @@ namespace graphics {
       if (urdfNodeMustBeAdded (urdfName, urdfPath)) {
         GroupNodePtr_t urdf =
           urdfParser::parse (urdfName, urdfPath, visual, linkFrame);
-        mtx_.lock();
+        osgFrameMutex().lock();
         addGroup (urdfName, urdf, true);
         NodePtr_t link;
         for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
@@ -905,7 +907,7 @@ namespace graphics {
           }
         }
         registerUrdfNode (urdfName, urdfPath);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
       }
       return false;
@@ -921,9 +923,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
+            osgFrameMutex().lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
             groupNodes_[groupName]->addChild (nodes_[nodeName]);
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return true;
         }
     }
@@ -938,9 +940,9 @@ namespace graphics {
             return false;
         }
         else {
-            mtx_.lock();
+            osgFrameMutex().lock();
             groupNodes_[groupName]->removeChild(nodes_[nodeName]);
-	    mtx_.unlock();
+	    osgFrameMutex().unlock();
             return true;
         }
     }
@@ -957,24 +959,24 @@ namespace graphics {
                 std::vector <std::string> names(it->second->getNumOfChildren ());
                 for (std::size_t i = 0; i < names.size(); ++i)
                   names[i] = it->second->getChild (i)->getID();
-                mtx_.lock ();
+                osgFrameMutex().lock ();
                 it->second->removeAllChildren ();
-                mtx_.unlock ();
+                osgFrameMutex().unlock ();
                 for (std::size_t i = 0; i < names.size(); ++i)
                   deleteNode (names[i], all);
               }
-              mtx_.lock ();
+              osgFrameMutex().lock ();
               groupNodes_.erase (nodeName);
-              mtx_.unlock ();
+              osgFrameMutex().unlock ();
             }
             GroupNodeMapConstIt itg;
-            mtx_.lock ();
+            osgFrameMutex().lock ();
             for (itg = groupNodes_.begin (); itg != groupNodes_.end(); ++itg) {
               if (itg->second && itg->second->hasChild (n))
                 itg->second->removeChild(n);
             }
             nodes_.erase (nodeName);
-            mtx_.unlock ();
+            osgFrameMutex().unlock ();
             return true;
         }
     }
@@ -993,9 +995,9 @@ namespace graphics {
             newNodeConfiguration.node = updatedNode;
             newNodeConfiguration.position = configuration.position;
             newNodeConfiguration.quat = configuration.quat;
-            mtx_.lock();
+            configListMtx_.lock();
             newNodeConfigurations_.push_back (newNodeConfiguration);
-            mtx_.unlock();
+            configListMtx_.unlock();
             return true;
         }
     }
@@ -1004,18 +1006,18 @@ namespace graphics {
             float size)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->addLandmark (size);
-	mtx_.unlock();
+	osgFrameMutex().unlock();
         return true;
     }
 
     bool WindowsManager::deleteLandmark (const std::string& nodeName)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->deleteLandmark ();
-	mtx_.unlock();
+	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1035,9 +1037,9 @@ namespace graphics {
       return false;
     }
     
-    mtx_.lock();
+    osgFrameMutex().lock();
     it->second->setStaticTransform(transform.position,transform.quat);
-    mtx_.unlock();
+    osgFrameMutex().unlock();
     return true;
   }
 
@@ -1050,18 +1052,18 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->setVisibilityMode (visibility);
-	mtx_.unlock();
+	osgFrameMutex().unlock();
         return true;
     }
 
     bool WindowsManager::setScale(const std::string& nodeName, const osgVector3& scale)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-        mtx_.lock();
+        osgFrameMutex().lock();
         nodes_[nodeName]->setScale(scale);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -1082,9 +1084,9 @@ namespace graphics {
   		    << std::endl;
   	  return false;
         }
-  	mtx_.lock();
+  	osgFrameMutex().lock();
         nodes_[nodeName]->setAlpha (alpha);
-   	mtx_.unlock();
+   	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1101,9 +1103,9 @@ namespace graphics {
             return false;
         }
         osgVector4 vecColor(color[0],color[1],color[2],color[3]);
-        mtx_.lock();
+        osgFrameMutex().lock();
         nodes_[nodeName]->setColor (vecColor);
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return true;
     }
 
@@ -1116,9 +1118,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->setWireFrameMode (wire);
-	mtx_.unlock();
+	osgFrameMutex().unlock();
 	return true;
     }
 
@@ -1131,9 +1133,9 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->setLightingMode (light);
-	mtx_.unlock();
+	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1145,33 +1147,33 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-	mtx_.lock();
+	osgFrameMutex().lock();
         nodes_[nodeName]->setHighlightState (state);
-	mtx_.unlock();
+	osgFrameMutex().unlock();
         return true;
     }
 
     void WindowsManager::captureFrame (const WindowID wid, const std::string& filename)
     {
       WindowManagerPtr_t wm = getWindowManager(wid, true);
-      mtx_.lock();
+      osgFrameMutex().lock();
       try {
         wm->captureFrame (filename);
       } catch (const std::exception& exc) {
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         throw;
       }
-      mtx_.unlock();
+      osgFrameMutex().unlock();
     }
 
     bool WindowsManager::startCapture (const WindowID windowId, const std::string& filename,
             const std::string& extension)
     {
         if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
+            osgFrameMutex().lock();
             windowManagers_[windowId]->startCapture
                 (std::string (filename), std::string (extension));
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return true;
         }
         else {
@@ -1184,9 +1186,9 @@ namespace graphics {
     bool WindowsManager::stopCapture (const WindowID windowId)
     {
         if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
+            osgFrameMutex().lock();
             windowManagers_[windowId]->stopCapture ();
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return true;
         }
         else {
@@ -1214,9 +1216,9 @@ namespace graphics {
 
     void WindowsManager::captureTransform ()
     {
-        mtx_.lock ();
+        osgFrameMutex().lock ();
         blenderCapture_.captureFrame ();
-        mtx_.unlock ();
+        osgFrameMutex().unlock ();
     }
 
     bool WindowsManager::writeBlenderScript (const std::string& filename,
@@ -1242,12 +1244,12 @@ namespace graphics {
                 << std::endl;
             return false;
         }
-        mtx_.lock();
+        osgFrameMutex().lock();
         osg::ref_ptr <osgDB::Options> os = new osgDB::Options;
         os->setOptionString ("NoExtras");
         bool ret = osgDB::writeNodeFile (*it->second->asGroup (),
             std::string (filename), os.get());
-        mtx_.unlock();
+        osgFrameMutex().unlock();
         return ret;
     }
 
@@ -1255,9 +1257,9 @@ namespace graphics {
         const std::string& filename)
     {
         if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
+            osgFrameMutex().lock();
             bool ret = windowManagers_[windowId]->writeNodeFile (std::string (filename));
-            mtx_.unlock();
+            osgFrameMutex().unlock();
             return ret;
         }
         else {
@@ -1308,18 +1310,18 @@ namespace graphics {
     bool WindowsManager::setBackgroundColor1(const WindowID windowId,const Color_t& color)
     {
       WindowManagerPtr_t wm = getWindowManager(windowId, true);
-      mtx_.lock();
+      osgFrameMutex().lock();
       wm->setBackgroundColor1(color);
-      mtx_.unlock();
+      osgFrameMutex().unlock();
       return true;
     }
   
   bool WindowsManager::setBackgroundColor2(const WindowID windowId,const Color_t& color)
   {
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    mtx_.lock();
+    osgFrameMutex().lock();
     wm->setBackgroundColor2(color);
-    mtx_.unlock();
+    osgFrameMutex().unlock();
     return true;
   }
 
@@ -1327,17 +1329,17 @@ namespace graphics {
     osg::Quat rot;
     osg::Vec3d pos;
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    mtx_.lock();
+    osgFrameMutex().lock();
     wm->getCameraTransform(pos,rot);
-    mtx_.unlock();
+    osgFrameMutex().unlock();
     return Configuration(pos,rot);
   }
 
   bool WindowsManager::setCameraTransform(const WindowID windowId,const Configuration& configuration){
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    mtx_.lock();
+    osgFrameMutex().lock();
     wm->setCameraTransform(configuration.position,configuration.quat);
-    mtx_.unlock();
+    osgFrameMutex().unlock();
     return true;
   }
 

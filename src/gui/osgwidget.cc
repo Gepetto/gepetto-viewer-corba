@@ -154,9 +154,9 @@ namespace gepetto {
 
     void OSGWidget::paintEvent(QPaintEvent*)
     {
-      wsm_->lock().lock();
+      wsm_->osgFrameMutex().lock();
       viewer_->frame();
-      wsm_->lock().unlock();
+      wsm_->osgFrameMutex().unlock();
     }
 
     graphics::WindowsManager::WindowID OSGWidget::windowID() const

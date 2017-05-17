@@ -92,7 +92,7 @@ namespace graphics {
             std::map<std::string, NodePtr_t> nodes_;
             std::map<std::string, GroupNodePtr_t> groupNodes_;
             std::map<std::string, RoadmapViewerPtr_t> roadmapNodes_;
-            boost::mutex mtx_;
+            boost::mutex osgFrameMtx_, configListMtx_;
             int rate_;
             NodeConfigurations_t newNodeConfigurations_;
             BlenderFrameCapture blenderCapture_;
@@ -146,8 +146,8 @@ namespace graphics {
             virtual std::vector<std::string> getWindowList();
 
             /// Return the mutex to be locked before refreshing
-            boost::mutex& lock () {
-              return mtx_;
+            boost::mutex& osgFrameMutex () {
+              return osgFrameMtx_;
             }
 
             virtual bool setRate(const int& rate);
