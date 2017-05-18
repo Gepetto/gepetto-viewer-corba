@@ -916,18 +916,15 @@ namespace graphics {
     bool WindowsManager::addToGroup (const std::string& nodeName,
             const std::string& groupName)
     {
-        if (nodes_.find (nodeName) == nodes_.end () ||
-                groupNodes_.find (groupName) == groupNodes_.end ()) {
-            std::cout << "Node name \"" << nodeName << "\" and/or groupNode \""
-                << groupName << "\" doesn't exist." << std::endl;
-            return false;
-        }
-        else {
-            osgFrameMutex().lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
-            groupNodes_[groupName]->addChild (nodes_[nodeName]);
-            osgFrameMutex().unlock();
-            return true;
-        }
+        NodePtr_t node = getNode(nodeName, true);
+        GroupNodePtr_t group = getGroup(groupName, true);
+
+        if (group->hasChild(node)) return false;
+
+        osgFrameMutex().lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
+        groupNodes_[groupName]->addChild (nodes_[nodeName]);
+        osgFrameMutex().unlock();
+        return true;
     }
 
     bool WindowsManager::removeFromGroup (const std::string& nodeName,
