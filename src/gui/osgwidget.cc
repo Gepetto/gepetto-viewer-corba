@@ -154,9 +154,9 @@ namespace gepetto {
 
     void OSGWidget::paintEvent(QPaintEvent*)
     {
-      wsm_->lock().lock();
+      wsm_->osgFrameMutex().lock();
       viewer_->frame();
-      wsm_->lock().unlock();
+      wsm_->osgFrameMutex().unlock();
     }
 
     graphics::WindowsManager::WindowID OSGWidget::windowID() const
@@ -172,17 +172,6 @@ namespace gepetto {
     WindowsManagerPtr_t OSGWidget::osg() const
     {
       return wsm_;
-    }
-
-    void OSGWidget::loadURDF(const QString robotName,
-        const QString urdf_file_path)
-    {
-      QByteArray rn = robotName.toLocal8Bit();
-      QByteArray uf = urdf_file_path.toLocal8Bit();
-      wsm_->addURDF(rn.constData(),
-          uf.constData(),
-          "");
-      wsm_->addSceneToWindow(rn.constData(), wid_);
     }
 
     void OSGWidget::onHome()

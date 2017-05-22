@@ -171,6 +171,8 @@ typedef sequence<Position> PositionSeq;
 
     boolean setCurveMode (in string curveName, in string mode) raises (Error);
 
+    boolean setCurveLineWidth (in string curveName, in float width) raises (Error);
+
     /// create a four vertices face called faceName.
     /// \param input faceName : name of the face.
     /// \param input pos1, pos2, pos3, pos4 : position of the vertices.
@@ -341,6 +343,8 @@ typedef sequence<Position> PositionSeq;
     /// \param input state : 0 for off, 1 or 2 for other things.
     boolean setHighlight (in string nodeName, in long state) raises (Error);
 
+    void captureFrame (in WindowID wid, in string imageFilename) raises (Error);
+
     /// Start capturing a window into image files.
     /// \param windowId the ID of the window
     /// \param filename, extension image files will be
@@ -411,6 +415,24 @@ typedef sequence<Position> PositionSeq;
 		/// \param input windowId : ID of the window
 		/// \param input configuration : the desired configuration of the camera
 		boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
+
+    Names_t getPropertyNames(in string nodeName) raises (Error);
+    Names_t getPropertyTypes(in string nodeName) raises (Error);
+
+    void setStringProperty(in string nodeName, in string propName, in string value) raises (Error);
+    string getStringProperty(in string nodeName, in string propName) raises (Error);
+
+    void setColorProperty(in string nodeName, in string propName, in Color value) raises (Error);
+    Color getColorProperty(in string nodeName, in string propName) raises (Error);
+
+    void setVector3Property(in string nodeName, in string propName, in Position value) raises (Error);
+    Position getVector3Property(in string nodeName, in string propName) raises (Error);
+
+    void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
+    float getFloatProperty(in string nodeName, in string propName) raises (Error);
+
+    void setBoolProperty(in string nodeName, in string propName, in boolean value) raises (Error);
+    boolean getBoolProperty(in string nodeName, in string propName) raises (Error);
   };
 };
 };

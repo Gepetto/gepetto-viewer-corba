@@ -79,14 +79,14 @@ namespace gepetto {
           n->setVisibilityMode(graphics::ALWAYS_ON_TOP);
           break;
         case ATTACH_TO_WINDOW:
-          window_->osg()->lock().lock();
+          window_->osg()->osgFrameMutex().lock();
           window_->attachToWindow(n->getID());
-          window_->osg()->lock().unlock();
+          window_->osg()->osgFrameMutex().unlock();
           break;
         case ATTACH_CAMERA_TO_NODE:
-          window_->osg()->lock().lock();
+          window_->osg()->osgFrameMutex().lock();
           window_->window()->attachCameraToNode(n);
-          window_->osg()->lock().unlock();
+          window_->osg()->osgFrameMutex().unlock();
           break;
       }
     }
