@@ -46,6 +46,11 @@ main (int argc, char* argv[])
   graphics::WindowsManagerPtr_t wm = graphics::WindowsManager::create ();
   Server server (wm, argc, (const char**)argv, false); // dernier arg : autorise ou non multithread (original = true)
 
-  server.startCorbaServer ();
+  std::string postContextId("");
+  if(argc>1) {
+      postContextId = std::string(argv[1]);
+  }
+
+  server.startCorbaServer (postContextId);
   server.processRequest(true);
 }
