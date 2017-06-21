@@ -41,7 +41,7 @@ namespace graphics
 	CosNaming::NamingContext_var Context_;
 
 	/// \brief Create context.
-	void createContext ();
+    void createContext (std::string nb_server);
 
 	/// \brief Store objects in Corba name service.
 	void bindObjectToName

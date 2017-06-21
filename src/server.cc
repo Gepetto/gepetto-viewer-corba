@@ -106,13 +106,33 @@ namespace graphics
       private_->createAndActivateServers(this);
     }
 
+    void Server::startCorbaServer(std::string nb_server)
+    {
+      // Obtain a reference to objects, and register them in
+      // the naming service.
+      Object_var graphicalInterfaceObj = private_->graphicalInterfaceServant_->_this();
+
+      private_->createContext (nb_server);
+      // Bind graphicalInterfaceObj with name graphicalinterface to the Context:
+      CosNaming::Name objectName;
+      objectName.length(1);
+      objectName[0].id   = (const char*) "corbaserver";   // string copied
+      objectName[0].kind = (const char*) "gui"; // string copied
+
+      private_->bindObjectToName(graphicalInterfaceObj, objectName);
+      private_->graphicalInterfaceServant_->_remove_ref();
+
+      PortableServer::POAManager_var pman = private_->poa_->the_POAManager();
+      pman->activate();
+    }
+
     void Server::startCorbaServer()
     {
       // Obtain a reference to objects, and register them in
       // the naming service.
       Object_var graphicalInterfaceObj = private_->graphicalInterfaceServant_->_this();
 
-      private_->createContext ();
+      private_->createContext (std::string(""));
       // Bind graphicalInterfaceObj with name graphicalinterface to the Context:
       CosNaming::Name objectName;
       objectName.length(1);

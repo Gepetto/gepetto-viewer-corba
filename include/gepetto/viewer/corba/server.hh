@@ -71,6 +71,7 @@ namespace graphics
 
       /// \brief Initialize CORBA server to process requests from clients
       /// \return 0 if success, -1 if failure.
+      void startCorbaServer (std::string nb_server);
       void startCorbaServer ();
 
       /// \brief If ORB work is pending, process it

@@ -50,7 +50,7 @@ namespace graphics
       }
 
 
-      void Server::createContext ()
+      void Server::createContext (std::string nb_server)
       {
 	CosNaming::NamingContext_var rootContext;
 	Object_var localObj;
@@ -73,7 +73,9 @@ namespace graphics
 	}
 	// Bind a context called "Graphics" to the root context:
 	contextName.length(1);
-	contextName[0].id   = (const char*) "gepetto";       // string copied
+    std::string contextId("gepetto");
+    contextId.append(nb_server);
+    contextName[0].id   = (const char*) contextId.c_str();       // string copied
 	contextName[0].kind = (const char*) "viewer"; // string copied
 	// Note on kind: The kind field is used to indicate the type
 	// of the object. This is to avoid conventions such as that used
