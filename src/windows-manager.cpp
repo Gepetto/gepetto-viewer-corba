@@ -175,20 +175,9 @@ namespace graphics {
 
     std::string WindowsManager::parentName (const std::string& name)
     {
-        std::string Name (name);
-        std::string::iterator parentNameIt;
-        for (std::string::iterator i = Name.end (); (*i) != char ('/') &&
-                i != Name.begin (); i--) {
-            parentNameIt = i;
-        }
-        parentNameIt--;
-
-        std::string parentName;
-        for (std::string::iterator i = Name.begin (); i != parentNameIt; i++) {
-            parentName.push_back (*i);
-        }
-
-        return parentName;
+        std::string::size_type slash = name.find_last_of ('/');
+        if (slash == std::string::npos) return "";
+        else return name.substr(0, slash);
     }
 
     NodePtr_t WindowsManager::find (const std::string name, GroupNodePtr_t)
