@@ -55,14 +55,11 @@ namespace graphics {
           typedef const GraphicalInterface::Transform  In_t;
           typedef       Configuration  Out_t;
           typedef       Transform_slice* Ret_t;
-          static Out_t op  (In_t in) { return Out_t(in, false); /* false means (w,x,y,z) -> (x,y,z,w) */ }
+          static Out_t op  (In_t in) { return Out_t(in, true); /* true = (x,y,z,w) -> (x,y,z,w), false = (w,x,y,z) -> (x,y,z,w) */ }
           static Ret_t ret (const Out_t& in) {
             Ret_t ret = new GraphicalInterface::Transform();
-            // dofArray->length(7);
             for(int i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
-            // for(int i=0; i<3; i++) ret[(ULong)i+3] = (float)in.quat[i];
-            ret[(ULong)3] = (float)in.quat[3]; // W
-            for(int i=0; i<3; i++) ret[(ULong)i+4] = (float)in.quat[i]; // XYZ
+            for(int i=0; i<4; i++) ret[(ULong)i+3] = (float)in.quat[i];
             return ret;
           }
         };
