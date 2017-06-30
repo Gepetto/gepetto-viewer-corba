@@ -50,14 +50,26 @@
 
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
-#define THROW_IF_NODE_EXISTS(name)                                            \
+#define RETURN_FALSE_IF_NODE_EXISTS(name)                                      \
+  if (nodeExists(name)) {                                                      \
+    std::cerr << "Node \"" << name << "\" already exists." << std::endl;       \
+    return false;                                                              \
+  }
+
+#define RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(name)                              \
+  if (!nodeExists(name)) {                                                     \
+    std::cerr << "Node \"" << name << "\" does not exist." << std::endl;       \
+    return false;                                                              \
+  }
+
+#define THROW_IF_NODE_EXISTS(name)                                             \
   if (nodeExists(name)) {                                                      \
     std::ostringstream oss;                                                    \
     oss << "Node \"" << name << "\" already exists.";                          \
-    throw gepetto::Error (oss.str ().c_str ());				\
+    throw gepetto::Error (oss.str ().c_str ());				       \
   }
 
-#define THROW_IF_NODE_DOES_NOT_EXIST(name)                                    \
+#define THROW_IF_NODE_DOES_NOT_EXIST(name)                                     \
   if (!nodeExists(name)) {                                                     \
     std::ostringstream oss;                                                    \
     oss << "Node \"" << name << "\" does not exist.";                          \
@@ -426,7 +438,7 @@ namespace graphics {
 
     bool WindowsManager::addFloor(const std::string& floorName)
     {
-        THROW_IF_NODE_EXISTS(floorName);
+        RETURN_FALSE_IF_NODE_EXISTS(floorName);
         LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
         mtx_.lock();
         addNode (floorName, floor, true);
@@ -440,7 +452,7 @@ namespace graphics {
             const float& boxSize3,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(boxName);
+        RETURN_FALSE_IF_NODE_EXISTS(boxName);
 
         LeafNodeBoxPtr_t box = LeafNodeBox::create
           (boxName, osgVector3 (boxSize1, boxSize2, boxSize3), color);
@@ -455,7 +467,7 @@ namespace graphics {
             const float height,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(capsuleName);
+        RETURN_FALSE_IF_NODE_EXISTS(capsuleName);
 
         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create (capsuleName, radius, height, color);
         mtx_.lock();
@@ -469,7 +481,7 @@ namespace graphics {
             const float length,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(arrowName);
+        RETURN_FALSE_IF_NODE_EXISTS(arrowName);
 
         LeafNodeArrowPtr_t arrow = LeafNodeArrow::create (arrowName, color, radius, length);
         mtx_.lock();
@@ -484,7 +496,7 @@ namespace graphics {
             const float length,
             short maxCapsule)
     {
-      THROW_IF_NODE_EXISTS(rodName);
+      RETURN_FALSE_IF_NODE_EXISTS(rodName);
 
       NodeRodPtr_t rod = NodeRod::create(rodName,color,radius,length,maxCapsule);
       mtx_.lock();
@@ -523,7 +535,7 @@ namespace graphics {
     bool WindowsManager::addMesh (const std::string& meshName,
             const std::string& meshPath)
     {
-        THROW_IF_NODE_EXISTS(meshName);
+        RETURN_FALSE_IF_NODE_EXISTS(meshName);
         LeafNodeColladaPtr_t mesh;
         try {
           mesh = LeafNodeCollada::create (meshName, meshPath);
@@ -541,7 +553,7 @@ namespace graphics {
             const float radius, const float height,
             const Color_t&)
     {
-        THROW_IF_NODE_EXISTS(coneName);
+        RETURN_FALSE_IF_NODE_EXISTS(coneName);
 
         LeafNodeConePtr_t cone = LeafNodeCone::create
           (coneName, radius, height);
@@ -556,7 +568,7 @@ namespace graphics {
             const float height,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(cylinderName);
+        RETURN_FALSE_IF_NODE_EXISTS(cylinderName);
 
         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
           (cylinderName, radius, height, color);
@@ -570,7 +582,7 @@ namespace graphics {
             const float radius,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(sphereName);
+        RETURN_FALSE_IF_NODE_EXISTS(sphereName);
 
         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
           (sphereName, radius, color);
@@ -585,7 +597,7 @@ namespace graphics {
             const float radius,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(lightName);
+        RETURN_FALSE_IF_NODE_EXISTS(lightName);
 
         WindowManagerPtr_t wm = getWindowManager(wid, true);
         LeafNodeLightPtr_t light = LeafNodeLight::create
@@ -602,7 +614,7 @@ namespace graphics {
             const osgVector3& pos2,
             const Color_t& color)
     {
-        THROW_IF_NODE_EXISTS(lineName);
+        RETURN_FALSE_IF_NODE_EXISTS(lineName);
 
         LeafNodeLinePtr_t line = LeafNodeLine::create (lineName, pos1, pos2, color);
         mtx_.lock();
@@ -615,7 +627,7 @@ namespace graphics {
             const Vec3ArrayPtr_t& pos,
             const Color_t& color)
     {
-      THROW_IF_NODE_EXISTS(curveName);
+      RETURN_FALSE_IF_NODE_EXISTS(curveName);
       if (pos->size () < 2) {
         std::cout << "Need at least two points" << std::endl;
         return false;
@@ -654,7 +666,7 @@ namespace graphics {
             const osgVector3& pos3,
             const Color_t& color)
     {
-      THROW_IF_NODE_EXISTS (faceName);
+      RETURN_FALSE_IF_NODE_EXISTS (faceName);
 
       LeafNodeFacePtr_t face = LeafNodeFace::create (faceName, pos1, pos2, pos3, color);
       mtx_.lock();
@@ -670,7 +682,7 @@ namespace graphics {
             const osgVector3& pos4,
             const Color_t& color)
     {
-      THROW_IF_NODE_EXISTS(faceName);
+      RETURN_FALSE_IF_NODE_EXISTS(faceName);
 
       LeafNodeFacePtr_t face = LeafNodeFace::create
         (faceName, pos1, pos2, pos3, pos4, color);
@@ -703,7 +715,7 @@ namespace graphics {
 
     bool WindowsManager::addXYZaxis (const std::string& nodeName,const Color_t& color, float radius, float sizeAxis)
     {
-      THROW_IF_NODE_EXISTS (nodeName);
+      RETURN_FALSE_IF_NODE_EXISTS (nodeName);
 
       LeafNodeXYZAxisPtr_t axis = LeafNodeXYZAxis::create
         (nodeName,color,radius,sizeAxis);
@@ -715,7 +727,7 @@ namespace graphics {
 
     bool WindowsManager::createRoadmap(const std::string& roadmapName,const Color_t& colorNode, float radius, float sizeAxis, const Color_t& colorEdge)
     {
-      THROW_IF_NODE_EXISTS(roadmapName);
+      RETURN_FALSE_IF_NODE_EXISTS(roadmapName);
 
       RoadmapViewerPtr_t rm = RoadmapViewer::create(roadmapName,colorNode,radius,sizeAxis,colorEdge);
       mtx_.lock();
@@ -812,7 +824,7 @@ namespace graphics {
 
     bool WindowsManager::createGroup (const std::string& groupName)
     {
-      THROW_IF_NODE_EXISTS(groupName);
+      RETURN_FALSE_IF_NODE_EXISTS(groupName);
 
       GroupNodePtr_t groupNode = GroupNode::create (groupName);
       mtx_.lock();
@@ -1024,22 +1036,18 @@ namespace graphics {
     bool WindowsManager::applyConfiguration (const std::string& nodeName,
             const Configuration& configuration)
     {
-        NodePtr_t updatedNode = find (nodeName);
-        if (!updatedNode) {
-            //no node named nodeName
-            std::cout << "No Node named \"" << nodeName << "\"" << std::endl;
-            return false;
-        }
-        else {
-            NodeConfiguration newNodeConfiguration;
-            newNodeConfiguration.node = updatedNode;
-            newNodeConfiguration.position = configuration.position;
-            newNodeConfiguration.quat = configuration.quat;
-            mtx_.lock();
-            newNodeConfigurations_.push_back (newNodeConfiguration);
-            mtx_.unlock();
-            return true;
-        }
+        NodePtr_t updatedNode = getNode (nodeName, false);
+        if (!updatedNode) return false;
+
+        NodeConfiguration newNodeConfiguration;
+        newNodeConfiguration.node = updatedNode;
+        newNodeConfiguration.position = configuration.position;
+        newNodeConfiguration.quat = configuration.quat;
+
+        mtx_.lock();
+        newNodeConfigurations_.push_back (newNodeConfiguration);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::addLandmark (const std::string& nodeName,
@@ -1071,14 +1079,9 @@ namespace graphics {
   bool WindowsManager::setStaticTransform (const std::string& nodeName,
       const Configuration& transform)
   {
-    NodeMapConstIt it = nodes_.find(nodeName);
-    if (it == nodes_.end ()) {
-      std::cout << "Node \"" << nodeName << "\" doesn't exist." << std::endl;
-      return false;
-    }
-    
+    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
     mtx_.lock();
-    it->second->setStaticTransform(transform.position,transform.quat);
+    nodes_[nodeName]->setStaticTransform(transform.position,transform.quat);
     mtx_.unlock();
     return true;
   }
@@ -1086,12 +1089,8 @@ namespace graphics {
     bool WindowsManager::setVisibility (const std::string& nodeName,
             const std::string& visibilityMode)
     {
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         VisibilityMode visibility =  getVisibility (visibilityMode);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
 	mtx_.lock();
         nodes_[nodeName]->setVisibilityMode (visibility);
 	mtx_.unlock();
@@ -1119,11 +1118,7 @@ namespace graphics {
 
     bool WindowsManager::setAlpha(const std::string& nodeName, const float& alpha)
     {
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-    	  std::cout << "Node \"" << nodeName << "\" doesn't exist."
-  		    << std::endl;
-  	  return false;
-        }
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
   	mtx_.lock();
         nodes_[nodeName]->setAlpha (alpha);
    	mtx_.unlock();
@@ -1137,11 +1132,7 @@ namespace graphics {
 
     bool WindowsManager::setColor(const std::string& nodeName, const Color_t& color)
     {
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         osgVector4 vecColor(color[0],color[1],color[2],color[3]);
         mtx_.lock();
         nodes_[nodeName]->setColor (vecColor);
@@ -1152,12 +1143,8 @@ namespace graphics {
     bool WindowsManager::setWireFrameMode (const std::string& nodeName,
             const std::string& wireFrameMode)
     {
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         WireFrameMode wire = getWire (wireFrameMode);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
 	mtx_.lock();
         nodes_[nodeName]->setWireFrameMode (wire);
 	mtx_.unlock();
@@ -1167,12 +1154,8 @@ namespace graphics {
     bool WindowsManager::setLightingMode (const std::string& nodeName,
             const std::string& lightingMode)
     {
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         LightingMode light = getLight (lightingMode);
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
 	mtx_.lock();
         nodes_[nodeName]->setLightingMode (light);
 	mtx_.unlock();
@@ -1182,11 +1165,7 @@ namespace graphics {
     bool WindowsManager::setHighlight (const std::string& nodeName,
             int state)
     {
-        if (nodes_.find (nodeName) == nodes_.end ()) {
-            std::cout << "Node \"" << nodeName << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
 	mtx_.lock();
         nodes_[nodeName]->setHighlightState (state);
 	mtx_.unlock();
@@ -1196,33 +1175,20 @@ namespace graphics {
     bool WindowsManager::startCapture (const WindowID windowId, const std::string& filename,
             const std::string& extension)
     {
-        if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
-            windowManagers_[windowId]->startCapture
-                (std::string (filename), std::string (extension));
-            mtx_.unlock();
-            return true;
-        }
-        else {
-            std::cout << "Window ID " << windowId
-                << " doesn't exist." << std::endl;
-            return false;
-        }
+        WindowManagerPtr_t wm = getWindowManager(windowId, true);
+        mtx_.lock();
+        wm->startCapture (filename, extension);
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::stopCapture (const WindowID windowId)
     {
-        if (windowId < windowManagers_.size ()) {
-            mtx_.lock();
-            windowManagers_[windowId]->stopCapture ();
-            mtx_.unlock();
-            return true;
-        }
-        else {
-            std::cout << "Window ID " << windowId
-                << " doesn't exist." << std::endl;
-            return false;
-        }
+        WindowManagerPtr_t wm = getWindowManager(windowId, true);
+        mtx_.lock();
+        wm->stopCapture ();
+        mtx_.unlock();
+        return true;
     }
 
     bool WindowsManager::setCaptureTransform (const std::string& filename,
@@ -1261,20 +1227,14 @@ namespace graphics {
       return true;
     }
 
-    bool WindowsManager::writeNodeFile (const std::string& nodename,
+    bool WindowsManager::writeNodeFile (const std::string& nodeName,
         const std::string& filename)
     {
-        const std::string name (nodename);
-        NodeMapIt it = nodes_.find (name);
-        if (it == nodes_.end ()) {
-            std::cout << "Node \"" << nodename << "\" doesn't exist."
-                << std::endl;
-            return false;
-        }
+        RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         mtx_.lock();
         osg::ref_ptr <osgDB::Options> os = new osgDB::Options;
         os->setOptionString ("NoExtras");
-        bool ret = osgDB::writeNodeFile (*it->second->asGroup (),
+        bool ret = osgDB::writeNodeFile (*nodes_[nodeName]->asGroup (),
             std::string (filename), os.get());
         mtx_.unlock();
         return ret;
