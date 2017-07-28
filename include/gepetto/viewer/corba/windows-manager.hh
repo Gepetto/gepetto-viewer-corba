@@ -189,8 +189,13 @@ namespace graphics {
             virtual bool addLight(const std::string& lightName, const WindowID wid, float radius, const Color_t& color);
 
             virtual bool addLine(const std::string& lineName, const osgVector3& pos1, const osgVector3& pos2, const Color_t& color);
+            virtual bool setLineStartPoint(const std::string& lineName, const osgVector3& pos1);
+            virtual bool setLineEndPoint(const std::string& lineName, const osgVector3& pos2);
+            virtual bool setLineExtremalPoints(const std::string& lineName, const osgVector3& pos1, const osgVector3& pos2);
 
             virtual bool addCurve(const std::string& curveName, const Vec3ArrayPtr_t& pos, const Color_t& color);
+      
+            virtual bool setCurvePoints(const std::string& curveName, const Vec3ArrayPtr_t& pos);
 
             /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
             /// possible values

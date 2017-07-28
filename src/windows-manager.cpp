@@ -603,6 +603,44 @@ namespace graphics {
         osgFrameMutex().unlock();
         return true;
     }
+  
+  bool WindowsManager::setLineStartPoint(const std::string& lineName,
+                                            const osgVector3& pos1)
+  {
+    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
+    
+    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    osgFrameMutex().lock();
+    line->setStartPoint(pos1);
+    osgFrameMutex().unlock();
+    return true;
+  }
+  
+  bool WindowsManager::setLineEndPoint(const std::string& lineName,
+                                            const osgVector3& pos2)
+  {
+    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
+    
+    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    osgFrameMutex().lock();
+    line->setEndPoint(pos2);
+    osgFrameMutex().unlock();
+    return true;
+  }
+  
+  bool WindowsManager::setLineExtremalPoints(const std::string& lineName,
+                                             const osgVector3& pos1,
+                                             const osgVector3& pos2)
+  {
+    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
+    
+    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    osgFrameMutex().lock();
+    line->setStartPoint(pos1);
+    line->setEndPoint(pos2);
+    osgFrameMutex().unlock();
+    return true;
+  }
 
     bool WindowsManager::addCurve (const std::string& curveName,
             const Vec3ArrayPtr_t& pos,
@@ -620,6 +658,21 @@ namespace graphics {
       osgFrameMutex().unlock();
       return true;
     }
+  
+  bool WindowsManager::setCurvePoints (const std::string& curveName,
+                                       const Vec3ArrayPtr_t& pos)
+  {
+    RETURN_FALSE_IF_NODE_EXISTS(curveName);
+    if (pos->size () < 2) {
+      std::cout << "Need at least two points" << std::endl;
+      return false;
+    }
+    LeafNodeLinePtr_t curve = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(curveName));
+    osgFrameMutex().lock();
+    curve->setPoints(pos);
+    osgFrameMutex().unlock();
+    return true;
+  }
 
     bool WindowsManager::setCurveMode (const std::string& curveName, const GLenum mode)
     {

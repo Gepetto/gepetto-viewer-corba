@@ -94,8 +94,12 @@ public:
   virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const Color color) throw (Error);
 
   virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const Color color) throw (Error);
+  virtual bool setLineStartPoint(const char* lineName, const value_type* pos1) throw (Error);
+  virtual bool setLineEndPoint(const char* lineName, const value_type* pos1) throw (Error);
+  virtual bool setLineExtremalPoints(const char* lineName, const value_type* pos1, const value_type* pos2) throw (Error);
 
   virtual bool addCurve(const char* curveName, const PositionSeq& pos, const Color color) throw (Error);
+  virtual bool setCurvePoints(const char* curveName, const PositionSeq& pos) throw (Error);
 
   virtual bool setCurveMode(const char* curveName, const char* modeName) throw (Error);
   virtual bool setCurveLineWidth(const char* curveName, const float width) throw (Error);

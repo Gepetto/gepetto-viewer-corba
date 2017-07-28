@@ -161,13 +161,35 @@ typedef sequence<Position> PositionSeq;
     /// \param input pos2 : position the other extremity of the line.
     /// \param input RGBAcolor : color of the line.
     boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) raises (Error);
+    
+    /// change starting point position of a line.
+    /// \param input lineName : name of the line.
+    /// \param input pos1 : position of the first extremity of the line.
+    boolean setLineStartPoint(in string lineName, in Position pos1) raises (Error);
 
+    /// change terminal point position of a line.
+    /// \param input lineName : name of the line.
+    /// \param input pos2 : position of the second extremity of the line.
+    boolean setLineEndPoint(in string lineName, in Position pos2) raises (Error);
+    
+    /// change extremity positions of a line.
+    /// \param input lineName : name of the line.
+    /// \param input pos1 : position one extremity of the line.
+    /// \param input pos2 : position of the second extremity of the line.
+    boolean setLineExtremalPoints(in string lineName, in Position pos1, in Position pos2) raises (Error);
+    
     /// create a curve called curveName.
     /// The curve is the graph of the piecewise linear interpolation between each consecutive pos.
     /// \param input lineName : name of the line.
     /// \param input pos : waypoints of the curve.
     /// \param input RGBAcolor : color of the line.
     boolean addCurve(in string curveName, in PositionSeq pos, in Color RGBAcolor) raises (Error);
+    
+    /// set points of a curve called curveName.
+    /// \param input lineName : name of the line.
+    /// \param input pos : waypoints of the curve.
+    boolean setCurvePoints(in string curveName, in PositionSeq pos) raises (Error);
+    
 
     boolean setCurveMode (in string curveName, in string mode) raises (Error);
 
