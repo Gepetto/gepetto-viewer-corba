@@ -161,6 +161,23 @@ signals:
         /// Open the plugin manager dialog.
         void onOpenPluginManager ();
 
+        /// Register an object signal that can be accessible without knowing the class definition.
+        /// \param signal signal's name
+        /// \param obj object's instance
+        void registerSignal(const char *signal, QObject* obj);
+
+        /// Get the instance of object which holds the signal.
+        /// \param signal signal's name
+        /// \return object's instance
+        QObject* getFromSignal(const char *signal);
+
+        /// Connect an object's slot to a registered signal.
+        /// \param signal signal's name
+        /// \param slot slot's name
+        /// \param obj object's instance
+        void connectSignal(const char *signal, const char *slot, QObject* obj);
+
+
         /// Register an object slot that can be accessible without knowing the class definition.
         /// \param slot slot's name
         /// \param obj object's instance
@@ -239,6 +256,7 @@ signals:
         QStringList lastBodiesInCollision_;
 
         std::map<std::string, QObject *> registeredSlots_;
+        std::map<std::string, QObject *> registeredSignals_;
     };
   } // namespace gui
 } // namespace gepetto

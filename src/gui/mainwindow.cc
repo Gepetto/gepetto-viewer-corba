@@ -475,6 +475,35 @@ namespace gepetto {
       d.exec ();
     }
 
+    void MainWindow::registerSignal(const char *signal, QObject *obj)
+    {
+      if (registeredSignals_.find(signal) == registeredSignals_.end())
+        {
+          registeredSignals_[signal] = obj;
+          qDebug() << signal << " registered";
+        }
+      else
+        std::cout << "Signal " << signal << "already registered." << std::endl;
+    }
+
+    QObject* MainWindow::getFromSignal(const char* signal)
+    {
+      if (registeredSignals_.find(signal) == registeredSignals_.end())
+        {
+          std::cout << "signal " << signal << "isn't registered" << std::endl;
+          return NULL;
+        }
+      return registeredSignals_[signal];
+    }
+
+    void MainWindow::connectSignal(const char *signal, const char *slot, QObject* obj)
+    {
+      QObject* obj_sig = getFromSignal(signal);
+      if (obj_sig != NULL) {
+        QObject::connect(obj_sig, signal, obj, slot);
+      }
+    }
+
     void MainWindow::registerSlot(const char *slot, QObject *obj)
     {
       if (registeredSlots_.find(slot) == registeredSlots_.end())
