@@ -118,12 +118,15 @@ namespace gepetto {
           // intersector->getIntersections();
           const osgUtil::LineSegmentIntersector::Intersection&
             intersection = intersector->getFirstIntersection();
+          bool hasSkipped = false;
           for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
             if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
             graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
             if (n) {
-              if (boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$")))
+              if (!hasSkipped && boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$"))) {
+                hasSkipped = true;
                 continue;
+              }
               SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
                   n,
                   mapper_.getQtModKey(modKeyMask));
