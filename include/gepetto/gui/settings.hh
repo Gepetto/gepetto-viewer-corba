@@ -44,7 +44,7 @@ namespace gepetto {
       void setupPaths () const;
 
       /// Update values accordingly with command arguments
-      int fromArgv (const int argc, char* const argv[]);
+      int fromArgv (int argc, char* argv[]);
 
       /// Update settings from setting files
       void fromFiles ();

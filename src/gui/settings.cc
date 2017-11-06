@@ -80,13 +80,13 @@ namespace gepetto {
       }
     }
 
-    int Settings::fromArgv(const int argc, char * const argv[])
+    int Settings::fromArgv(int argc, char * argv[])
     {
       bool genAndQuit = false;
       int retVal = 0;
 
       // Declare the supported options.
-      osg::ArgumentParser arguments((int*)&argc, (char**)argv);
+      osg::ArgumentParser arguments(&argc, argv);
       osg::ApplicationUsage* au (arguments.getApplicationUsage());
       au->setApplicationName(arguments.getApplicationName());
       au->setCommandLineUsage(arguments.getApplicationName()+" [options]");
