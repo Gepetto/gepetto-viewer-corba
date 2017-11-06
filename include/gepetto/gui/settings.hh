@@ -43,6 +43,12 @@ namespace gepetto {
       /// and GEPETTO_GUI_SETTINGS_DIR are read.
       void setupPaths () const;
 
+      /// Return the directory into which configuration file are.
+      QDir getConfigPath () const;
+
+      /// Get the filename of a configuration file.
+      QString getQSettingsFileName (const std::string& settingsName) const;
+
       /// Update values accordingly with command arguments
       int fromArgv (int argc, char* argv[]);
 

@@ -208,11 +208,27 @@ namespace gepetto {
            ;
     }
 
+    QDir Settings::getConfigPath () const
+    {
+      QDir d (installDirectory);
+      d.cd ("etc");
+      d.cd (QCoreApplication::organizationName());
+      return d;
+    }
+
+    QString Settings::getQSettingsFileName (const std::string& settingsName) const
+    {
+      QString name (QString::fromStdString (settingsName));
+      QString ext (".conf");
+      QDir dir (getConfigPath());
+      if (dir.exists(name + ext) || !dir.exists(name))
+        return dir.absoluteFilePath(name + ext);
+      return dir.absoluteFilePath(name);
+    }
+
     void Settings::readRobotFile ()
     {
-      QSettings robot (QSettings::SystemScope,
-          QCoreApplication::organizationName(),
-          QString::fromStdString(predifinedRobotConf));
+      QSettings robot (getQSettingsFileName (predifinedRobotConf));
       if (robot.status() != QSettings::NoError) {
         logError(QString ("Enable to open configuration file ")
                  + robot.fileName());
@@ -238,9 +254,7 @@ namespace gepetto {
 
     void Settings::readEnvFile ()
     {
-      QSettings env (QSettings::SystemScope,
-          QCoreApplication::organizationName(),
-          QString::fromStdString(predifinedEnvConf));
+      QSettings env (getQSettingsFileName (predifinedEnvConf));
       if (env.status() != QSettings::NoError) {
         logError(QString ("Enable to open configuration file ") + env.fileName());
       } else {
@@ -263,9 +277,7 @@ namespace gepetto {
 
     void Settings::readSettingFile ()
     {
-      QSettings env (QSettings::SystemScope,
-          QCoreApplication::organizationName(),
-          QString::fromStdString(configurationFile));
+      QSettings env (getQSettingsFileName (configurationFile));
       if (env.status() != QSettings::NoError) {
         logError(QString ("Enable to open configuration file ") + env.fileName());
       } else {
@@ -285,9 +297,7 @@ namespace gepetto {
 
     void Settings::writeRobotFile ()
     {
-      QSettings robot (QSettings::SystemScope,
-                       QCoreApplication::organizationName(),
-                       QString::fromStdString(predifinedRobotConf));
+      QSettings robot (getQSettingsFileName (predifinedRobotConf));
       if (!robot.isWritable()) {
           log (QString("Configuration file ") + robot.fileName() + QString(" is not writable."));
           return;
@@ -308,9 +318,7 @@ namespace gepetto {
 
     void Settings::writeEnvFile ()
     {
-      QSettings env (QSettings::SystemScope,
-                     QCoreApplication::organizationName(),
-                     QString::fromStdString(predifinedEnvConf));
+      QSettings env (getQSettingsFileName (predifinedEnvConf));
       if (!env.isWritable()) {
           logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
           return;
@@ -328,9 +336,7 @@ namespace gepetto {
 
     void Settings::writeSettingFile ()
     {
-      QSettings env (QSettings::SystemScope,
-                     QCoreApplication::organizationName(),
-                     QString::fromStdString(configurationFile));
+      QSettings env (getQSettingsFileName (configurationFile));
       if (!env.isWritable()) {
           logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
           return;
@@ -351,9 +357,7 @@ namespace gepetto {
     QVariant Settings::getSetting (const QString & key,
         const QVariant & defaultValue)
     {
-      QSettings env (QSettings::SystemScope,
-          QCoreApplication::organizationName(),
-          QString::fromStdString(configurationFile));
+      QSettings env (getQSettingsFileName (configurationFile));
       if (env.status() == QSettings::NoError) {
         return env.value (key, defaultValue);
       }
