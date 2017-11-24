@@ -93,6 +93,11 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/action-search-bar.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/node-action.hh
     )
+  IF(GEPETTO_GUI_HAS_PYTHONQT)
+    SET (${PROJECT_NAME}_HEADERS_MOC
+      ${${PROJECT_NAME}_HEADERS_MOC}
+      ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pythonwidget.hh)
+  ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
   SET (${PROJECT_NAME}_HEADERS_NO_MOC
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/meta.hh
