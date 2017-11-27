@@ -390,7 +390,7 @@ namespace graphics {
             return false;
         }
     }
-  
+
      bool WindowsManager::attachCameraToNode(const std::string& nodeName, const WindowID windowId)
      {
         NodePtr_t node = getNode(nodeName, true);
@@ -413,7 +413,7 @@ namespace graphics {
         }
   	osgFrameMutex().lock();
 	windowManagers_[windowId]->detachCamera();
-   	osgFrameMutex().unlock();       
+   	osgFrameMutex().unlock();
 	return true;
      }
 
@@ -491,7 +491,7 @@ namespace graphics {
     bool WindowsManager::resizeCapsule(const std::string& capsuleName, float newHeight) throw(std::exception){
         NodePtr_t node = getNode(capsuleName, true);
         try{
-          LeafNodeCapsulePtr_t cap = boost::dynamic_pointer_cast<LeafNodeCapsule>(node);
+          LeafNodeCapsulePtr_t cap = dynamic_pointer_cast<LeafNodeCapsule>(node);
           cap->resize(newHeight);
         }catch (const std::exception& exc) {
           std::cout <<capsuleName << "isn't a capsule."  << std::endl;
@@ -503,7 +503,7 @@ namespace graphics {
     bool WindowsManager::resizeArrow(const std::string& arrowName ,float newRadius, float newLength) throw(std::exception){
         NodePtr_t node = getNode(arrowName, true);
         try{
-          LeafNodeArrowPtr_t arrow = boost::dynamic_pointer_cast<LeafNodeArrow>(node);
+          LeafNodeArrowPtr_t arrow = dynamic_pointer_cast<LeafNodeArrow>(node);
           arrow->resize(newRadius,newLength);
         }catch (const std::exception& exc) {
           std::cout <<arrowName << "isn't an arrow."  << std::endl;
@@ -603,38 +603,38 @@ namespace graphics {
         osgFrameMutex().unlock();
         return true;
     }
-  
+
   bool WindowsManager::setLineStartPoint(const std::string& lineName,
                                             const osgVector3& pos1)
   {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-    
-    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+
+    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
     osgFrameMutex().lock();
     line->setStartPoint(pos1);
     osgFrameMutex().unlock();
     return true;
   }
-  
+
   bool WindowsManager::setLineEndPoint(const std::string& lineName,
                                             const osgVector3& pos2)
   {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-    
-    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+
+    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
     osgFrameMutex().lock();
     line->setEndPoint(pos2);
     osgFrameMutex().unlock();
     return true;
   }
-  
+
   bool WindowsManager::setLineExtremalPoints(const std::string& lineName,
                                              const osgVector3& pos1,
                                              const osgVector3& pos2)
   {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-    
-    LeafNodeLinePtr_t line = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+
+    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
     osgFrameMutex().lock();
     line->setStartPoint(pos1);
     line->setEndPoint(pos2);
@@ -658,7 +658,7 @@ namespace graphics {
       osgFrameMutex().unlock();
       return true;
     }
-  
+
   bool WindowsManager::setCurvePoints (const std::string& curveName,
                                        const Vec3ArrayPtr_t& pos)
   {
@@ -667,7 +667,7 @@ namespace graphics {
       std::cout << "Need at least two points" << std::endl;
       return false;
     }
-    LeafNodeLinePtr_t curve = boost::dynamic_pointer_cast<LeafNodeLine>(getNode(curveName));
+    LeafNodeLinePtr_t curve = dynamic_pointer_cast<LeafNodeLine>(getNode(curveName));
     osgFrameMutex().lock();
     curve->setPoints(pos);
     osgFrameMutex().unlock();
@@ -681,7 +681,7 @@ namespace graphics {
             std::cerr << "Node \"" << curveName << "\" not found." << std::endl;
             return false;
         } else {
-            LeafNodeLinePtr_t curve (boost::dynamic_pointer_cast
+            LeafNodeLinePtr_t curve (dynamic_pointer_cast
                 <LeafNodeLine> (node));
             if (!curve) {
               std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
@@ -697,7 +697,7 @@ namespace graphics {
     bool WindowsManager::setCurveLineWidth (const std::string& curveName, const float& width)
     {
         NodePtr_t node = getNode (curveName, true);
-        LeafNodeLinePtr_t curve (boost::dynamic_pointer_cast <LeafNodeLine> (node));
+        LeafNodeLinePtr_t curve (dynamic_pointer_cast <LeafNodeLine> (node));
         if (!curve) {
           std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
           return false;
@@ -744,7 +744,7 @@ namespace graphics {
 				   const std::string& filename)
   {
     NodePtr_t node (getNode (nodeName, true));
-    LeafNodeFacePtr_t faceNode (boost::dynamic_pointer_cast <LeafNodeFace>
+    LeafNodeFacePtr_t faceNode (dynamic_pointer_cast <LeafNodeFace>
 				(node));
     if (!faceNode) {
       std::ostringstream oss;
@@ -825,7 +825,7 @@ namespace graphics {
         }
         return l;
     }
-		
+
     std::vector<std::string> WindowsManager::getGroupNodeList (const std::string& group)
     {
         std::vector<std::string> l;
@@ -845,7 +845,7 @@ namespace graphics {
         }
         return l;
     }
-	
+
     std::vector<std::string> WindowsManager::getSceneList ()
     {
         std::vector<std::string> l;
@@ -948,7 +948,7 @@ namespace graphics {
         NodePtr_t link;
         for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
           link = urdf->getChild (i);
-          GroupNodePtr_t groupNode (boost::dynamic_pointer_cast
+          GroupNodePtr_t groupNode (dynamic_pointer_cast
               <GroupNode> (link));
           if (groupNode) {
             addGroup(link->getID(), groupNode, urdf);
@@ -1074,7 +1074,7 @@ namespace graphics {
         return Configuration(node->getStaticPosition (),
                              node->getStaticRotation ());
     }
-  
+
   bool WindowsManager::setStaticTransform (const std::string& nodeName,
       const Configuration& transform)
   {
@@ -1305,7 +1305,7 @@ namespace graphics {
         std::pair<osgVector3, osgQuat> posQuat = node->getGlobalTransform();
         return Configuration(posQuat.first, posQuat.second);
     }
-    
+
     bool WindowsManager::setBackgroundColor1(const WindowID windowId,const Color_t& color)
     {
       WindowManagerPtr_t wm = getWindowManager(windowId, true);
@@ -1314,7 +1314,7 @@ namespace graphics {
       osgFrameMutex().unlock();
       return true;
     }
-  
+
   bool WindowsManager::setBackgroundColor2(const WindowID windowId,const Color_t& color)
   {
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
