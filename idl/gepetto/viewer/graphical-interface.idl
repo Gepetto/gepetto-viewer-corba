@@ -193,6 +193,8 @@ typedef sequence<Position> PositionSeq;
 
     boolean setCurveMode (in string curveName, in string mode) raises (Error);
 
+    boolean setCurvePointsSubset (in string curveName, in long first, in long count) raises (Error);
+
     boolean setCurveLineWidth (in string curveName, in float width) raises (Error);
 
     /// create a four vertices face called faceName.
