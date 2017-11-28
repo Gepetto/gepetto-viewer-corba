@@ -289,6 +289,8 @@ namespace graphics {
             virtual void setFloatProperty(const std::string& nodeName, const std::string& propName, const float& value) const;
             virtual bool getBoolProperty(const std::string& nodeName, const std::string& propName) const;
             virtual void setBoolProperty(const std::string& nodeName, const std::string& propName, const bool& value) const;
+            virtual int getIntProperty(const std::string& nodeName, const std::string& propName) const;
+            virtual void setIntProperty(const std::string& nodeName, const std::string& propName, const int& value) const;
 
             WindowManagerPtr_t getWindowManager (const WindowID wid, bool throwIfDoesntExist = false) const;
             GroupNodePtr_t getGroup (const std::string groupName, bool throwIfDoesntExist = false) const;

@@ -120,7 +120,9 @@ namespace graphics {
         template <> struct traits<LONG> {
           typedef int Out_t;
           typedef CORBA::Long  In_t;
+          typedef CORBA::Long  Ret_t;
           static int op (const In_t& in) { return in; }
+          static Ret_t ret (Out_t  in) { return in; }
         };
         template <> struct traits<WINDOW_ID> {
           typedef       WindowsManager::WindowID  Out_t;
@@ -441,6 +443,10 @@ namespace graphics {
       BIND_TO_WINDOWS_MANAGER_2(BOOL,getBoolProperty,STRING,STRING)
 
       BIND_TO_WINDOWS_MANAGER_3(VOID,setBoolProperty,STRING,STRING,BOOL)
+
+      BIND_TO_WINDOWS_MANAGER_2(LONG,getIntProperty,STRING,STRING)
+
+      BIND_TO_WINDOWS_MANAGER_3(VOID,setIntProperty,STRING,STRING,LONG)
     } //end namespace impl
   } //end namespace corbaServer
 } //end namespace graphics
