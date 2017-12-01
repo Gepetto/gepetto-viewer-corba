@@ -19,7 +19,7 @@ namespace gepetto {
     class ViewerCorbaServer;
 
     class WindowsManager;
-    typedef shared_ptr <WindowsManager> WindowsManagerPtr_t;
+    typedef graphics::shared_ptr <WindowsManager> WindowsManagerPtr_t;
 
 #if GEPETTO_GUI_HAS_PYTHONQT
     class PythonWidget;
