@@ -51,16 +51,19 @@ class Client:
     self.__dict__[serviceName [0]] = client
 
 
-  def __init__(self, clients = defaultClients, url = "corbaloc:rir:/NameService", host = None):
+  def __init__(self, clients = defaultClients, url = None, host = None):
     """
     Initialize CORBA and create default clients.
     :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
                 For a remote corba server, use
-                url = "corbaloc:iiop:<host>:<port>/NameService"
+                url = "corbaloc:iiop:<host>:<port>/NameService".
+                If None, url is initialized with param host, or alternatively with _getIIOPurl
     :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
     """
     if host is not None:
         url = "corbaloc:iiop:" + str(host) + "/NameService"
+    elif url is None:
+        url = _getIIOPurl()
     import sys
     self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
     obj = self.orb.string_to_object (url)
@@ -70,3 +73,30 @@ class Client:
 
     for client in clients:
       self.makeClient (client)
+
+def _getIIOPurl ():
+  """
+  Returns "corbaloc:iiop:<host>:<port>/NameService"
+  where host and port are, in this order of priority:
+  - GEPETTO_VIEWER_HOST, GEPETTO_VIEWER_PORT environment variables
+  - /gepetto_viewer/host, /gepetto_viewer/port ROS parameters
+  - use default values ("localhost", 2809)
+  """
+  host = "localhost"
+  port = 2809
+  import os
+  try:
+    import rospy
+    # Check is ROS master is reachable.
+    if rospy.client.get_master().target is not None:
+      host = rospy.get_param("/gepetto_viewer/host", host)
+      port = rospy.get_param("/gepetto_viewer/port", port)
+  except:
+    pass
+  host = os.getenv ("GEPETTO_VIEWER_HOST", host)
+  port = os.getenv ("GEPETTO_VIEWER_PORT", port)
+  if host is None and port is None:
+      url = "corbaloc:iiop:/NameService"
+  else:
+      url = "corbaloc:iiop:{}:{}/NameService".format(host, port)
+  return url

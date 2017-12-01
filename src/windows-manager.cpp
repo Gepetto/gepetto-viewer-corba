@@ -76,6 +76,15 @@
     throw gepetto::Error (oss.str ().c_str ());				       \
   }
 
+#define FIND_NODE_OF_TYPE_OR_THROW(NodeType, varname, nodename)                \
+  NodeType##Ptr_t varname (boost::dynamic_pointer_cast <NodeType>                \
+      (getNode(nodename, true)));                                              \
+  if (!varname) {                                                              \
+    std::ostringstream oss;                                                    \
+    oss << "Node \"" << nodename << "\" is not of type " #NodeType;             \
+    throw gepetto::Error (oss.str ().c_str ());				       \
+  }
+
 namespace graphics {
     namespace {
       typedef std::map<std::string, NodePtr_t>::iterator          NodeMapIt;
@@ -692,6 +701,21 @@ namespace graphics {
             osgFrameMutex().unlock();
             return true;
         }
+    }
+
+    bool WindowsManager::setCurvePointsSubset (const std::string& curveName,
+        const int first, const std::size_t count)
+    {
+        FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, curve, curveName);
+        osgFrameMutex().lock();
+        try {
+          curve->setPointsSubset (first, count);
+        } catch (const std::exception& exc) {
+          osgFrameMutex().unlock();
+          throw gepetto::Error (exc.what ());
+        }
+        osgFrameMutex().unlock();
+        return true;
     }
 
     bool WindowsManager::setCurveLineWidth (const std::string& curveName, const float& width)

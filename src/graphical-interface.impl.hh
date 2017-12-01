@@ -102,6 +102,7 @@ public:
   virtual bool setCurvePoints(const char* curveName, const PositionSeq& pos) throw (Error);
 
   virtual bool setCurveMode(const char* curveName, const char* modeName) throw (Error);
+  virtual bool setCurvePointsSubset(const char* curveName, CORBA::Long first, CORBA::Long count) throw (Error);
   virtual bool setCurveLineWidth(const char* curveName, const float width) throw (Error);
 
   virtual bool addSquareFace(const char* faceName, const value_type* pos1, const value_type* pos2, const value_type* pos3, const value_type* pos4, const Color color) throw (Error);

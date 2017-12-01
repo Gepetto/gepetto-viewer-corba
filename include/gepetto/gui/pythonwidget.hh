@@ -8,12 +8,13 @@
 # error "hpp-gui was not compile with PythonQt dependency."
 #endif
 
+#include <QVariant>
 #include <QDockWidget>
 #include <QLayout>
 #include <QPushButton>
-#include <PythonQt/PythonQt.h>
-#include <PythonQt/PythonQt_QtAll.h>
-#include <PythonQt/PythonQtScriptingConsole.h>
+
+class PythonQtObjectPtr;
+class PythonQtScriptingConsole;
 
 namespace gepetto {
   namespace gui {
@@ -51,7 +52,7 @@ namespace gepetto {
     ///
     /// ### Signals and slots:
     ///
-    /// The most important signals and slots you should now about are listed here.
+    /// The most important signals and slots you should know about are listed here.
     /// A more up-to-date list of the \ref available_in_python
     ///
     /// The following method will be automatically connected to Qt signals:
@@ -76,6 +77,12 @@ namespace gepetto {
       void addToContext(QString const& name, QObject *obj);
       virtual ~PythonWidget();
 
+      /// Calls a method on each plugin that has it.
+      /// \return a list of QVariant returned by each call.
+      QVariantList callPluginMethod (const QString& method,
+          const QVariantList& args = QVariantList(),
+          const QVariantMap& kwargs = QVariantMap()) const;
+
     public slots:
       /// Load a plugin by importing a module
       ///
@@ -98,7 +105,6 @@ namespace gepetto {
 
       void addSignalHandlersToPlugin(PythonQtObjectPtr plugin);
 
-      PythonQtObjectPtr mainContext_;
       PythonQtScriptingConsole* console_;
       QPushButton* button_;
       QMap<QString, PythonQtObjectPtr> modules_;

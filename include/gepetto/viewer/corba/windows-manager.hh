@@ -200,6 +200,7 @@ namespace graphics {
             /// See http://svn.openscenegraph.org/osg/OpenSceneGraph-Data/trunk/Images/primitives.gif for
             /// possible values
             virtual bool setCurveMode (const std::string& curveName, const GLenum mode);
+            virtual bool setCurvePointsSubset (const std::string& curveName, const int first, const std::size_t count);
             virtual bool setCurveLineWidth (const std::string& curveName, const float& width);
 
             virtual bool addSquareFace(const std::string& faceName, const osgVector3& pos1, const osgVector3& pos2, const osgVector3& pos3, const osgVector3& pos4, const Color_t& color);
