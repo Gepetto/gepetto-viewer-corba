@@ -457,6 +457,9 @@ typedef sequence<Position> PositionSeq;
 
     void setBoolProperty(in string nodeName, in string propName, in boolean value) raises (Error);
     boolean getBoolProperty(in string nodeName, in string propName) raises (Error);
+
+    void setIntProperty(in string nodeName, in string propName, in long value) raises (Error);
+    long getIntProperty(in string nodeName, in string propName) raises (Error);
   };
 };
 };
