@@ -42,7 +42,9 @@ have to be available on your machine.
    - omniORB4 (version >= 4.1.4)
    - openscenegraph (version >= 3.2)
    - urdfdom (version >= 0.3.0)
-   - SceneViewer (Graphical Interface of Pinocchio and HPP)
+   - GepettoViewer (Graphical Interface of Pinocchio and HPP)
+ - Binaries:
+   - omniNames (installed by sudo apt-get install omniorb-nameserver)
  - System tools:
    - CMake (>=2.6)
    - pkg-config
