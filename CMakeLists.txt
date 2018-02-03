@@ -54,6 +54,7 @@ SETUP_PROJECT ()
 
 # Dependencies
 ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
+
 IF(NOT CLIENT_ONLY)
   ADD_REQUIRED_DEPENDENCY("openscenegraph >= 3.2")
   ADD_REQUIRED_DEPENDENCY("openscenegraph-osgQt")
