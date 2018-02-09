@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QWheelEvent>
+#include <QVBoxLayout>
 
 #include <gepetto/viewer/urdf-parser.h>
 #include <gepetto/viewer/OSGManipulator/keyboard-manipulator.h>

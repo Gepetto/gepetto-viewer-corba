@@ -14,8 +14,6 @@
 
 namespace gepetto {
   namespace gui {
-    class BodyTreeItem;
-
     class BodyTreeItem : public QObject, public QStandardItem
     {
       Q_OBJECT

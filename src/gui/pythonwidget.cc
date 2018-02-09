@@ -1,5 +1,6 @@
 #include "gepetto/gui/pythonwidget.hh"
 
+#include <QAction>
 #include <QFileDialog>
 #include <PythonQt/PythonQt.h>
 #include <PythonQt/PythonQt_QtAll.h>

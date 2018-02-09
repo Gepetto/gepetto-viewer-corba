@@ -2,6 +2,7 @@
 #include "ui_pluginmanagerdialog.h"
 
 #include <QDebug>
+#include <QMenu>
 
 #include "gepetto/gui/plugin-interface.hh"
 
@@ -119,7 +120,7 @@ namespace gepetto {
     }
 
     void PluginManagerDialog::onItemChanged(QTableWidgetItem *current,
-        QTableWidgetItem */*previous*/)
+        QTableWidgetItem* /*previous*/)
     {
       if (!current) return;
       QString key = ui_->pluginList->item(current->row(), FILE)->text();

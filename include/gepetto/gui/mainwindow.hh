@@ -4,6 +4,8 @@
 #include <QList>
 #include <QStandardItemModel>
 #include <QMainWindow>
+#include <QCheckBox>
+#include <QLabel>
 
 #include <gepetto/viewer/group-node.h>
 

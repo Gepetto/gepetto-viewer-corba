@@ -1,6 +1,9 @@
 #include "gepetto/gui/mainwindow.hh"
 #include "ui_mainwindow.h"
 
+#include <QScrollBar>
+#include <QMessageBox>
+
 #include <gepetto/viewer/corba/server.hh>
 
 #include "gepetto/gui/windows-manager.hh"
