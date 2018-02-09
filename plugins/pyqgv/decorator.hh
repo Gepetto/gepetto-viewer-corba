@@ -21,14 +21,15 @@ class QGVScene;
 class QGVNode;
 class QGVEdge;
 
-class QGVCORE_EXPORT QGVDecorator : public QObject
-{
+namespace PyQgv {
+  class QGVCORE_EXPORT QGVDecorator : public QObject
+  {
     Q_OBJECT
 
-public slots:
+    public slots:
 
-// ------- QGVScene ------------------------------------------- //
-    QGVScene* new_QGVScene(const QString &name);
+      // ------- QGVScene ------------------------------------------- //
+      QGVScene* new_QGVScene(const QString &name);
     QGVScene* new_QGVScene(const QString &name, QObject *parent);
     void delete_QGVScene(QGVScene* s);
 
@@ -51,8 +52,19 @@ public slots:
     void render     (QGVScene* s, const QString &algorithm, const QString file);
     void freeLayout (QGVScene* s);
     void clear      (QGVScene* s);
-// ------- QGVScene ------------------------------------------- //
+    // ------- QGVScene ------------------------------------------- //
 
-};
+    // ------- QGVNode  ------------------------------------------- //
+    void setAttribute (QGVNode* n, const QString &name, const QString &value);
+    QString getAttribute (QGVNode* n, const QString &name);
+    // ------- QGVNode  ------------------------------------------- //
 
-void registerQGV ();
+    // ------- QGVEdge  ------------------------------------------- //
+    void setAttribute (QGVEdge* e, const QString &name, const QString &value);
+    QString getAttribute (QGVEdge* e, const QString &name);
+    // ------- QGVEdge  ------------------------------------------- //
+  };
+
+  /// Register QGV to PythonQt
+  void registerQGV ();
+} // namespace PyQgv

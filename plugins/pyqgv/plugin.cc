@@ -20,8 +20,10 @@
 
 #include <decorator.hh>
 
-void PyQGV::init() {
-  registerQGV();
-}
+namespace PyQgv {
+  void Plugin::init() {
+    registerQGV();
+  }
 
-Q_EXPORT_PLUGIN2 (pyqgv, PyQGV)
+  Q_EXPORT_PLUGIN2 (pyqgv, Plugin)
+} // namespace PyQgv

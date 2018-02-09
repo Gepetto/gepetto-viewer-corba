@@ -20,12 +20,16 @@
 
 #include <gepetto/gui/plugin-interface.hh>
 
-class PyQGV : public QObject, public gepetto::gui::PluginInterface {
-  Q_OBJECT
-  Q_INTERFACES (gepetto::gui::PluginInterface)
+namespace PyQgv {
+  /// Provide bindings of QGV library in PythonQt terminal.
+  class Plugin : public QObject, public gepetto::gui::PluginInterface {
+    Q_OBJECT
+    Q_INTERFACES (gepetto::gui::PluginInterface)
 
-  public:
-    QString name () const { return QString("PyQGV"); }
+    public:
+      QString name () const { return QString("PyQGV"); }
 
-    void init();
-};
+      /// Calls \ref registerQGV
+      void init();
+  };
+} // namespace PyQgv

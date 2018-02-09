@@ -18,6 +18,10 @@
 
 #include <PythonQt/PythonQt.h>
 #include <QGVScene.h>
+#include <QGVNode.h>
+#include <QGVEdge.h>
+
+namespace PyQgv {
 
 // ------- QGVScene ------------------------------------------- //
 QGVScene* QGVDecorator::new_QGVScene(const QString &name) { return new QGVScene(name); }
@@ -45,6 +49,16 @@ void QGVDecorator::freeLayout (QGVScene* s) { s->freeLayout(); }
 void QGVDecorator::clear      (QGVScene* s) { s->clear(); }
 // ------- QGVScene ------------------------------------------- //
 
+// ------- QGVNode  ------------------------------------------- //
+void QGVDecorator::setAttribute (QGVNode* n, const QString &name, const QString &value) { n->setAttribute(name,value); }
+QString QGVDecorator::getAttribute (QGVNode* n, const QString &name) { return n->getAttribute(name); }
+// ------- QGVNode  ------------------------------------------- //
+
+// ------- QGVEdge  ------------------------------------------- //
+void QGVDecorator::setAttribute (QGVEdge* e, const QString &name, const QString &value) { e->setAttribute(name,value); }
+QString QGVDecorator::getAttribute (QGVEdge* e, const QString &name) { return e->getAttribute(name); }
+// ------- QGVEdge  ------------------------------------------- //
+
 void registerQGV ()
 {
   PythonQt::self()->addDecorators (new QGVDecorator ());
@@ -52,3 +66,5 @@ void registerQGV ()
   PythonQt::self()->registerCPPClass ("QGVNode" , "QGraphicsItem" , "qgv");
   PythonQt::self()->registerCPPClass ("QGVEdge" , "QGraphicsItem" , "qgv");
 }
+
+} // namespace PyQgv
