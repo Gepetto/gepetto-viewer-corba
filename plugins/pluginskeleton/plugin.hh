@@ -20,6 +20,7 @@
 
 #include <gepetto/gui/plugin-interface.hh>
 
+/// \ingroup plugin
 /// C++ skeleton plugin.
 /// To add your own plugin, copy paste code in directory plugins/pluginskeleton.
 class PluginSkeleton : public QObject, public gepetto::gui::PluginInterface {

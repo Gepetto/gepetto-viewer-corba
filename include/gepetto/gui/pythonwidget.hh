@@ -18,9 +18,6 @@ class PythonQtScriptingConsole;
 
 namespace gepetto {
   namespace gui {
-    /// \defgroup plugin Plugin interfaces
-
-
     /// \ingroup plugin
     /// Python plugin interface
     ///
@@ -68,7 +65,8 @@ namespace gepetto {
     ///     MainWindow::logJobFailed to inform users when
     ///     starting and finishing (Done or Failed) actions that may take some time.
     ///
-    /// \sa See example \ref pyplugins/gepetto/gui/pythonwidget.py
+    /// \sa See examples \ref pyplugins/gepetto/gui/pythonwidget.py and
+    ///     \ref pyplugins/gepetto/gui/matplotlib_example.py
     class PythonWidget : public QDockWidget
     {
       Q_OBJECT

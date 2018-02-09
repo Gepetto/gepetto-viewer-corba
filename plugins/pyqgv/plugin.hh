@@ -21,7 +21,13 @@
 #include <gepetto/gui/plugin-interface.hh>
 
 namespace PyQgv {
+  /// \ingroup pluginlist
   /// Provide bindings of QGV library in PythonQt terminal.
+  /// Add the following to your settings file to activate it.
+  ///
+  ///     [plugins]
+  ///     libpyqgv.so=true
+  ///
   class Plugin : public QObject, public gepetto::gui::PluginInterface {
     Q_OBJECT
     Q_INTERFACES (gepetto::gui::PluginInterface)

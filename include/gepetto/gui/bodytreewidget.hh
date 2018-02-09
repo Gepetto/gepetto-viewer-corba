@@ -65,7 +65,7 @@ namespace gepetto {
       void bodySelected (SelectionEvent* event);
 
     public slots:
-      /// \addtogroup available_in_python Python API
+      /// \ingroup plugin_python
       /// \{
 
       /// Triggered when an item is selected in the body tree view.

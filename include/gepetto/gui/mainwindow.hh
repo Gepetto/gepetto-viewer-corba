@@ -107,8 +107,7 @@ signals:
         void logErrorString(QString msg);
 
         public slots:
-          /// \addtogroup available_in_python Python API
-          /// These slots are available for Python scripting in plugins
+          /// \ingroup plugin_python
           /// \{
 
         /// Get the body tree widget.

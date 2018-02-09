@@ -25,40 +25,40 @@ typedef sequence <string> Names_t; /// Sequence of names
 typedef sequence<float> floatSeq;
 typedef sequence<Position> PositionSeq;
 
-  /// Corba exception travelling through the Corba channel
+  /// IDL of the graphical interface.
+  /// It contains the following groups:
+  /// \li \ref idl_windows_and_scenes "Windows and scenes"
+  /// \li \ref idl_node_creation "Node creation"
+  /// \li \ref idl_node_tree_manipulation "Node tree manipulation"
+  /// \li \ref idl_node_configuration "Node configuration"
+  /// \li \ref idl_node_properties "Node properties"
+  /// \li \ref idl_export_of_scenes_to_images_or_to_blender "Export of scenes to images or to blender"
+  /// \li \ref idl_camera_manipulation "Camera manipulation"
   interface GraphicalInterface {
+
+    /// \name Windows and scenes
+    /// \anchor idl_windows_and_scenes
+    /// \{
 
     /// Set time between window frames
     /// \param input rate : waiting time (ms) between two frames.
     boolean setRate(in long rate) raises (Error);
-
-    /// Change configurations according to the last applyConfigurations.d
-    void refresh() raises (Error);
-
 
     /// Create a new window.
     /// \param input name : name of the new window.
     /// return the ID of the newly create window.
     unsigned long createWindow(in string name) raises (Error);
     unsigned long getWindowID (in string name) raises (Error);
-
-
-    /// Print names of nodes on the SceneViewer-corbaserver terminal
-    /// and return them in an array
-    /// \return the list of node names contained in the scene
-    Names_t getNodeList() raises (Error);
-
-    /// Print names of a group nodes on the SceneViewer-corbaserver terminal
-    /// and return them in an array
-    /// \param input name : name of the new window.
-    /// \return the list of node names contained in the group
-    Names_t getGroupNodeList(in string group) raises (Error);
-
-    /// Get the list of group (i.e. scene) nodes
-    Names_t getSceneList() raises (Error);
-
-    /// Print names of windows on the SceneViewer-corbaserver terminal.
-    Names_t getWindowList() raises (Error);
+    
+    /// change the background color1
+    /// \param input windowId : ID of the window
+    /// \param input RGBAcolor : desired color
+    boolean setBackgroundColor1(in unsigned long windowId,in Color RGBAcolor);
+    
+    /// change the background color2
+    /// \param input windowId : ID of the window
+    /// \param input RGBAcolor : desired color
+    boolean setBackgroundColor2(in unsigned long windowId,in Color RGBAcolor);
 
     /// Create a group node.
     /// \param input sceneName : name of the group.
@@ -74,21 +74,11 @@ typedef sequence<Position> PositionSeq;
     /// \param input windowId : ID of rhe window.
     boolean addSceneToWindow(in string sceneName, in unsigned long windowId) raises (Error);
 
-    /// Attach the camera to the Node nodeName in the WindowManager
-    /// pointed by windowId
-    /// If already attached, detach from the other node
-    /// \param input nodeName : name of the node
-    /// \param input windowId : ID of the window
-    boolean attachCameraToNode(in string nodeName, in unsigned long windowId) raises (Error);
+    /// \}
 
-    /// Detach the camera of WindowManager pointed by windowId
-    /// from any node
-    /// \param input windowId : ID of the window
-    boolean detachCamera(in unsigned long windowId) raises (Error);
-
-    /// Check if nodeName is an existing node.
-    /// \param nodeName name of the node
-    boolean nodeExists(in string nodeName) raises (Error);
+    /// \name Node creation
+    /// \anchor idl_node_creation
+    /// \{
 
     /// create a floor called floorName.
     /// \param input floorName : name of the floor.
@@ -305,6 +295,38 @@ typedef sequence<Position> PositionSeq;
     /// \param input groupName : name of the group.
     boolean createGroup(in string groupName) raises (Error);
 
+    /// \}
+
+    /// \name Node tree manipulation
+    /// \anchor idl_node_tree_manipulation
+    /// \{
+
+    /// Check if nodeName is an existing node.
+    /// \param nodeName name of the node
+    boolean nodeExists(in string nodeName) raises (Error);
+
+    /// Delete node from visualiser
+    /// \param all if nodeName is a group node and all is True, nodes
+    ///        are deleted recursively.
+    void deleteNode (in string nodeName, in boolean all) raises (Error);
+
+    /// Print names of nodes on the SceneViewer-corbaserver terminal
+    /// and return them in an array
+    /// \return the list of node names contained in the scene
+    Names_t getNodeList() raises (Error);
+
+    /// Print names of a group nodes on the SceneViewer-corbaserver terminal
+    /// and return them in an array
+    /// \param input name : name of the new window.
+    /// \return the list of node names contained in the group
+    Names_t getGroupNodeList(in string group) raises (Error);
+
+    /// Get the list of group (i.e. scene) nodes
+    Names_t getSceneList() raises (Error);
+
+    /// Print names of windows on the SceneViewer-corbaserver terminal.
+    Names_t getWindowList() raises (Error);
+
     /// set a node as child to a group node.
     /// \param input nodeName : name of the child node.
     /// \param input groupName : name of the mother node (=group node).
@@ -315,10 +337,30 @@ typedef sequence<Position> PositionSeq;
     /// \param input groupName : name of the mother node (=group node).
     boolean removeFromGroup(in string nodeName, in string groupName) raises (Error);
 
+    /// \}
+
+    /// \name Node configuration
+    /// \anchor idl_node_configuration
+    /// \{
+
     /// Set a new configuration to a node. THIS CONFIGURATION WILL AFFECTIVE ONLY AFTER CALLING REFRESH FUNCTION!!!
     /// \param input nodeName : name of the node.
     /// \param input configuration : Float[7] new configuration.
     boolean applyConfiguration(in string nodeName, in Transform configuration) raises (Error);
+
+    /// Change configurations according to the last applyConfigurations.d
+    void refresh() raises (Error);
+    
+    /// Return the Position + Quaternion orientation of an object in the global frame
+    /// \param input nodeName : name of the node.
+    /// \return a length 7 array
+    Transform getNodeGlobalTransform(in string nodeName) raises (Error);
+
+    /// \}
+
+    /// \name Node properties
+    /// \anchor idl_node_properties
+    /// \{
 
     /// Add Landmark at the center of a node
     /// The colors are x=red, y=green, z=blue (xyz=RGB).
@@ -369,6 +411,34 @@ typedef sequence<Position> PositionSeq;
     /// \param input state : 0 for off, 1 or 2 for other things.
     boolean setHighlight (in string nodeName, in long state) raises (Error);
 
+    Names_t getPropertyNames(in string nodeName) raises (Error);
+    Names_t getPropertyTypes(in string nodeName) raises (Error);
+
+    void setStringProperty(in string nodeName, in string propName, in string value) raises (Error);
+    string getStringProperty(in string nodeName, in string propName) raises (Error);
+
+    void setColorProperty(in string nodeName, in string propName, in Color value) raises (Error);
+    Color getColorProperty(in string nodeName, in string propName) raises (Error);
+
+    void setVector3Property(in string nodeName, in string propName, in Position value) raises (Error);
+    Position getVector3Property(in string nodeName, in string propName) raises (Error);
+
+    void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
+    float getFloatProperty(in string nodeName, in string propName) raises (Error);
+
+    void setBoolProperty(in string nodeName, in string propName, in boolean value) raises (Error);
+    boolean getBoolProperty(in string nodeName, in string propName) raises (Error);
+
+    void setIntProperty(in string nodeName, in string propName, in long value) raises (Error);
+    long getIntProperty(in string nodeName, in string propName) raises (Error);
+
+    /// \}
+
+    /// \name Export of scenes to images or to blender
+    /// \anchor idl_export_of_scenes_to_images_or_to_blender
+    /// See \ref gepetto.gui.Plugin
+    /// \{
+
     void captureFrame (in WindowID wid, in string imageFilename) raises (Error);
 
     /// Start capturing a window into image files.
@@ -412,56 +482,35 @@ typedef sequence<Position> PositionSeq;
 
     /// Write the nodes contained in the window to filename
     boolean writeWindowFile (in unsigned long windowId, in string filename) raises (Error);
-    
-    /// Return the Position + Quaternion orientation of an object in the global frame
-    /// \param input nodeName : name of the node.
-    /// \return a length 7 array
-    Transform getNodeGlobalTransform(in string nodeName) raises (Error);
 
-    /// Delete node from visualiser
-    /// \param all if nodeName is a group node and all is True, nodes
-    ///        are deleted recursively.
-    void deleteNode (in string nodeName, in boolean all) raises (Error);
-    
-    /// change the background color1
+    /// \}
+
+    /// \name Camera manipulation
+    /// \anchor idl_camera_manipulation
+    /// \{
+
+    /// Attach the camera to the Node nodeName in the WindowManager
+    /// pointed by windowId
+    /// If already attached, detach from the other node
+    /// \param input nodeName : name of the node
     /// \param input windowId : ID of the window
-    /// \param input RGBAcolor : desired color
-    boolean setBackgroundColor1(in unsigned long windowId,in Color RGBAcolor);
-    
-    /// change the background color2
+    boolean attachCameraToNode(in string nodeName, in unsigned long windowId) raises (Error);
+
+    /// Detach the camera of WindowManager pointed by windowId
+    /// from any node
     /// \param input windowId : ID of the window
-    /// \param input RGBAcolor : desired color
-    boolean setBackgroundColor2(in unsigned long windowId,in Color RGBAcolor);
+    boolean detachCamera(in unsigned long windowId) raises (Error);
 
-		/// get the matrix transform of the current position of the camera
-		/// \param input windowId : ID of the window
-		Transform getCameraTransform(in unsigned long windowId) raises (Error);
+    /// get the matrix transform of the current position of the camera
+    /// \param input windowId : ID of the window
+    Transform getCameraTransform(in unsigned long windowId) raises (Error);
 
-		/// set the matrix transform of the current camera
-		/// \param input windowId : ID of the window
-		/// \param input configuration : the desired configuration of the camera
-		boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
+    /// set the matrix transform of the current camera
+    /// \param input windowId : ID of the window
+    /// \param input configuration : the desired configuration of the camera
+    boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
 
-    Names_t getPropertyNames(in string nodeName) raises (Error);
-    Names_t getPropertyTypes(in string nodeName) raises (Error);
-
-    void setStringProperty(in string nodeName, in string propName, in string value) raises (Error);
-    string getStringProperty(in string nodeName, in string propName) raises (Error);
-
-    void setColorProperty(in string nodeName, in string propName, in Color value) raises (Error);
-    Color getColorProperty(in string nodeName, in string propName) raises (Error);
-
-    void setVector3Property(in string nodeName, in string propName, in Position value) raises (Error);
-    Position getVector3Property(in string nodeName, in string propName) raises (Error);
-
-    void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
-    float getFloatProperty(in string nodeName, in string propName) raises (Error);
-
-    void setBoolProperty(in string nodeName, in string propName, in boolean value) raises (Error);
-    boolean getBoolProperty(in string nodeName, in string propName) raises (Error);
-
-    void setIntProperty(in string nodeName, in string propName, in long value) raises (Error);
-    long getIntProperty(in string nodeName, in string propName) raises (Error);
+    /// \}
   };
 };
 };

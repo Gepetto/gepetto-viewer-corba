@@ -1,8 +1,9 @@
-FILE_PATTERNS   = *.idl *.hh
+FILE_PATTERNS   = *.idl *.hh *.py *.idl
 
 INPUT           = @CMAKE_SOURCE_DIR@/include    \
                   @CMAKE_SOURCE_DIR@/idl        \
                   @CMAKE_SOURCE_DIR@/plugins    \
+                  @CMAKE_SOURCE_DIR@/pyplugins  \
                   @CMAKE_SOURCE_DIR@/doc
 
 GENERATE_TREEVIEW      = NO

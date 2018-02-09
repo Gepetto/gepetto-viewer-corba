@@ -14,6 +14,8 @@ namespace gepetto {
   namespace gui {
     const int DockKeyShortcutBase = Qt::CTRL + Qt::ALT;
 
+    /// \ingroup plugin_cpp
+    /// Base interface for C++ plugins.
     class PluginInterface {
       public:
         PluginInterface ()
@@ -53,6 +55,8 @@ namespace gepetto {
         bool isInit_;
     };
 
+    /// \ingroup plugin_cpp
+    /// Interface to add actions to the joint tree.
     class JointModifierInterface {
       public:
         virtual ~JointModifierInterface () {}
@@ -60,6 +64,8 @@ namespace gepetto {
         virtual QAction* action (const std::string& jointName) const = 0;
     };
 
+    /// \ingroup plugin_cpp
+    /// Interface to load robot models.
       class ModelInterface {
         public:
           virtual ~ModelInterface () {}
@@ -71,6 +77,8 @@ namespace gepetto {
           virtual std::string getBodyFromJoint (const std::string& jointName) const = 0;
       };
 
+    /// \ingroup plugin_cpp
+    /// You must implement this interface is you have corba clients.
       class CorbaInterface {
         public:
           virtual ~CorbaInterface () {}
