@@ -55,6 +55,7 @@ namespace gepetto {
     /// The following method will be automatically connected to Qt signals:
     /// \li \c Plugin.osgWidget when a new OSGWidget is created (MainWindow::viewCreated(OSGWidget*)).
     /// \li \c Plugin.resetConnection triggered when CORBA connection should be reset. **This is mandatory is you have a CORBA Client**
+    /// \li \c Plugin.refreshInterface triggered when users request to refresh the interface.
     ///
     /// ### Logging information
     ///
