@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QSettings>
-#include <QCommonStyle>
+#include <QStyleFactory>
 #include <QProcessEnvironment>
 #include <QSplashScreen>
 #include <QIcon>
@@ -39,7 +39,13 @@ int main(int argc, char *argv[])
   QApplication::setAttribute(Qt::AA_X11InitThreads);
 
   SafeApplication a(argc, argv);
-  a.setStyle(new QCommonStyle);
+  a.setStyle(QStyleFactory::create (
+#if USE_QT4
+        "cleanlooks"
+#else // USE_QT4
+        "fusion"
+#endif // USE_QT4
+        ));
   QPixmap pixmap(":/img/gepetto.png");
   a.setWindowIcon(pixmap);
 

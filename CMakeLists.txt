@@ -69,9 +69,10 @@ IF(NOT CLIENT_ONLY)
   SET(CMAKE_INCLUDE_CURRENT_DIR ON)
   IF(USE_QT4)
     FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
-
+    # TODO PythonQt is currently only handled with Qt 4
     FIND_PACKAGE(PythonQt COMPONENTS QtAll)
     SET(GEPETTO_GUI_HAS_PYTHONQT (${PythonQt_FOUND} AND ${PythonQt_QtAll_FOUND}) CACHE BOOL "Use PythonQt dependency")
+    ADD_DEFINITIONS(-DUSE_QT4)
   ELSE(USE_QT4)
     FOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
       FIND_PACKAGE ("Qt5${component}" REQUIRED)
