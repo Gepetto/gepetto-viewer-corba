@@ -16,7 +16,7 @@
 
 #include <decorator.hh>
 
-#include <PythonQt/PythonQt.h>
+#include <PythonQt.h>
 #include <QGVScene.h>
 #include <QGVNode.h>
 #include <QGVEdge.h>

@@ -69,9 +69,6 @@ IF(NOT CLIENT_ONLY)
   SET(CMAKE_INCLUDE_CURRENT_DIR ON)
   IF(USE_QT4)
     FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
-    # TODO PythonQt is currently only handled with Qt 4
-    FIND_PACKAGE(PythonQt COMPONENTS QtAll)
-    SET(GEPETTO_GUI_HAS_PYTHONQT (${PythonQt_FOUND} AND ${PythonQt_QtAll_FOUND}) CACHE BOOL "Use PythonQt dependency")
     ADD_DEFINITIONS(-DUSE_QT4)
     SET(PKG_CONFIG_EXTRA "qtversion: ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
   ELSE(USE_QT4)
@@ -82,6 +79,9 @@ IF(NOT CLIENT_ONLY)
     ENDFOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
     SET(PKG_CONFIG_EXTRA "qtversion=${Qt5Core_VERSION}")
   ENDIF(USE_QT4)
+
+  FIND_PACKAGE(PythonQt COMPONENTS QtAll)
+  SET(GEPETTO_GUI_HAS_PYTHONQT (${PythonQt_FOUND} AND ${PythonQt_QtAll_FOUND}) CACHE BOOL "Use PythonQt dependency")
 
   PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
