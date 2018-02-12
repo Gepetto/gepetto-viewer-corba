@@ -216,7 +216,11 @@ namespace gepetto {
         delayedCreateView_.unlock();
         return osgWindows_.last();
       } else {
-        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0);
+        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
+#ifndef USE_QT4
+            , osgViewer::Viewer::SingleThreaded
+#endif // USE_QT4
+            );
         osgWidget->setObjectName(name.c_str());
         addOSGWidget (osgWidget);
         emit viewCreated(osgWidget);

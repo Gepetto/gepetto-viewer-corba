@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
   SafeApplication a(argc, argv);
   a.setStyle(QStyleFactory::create (
-#if USE_QT4
+#ifdef USE_QT4
         "cleanlooks"
 #else // USE_QT4
         "fusion"
