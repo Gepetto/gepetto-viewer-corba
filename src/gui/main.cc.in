@@ -14,7 +14,9 @@
 
 using namespace gepetto::gui;
 
+#if (QT_VERSION <= QT_VERSION_CHECK(5,5,1))
 Q_DECLARE_METATYPE(QItemSelection)
+#endif // USE_QT4
 
 void setupApplication ()
 {
