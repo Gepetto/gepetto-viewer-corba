@@ -25,7 +25,7 @@ namespace PyQgv {
     registerQGV();
   }
 
-#ifdef USE_QT4
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
   Q_EXPORT_PLUGIN2 (pyqgv, Plugin)
-#endif // USE_QT4
+#endif
 } // namespace PyQgv

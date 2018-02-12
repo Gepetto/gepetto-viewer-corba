@@ -1,6 +1,7 @@
 #include "gepetto/gui/mainwindow.hh"
 #include "ui_mainwindow.h"
 
+#include <QtGlobal>
 #include <QScrollBar>
 #include <QMessageBox>
 
@@ -217,9 +218,9 @@ namespace gepetto {
         return osgWindows_.last();
       } else {
         OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
-#ifndef USE_QT4
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
             , osgViewer::Viewer::SingleThreaded
-#endif // USE_QT4
+#endif
             );
         osgWidget->setObjectName(name.c_str());
         addOSGWidget (osgWidget);

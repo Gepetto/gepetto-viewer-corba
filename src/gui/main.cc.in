@@ -4,6 +4,7 @@
 #include <QProcessEnvironment>
 #include <QSplashScreen>
 #include <QIcon>
+#include <QtGlobal>
 
 #include <QItemSelection>
 
@@ -14,9 +15,11 @@
 
 using namespace gepetto::gui;
 
-#if (QT_VERSION <= QT_VERSION_CHECK(5,5,1))
+// TODO check what version exactly already includes the metatype declaration.
+// It is not in 5.2.1 and it is in 5.5.1
+#if (QT_VERSION < QT_VERSION_CHECK(5,5,1))
 Q_DECLARE_METATYPE(QItemSelection)
-#endif // USE_QT4
+#endif
 
 void setupApplication ()
 {
@@ -42,11 +45,11 @@ int main(int argc, char *argv[])
 
   SafeApplication a(argc, argv);
   a.setStyle(QStyleFactory::create (
-#ifdef USE_QT4
+#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
         "cleanlooks"
-#else // USE_QT4
+#else
         "fusion"
-#endif // USE_QT4
+#endif
         ));
   QPixmap pixmap(":/img/gepetto.png");
   a.setWindowIcon(pixmap);
