@@ -18,6 +18,8 @@
 # <http://www.gnu.org/licenses/>.
 
 # Configure the project
+INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
+
 SET (${PROJECT_NAME}_SOURCES
   ${CMAKE_BINARY_DIR}/src/gui/main.cc
   settings.cc
