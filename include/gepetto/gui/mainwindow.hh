@@ -8,6 +8,7 @@
 #include <QLabel>
 
 #include <gepetto/viewer/group-node.h>
+#include <gepetto/viewer/corba/deprecated.hh>
 
 #include <gepetto/gui/fwd.hh>
 
@@ -70,7 +71,8 @@ namespace gepetto {
         }
 
         /// Get the central widget.
-        OSGWidget* centralWidget() const;
+        /// \deprecated Use \ref osgWindows instead
+        OSGWidget* centralWidget() const GEPETTO_VIEWER_CORBA_DEPRECATED;
 
         /// Get the list of windows.
         QList <OSGWidget*> osgWindows () const;

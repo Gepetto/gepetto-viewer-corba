@@ -242,15 +242,14 @@ namespace gepetto {
 
     void MainWindow::addOSGWidget(OSGWidget* osgWidget)
     {
-      if (!osgWindows_.empty()) {
-        QDockWidget* dockOSG = new QDockWidget (
-            tr("OSG Viewer") + " " + QString::number (osgWindows_.size()), this);
-        dockOSG->setWidget(osgWidget);
-        addDockWidget(Qt::RightDockWidgetArea, dockOSG);
-      } else {
+      QDockWidget* dockOSG = new QDockWidget (
+          tr("Window ") + osgWidget->objectName(), this);
+      dockOSG->setWidget(osgWidget);
+      addDockWidget(Qt::RightDockWidgetArea, dockOSG);
+      if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        setCentralWidget(centralWidget_);
+        setCentralWidget(0);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
 #endif
