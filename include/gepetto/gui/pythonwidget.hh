@@ -5,7 +5,7 @@
 #include <gepetto/gui/config-dep.hh>
 
 #if ! GEPETTO_GUI_HAS_PYTHONQT
-# error "hpp-gui was not compile with PythonQt dependency."
+# error "gepetto-viewer-corba was not compile with PythonQt dependency."
 #endif
 
 #include <QVariant>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>HPP</string>
+   <string>Gepetto GUI</string>
   </property>
   <property name="windowIcon">
    <iconset theme="hpp-gui">

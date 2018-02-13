@@ -93,10 +93,10 @@ namespace gepetto {
   } // namespace gui
 } // namespace gepetto
 
-Q_DECLARE_INTERFACE (gepetto::gui::PluginInterface, "hpp-gui.plugins/0.0")
-Q_DECLARE_INTERFACE (gepetto::gui::JointModifierInterface, "hpp-gui.plugin.joint-modifier/0.0")
-Q_DECLARE_INTERFACE (gepetto::gui::ModelInterface, "hpp-gui.plugin.model/0.0")
-Q_DECLARE_INTERFACE (gepetto::gui::CorbaInterface, "hpp-gui.plugin.corba/0.0")
+Q_DECLARE_INTERFACE (gepetto::gui::PluginInterface, "gepetto-gui.plugins/0.0")
+Q_DECLARE_INTERFACE (gepetto::gui::JointModifierInterface, "gepetto-gui.plugin.joint-modifier/0.0")
+Q_DECLARE_INTERFACE (gepetto::gui::ModelInterface, "gepetto-gui.plugin.model/0.0")
+Q_DECLARE_INTERFACE (gepetto::gui::CorbaInterface, "gepetto-gui.plugin.corba/0.0")
 
 
 
