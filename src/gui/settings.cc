@@ -127,9 +127,9 @@ namespace gepetto {
         addRobotFromString (opt);
       while (arguments.read ("--add-env", opt))
         addEnvFromString (opt);
-      while (arguments.read ("--load-plugin", opt))
+      while (arguments.read ("-p", opt) || arguments.read ("--load-plugin", opt))
         addPlugin (QString::fromStdString(opt), !noPlugin);
-      while (arguments.read ("--load-pyplugin", opt))
+      while (arguments.read ("-q", opt) || arguments.read ("--load-pyplugin", opt))
         addPyPlugin (QString::fromStdString(opt), !noPlugin);
 
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
