@@ -43,6 +43,7 @@ namespace PyQgv {
     // QGVSubGraph* addSubGraph(const QString& name, bool cluster=true);
 
     void setRootNode(QGVScene* s, QGVNode *node);
+    void setNodePositionAttribute (QGVScene* s);
 
     // void setNodePositionAttribute();
 

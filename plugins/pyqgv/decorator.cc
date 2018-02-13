@@ -38,6 +38,7 @@ QGVEdge* QGVDecorator::addEdge(QGVScene* s, QGVNode* source, QGVNode* target, co
 // QGVSubGraph* QGVDecorator::addSubGraph(const QString& name, bool cluster=true);
 
 void QGVDecorator::setRootNode(QGVScene* s, QGVNode *node) { s->setRootNode (node); }
+void QGVDecorator::setNodePositionAttribute(QGVScene* s) { s->setNodePositionAttribute (); }
 
 // void QGVDecorator::setNodePositionAttribute();
 
