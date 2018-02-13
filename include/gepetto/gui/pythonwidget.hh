@@ -98,8 +98,10 @@ namespace gepetto {
       /// class PythonQt.QtGui.QDockWidget
       void loadModulePlugin(QString moduleName);
       void unloadModulePlugin(QString moduleName);
+      void loadScriptPlugin(QString moduleName, QString fileName);
 
     private:
+      void loadPlugin(QString moduleName, PythonQtObjectPtr module);
       void unloadModulePlugin(PythonQtObjectPtr module);
 
       void addSignalHandlersToPlugin(PythonQtObjectPtr plugin);

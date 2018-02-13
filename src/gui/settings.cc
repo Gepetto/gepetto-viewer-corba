@@ -176,8 +176,18 @@ namespace gepetto {
         pluginManager_.initPlugin (name);
 #if GEPETTO_GUI_HAS_PYTHONQT
       PythonWidget* pw = mw->pythonWidget();
-      foreach (QString name, pyplugins_)
-        pw->loadModulePlugin (name);
+      foreach (QString name, pyplugins_) {
+        if (name.endsWith (".py")) {
+          QFileInfo fi (name);
+          QString moduleName = fi.baseName();
+          QString script;
+          if (fi.isAbsolute()) script = name;
+          else script = QDir::currentPath() + QDir::separator() + name;
+          qDebug() << "Loading" << script << "into module" << moduleName;
+          pw->loadScriptPlugin (moduleName, script);
+        } else
+          pw->loadModulePlugin (name);
+      }
 #endif
     }
 
