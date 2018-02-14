@@ -252,6 +252,7 @@ namespace gepetto {
       QDockWidget* dockOSG = new QDockWidget (
           tr("Window ") + osgWidget->objectName(), this);
       dockOSG->setWidget(osgWidget);
+      connect(dockOSG,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
       addDockWidget(Qt::RightDockWidgetArea, dockOSG);
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
