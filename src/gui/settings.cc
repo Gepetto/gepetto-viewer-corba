@@ -100,7 +100,9 @@ namespace gepetto {
       au->addCommandLineOption("--add-robot", "Add a robot (a list of comma sperated string)");
       au->addCommandLineOption("--add-env", "Add an environment (a list of comma sperated string)");
       au->addCommandLineOption("-p or --load-plugin", "load the plugin");
+#if GEPETTO_GUI_HAS_PYTHONQT
       au->addCommandLineOption("-q or --load-pyplugin", "load the PythonQt module as a plugin");
+#endif
       au->addCommandLineOption("-P or --no-plugin", "do not load any plugin");
       au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
       au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
@@ -129,8 +131,10 @@ namespace gepetto {
         addEnvFromString (opt);
       while (arguments.read ("-p", opt) || arguments.read ("--load-plugin", opt))
         addPlugin (QString::fromStdString(opt), !noPlugin);
+#if GEPETTO_GUI_HAS_PYTHONQT
       while (arguments.read ("-q", opt) || arguments.read ("--load-pyplugin", opt))
         addPyPlugin (QString::fromStdString(opt), !noPlugin);
+#endif
 
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
       if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
@@ -196,7 +200,8 @@ namespace gepetto {
       mw = main;
     }
 
-    std::ostream& Settings::print (std::ostream& os) {
+    std::ostream& Settings::print (std::ostream& os)
+    {
       const char tab = '\t';
       const char nl = '\n';
       return os
@@ -294,11 +299,13 @@ namespace gepetto {
             addPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+#if GEPETTO_GUI_HAS_PYTHONQT
         env.beginGroup("pyplugins");
         foreach (QString name, env.childKeys()) {
             addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+#endif
         log (QString ("Read configuration file ") + env.fileName());
       }
     }
