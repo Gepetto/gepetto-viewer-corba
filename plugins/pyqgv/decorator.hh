@@ -18,6 +18,7 @@
 #include <QObject>
 
 class QGVScene;
+class QGVSubGraph;
 class QGVNode;
 class QGVEdge;
 
@@ -28,9 +29,8 @@ namespace PyQgv {
 
     public slots:
 
-      // ------- QGVScene ------------------------------------------- //
-      QGVScene* new_QGVScene(const QString &name);
-    QGVScene* new_QGVScene(const QString &name, QObject *parent);
+    // ------- QGVScene ------------------------------------------- //
+    QGVScene* new_QGVScene(const QString &name, QObject *parent = NULL);
     void delete_QGVScene(QGVScene* s);
 
     void setGraphAttribute(QGVScene* s, const QString &name, const QString &value);
@@ -38,22 +38,27 @@ namespace PyQgv {
     void setEdgeAttribute (QGVScene* s, const QString &name, const QString &value);
 
     QGVNode* addNode(QGVScene* s, const QString& label);
-    QGVEdge* addEdge(QGVScene* s, QGVNode* source, QGVNode* target);
-    QGVEdge* addEdge(QGVScene* s, QGVNode* source, QGVNode* target, const QString& label);
-    // QGVSubGraph* addSubGraph(const QString& name, bool cluster=true);
+    QGVEdge* addEdge(QGVScene* s, QGVNode* source, QGVNode* target, const QString label = QString());
+    QGVSubGraph* addSubGraph(QGVScene* s, const QString& name, bool cluster=true);
 
     void setRootNode(QGVScene* s, QGVNode *node);
     void setNodePositionAttribute (QGVScene* s);
 
-    // void setNodePositionAttribute();
-
     void loadLayout (QGVScene* s, const QString &text);
-    void applyLayout(QGVScene* s, const QString &algorithm);
+    void applyLayout(QGVScene* s, const QString &algorithm = "dot");
     void render     (QGVScene* s, const QString &algorithm);
     void render     (QGVScene* s, const QString &algorithm, const QString file);
     void freeLayout (QGVScene* s);
     void clear      (QGVScene* s);
     // ------- QGVScene ------------------------------------------- //
+
+    // ------- QGVSubGraph ---------------------------------------- //
+    void setAttribute (QGVSubGraph* n, const QString &name, const QString &value);
+    QString getAttribute (QGVSubGraph* n, const QString &name);
+
+    QGVNode* addNode(QGVSubGraph* s, const QString& label);
+    QGVSubGraph* addSubGraph(QGVSubGraph* s, const QString& name, bool cluster=true);
+    // ------- QGVSubGraph ---------------------------------------- //
 
     // ------- QGVNode  ------------------------------------------- //
     void setAttribute (QGVNode* n, const QString &name, const QString &value);

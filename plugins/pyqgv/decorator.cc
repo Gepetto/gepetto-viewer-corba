@@ -18,13 +18,13 @@
 
 #include <PythonQt.h>
 #include <QGVScene.h>
+#include <QGVSubGraph.h>
 #include <QGVNode.h>
 #include <QGVEdge.h>
 
 namespace PyQgv {
 
 // ------- QGVScene ------------------------------------------- //
-QGVScene* QGVDecorator::new_QGVScene(const QString &name) { return new QGVScene(name); }
 QGVScene* QGVDecorator::new_QGVScene(const QString &name, QObject *parent) { return new QGVScene(name, parent); }
 void QGVDecorator::delete_QGVScene(QGVScene* s) { delete s; }
 
@@ -33,14 +33,11 @@ void QGVDecorator::setNodeAttribute (QGVScene* s, const QString &name, const QSt
 void QGVDecorator::setEdgeAttribute (QGVScene* s, const QString &name, const QString &value) { s->setEdgeAttribute (name, value); }
 
 QGVNode* QGVDecorator::addNode(QGVScene* s, const QString& label) { return s->addNode (label); }
-QGVEdge* QGVDecorator::addEdge(QGVScene* s, QGVNode* source, QGVNode* target) { return s->addEdge (source, target); }
-QGVEdge* QGVDecorator::addEdge(QGVScene* s, QGVNode* source, QGVNode* target, const QString& label) { return s->addEdge (source, target, label); }
-// QGVSubGraph* QGVDecorator::addSubGraph(const QString& name, bool cluster=true);
+QGVEdge* QGVDecorator::addEdge(QGVScene* s, QGVNode* source, QGVNode* target, const QString label) { return s->addEdge (source, target, label); }
+QGVSubGraph* QGVDecorator::addSubGraph(QGVScene* s, const QString& name, bool cluster) { return s->addSubGraph (name, cluster); }
 
 void QGVDecorator::setRootNode(QGVScene* s, QGVNode *node) { s->setRootNode (node); }
 void QGVDecorator::setNodePositionAttribute(QGVScene* s) { s->setNodePositionAttribute (); }
-
-// void QGVDecorator::setNodePositionAttribute();
 
 void QGVDecorator::loadLayout (QGVScene* s, const QString &text)                          { s->loadLayout(text); }
 void QGVDecorator::applyLayout(QGVScene* s, const QString &algorithm)                     { s->applyLayout(algorithm); }
@@ -48,6 +45,14 @@ void QGVDecorator::render     (QGVScene* s, const QString &algorithm)           
 void QGVDecorator::render     (QGVScene* s, const QString &algorithm, const QString file) { s->render(algorithm, file); }
 void QGVDecorator::freeLayout (QGVScene* s) { s->freeLayout(); }
 void QGVDecorator::clear      (QGVScene* s) { s->clear(); }
+// ------- QGVScene ------------------------------------------- //
+
+// ------- QGVScene ------------------------------------------- //
+void QGVDecorator::setAttribute (QGVSubGraph* s, const QString &name, const QString &value) { s->setAttribute (name, value); }
+QString QGVDecorator::getAttribute (QGVSubGraph* s, const QString &name) { return s->getAttribute (name); }
+
+QGVNode* QGVDecorator::addNode(QGVSubGraph* s, const QString& label) { return s->addNode (label); }
+QGVSubGraph* QGVDecorator::addSubGraph(QGVSubGraph* s, const QString& name, bool cluster) { return s->addSubGraph (name, cluster); }
 // ------- QGVScene ------------------------------------------- //
 
 // ------- QGVNode  ------------------------------------------- //
@@ -63,9 +68,10 @@ QString QGVDecorator::getAttribute (QGVEdge* e, const QString &name) { return e-
 void registerQGV ()
 {
   PythonQt::self()->addDecorators (new QGVDecorator ());
-  PythonQt::self()->registerCPPClass ("QGVScene", "QGraphicsScene", "qgv");
-  PythonQt::self()->registerCPPClass ("QGVNode" , "QGraphicsItem" , "qgv");
-  PythonQt::self()->registerCPPClass ("QGVEdge" , "QGraphicsItem" , "qgv");
+  PythonQt::self()->registerCPPClass ("QGVScene"   , "QGraphicsScene", "QGraphViz");
+  PythonQt::self()->registerCPPClass ("QGVSubGraph", "QGraphicsItem" , "QGraphViz");
+  PythonQt::self()->registerCPPClass ("QGVNode"    , "QGraphicsItem" , "QGraphViz");
+  PythonQt::self()->registerCPPClass ("QGVEdge"    , "QGraphicsItem" , "QGraphViz");
 }
 
 } // namespace PyQgv
