@@ -139,7 +139,7 @@ signals:
           /// \param text text to log
           void logJobFailed  (int id, const QString& text);
 
-        OSGWidget* createView (const std::string& name);
+        OSGWidget* createView (const QString& name);
         /// Request a refresh of the interface.
         /// \param refreshType tells what to refresh. See RefreshType
         void requestRefresh ();
@@ -211,6 +211,8 @@ signals:
         void registerShortcut(QString widgetName, QAction* action);
 
         /// \}
+
+        OSGWidget* createView (const std::string& name);
 
 
         private slots:

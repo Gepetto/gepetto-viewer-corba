@@ -210,6 +210,11 @@ namespace gepetto {
       emit logErrorString (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
+    OSGWidget *MainWindow::createView(const QString& name)
+    {
+      return createView (name.toStdString());
+    }
+
     OSGWidget *MainWindow::createView(const std::string& name)
     {
       if (thread() != QThread::currentThread()) {
