@@ -37,7 +37,7 @@ namespace gepetto {
       PythonWidget::PythonWidget(QWidget *parent) :
         QDockWidget("&PythonQt console", parent)
       {
-        PythonQt::init(0);
+        PythonQt::init(PythonQt::RedirectStdOut);
         PythonQt_init_QtBindings();
         PythonQtObjectPtr mainContext = PythonQt::self()->getMainModule();
         PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
