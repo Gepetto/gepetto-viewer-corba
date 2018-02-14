@@ -115,11 +115,13 @@ namespace gepetto {
       dock->adjustSize();
       ui_->menuWindow->addAction(dock->toggleViewAction ());
       actionSearchBar_->addAction(dock->toggleViewAction ());
+      connect(dock,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
     }
 
     void MainWindow::removeDockWidget(QDockWidget *dock)
     {
       ui_->menuWindow->removeAction(dock->toggleViewAction());
+      disconnect(dock);
       QMainWindow::removeDockWidget(dock);
     }
 
@@ -249,7 +251,6 @@ namespace gepetto {
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        setCentralWidget(0);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
 #endif
@@ -388,6 +389,21 @@ namespace gepetto {
         }
         collisionIndicator_->switchLed(true);
         collisionLabel_->setText("No collisions.");
+      }
+    }
+
+    void MainWindow::dockVisibilityChanged(bool visible)
+    {
+      QWidget* cw = QMainWindow::centralWidget();
+      if (visible && cw->isVisible())
+        cw->hide();
+      else {
+        const QObjectList& objs = children();
+        foreach(const QObject* obj, objs) {
+          const QDockWidget* dock = qobject_cast<const QDockWidget*>(obj);
+          if (dock != 0 && dock->isVisible()) return;
+        }
+        cw->show();
       }
     }
 

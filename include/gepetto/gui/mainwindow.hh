@@ -219,6 +219,7 @@ signals:
         void openLoadRobotDialog ();
         void openLoadEnvironmentDialog ();
         void activateCollision(bool activate);
+        void dockVisibilityChanged(bool visible);
 
         void handleWorkerDone (int id);
 

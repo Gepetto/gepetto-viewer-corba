@@ -28,6 +28,9 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
+   </property>
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
