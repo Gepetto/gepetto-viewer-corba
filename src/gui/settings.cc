@@ -131,10 +131,8 @@ namespace gepetto {
         addEnvFromString (opt);
       while (arguments.read ("-p", opt) || arguments.read ("--load-plugin", opt))
         addPlugin (QString::fromStdString(opt), !noPlugin);
-#if GEPETTO_GUI_HAS_PYTHONQT
       while (arguments.read ("-q", opt) || arguments.read ("--load-pyplugin", opt))
         addPyPlugin (QString::fromStdString(opt), !noPlugin);
-#endif
 
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
       if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
@@ -191,6 +189,11 @@ namespace gepetto {
           pw->loadScriptPlugin (moduleName, script);
         } else
           pw->loadModulePlugin (name);
+      }
+#else
+      foreach (QString name, pyplugins_) {
+        logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
+            "PYTHONQT flag. Cannot not load Python plugin " + name);
       }
 #endif
     }
@@ -299,13 +302,11 @@ namespace gepetto {
             addPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
-#if GEPETTO_GUI_HAS_PYTHONQT
         env.beginGroup("pyplugins");
         foreach (QString name, env.childKeys()) {
             addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
-#endif
         log (QString ("Read configuration file ") + env.fileName());
       }
     }
