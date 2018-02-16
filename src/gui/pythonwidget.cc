@@ -70,6 +70,10 @@ namespace gepetto {
 
         toggleViewAction()->setShortcut(gepetto::gui::DockKeyShortcutBase + Qt::Key_A);
         connect(button_, SIGNAL(clicked()), SLOT(browseFile()));
+
+        // Hack to make "createWindow" function work properly
+        PythonQtObjectPtr client = PythonQt::self()->importModule ("gepetto.corbaserver.client");
+        client.addObject ("mainWindow", MainWindow::instance());
       }
 
       PythonWidget::~PythonWidget()
