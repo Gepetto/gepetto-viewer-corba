@@ -1,20 +1,15 @@
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 from pythonqt.matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg, NavigationToolbar2QT
-
-from PythonQt import QtGui, Qt
-from gepetto.corbaserver import Client
-
-import numpy as np
+from PythonQt.QtGui import QWidget, QVBoxLayout
 
 ### Python QWidget that allows to draw matplotlib figures within the interface.
 ###
 ### Create an instance and populate member MatplotlibWidget.figure.
-class MatplotlibWidget (QtGui.QWidget):
+class MatplotlibWidget (QWidget):
     def __init__(self, parent, withToolbar = False):
         super(MatplotlibWidget, self).__init__ (parent)
 
-        box = QtGui.QVBoxLayout(self)
+        box = QVBoxLayout(self)
         ## The matplotlib figure
         self.figure = Figure(figsize=(5,5), dpi=96)
         ## The figure canvas
