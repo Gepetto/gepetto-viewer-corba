@@ -15,7 +15,7 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-# Requires at least CMake 2.6 to configure the package.
+# Requires at least CMake 2.8 to configure the package.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(CXX_DISABLE_WERROR true)
@@ -34,7 +34,7 @@ SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "")
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
-SET(USE_QT4 FALSE CACHE BOOL "Use Qt4 instead of Qt5")
+SET(USE_QT4 TRUE CACHE BOOL "Use Qt4 instead of Qt5")
 
 SET(${PROJECT_NAME}_HEADERS
   include/gepetto/viewer/corba/windows-manager.hh
