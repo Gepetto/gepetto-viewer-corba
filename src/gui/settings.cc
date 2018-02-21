@@ -1,18 +1,18 @@
 // Copyright (c) 2015, Joseph Mirabel
 // Authors: Joseph Mirabel (joseph.mirabel@laas.fr)
 //
-// This file is part of hpp-gui.
-// hpp-gui is free software: you can redistribute it
+// This file is part of gepetto-viewer-corba.
+// gepetto-viewer-corba is free software: you can redistribute it
 // and/or modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation, either version
 // 3 of the License, or (at your option) any later version.
 //
-// hpp-gui is distributed in the hope that it will be
+// gepetto-viewer-corba is distributed in the hope that it will be
 // useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 // of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // General Lesser Public License for more details.  You should have
 // received a copy of the GNU Lesser General Public License along with
-// hpp-gui. If not, see <http://www.gnu.org/licenses/>.
+// gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
 #include <gepetto/gui/settings.hh>
 
@@ -49,7 +49,7 @@ namespace gepetto {
       , mw (0)
     {
       QDir user (QDir::home());
-      const char path[] = "Pictures/hpp-gui";
+      const char path[] = "Pictures/gepetto-gui";
       user.mkpath (path);
       user.cd (path);
       captureDirectory = user.absolutePath().toStdString();
@@ -100,7 +100,9 @@ namespace gepetto {
       au->addCommandLineOption("--add-robot", "Add a robot (a list of comma sperated string)");
       au->addCommandLineOption("--add-env", "Add an environment (a list of comma sperated string)");
       au->addCommandLineOption("-p or --load-plugin", "load the plugin");
+#if GEPETTO_GUI_HAS_PYTHONQT
       au->addCommandLineOption("-q or --load-pyplugin", "load the PythonQt module as a plugin");
+#endif
       au->addCommandLineOption("-P or --no-plugin", "do not load any plugin");
       au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
       au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
@@ -127,9 +129,9 @@ namespace gepetto {
         addRobotFromString (opt);
       while (arguments.read ("--add-env", opt))
         addEnvFromString (opt);
-      while (arguments.read ("--load-plugin", opt))
+      while (arguments.read ("-p", opt) || arguments.read ("--load-plugin", opt))
         addPlugin (QString::fromStdString(opt), !noPlugin);
-      while (arguments.read ("--load-pyplugin", opt))
+      while (arguments.read ("-q", opt) || arguments.read ("--load-pyplugin", opt))
         addPyPlugin (QString::fromStdString(opt), !noPlugin);
 
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
@@ -176,8 +178,23 @@ namespace gepetto {
         pluginManager_.initPlugin (name);
 #if GEPETTO_GUI_HAS_PYTHONQT
       PythonWidget* pw = mw->pythonWidget();
-      foreach (QString name, pyplugins_)
-        pw->loadModulePlugin (name);
+      foreach (QString name, pyplugins_) {
+        if (name.endsWith (".py")) {
+          QFileInfo fi (name);
+          QString moduleName = fi.baseName();
+          QString script;
+          if (fi.isAbsolute()) script = name;
+          else script = QDir::currentPath() + QDir::separator() + name;
+          qDebug() << "Loading" << script << "into module" << moduleName;
+          pw->loadScriptPlugin (moduleName, script);
+        } else
+          pw->loadModulePlugin (name);
+      }
+#else
+      foreach (QString name, pyplugins_) {
+        logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
+            "PYTHONQT flag. Cannot not load Python plugin " + name);
+      }
 #endif
     }
 
@@ -186,7 +203,8 @@ namespace gepetto {
       mw = main;
     }
 
-    std::ostream& Settings::print (std::ostream& os) {
+    std::ostream& Settings::print (std::ostream& os)
+    {
       const char tab = '\t';
       const char nl = '\n';
       return os

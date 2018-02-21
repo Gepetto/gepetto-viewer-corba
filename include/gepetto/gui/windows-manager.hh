@@ -6,6 +6,7 @@
 
 #include <gepetto/gui/meta.hh>
 #include <QColor>
+#include <QObject>
 #include <QVector3D>
 
 namespace gepetto {

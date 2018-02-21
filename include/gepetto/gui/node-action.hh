@@ -14,6 +14,8 @@ namespace gepetto {
     public:
         NodeActionBase(const QString& text, graphics::NodePtr_t node, QWidget* parent);
 
+        virtual ~NodeActionBase () {}
+
         graphics::NodePtr_t node () const;
 
     protected:
@@ -45,6 +47,8 @@ namespace gepetto {
 
         /// Attach camera to node
         NodeAction(const QString& text, OSGWidget* window, QWidget* parent);
+
+        virtual ~NodeAction () {}
 
       protected:
         void act(bool checked);

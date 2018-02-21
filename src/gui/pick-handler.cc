@@ -1,6 +1,7 @@
 #include "gepetto/gui/pick-handler.hh"
 
 #include <QDebug>
+#include <QApplication>
 
 #include <osg/io_utils>
 

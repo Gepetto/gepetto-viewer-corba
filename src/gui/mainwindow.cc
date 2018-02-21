@@ -1,6 +1,10 @@
 #include "gepetto/gui/mainwindow.hh"
 #include "ui_mainwindow.h"
 
+#include <QtGlobal>
+#include <QScrollBar>
+#include <QMessageBox>
+
 #include <gepetto/viewer/corba/server.hh>
 
 #include "gepetto/gui/windows-manager.hh"
@@ -111,11 +115,13 @@ namespace gepetto {
       dock->adjustSize();
       ui_->menuWindow->addAction(dock->toggleViewAction ());
       actionSearchBar_->addAction(dock->toggleViewAction ());
+      connect(dock,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
     }
 
     void MainWindow::removeDockWidget(QDockWidget *dock)
     {
       ui_->menuWindow->removeAction(dock->toggleViewAction());
+      disconnect(dock);
       QMainWindow::removeDockWidget(dock);
     }
 
@@ -204,6 +210,11 @@ namespace gepetto {
       emit logErrorString (QString ("Job ") + QString::number (id) + " failed: " + text);
     }
 
+    OSGWidget *MainWindow::createView(const QString& name)
+    {
+      return createView (name.toStdString());
+    }
+
     OSGWidget *MainWindow::createView(const std::string& name)
     {
       if (thread() != QThread::currentThread()) {
@@ -213,7 +224,11 @@ namespace gepetto {
         delayedCreateView_.unlock();
         return osgWindows_.last();
       } else {
-        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0);
+        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+            , osgViewer::Viewer::SingleThreaded
+#endif
+            );
         osgWidget->setObjectName(name.c_str());
         addOSGWidget (osgWidget);
         emit viewCreated(osgWidget);
@@ -234,15 +249,14 @@ namespace gepetto {
 
     void MainWindow::addOSGWidget(OSGWidget* osgWidget)
     {
-      if (!osgWindows_.empty()) {
-        QDockWidget* dockOSG = new QDockWidget (
-            tr("OSG Viewer") + " " + QString::number (osgWindows_.size()), this);
-        dockOSG->setWidget(osgWidget);
-        addDockWidget(Qt::RightDockWidgetArea, dockOSG);
-      } else {
+      QDockWidget* dockOSG = new QDockWidget (
+          tr("Window ") + osgWidget->objectName(), this);
+      dockOSG->setWidget(osgWidget);
+      connect(dockOSG,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
+      addDockWidget(Qt::RightDockWidgetArea, dockOSG);
+      if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        setCentralWidget(centralWidget_);
 #if GEPETTO_GUI_HAS_PYTHONQT
         pythonWidget_->addToContext("osg", centralWidget_);
 #endif
@@ -381,6 +395,21 @@ namespace gepetto {
         }
         collisionIndicator_->switchLed(true);
         collisionLabel_->setText("No collisions.");
+      }
+    }
+
+    void MainWindow::dockVisibilityChanged(bool visible)
+    {
+      QWidget* cw = QMainWindow::centralWidget();
+      if (visible && cw->isVisible())
+        cw->hide();
+      else {
+        const QObjectList& objs = children();
+        foreach(const QObject* obj, objs) {
+          const QDockWidget* dock = qobject_cast<const QDockWidget*>(obj);
+          if (dock != 0 && dock->isVisible()) return;
+        }
+        cw->show();
       }
     }
 

@@ -74,6 +74,15 @@ class Client:
     for client in clients:
       self.makeClient (client)
 
+    # In the python interpreter of gepetto-gui, gui.createWindow
+    # crashes for an obscure reason. This hack makes it work.
+    try:
+      self.gui.createWindow = lambda x: mainWindow.createView(x).wid()
+      # At this point, we are in the python interpreter of gepetto-gui
+    except:
+      # At this point, we are NOT in the python interpreter of gepetto-gui
+      pass
+
 def _getIIOPurl ():
   """
   Returns "corbaloc:iiop:<host>:<port>/NameService"

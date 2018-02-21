@@ -5,7 +5,7 @@
 #include <gepetto/gui/config-dep.hh>
 
 #if ! GEPETTO_GUI_HAS_PYTHONQT
-# error "hpp-gui was not compile with PythonQt dependency."
+# error "gepetto-viewer-corba was not compile with PythonQt dependency."
 #endif
 
 #include <QVariant>
@@ -18,9 +18,6 @@ class PythonQtScriptingConsole;
 
 namespace gepetto {
   namespace gui {
-    /// \defgroup plugin Plugin interfaces
-
-
     /// \ingroup plugin
     /// Python plugin interface
     ///
@@ -58,6 +55,7 @@ namespace gepetto {
     /// The following method will be automatically connected to Qt signals:
     /// \li \c Plugin.osgWidget when a new OSGWidget is created (MainWindow::viewCreated(OSGWidget*)).
     /// \li \c Plugin.resetConnection triggered when CORBA connection should be reset. **This is mandatory is you have a CORBA Client**
+    /// \li \c Plugin.refreshInterface triggered when users request to refresh the interface.
     ///
     /// ### Logging information
     ///
@@ -68,7 +66,8 @@ namespace gepetto {
     ///     MainWindow::logJobFailed to inform users when
     ///     starting and finishing (Done or Failed) actions that may take some time.
     ///
-    /// \sa See example \ref pyplugins/gepetto/gui/pythonwidget.py
+    /// \sa See examples \ref pyplugins/gepetto/gui/pythonwidget.py and
+    ///     \ref pyplugins/gepetto/gui/matplotlib_example.py
     class PythonWidget : public QDockWidget
     {
       Q_OBJECT
@@ -99,8 +98,10 @@ namespace gepetto {
       /// class PythonQt.QtGui.QDockWidget
       void loadModulePlugin(QString moduleName);
       void unloadModulePlugin(QString moduleName);
+      void loadScriptPlugin(QString moduleName, QString fileName);
 
     private:
+      void loadPlugin(QString moduleName, PythonQtObjectPtr module);
       void unloadModulePlugin(PythonQtObjectPtr module);
 
       void addSignalHandlersToPlugin(PythonQtObjectPtr plugin);

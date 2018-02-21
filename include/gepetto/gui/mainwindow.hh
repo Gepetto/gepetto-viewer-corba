@@ -4,8 +4,11 @@
 #include <QList>
 #include <QStandardItemModel>
 #include <QMainWindow>
+#include <QCheckBox>
+#include <QLabel>
 
 #include <gepetto/viewer/group-node.h>
+#include <gepetto/viewer/corba/deprecated.hh>
 
 #include <gepetto/gui/fwd.hh>
 
@@ -68,7 +71,8 @@ namespace gepetto {
         }
 
         /// Get the central widget.
-        OSGWidget* centralWidget() const;
+        /// \deprecated Use \ref osgWindows instead
+        OSGWidget* centralWidget() const GEPETTO_VIEWER_CORBA_DEPRECATED;
 
         /// Get the list of windows.
         QList <OSGWidget*> osgWindows () const;
@@ -107,8 +111,7 @@ signals:
         void logErrorString(QString msg);
 
         public slots:
-          /// \addtogroup available_in_python Python API
-          /// These slots are available for Python scripting in plugins
+          /// \ingroup plugin_python
           /// \{
 
         /// Get the body tree widget.
@@ -136,7 +139,7 @@ signals:
           /// \param text text to log
           void logJobFailed  (int id, const QString& text);
 
-        OSGWidget* createView (const std::string& name);
+        OSGWidget* createView (const QString& name);
         /// Request a refresh of the interface.
         /// \param refreshType tells what to refresh. See RefreshType
         void requestRefresh ();
@@ -209,6 +212,8 @@ signals:
 
         /// \}
 
+        OSGWidget* createView (const std::string& name);
+
 
         private slots:
           void addOSGWidget(OSGWidget* osgWidget);
@@ -216,6 +221,7 @@ signals:
         void openLoadRobotDialog ();
         void openLoadEnvironmentDialog ();
         void activateCollision(bool activate);
+        void dockVisibilityChanged(bool visible);
 
         void handleWorkerDone (int id);
 

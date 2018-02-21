@@ -71,10 +71,10 @@ namespace gepetto {
         void unload (const QString& name);
 
       private:
-        static const std::size_t NAME;
-        static const std::size_t FILE;
-        static const std::size_t FULLPATH;
-        static const std::size_t VERSION;
+        static const int P_NAME;
+        static const int P_FILE;
+        static const int P_FULLPATH;
+        static const int P_VERSION;
 
         void updateList ();
 

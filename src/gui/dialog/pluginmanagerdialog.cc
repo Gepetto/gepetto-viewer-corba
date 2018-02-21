@@ -2,6 +2,7 @@
 #include "ui_pluginmanagerdialog.h"
 
 #include <QDebug>
+#include <QMenu>
 
 #include "gepetto/gui/plugin-interface.hh"
 
@@ -105,7 +106,7 @@ namespace gepetto {
 
       updateList ();
 
-      ui_->pluginList->setColumnHidden(FILE, true);
+      ui_->pluginList->setColumnHidden(P_FILE, true);
 
       connect(ui_->pluginList, SIGNAL (currentItemChanged (QTableWidgetItem*,QTableWidgetItem*)),
           this, SLOT (onItemChanged(QTableWidgetItem*,QTableWidgetItem*)));
@@ -119,10 +120,10 @@ namespace gepetto {
     }
 
     void PluginManagerDialog::onItemChanged(QTableWidgetItem *current,
-        QTableWidgetItem */*previous*/)
+        QTableWidgetItem* /*previous*/)
     {
       if (!current) return;
-      QString key = ui_->pluginList->item(current->row(), FILE)->text();
+      QString key = ui_->pluginList->item(current->row(), P_FILE)->text();
       const QPluginLoader* pl = pm_->plugins()[key];
       ui_->pluginMessage->setText(pm_->status (pl));
     }
@@ -131,7 +132,7 @@ namespace gepetto {
     {
       int row = ui_->pluginList->rowAt(pos.y());
       if (row == -1) return;
-      QString key = ui_->pluginList->item(row, FILE)->text();
+      QString key = ui_->pluginList->item(row, P_FILE)->text();
       QMenu contextMenu (tr("Plugin"), ui_->pluginList);
       if (pm_->plugins()[key]->isLoaded()) {
         QAction* unload = contextMenu.addAction("&Unload", &signalMapper_, SLOT(map()));
@@ -158,10 +159,10 @@ namespace gepetto {
       updateList ();
     }
 
-    const std::size_t PluginManagerDialog::NAME = 0;
-    const std::size_t PluginManagerDialog::FILE = 1;
-    const std::size_t PluginManagerDialog::VERSION = 2;
-    const std::size_t PluginManagerDialog::FULLPATH = 3;
+    const int PluginManagerDialog::P_NAME = 0;
+    const int PluginManagerDialog::P_FILE = 1;
+    const int PluginManagerDialog::P_VERSION = 2;
+    const int PluginManagerDialog::P_FULLPATH = 3;
 
     void PluginManagerDialog::updateList()
     {
@@ -181,10 +182,10 @@ namespace gepetto {
         QIcon icon = pm_->icon (p.value());
 
         ui_->pluginList->insertRow(ui_->pluginList->rowCount());
-        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, NAME, new QTableWidgetItem (icon, name));
-        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, FILE, new QTableWidgetItem (filename));
-        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, VERSION, new QTableWidgetItem (version));
-        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, FULLPATH, new QTableWidgetItem (fullpath));
+        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, P_NAME, new QTableWidgetItem (icon, name));
+        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, P_FILE, new QTableWidgetItem (filename));
+        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, P_VERSION, new QTableWidgetItem (version));
+        ui_->pluginList->setItem(ui_->pluginList->rowCount() - 1, P_FULLPATH, new QTableWidgetItem (fullpath));
       }
       ui_->pluginList->resizeColumnsToContents();
     }

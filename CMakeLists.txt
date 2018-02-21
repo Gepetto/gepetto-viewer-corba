@@ -15,8 +15,8 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-# Requires at least CMake 2.6 to configure the package.
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+# Requires at least CMake 2.8 to configure the package.
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(CXX_DISABLE_WERROR true)
 
@@ -34,6 +34,7 @@ SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "")
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
+SET(USE_QT4 TRUE CACHE BOOL "Use Qt4 instead of Qt5")
 
 SET(${PROJECT_NAME}_HEADERS
   include/gepetto/viewer/corba/windows-manager.hh
@@ -64,16 +65,27 @@ IF(NOT CLIENT_ONLY)
 
   SET(BOOST_COMPONENTS system thread regex)
   SEARCH_FOR_BOOST ()
-
-  FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
   FINDPYTHON(2.7 EXACT)
-  FIND_PACKAGE(PythonQt COMPONENTS QtAll)
 
-  SET(GEPETTO_GUI_HAS_PYTHONQT ${PYTHONQT_FOUND} CACHE BOOL "Use PythonQt dependency")
+  SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+  IF(USE_QT4)
+    FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
+    SET(PKG_CONFIG_EXTRA "qtversion=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+  ELSE(USE_QT4)
+    FOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
+      FIND_PACKAGE ("Qt5${component}" REQUIRED)
+      LIST(APPEND QT_INCLUDE_DIRS ${Qt5${component}_INCLUDE_DIRS})
+      LIST(APPEND QT_LIBRARIES    ${Qt5${component}_LIBRARIES}   )
+    ENDFOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
+    SET(PKG_CONFIG_EXTRA "qtversion=${Qt5Core_VERSION}")
+  ENDIF(USE_QT4)
+
+  FIND_PACKAGE(PythonQt COMPONENTS QtAll)
+  SET(GEPETTO_GUI_HAS_PYTHONQT (${PythonQt_FOUND} AND ${PythonQt_QtAll_FOUND}) CACHE BOOL "Use PythonQt dependency")
 
   PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
-  INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS})
+  INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS} ${QT_INCLUDE_DIRS})
 
   SET (${PROJECT_NAME}_HEADERS_MOC
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/mainwindow.hh
@@ -133,6 +145,7 @@ ADD_SUBDIRECTORY(src)
 
 IF(NOT CLIENT_ONLY)
   ADD_SUBDIRECTORY(src/gui)
+  ADD_SUBDIRECTORY(plugins)
   ADD_SUBDIRECTORY(pyplugins)
   ADD_SUBDIRECTORY(blender)
   ADD_SUBDIRECTORY(examples EXCLUDE_FROM_ALL)

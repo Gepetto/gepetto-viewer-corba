@@ -7,7 +7,7 @@ def separator():
     line.frameShadow = QtGui.QFrame.Sunken
     return line
 
-### This class represents one special tab of the new QDockWidget
+### \cond
 class _Widget (QtGui.QWidget):
     def __init__(self, parent, plugin):
         super(_Widget, self).__init__ (parent)
@@ -77,11 +77,16 @@ class _Widget (QtGui.QWidget):
         button.text = buttonLabel
         button.connect ('clicked(bool)', func)
         return button
+### \endcond
 
+### \ingroup pluginlist
+### Python plugin to export scene to Blender.
+### Add the following to your settings file to activate it.
+###
+###     [pyplugins]
+###     gepetto.gui.blenderexport=true
+###
 class Plugin(QtGui.QDockWidget):
-    """
-    Blender export helper plugin
-    """
     def __init__ (self, mainWindow, flags = None):
         if flags is None:
             super(Plugin, self).__init__ ("Blender export plugin", mainWindow)

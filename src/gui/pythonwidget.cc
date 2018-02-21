@@ -1,9 +1,10 @@
 #include "gepetto/gui/pythonwidget.hh"
 
+#include <QAction>
 #include <QFileDialog>
 #include <PythonQt/PythonQt.h>
 #include <PythonQt/PythonQt_QtAll.h>
-#include <PythonQt/PythonQtScriptingConsole.h>
+#include <PythonQt/gui/PythonQtScriptingConsole.h>
 #include <PythonQt/PythonQtClassInfo.h>
 #include <PythonQt/PythonQt_QtBindings.h>
 
@@ -69,6 +70,10 @@ namespace gepetto {
 
         toggleViewAction()->setShortcut(gepetto::gui::DockKeyShortcutBase + Qt::Key_A);
         connect(button_, SIGNAL(clicked()), SLOT(browseFile()));
+
+        // Hack to make "createWindow" function work properly
+        PythonQtObjectPtr client = PythonQt::self()->importModule ("gepetto.corbaserver.client");
+        client.addObject ("mainWindow", MainWindow::instance());
       }
 
       PythonWidget::~PythonWidget()
@@ -94,9 +99,24 @@ namespace gepetto {
         fd->deleteLater();
       }
 
+      void PythonWidget::loadScriptPlugin(QString moduleName, QString fileName)
+      {
+        PythonQt* pqt = PythonQt::self();
+        PythonQtObjectPtr module = pqt->createModuleFromFile (moduleName, fileName);
+        if (pqt->handleError()) {
+          return;
+        }
+        if (module.isNull()) {
+          pqt->handleError();
+          qDebug() << "Enable to load module" << moduleName << "from script"
+            << fileName;
+          return;
+        }
+        loadPlugin (moduleName, module);
+      }
+
       void PythonWidget::loadModulePlugin(QString moduleName)
       {
-        MainWindow* main = MainWindow::instance();
         PythonQt* pqt = PythonQt::self();
         PythonQtObjectPtr module = pqt->importModule (moduleName);
         if (pqt->handleError()) {
@@ -107,6 +127,13 @@ namespace gepetto {
           qDebug() << "Enable to load module" << moduleName;
           return;
         }
+        loadPlugin (moduleName, module);
+      }
+
+      void PythonWidget::loadPlugin(QString moduleName, PythonQtObjectPtr module)
+      {
+        PythonQt* pqt = PythonQt::self();
+        MainWindow* main = MainWindow::instance();
         module.addObject("windowsManager", main->osg().get());
 
         QString var = "pluginInstance";

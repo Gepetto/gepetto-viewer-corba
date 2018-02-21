@@ -10,6 +10,8 @@
 
 #include <QSignalMapper>
 #include <QColorDialog>
+#include <QHBoxLayout>
+#include <QApplication>
 
 static void addSelector (QToolBox* tb, QString title, QStringList display, QStringList command,
                          QObject* receiver, const char* slot) {

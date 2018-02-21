@@ -48,7 +48,7 @@ namespace gepetto {
     void SelectionEvent::done()
     {
       c_.fetchAndAddAcquire(-1);
-      if (c_ == 0) {
+      if (c_.testAndSetAcquire(0,0)) {
         deleteLater();
       }
     }

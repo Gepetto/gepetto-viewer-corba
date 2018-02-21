@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QWheelEvent>
+#include <QVBoxLayout>
 
 #include <gepetto/viewer/urdf-parser.h>
 #include <gepetto/viewer/OSGManipulator/keyboard-manipulator.h>
@@ -162,6 +163,11 @@ namespace gepetto {
     graphics::WindowsManager::WindowID OSGWidget::windowID() const
     {
       return wid_;
+    }
+
+    int OSGWidget::wid() const
+    {
+      return int(wid_);
     }
 
     graphics::WindowManagerPtr_t OSGWidget::window() const
