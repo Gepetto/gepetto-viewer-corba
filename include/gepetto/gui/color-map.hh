@@ -31,7 +31,7 @@ namespace gepetto {
           return ColorMap::interpolate(mask_, remap (index));
         }
 
-        void getColor (std::size_t index, osgVector4 color) const {
+        void getColor (std::size_t index, osgVector4& color) const {
           QColor c = getColor(index);
           color[0] = (float)c.redF();
           color[1] = (float)c.greenF();
