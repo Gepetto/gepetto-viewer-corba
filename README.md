@@ -2,11 +2,11 @@ CORBA server/client for the Graphical Interface of Pinocchio and HPP
 ====================================================================
 
 ## Summary
-* [gepetto-viewer-corba] (#gepetto-viewer-corba)
-  * [Setup] (#setup)
-  * [Dependencies] (#dependencies)
-  * [Install standalone urdfdom] (#install-standalone-urdfdom)
-* [gepetto-gui] (#gepetto-gui)
+* [gepetto-viewer-corba](#gepetto-viewer-corba)
+  * [Setup](#setup)
+  * [Dependencies](#dependencies)
+  * [Install standalone urdfdom](#install-standalone-urdfdom)
+* [gepetto-gui](#gepetto-gui)
   * [Usage](#usage)
     *  [Basic usage](#basic-usage)
     *  [Adding predefined robots and environments](#adding-predefined-robots-and-environments)
@@ -18,7 +18,7 @@ CORBA server/client for the Graphical Interface of Pinocchio and HPP
 * [Troubleshooting](#troubleshooting)
 
 ## gepetto-viewer-corba
-###Setup
+### Setup
 -----
 
 To compile this package, it is recommended to create a separate build
@@ -55,11 +55,11 @@ have to be available on your machine.
 In order to read urdf files (see http://wiki.ros.org/urdf for the description), one haves to install the urdfdom package which can come either along ROS library or be installed as a standalone library. Next section describes the second procedure.
 
 urdfdom depends on both console_bridge and urdfdom_headers. The installation of both dependencies can be done with the following command lines in a terminal :
-  - git clone git://github.com/ros/console_bridge.git && cd console_bridge && mkdir build && cd build && cmake .. && make && sudo make install
-  - git clone git://github.com/ros/urdfdom_headers && cd urdfdom_headers && mkdir build && cd build && cmake .. && make && sudo make install
+  - `git clone git://github.com/ros/console_bridge.git && cd console_bridge && mkdir build && cd build && cmake .. && make && sudo make install`
+  - `git clone git://github.com/ros/urdfdom_headers && cd urdfdom_headers && mkdir build && cd build && cmake .. && make && sudo make install`
     
 Finally, you just need to apply the following command line to install urdfdom library :
-  - git clone git://github.com/ros/urdfdom && cd urdfdom && mkdir build && cd build && cmake .. && make && sudo make install
+  - `git clone git://github.com/ros/urdfdom && cd urdfdom && mkdir build && cd build && cmake .. && make && sudo make install`
 
 ## gepetto-gui
 ## Usage
@@ -210,6 +210,19 @@ rm /var/lib/omniORB/omninames-<computer_name>.bak
 then restart the server:
 ```bash
 sudo service omniorb4-nameserver restart
+```
+
+## Collada files are not displayed
+
+The nodes are created and exists in the body tree widget but nothing appears in the scene viewer. This is due to a conflict between OSG and Qt. A work around is to convert the DAE to osg using the following command:
+```bash
+# <file> is the name of the file including the DAE extension.
+# The output filename will end with .dae.osg.
+osgconv <file> <file>.osg
+```
+If you have many files, you may run that at the root of the meshes subdirectories:
+```bash
+find ${root_of_meshes_directory} -iname "*.dae" -type f -exec osgconv {} {}.osg \;
 ```
 
 [HPP]:http://projects.laas.fr/gepetto/index.php/Software/Hpp
