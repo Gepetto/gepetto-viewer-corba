@@ -32,6 +32,8 @@ namespace gepetto {
               << "to" << callable;
           }
         }
+
+        const QString var = "pluginInstance";
       }
 
       PythonWidget::PythonWidget(QWidget *parent) :
@@ -136,7 +138,6 @@ namespace gepetto {
         MainWindow* main = MainWindow::instance();
         module.addObject("windowsManager", main->osg().get());
 
-        QString var = "pluginInstance";
         QVariantList args; args << QVariant::fromValue((QObject*)main);
         QVariant instance = module.call("Plugin", args);
         module.addVariable(var, instance);
@@ -161,7 +162,6 @@ namespace gepetto {
       void PythonWidget::unloadModulePlugin(PythonQtObjectPtr module )
       {
         PythonQt* pqt = PythonQt::self();
-        QString var = "pluginInstance";
         QVariant instance = pqt->getVariable(module, var);
         QDockWidget* dw = qobject_cast<QDockWidget*>(instance.value<QObject*>());
         if (dw) MainWindow::instance()->removeDockWidget(dw);
@@ -200,7 +200,6 @@ namespace gepetto {
           const QVariantMap& kwargs) const
       {
         PythonQt* pqt = PythonQt::self();
-        QString var = "pluginInstance";
         QVariantList ret;
         foreach (const PythonQtObjectPtr& m, modules_)
         {
