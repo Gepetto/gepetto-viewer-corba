@@ -93,6 +93,8 @@ namespace graphics {
       typedef std::map<std::string, GroupNodePtr_t>::iterator          GroupNodeMapIt;
       typedef std::map<std::string, GroupNodePtr_t>::const_iterator    GroupNodeMapConstIt;
 
+      typedef boost::mutex::scoped_lock scoped_lock;
+
       struct ApplyConfigurationFunctor {
         void operator() (const NodeConfiguration& nc) const
         {
@@ -362,9 +364,8 @@ namespace graphics {
     {
         GroupNodePtr_t group = getGroup(sceneName, true);
         if (windowId < windowManagers_.size ()) {
-            osgFrameMutex().lock();
+            scoped_lock lock(osgFrameMutex());
             windowManagers_[windowId]->addNode (group);
-            osgFrameMutex().unlock();
             return true;
         }
         else {
@@ -381,9 +382,8 @@ namespace graphics {
     	  std::cout << "Window ID" << windowId << "doesn't exist." << std::endl;
   	  return false;
         }
-  	osgFrameMutex().lock();
+  	scoped_lock lock(osgFrameMutex());
 	windowManagers_[windowId]->attachCameraToNode(node);
-   	osgFrameMutex().unlock();
 	return true;
      }
 
@@ -394,9 +394,8 @@ namespace graphics {
   		    << std::endl;
   	  return false;
         }
-  	osgFrameMutex().lock();
+  	scoped_lock lock(osgFrameMutex());
 	windowManagers_[windowId]->detachCamera();
-   	osgFrameMutex().unlock();
 	return true;
      }
 
@@ -404,9 +403,8 @@ namespace graphics {
     {
         RETURN_FALSE_IF_NODE_EXISTS(floorName);
         LeafNodeGroundPtr_t floor = LeafNodeGround::create (floorName);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (floorName, floor, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -420,9 +418,8 @@ namespace graphics {
 
         LeafNodeBoxPtr_t box = LeafNodeBox::create
           (boxName, osgVector3 (boxSize1, boxSize2, boxSize3), color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (boxName, box, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -434,9 +431,8 @@ namespace graphics {
         RETURN_FALSE_IF_NODE_EXISTS(capsuleName);
 
         LeafNodeCapsulePtr_t capsule = LeafNodeCapsule::create (capsuleName, radius, height, color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (capsuleName, capsule, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -448,9 +444,8 @@ namespace graphics {
         RETURN_FALSE_IF_NODE_EXISTS(arrowName);
 
         LeafNodeArrowPtr_t arrow = LeafNodeArrow::create (arrowName, color, radius, length);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (arrowName, arrow, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -463,11 +458,10 @@ namespace graphics {
       RETURN_FALSE_IF_NODE_EXISTS(rodName);
 
       NodeRodPtr_t rod = NodeRod::create(rodName,color,radius,length,maxCapsule);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (rodName, rod, true);
       for(size_t i = 0 ; i < (size_t) maxCapsule ; i++)
         addNode(rod->getCapsuleName(i),rod->getCapsule(i), false);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -507,9 +501,8 @@ namespace graphics {
           std::cout << exc.what() << std::endl;
           return false;
         }
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (meshName, mesh, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -521,9 +514,8 @@ namespace graphics {
 
         LeafNodeConePtr_t cone = LeafNodeCone::create
           (coneName, radius, height);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (coneName, cone, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -536,9 +528,8 @@ namespace graphics {
 
         LeafNodeCylinderPtr_t cylinder = LeafNodeCylinder::create
           (cylinderName, radius, height, color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (cylinderName, cylinder, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -550,9 +541,8 @@ namespace graphics {
 
         LeafNodeSpherePtr_t sphere = LeafNodeSphere::create
           (sphereName, radius, color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (sphereName, sphere, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -566,10 +556,9 @@ namespace graphics {
         WindowManagerPtr_t wm = getWindowManager(wid, true);
         LeafNodeLightPtr_t light = LeafNodeLight::create
           (lightName, radius, color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (lightName, light, true);
         light->setRoot (wm->getScene ());
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -581,9 +570,8 @@ namespace graphics {
         RETURN_FALSE_IF_NODE_EXISTS(lineName);
 
         LeafNodeLinePtr_t line = LeafNodeLine::create (lineName, pos1, pos2, color);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         addNode (lineName, line, true);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -593,9 +581,8 @@ namespace graphics {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
 
     LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     line->setStartPoint(pos1);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -605,9 +592,8 @@ namespace graphics {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
 
     LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     line->setEndPoint(pos2);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -618,10 +604,9 @@ namespace graphics {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
 
     LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     line->setStartPoint(pos1);
     line->setEndPoint(pos2);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -636,9 +621,8 @@ namespace graphics {
       }
       LeafNodeLinePtr_t curve = LeafNodeLine::create (curveName, pos, color);
       curve->setMode (GL_LINE_STRIP);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (curveName, curve, true);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -651,9 +635,8 @@ namespace graphics {
       return false;
     }
     LeafNodeLinePtr_t curve = dynamic_pointer_cast<LeafNodeLine>(getNode(curveName));
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     curve->setPoints(pos);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -670,9 +653,8 @@ namespace graphics {
               std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
               return false;
             }
-            osgFrameMutex().lock();
+            scoped_lock lock(osgFrameMutex());
             curve->setMode (mode);
-            osgFrameMutex().unlock();
             return true;
         }
     }
@@ -681,14 +663,8 @@ namespace graphics {
         const int first, const std::size_t count)
     {
         FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, curve, curveName);
-        osgFrameMutex().lock();
-        try {
-          curve->setPointsSubset (first, count);
-        } catch (const std::exception& exc) {
-          osgFrameMutex().unlock();
-          throw gepetto::Error (exc.what ());
-        }
-        osgFrameMutex().unlock();
+        scoped_lock lock(osgFrameMutex());
+        curve->setPointsSubset (first, count);
         return true;
     }
 
@@ -700,9 +676,8 @@ namespace graphics {
           std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
           return false;
         }
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         curve->setLineWidth (width);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -715,9 +690,8 @@ namespace graphics {
       RETURN_FALSE_IF_NODE_EXISTS (faceName);
 
       LeafNodeFacePtr_t face = LeafNodeFace::create (faceName, pos1, pos2, pos3, color);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (faceName, face, true);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -732,9 +706,8 @@ namespace graphics {
 
       LeafNodeFacePtr_t face = LeafNodeFace::create
         (faceName, pos1, pos2, pos3, pos4, color);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (faceName, face, true);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -765,9 +738,8 @@ namespace graphics {
 
       LeafNodeXYZAxisPtr_t axis = LeafNodeXYZAxis::create
         (nodeName,color,radius,sizeAxis);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (nodeName, axis, true);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -776,9 +748,8 @@ namespace graphics {
       RETURN_FALSE_IF_NODE_EXISTS(roadmapName);
 
       RoadmapViewerPtr_t rm = RoadmapViewer::create(roadmapName,colorNode,radius,sizeAxis,colorEdge);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addNode (roadmapName, rm, true);
-      osgFrameMutex().unlock();
       roadmapNodes_[roadmapName]=rm;
       return true;
     }
@@ -792,9 +763,8 @@ namespace graphics {
         }
         else {
             RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
-          //  osgFrameMutex().lock(); mtx is now locked only when required in addEdge
+          //  scoped_lock lock(osgFrameMutex()); mtx is now locked only when required in addEdge
             rm_ptr->addEdge(posFrom,posTo,osgFrameMutex());
-         //   osgFrameMutex().unlock();
             return true;
         }
     }
@@ -808,9 +778,8 @@ namespace graphics {
         }
         else {
             RoadmapViewerPtr_t rm_ptr = roadmapNodes_[nameRoadmap];
-           // osgFrameMutex().lock();
+           // scoped_lock lock(osgFrameMutex());
             rm_ptr->addNode(conf.position,conf.quat,osgFrameMutex());
-           // osgFrameMutex().unlock();
             return true;
         }
     }
@@ -873,9 +842,8 @@ namespace graphics {
       RETURN_FALSE_IF_NODE_EXISTS(groupName);
 
       GroupNodePtr_t groupNode = GroupNode::create (groupName);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addGroup (groupName, groupNode, true);
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -926,7 +894,7 @@ namespace graphics {
 
       GroupNodePtr_t urdf =
         urdfParser::parse (urdfName, urdfPath, visual, linkFrame);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       addGroup (urdfName, urdf, true);
       NodePtr_t link;
       for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
@@ -943,7 +911,6 @@ namespace graphics {
           addNode(link->getID(), link, urdf);
         }
       }
-      osgFrameMutex().unlock();
       return true;
     }
 
@@ -955,9 +922,8 @@ namespace graphics {
 
         if (group->hasChild(node)) return false;
 
-        osgFrameMutex().lock();// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
+        scoped_lock lock(osgFrameMutex());// if addChild is called in the same time as osg::frame(), gepetto-viewer crash
         groupNodes_[groupName]->addChild (nodes_[nodeName]);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -971,9 +937,8 @@ namespace graphics {
             return false;
         }
         else {
-            osgFrameMutex().lock();
+            scoped_lock lock(osgFrameMutex());
             groupNodes_[groupName]->removeChild(nodes_[nodeName]);
-	    osgFrameMutex().unlock();
             return true;
         }
     }
@@ -1033,18 +998,16 @@ namespace graphics {
             float size)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->addLandmark (size);
-	osgFrameMutex().unlock();
         return true;
     }
 
     bool WindowsManager::deleteLandmark (const std::string& nodeName)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->deleteLandmark ();
-	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1059,9 +1022,8 @@ namespace graphics {
       const Configuration& transform)
   {
     RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     nodes_[nodeName]->setStaticTransform(transform.position,transform.quat);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -1070,18 +1032,16 @@ namespace graphics {
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         VisibilityMode visibility =  getVisibility (visibilityMode);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setVisibilityMode (visibility);
-	osgFrameMutex().unlock();
         return true;
     }
 
     bool WindowsManager::setScale(const std::string& nodeName, const osgVector3& scale)
     {
         THROW_IF_NODE_DOES_NOT_EXIST(nodeName);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setScale(scale);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -1098,9 +1058,8 @@ namespace graphics {
     bool WindowsManager::setAlpha(const std::string& nodeName, const float& alpha)
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
-  	osgFrameMutex().lock();
+  	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setAlpha (alpha);
-   	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1113,9 +1072,8 @@ namespace graphics {
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         osgVector4 vecColor(color[0],color[1],color[2],color[3]);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setColor (vecColor);
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -1124,9 +1082,8 @@ namespace graphics {
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         WireFrameMode wire = getWire (wireFrameMode);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setWireFrameMode (wire);
-	osgFrameMutex().unlock();
 	return true;
     }
 
@@ -1135,9 +1092,8 @@ namespace graphics {
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
         LightingMode light = getLight (lightingMode);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setLightingMode (light);
-	osgFrameMutex().unlock();
         return true;
     }
 
@@ -1145,41 +1101,32 @@ namespace graphics {
             int state)
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
-	osgFrameMutex().lock();
+	scoped_lock lock(osgFrameMutex());
         nodes_[nodeName]->setHighlightState (state);
-	osgFrameMutex().unlock();
         return true;
     }
 
     void WindowsManager::captureFrame (const WindowID wid, const std::string& filename)
     {
       WindowManagerPtr_t wm = getWindowManager(wid, true);
-      osgFrameMutex().lock();
-      try {
-        wm->captureFrame (filename);
-      } catch (const std::exception& exc) {
-        osgFrameMutex().unlock();
-        throw;
-      }
-      osgFrameMutex().unlock();
+      scoped_lock lock(osgFrameMutex());
+      wm->captureFrame (filename);
     }
 
     bool WindowsManager::startCapture (const WindowID windowId, const std::string& filename,
             const std::string& extension)
     {
         WindowManagerPtr_t wm = getWindowManager(windowId, true);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         wm->startCapture (filename, extension);
-        osgFrameMutex().unlock();
         return true;
     }
 
     bool WindowsManager::stopCapture (const WindowID windowId)
     {
         WindowManagerPtr_t wm = getWindowManager(windowId, true);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         wm->stopCapture ();
-        osgFrameMutex().unlock();
         return true;
     }
 
@@ -1223,12 +1170,11 @@ namespace graphics {
         const std::string& filename)
     {
         RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(nodeName);
-        osgFrameMutex().lock();
+        scoped_lock lock(osgFrameMutex());
         osg::ref_ptr <osgDB::Options> os = new osgDB::Options;
         os->setOptionString ("NoExtras");
         bool ret = osgDB::writeNodeFile (*nodes_[nodeName]->asGroup (),
             std::string (filename), os.get());
-        osgFrameMutex().unlock();
         return ret;
     }
 
@@ -1236,9 +1182,8 @@ namespace graphics {
         const std::string& filename)
     {
         if (windowId < windowManagers_.size ()) {
-            osgFrameMutex().lock();
+            scoped_lock lock(osgFrameMutex());
             bool ret = windowManagers_[windowId]->writeNodeFile (std::string (filename));
-            osgFrameMutex().unlock();
             return ret;
         }
         else {
@@ -1289,18 +1234,16 @@ namespace graphics {
     bool WindowsManager::setBackgroundColor1(const WindowID windowId,const Color_t& color)
     {
       WindowManagerPtr_t wm = getWindowManager(windowId, true);
-      osgFrameMutex().lock();
+      scoped_lock lock(osgFrameMutex());
       wm->setBackgroundColor1(color);
-      osgFrameMutex().unlock();
       return true;
     }
 
   bool WindowsManager::setBackgroundColor2(const WindowID windowId,const Color_t& color)
   {
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     wm->setBackgroundColor2(color);
-    osgFrameMutex().unlock();
     return true;
   }
 
@@ -1308,17 +1251,15 @@ namespace graphics {
     osg::Quat rot;
     osg::Vec3d pos;
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     wm->getCameraTransform(pos,rot);
-    osgFrameMutex().unlock();
     return Configuration(pos,rot);
   }
 
   bool WindowsManager::setCameraTransform(const WindowID windowId,const Configuration& configuration){
     WindowManagerPtr_t wm = getWindowManager(windowId, true);
-    osgFrameMutex().lock();
+    scoped_lock lock(osgFrameMutex());
     wm->setCameraTransform(configuration.position,configuration.quat);
-    osgFrameMutex().unlock();
     return true;
   }
 
