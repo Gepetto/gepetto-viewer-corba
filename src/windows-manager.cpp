@@ -465,28 +465,21 @@ namespace graphics {
       return true;
     }
 
-    bool WindowsManager::resizeCapsule(const std::string& capsuleName, float newHeight) throw(std::exception){
-        NodePtr_t node = getNode(capsuleName, true);
-        try{
-          LeafNodeCapsulePtr_t cap = dynamic_pointer_cast<LeafNodeCapsule>(node);
-          cap->resize(newHeight);
-        }catch (const std::exception& exc) {
-          std::cout <<capsuleName << "isn't a capsule."  << std::endl;
-          return false;
-        }
+    bool WindowsManager::resizeCapsule(const std::string& capsuleName, float newHeight)
+      throw(std::exception)
+    {
+        FIND_NODE_OF_TYPE_OR_THROW (LeafNodeCapsule, cap, capsuleName);
+        scoped_lock lock(osgFrameMutex());
+        cap->resize(newHeight);
         return true;
     }
 
-    bool WindowsManager::resizeArrow(const std::string& arrowName ,float newRadius, float newLength) throw(std::exception){
-        NodePtr_t node = getNode(arrowName, true);
-        try{
-          LeafNodeArrowPtr_t arrow = dynamic_pointer_cast<LeafNodeArrow>(node);
-          arrow->resize(newRadius,newLength);
-        }catch (const std::exception& exc) {
-          std::cout <<arrowName << "isn't an arrow."  << std::endl;
-          return false;
-        }
-
+    bool WindowsManager::resizeArrow(const std::string& arrowName ,float newRadius, float newLength)
+      throw(std::exception)
+    {
+        FIND_NODE_OF_TYPE_OR_THROW (LeafNodeArrow, arrow, arrowName);
+        scoped_lock lock(osgFrameMutex());
+        arrow->resize(newRadius,newLength);
         return true;
     }
 
@@ -578,9 +571,7 @@ namespace graphics {
   bool WindowsManager::setLineStartPoint(const std::string& lineName,
                                             const osgVector3& pos1)
   {
-    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-
-    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, line, lineName);
     scoped_lock lock(osgFrameMutex());
     line->setStartPoint(pos1);
     return true;
@@ -589,9 +580,7 @@ namespace graphics {
   bool WindowsManager::setLineEndPoint(const std::string& lineName,
                                             const osgVector3& pos2)
   {
-    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-
-    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, line, lineName);
     scoped_lock lock(osgFrameMutex());
     line->setEndPoint(pos2);
     return true;
@@ -601,9 +590,7 @@ namespace graphics {
                                              const osgVector3& pos1,
                                              const osgVector3& pos2)
   {
-    RETURN_FALSE_IF_NODE_DOES_NOT_EXIST(lineName);
-
-    LeafNodeLinePtr_t line = dynamic_pointer_cast<LeafNodeLine>(getNode(lineName));
+    FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, line, lineName);
     scoped_lock lock(osgFrameMutex());
     line->setStartPoint(pos1);
     line->setEndPoint(pos2);
@@ -616,8 +603,7 @@ namespace graphics {
     {
       RETURN_FALSE_IF_NODE_EXISTS(curveName);
       if (pos->size () < 2) {
-        std::cout << "Need at least two points" << std::endl;
-        return false;
+        throw std::invalid_argument ("Need at least two points");
       }
       LeafNodeLinePtr_t curve = LeafNodeLine::create (curveName, pos, color);
       curve->setMode (GL_LINE_STRIP);
@@ -629,12 +615,10 @@ namespace graphics {
   bool WindowsManager::setCurvePoints (const std::string& curveName,
                                        const Vec3ArrayPtr_t& pos)
   {
-    RETURN_FALSE_IF_NODE_EXISTS(curveName);
+    FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, curve, curveName);
     if (pos->size () < 2) {
-      std::cout << "Need at least two points" << std::endl;
-      return false;
+        throw std::invalid_argument ("Need at least two points");
     }
-    LeafNodeLinePtr_t curve = dynamic_pointer_cast<LeafNodeLine>(getNode(curveName));
     scoped_lock lock(osgFrameMutex());
     curve->setPoints(pos);
     return true;
@@ -642,21 +626,10 @@ namespace graphics {
 
     bool WindowsManager::setCurveMode (const std::string& curveName, const GLenum mode)
     {
-        NodePtr_t node = find (curveName);
-        if (!node) {
-            std::cerr << "Node \"" << curveName << "\" not found." << std::endl;
-            return false;
-        } else {
-            LeafNodeLinePtr_t curve (dynamic_pointer_cast
-                <LeafNodeLine> (node));
-            if (!curve) {
-              std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
-              return false;
-            }
-            scoped_lock lock(osgFrameMutex());
-            curve->setMode (mode);
-            return true;
-        }
+        FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, curve, curveName);
+        scoped_lock lock(osgFrameMutex());
+        curve->setMode (mode);
+        return true;
     }
 
     bool WindowsManager::setCurvePointsSubset (const std::string& curveName,
@@ -670,12 +643,7 @@ namespace graphics {
 
     bool WindowsManager::setCurveLineWidth (const std::string& curveName, const float& width)
     {
-        NodePtr_t node = getNode (curveName, true);
-        LeafNodeLinePtr_t curve (dynamic_pointer_cast <LeafNodeLine> (node));
-        if (!curve) {
-          std::cerr << "Node \"" << curveName << "\" is not a curve." << std::endl;
-          return false;
-        }
+        FIND_NODE_OF_TYPE_OR_THROW (LeafNodeLine, curve, curveName);
         scoped_lock lock(osgFrameMutex());
         curve->setLineWidth (width);
         return true;
@@ -714,14 +682,8 @@ namespace graphics {
   bool WindowsManager::setTexture (const std::string& nodeName,
 				   const std::string& filename)
   {
-    NodePtr_t node (getNode (nodeName, true));
-    LeafNodeFacePtr_t faceNode (dynamic_pointer_cast <LeafNodeFace>
-				(node));
-    if (!faceNode) {
-      std::ostringstream oss;
-      oss << "Node " << nodeName << " is not a face";
-      throw std::invalid_argument (oss.str ());
-    }
+    FIND_NODE_OF_TYPE_OR_THROW (LeafNodeFace, faceNode, nodeName);
+
     if (faceNode->nbVertices () != 4) {
       std::ostringstream oss;
       oss << "Face should have 4 vertices to apply texture. "
