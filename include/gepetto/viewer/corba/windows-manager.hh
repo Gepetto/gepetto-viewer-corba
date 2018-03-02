@@ -61,13 +61,6 @@ namespace graphics {
       }
     };
 
-    struct UrdfFile {
-      std::string filename;
-      time_t modTime;
-      UrdfFile (const std::string& f);
-      UrdfFile () {}
-    };
-
     DEF_CLASS_SMART_PTR(WindowsManager)
 
     class WindowsManager
@@ -81,9 +74,6 @@ namespace graphics {
 
             typedef std::map <std::string, WindowID> WindowIDMap_t;
             WindowIDMap_t windowIDmap_;
-
-            typedef std::map <std::string, UrdfFile> UrdfFileMap_t;
-            UrdfFileMap_t urdfFileMap_;
 
         private:
             typedef std::vector <WindowManagerPtr_t> WindowManagerVector_t;
@@ -106,14 +96,8 @@ namespace graphics {
             NodePtr_t find (const std::string name, GroupNodePtr_t group = GroupNodePtr_t());
             void initParent(NodePtr_t node, GroupNodePtr_t parent);
             void threadRefreshing(WindowManagerPtr_t window);
-            bool urdfUpToDate (const std::string nodeName,
-                const std::string filename);
             bool loadUDRF(const std::string& urdfName, const std::string& urdfPath,
                 bool visual, bool linkFrame);
-            void registerUrdfNode (const std::string nodeName,
-                const std::string filename);
-            bool urdfNodeMustBeAdded (const std::string& nodeName,
-                const std::string& filename);
 
         protected:
             /**
