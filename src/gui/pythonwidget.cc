@@ -57,13 +57,10 @@ namespace gepetto {
         PythonQt::self()->registerCPPClass ("MainWindow", "QMainWindow", "gepetto");
         PythonQt::self()->registerCPPClass ("OSGWidget" , "QWidget"    , "gepetto");
 
-        mainContext.addObject("mainWindow", MainWindow::instance());
-        mainContext.addObject("windowsManager", MainWindow::instance()->osg().get());
         console_->QTextEdit::clear();
         console_->consoleMessage(
             "PythonQt command prompt\n"
             "Use Shift+Enter for multiline code.\n"
-            "Variable mainWindow and osg are available.\n"
             );
         console_->appendCommandPrompt();
 

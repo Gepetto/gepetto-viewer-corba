@@ -257,9 +257,6 @@ namespace gepetto {
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-#if GEPETTO_GUI_HAS_PYTHONQT
-        pythonWidget_->addToContext("osg", centralWidget_);
-#endif
         connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
         ui_->osgToolBar->show();
 
