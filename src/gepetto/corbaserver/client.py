@@ -77,9 +77,10 @@ class Client:
     # In the python interpreter of gepetto-gui, gui.createWindow
     # crashes for an obscure reason. This hack makes it work.
     try:
-      self.gui.createWindow = lambda x: mainWindow.createView(x).wid()
+      from PythonQt.gepetto import MainWindow
       # At this point, we are in the python interpreter of gepetto-gui
-    except:
+      self.gui.createWindow = lambda x: MainWindow.instance().createView(x).wid()
+    except ImportError:
       # At this point, we are NOT in the python interpreter of gepetto-gui
       pass
 

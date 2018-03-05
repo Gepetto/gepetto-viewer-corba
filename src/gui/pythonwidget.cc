@@ -12,6 +12,8 @@
 #include "gepetto/gui/mainwindow.hh"
 #include "gepetto/gui/plugin-interface.hh"
 
+#include "../../src/gui/python-decorator.hh"
+
 namespace gepetto {
     namespace gui {
       namespace {
@@ -45,11 +47,16 @@ namespace gepetto {
         PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
         sys.evalScript ("argv = ['gepetto-gui']");
         console_ = new PythonQtScriptingConsole(NULL, mainContext);
+
         PythonQt::self()->registerQObjectClassNames(QStringList()
             << "BodyTreeWidget"
             << "BodyTreeItem"
             << "SelectionEvent"
             << "WindowsManager");
+        PythonQt::self()->addDecorators (new PythonDecorator());
+        PythonQt::self()->registerCPPClass ("MainWindow", "QMainWindow", "gepetto");
+        PythonQt::self()->registerCPPClass ("OSGWidget" , "QWidget"    , "gepetto");
+
         mainContext.addObject("mainWindow", MainWindow::instance());
         mainContext.addObject("windowsManager", MainWindow::instance()->osg().get());
         console_->QTextEdit::clear();
@@ -72,10 +79,6 @@ namespace gepetto {
 
         toggleViewAction()->setShortcut(gepetto::gui::DockKeyShortcutBase + Qt::Key_A);
         connect(button_, SIGNAL(clicked()), SLOT(browseFile()));
-
-        // Hack to make "createWindow" function work properly
-        PythonQtObjectPtr client = PythonQt::self()->importModule ("gepetto.corbaserver.client");
-        client.addObject ("mainWindow", MainWindow::instance());
       }
 
       PythonWidget::~PythonWidget()
