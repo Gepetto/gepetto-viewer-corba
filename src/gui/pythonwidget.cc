@@ -46,6 +46,7 @@ namespace gepetto {
         PythonQtObjectPtr mainContext = PythonQt::self()->getMainModule();
         PythonQtObjectPtr sys = PythonQt::self()->importModule ("sys");
         sys.evalScript ("argv = ['gepetto-gui']");
+        mainContext.evalScript ("import PythonQt");
         console_ = new PythonQtScriptingConsole(NULL, mainContext);
 
         PythonQt::self()->registerQObjectClassNames(QStringList()
