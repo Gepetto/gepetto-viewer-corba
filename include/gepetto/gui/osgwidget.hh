@@ -39,8 +39,6 @@ namespace gepetto {
         /// Replace the camera at her home position.
         virtual void onHome();
 
-        int wid () const;
-
         void addFloor();
         void attachToWindow (const std::string nodeName);
 

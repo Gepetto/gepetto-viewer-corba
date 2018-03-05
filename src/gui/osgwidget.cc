@@ -165,11 +165,6 @@ namespace gepetto {
       return wid_;
     }
 
-    int OSGWidget::wid() const
-    {
-      return int(wid_);
-    }
-
     graphics::WindowManagerPtr_t OSGWidget::window() const
     {
       return wm_;

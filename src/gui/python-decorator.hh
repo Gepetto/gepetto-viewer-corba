@@ -14,6 +14,8 @@ namespace gepetto {
 
       public slots:
       MainWindow* static_MainWindow_instance () const { return MainWindow::instance (); }
+
+      int windowID (OSGWidget* o) const { return o->windowID(); }
     };
   } // namespace gui
 } // namespace gepetto
