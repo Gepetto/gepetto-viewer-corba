@@ -139,7 +139,6 @@ signals:
           /// \param text text to log
           void logJobFailed  (int id, const QString& text);
 
-        OSGWidget* createView (const QString& name);
         /// Request a refresh of the interface.
         /// \param refreshType tells what to refresh. See RefreshType
         void requestRefresh ();
