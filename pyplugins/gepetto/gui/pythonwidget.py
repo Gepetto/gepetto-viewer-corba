@@ -81,11 +81,8 @@ class Plugin(QtGui.QDockWidget):
     Example of plugin of the Gepetto Viewer GUI. This can interact with
     PythonWidget C++ class.
     """
-    def __init__ (self, mainWindow, flags = None):
-        if flags is None:
-            super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow)
-        else:
-            super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow, flags)
+    def __init__ (self, mainWindow):
+        super(Plugin, self).__init__ ("Gepetto Viewer plugin", mainWindow)
         self.setObjectName("Gepetto Viewer plugin")
         self.client = Client()
         # Initialize the widget

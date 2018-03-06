@@ -37,6 +37,7 @@ namespace gepetto {
       : configurationFile ("settings")
       , predifinedRobotConf ("robots")
       , predifinedEnvConf ("environments")
+      , stateConf (".state")
       , verbose (false)
       , noPlugin (false)
       , startGepettoCorbaServer (true)
@@ -196,6 +197,38 @@ namespace gepetto {
             "PYTHONQT flag. Cannot not load Python plugin " + name);
       }
 #endif
+    }
+
+    void Settings::restoreState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not restore the window state from" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        mw->restoreGeometry (settings.value("geometry").toByteArray());
+        mw->restoreState (settings.value("state").toByteArray());
+        mw->centralWidget()->setVisible (settings.value("centralWidgetVisibility", true).toBool());
+        settings.endGroup();
+      }
+    }
+
+    void Settings::saveState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not save the window state to" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        settings.setValue("geometry", mw->saveGeometry());
+        settings.setValue("state"   , mw->saveState());
+        settings.setValue("centralWidgetVisibility", mw->centralWidget()->isVisible ());
+        settings.endGroup();
+      }
     }
 
     void Settings::setMainWindow(gepetto::gui::MainWindow *main)

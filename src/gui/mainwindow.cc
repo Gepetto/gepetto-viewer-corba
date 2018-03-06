@@ -258,6 +258,7 @@ namespace gepetto {
     {
       QDockWidget* dockOSG = new QDockWidget (
           tr("Window ") + osgWidget->objectName(), this);
+      dockOSG->setObjectName ("gepetto-gui.osg." + osgWidget->objectName());
       dockOSG->setWidget(osgWidget);
       connect(dockOSG,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
       addDockWidget(Qt::RightDockWidgetArea, dockOSG);

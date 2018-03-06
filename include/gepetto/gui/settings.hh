@@ -38,6 +38,7 @@ namespace gepetto {
       std::string configurationFile;
       std::string predifinedRobotConf;
       std::string predifinedEnvConf;
+      std::string stateConf;
 
       bool verbose;
       bool noPlugin;
@@ -110,6 +111,9 @@ namespace gepetto {
       /// for C++, resp. Python, plugins.
       /// \note Prefer using Settings::fromFiles()
       void readSettingFile ();
+
+      void saveState () const;
+      void restoreState () const;
 
     private:
       void writeRobotFile ();

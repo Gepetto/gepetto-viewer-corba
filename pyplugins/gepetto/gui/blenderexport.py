@@ -87,11 +87,9 @@ class _Widget (QtGui.QWidget):
 ###     gepetto.gui.blenderexport=true
 ###
 class Plugin(QtGui.QDockWidget):
-    def __init__ (self, mainWindow, flags = None):
-        if flags is None:
-            super(Plugin, self).__init__ ("Blender export plugin", mainWindow)
-        else:
-            super(Plugin, self).__init__ ("Blender export plugin", mainWindow, flags)
+    def __init__ (self, mainWindow):
+        super(Plugin, self).__init__ ("Blender export plugin", mainWindow)
+        self.setObjectName ("gepetto.gui.blenderexport")
         self.resetConnection()
         # Initialize the widget
         mainWidget = _Widget(self, self)

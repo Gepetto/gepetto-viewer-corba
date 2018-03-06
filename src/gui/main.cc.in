@@ -83,8 +83,11 @@ int main(int argc, char *argv[])
   w.setWindowIcon (pixmap);
   settings.setMainWindow (&w);
   settings.initPlugins ();
+  settings.restoreState ();
   w.connect (&a, SIGNAL (log(QString)), SLOT (logError(const QString&)));
   w.show();
   splash.finish(&w);
-  return a.exec();
+  int retCode = a.exec();
+  settings.saveState ();
+  return retCode;
 }
