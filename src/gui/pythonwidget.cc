@@ -18,6 +18,7 @@
 
 #include <QAction>
 #include <QFileDialog>
+#include <QSettings>
 #include <PythonQt.h>
 #include <PythonQt_QtAll.h>
 #include <gui/PythonQtScriptingConsole.h>
@@ -117,6 +118,32 @@ namespace gepetto {
         }
         fd->close();
         fd->deleteLater();
+      }
+
+      void PythonWidget::saveHistory (QSettings& settings)
+      {
+        settings.beginGroup("pythonqt");
+        QStringList history = console_->history ();
+        int limit = 200;
+        int start = std::max(history.length() - limit, 0);
+        QList<QVariant> h;
+        foreach (QString s, history.mid(start)) {
+          h << s;
+        }
+        settings.setValue("history", h);
+        settings.endGroup();
+      }
+
+      void PythonWidget::restoreHistory (QSettings& settings)
+      {
+        settings.beginGroup("pythonqt");
+        QList<QVariant> h = settings.value("history").toList();
+        QStringList history;
+        foreach(QVariant v, h) {
+          history << v.toString();
+        }
+        console_->setHistory (history);
+        settings.endGroup();
       }
 
       void PythonWidget::loadScriptPlugin(QString moduleName, QString fileName)

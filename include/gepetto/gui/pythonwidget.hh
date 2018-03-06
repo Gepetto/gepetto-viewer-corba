@@ -28,6 +28,7 @@
 #include <QDockWidget>
 #include <QLayout>
 #include <QPushButton>
+#include <QSettings>
 
 class PythonQtObjectPtr;
 class PythonQtScriptingConsole;
@@ -97,6 +98,9 @@ namespace gepetto {
       QVariantList callPluginMethod (const QString& method,
           const QVariantList& args = QVariantList(),
           const QVariantMap& kwargs = QVariantMap()) const;
+
+      void saveHistory (QSettings& settings);
+      void restoreHistory (QSettings& settings);
 
     public slots:
       /// Load a plugin by importing a module

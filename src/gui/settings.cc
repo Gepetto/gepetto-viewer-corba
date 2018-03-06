@@ -212,6 +212,9 @@ namespace gepetto {
         mw->restoreState (settings.value("state").toByteArray());
         mw->centralWidget()->setVisible (settings.value("centralWidgetVisibility", true).toBool());
         settings.endGroup();
+#if GEPETTO_GUI_HAS_PYTHONQT
+        mw->pythonWidget()->restoreHistory(settings);
+#endif
       }
     }
 
@@ -228,6 +231,9 @@ namespace gepetto {
         settings.setValue("state"   , mw->saveState());
         settings.setValue("centralWidgetVisibility", mw->centralWidget()->isVisible ());
         settings.endGroup();
+#if GEPETTO_GUI_HAS_PYTHONQT
+        mw->pythonWidget()->saveHistory(settings);
+#endif
       }
     }
 
