@@ -86,10 +86,6 @@ namespace gepetto {
           return selectionHandler_;
         }
 
-        /// Get the central widget.
-        /// \deprecated Use \ref osgWindows instead
-        OSGWidget* centralWidget() const GEPETTO_VIEWER_CORBA_DEPRECATED;
-
         /// Get the list of windows.
         QList <OSGWidget*> osgWindows () const;
 

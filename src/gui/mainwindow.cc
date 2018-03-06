@@ -151,11 +151,6 @@ namespace gepetto {
       return osgViewerManagers_;
     }
 
-    OSGWidget *MainWindow::centralWidget() const
-    {
-      return centralWidget_;
-    }
-
     BodyTreeWidget *MainWindow::bodyTree() const
     {
       return ui_->bodyTreeContent;
@@ -253,7 +248,8 @@ namespace gepetto {
       emit refresh ();
     }
 
-    void MainWindow::createDefaultView() {
+    void MainWindow::createDefaultView()
+    {
       std::stringstream ss; ss << "hpp_gui_window_" << osgWindows_.size();
       createView (ss.str());
     }
@@ -408,7 +404,7 @@ namespace gepetto {
 
     void MainWindow::dockVisibilityChanged(bool visible)
     {
-      QWidget* cw = QMainWindow::centralWidget();
+      QWidget* cw = centralWidget();
       if (visible && cw->isVisible())
         cw->hide();
       else {
