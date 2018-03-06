@@ -20,6 +20,9 @@
 
 #include <boost/regex.hpp>
 
+#include <QProcess>
+#include <QTextBrowser>
+
 #include <osg/Camera>
 
 #include <osg/DisplaySettings>
@@ -103,6 +106,9 @@ namespace gepetto {
     , wm_ ()
     , viewer_ (new osgViewer::Viewer)
     , screenCapture_ ()
+    , process_ (new QProcess (this))
+    , showPOutput_ (new QDialog (this, Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint))
+    , pOutput_ (new QTextBrowser())
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
       osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
@@ -158,6 +164,13 @@ namespace gepetto {
 
       connect( &timer_, SIGNAL(timeout()), this, SLOT(update()) );
       timer_.start(parent->settings_->refreshRate);
+
+      // Setup widgets to record movies.
+      process_->setProcessChannelMode(QProcess::MergedChannels);
+      connect (process_, SIGNAL (readyReadStandardOutput ()), SLOT (readyReadProcessOutput()));
+      showPOutput_->setModal(false);
+      showPOutput_->setLayout(new QHBoxLayout ());
+      showPOutput_->layout()->addWidget(pOutput_);
     }
 
     OSGWidget::~OSGWidget()
@@ -199,6 +212,50 @@ namespace gepetto {
     void OSGWidget::addFloor()
     {
       wsm_->addFloor("hpp-gui/floor");
+    }
+
+    void OSGWidget::toggleCapture (bool active)
+    {
+      MainWindow* main = MainWindow::instance();
+      if (active) {
+        QDir tmp ("/tmp");
+        tmp.mkpath ("gepetto-gui/record"); tmp.cd("gepetto-gui/record");
+        foreach (QString f, tmp.entryList(QStringList() << "img_0_*.jpeg", QDir::Files))
+          tmp.remove(f);
+        QString path = tmp.absoluteFilePath("img");
+        const char* ext = "jpeg";
+        osg ()->startCapture(windowID(), path.toLocal8Bit().data(), ext);
+        main->log("Saving images to " + path + "_*." + ext);
+      } else {
+        osg()->stopCapture(windowID());
+        QString outputFile = QFileDialog::getSaveFileName(this, tr("Save video to"), "untitled.mp4");
+        if (!outputFile.isNull()) {
+          if (QFile::exists(outputFile))
+            QFile::remove(outputFile);
+          QString avconv = "avconv";
+
+          QStringList args;
+          QString input = "/tmp/gepetto-gui/record/img_0_%d.jpeg";
+          args << "-r" << "50"
+            << "-i" << input
+            << "-vf" << "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+            << "-r" << "25"
+            << "-vcodec" << "libx264"
+            << outputFile;
+          qDebug () << args;
+
+          showPOutput_->setWindowTitle(avconv + " " + args.join(" "));
+          pOutput_->clear();
+          showPOutput_->resize(main->size() / 2);
+          showPOutput_->show();
+          process_->start(avconv, args);
+        }
+      }
+    }
+
+    void OSGWidget::readyReadProcessOutput()
+    {
+      pOutput_->append(process_->readAll());
     }
   } // namespace gui
 } // namespace gepetto

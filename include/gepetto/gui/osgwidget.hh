@@ -30,6 +30,9 @@
 #include <gepetto/gui/fwd.hh>
 #include <gepetto/gui/windows-manager.hh>
 
+class QProcess;
+class QTextBrowser;
+
 namespace gepetto {
   namespace gui {
     /// Widget that displays scenes.
@@ -57,8 +60,13 @@ namespace gepetto {
 
         void addFloor();
 
+        void toggleCapture (bool active);
+
       protected:
         virtual void paintEvent(QPaintEvent* event);
+
+      private slots:
+        void readyReadProcessOutput ();
 
       private:
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
@@ -69,6 +77,11 @@ namespace gepetto {
         QTimer timer_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
+
+        // To record movies.
+        QProcess* process_;
+        QDialog* showPOutput_;
+        QTextBrowser* pOutput_;
 
         friend class PickHandler;
     };
