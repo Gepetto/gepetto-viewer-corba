@@ -56,7 +56,6 @@ namespace gepetto {
         virtual void onHome();
 
         void addFloor();
-        void attachToWindow (const std::string nodeName);
 
       protected:
         virtual void paintEvent(QPaintEvent* event);

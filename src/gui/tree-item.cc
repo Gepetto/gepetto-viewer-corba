@@ -106,11 +106,6 @@ namespace gepetto {
           mode.toLocal8Bit().data());
     }
 
-    void BodyTreeItem::attachToWindow(unsigned int windowID)
-    {
-      MainWindow::instance()->osg()->addSceneToWindow (node_->getID(), windowID);
-    }
-
     void BodyTreeItem::removeFromGroup()
     {
       if (parentGroup_.empty()) return;

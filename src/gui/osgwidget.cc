@@ -200,10 +200,5 @@ namespace gepetto {
     {
       wsm_->addFloor("hpp-gui/floor");
     }
-
-    void OSGWidget::attachToWindow(const std::string nodeName)
-    {
-      wsm_->addSceneToWindow(nodeName, wid_);
-    }
   } // namespace gui
 } // namespace gepetto
