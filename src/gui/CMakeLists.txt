@@ -47,17 +47,20 @@ IF(GEPETTO_GUI_HAS_PYTHONQT)
   SET (${PROJECT_NAME}_SOURCES
     ${${PROJECT_NAME}_SOURCES}
     pythonwidget.cc)
+  SET (${PROJECT_NAME}_MOC
+    ${${PROJECT_NAME}_HEADERS_MOC}
+    python-decorator.hh
+    )
 ELSE (GEPETTO_GUI_HAS_PYTHONQT)
   MESSAGE(STATUS "Skipping PythonQt settings")
+  SET (${PROJECT_NAME}_MOC
+    ${${PROJECT_NAME}_HEADERS_MOC}
+    )
 ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
 
 SET (${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_HEADERS_MOC}
   ${${PROJECT_NAME}_HEADERS_NO_MOC}
-  )
-SET (${PROJECT_NAME}_MOC
-  ${${PROJECT_NAME}_HEADERS_MOC}
-  python-decorator.hh
   )
 
 # Compile meta-objects and executable
