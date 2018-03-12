@@ -50,6 +50,14 @@
 
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
+
+#ifdef URDFDOM_POINTER_CAST
+#include <boost/pointer_cast.hpp>
+namespace urdf {
+  using boost::dynamic_pointer_cast;
+}
+#endif
+
 #define RETURN_FALSE_IF_NODE_EXISTS(name)                                      \
   if (nodeExists(name)) {                                                      \
     std::cerr << "Node \"" << name << "\" already exists." << std::endl;       \
@@ -77,7 +85,7 @@
   }
 
 #define FIND_NODE_OF_TYPE_OR_THROW(NodeType, varname, nodename)                \
-  NodeType##Ptr_t varname (boost::dynamic_pointer_cast <NodeType>                \
+  NodeType##Ptr_t varname (urdf::dynamic_pointer_cast <NodeType>                \
       (getNode(nodename, true)));                                              \
   if (!varname) {                                                              \
     std::ostringstream oss;                                                    \
@@ -861,7 +869,7 @@ namespace graphics {
       NodePtr_t link;
       for (std::size_t i=0; i< urdf->getNumOfChildren (); i++) {
         link = urdf->getChild (i);
-        GroupNodePtr_t groupNode (dynamic_pointer_cast
+        GroupNodePtr_t groupNode (urdf::dynamic_pointer_cast
             <GroupNode> (link));
         if (groupNode) {
           addGroup(link->getID(), groupNode, urdf);
