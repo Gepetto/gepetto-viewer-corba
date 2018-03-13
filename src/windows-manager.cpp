@@ -77,7 +77,7 @@
   }
 
 #define FIND_NODE_OF_TYPE_OR_THROW(NodeType, varname, nodename)                \
-  NodeType##Ptr_t varname (boost::dynamic_pointer_cast <NodeType>                \
+  NodeType##Ptr_t varname (dynamic_pointer_cast <NodeType>                     \
       (getNode(nodename, true)));                                              \
   if (!varname) {                                                              \
     std::ostringstream oss;                                                    \
