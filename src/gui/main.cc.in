@@ -56,6 +56,10 @@ int main(int argc, char *argv[])
 
   setupApplication();
 
+  // Set numeric locale to C so as not to disturb other libraries (like collada
+  // dom) relying on sscanf (locale dependant) to convert string to double.
+  setlocale(LC_NUMERIC, "C");
+
   Settings settings ("@CMAKE_INSTALL_PREFIX@");
   settings.setupPaths ();
   switch (settings.fromArgv (argc, argv)) {
