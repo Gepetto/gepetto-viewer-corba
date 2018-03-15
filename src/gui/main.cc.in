@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
   QApplication::setAttribute(Qt::AA_X11InitThreads);
 
   SafeApplication a(argc, argv);
+  // Set numeric locale to C so as not to disturb other libraries (like collada
+  // dom) relying on sscanf (locale dependant) to convert string to double.
+  setlocale(LC_NUMERIC, "C");
   a.setStyle(QStyleFactory::create (
 #if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
         "cleanlooks"
