@@ -1,7 +1,7 @@
 #ifndef GEPETTO_GUI_PYTHON_DECORATOR_HH
 #define GEPETTO_GUI_PYTHON_DECORATOR_HH
 
-#include <PythonQt/PythonQt.h>
+#include <PythonQt.h>
 
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/osgwidget.hh>

@@ -2,11 +2,11 @@
 
 #include <QAction>
 #include <QFileDialog>
-#include <PythonQt/PythonQt.h>
-#include <PythonQt/PythonQt_QtAll.h>
-#include <PythonQt/gui/PythonQtScriptingConsole.h>
-#include <PythonQt/PythonQtClassInfo.h>
-#include <PythonQt/PythonQt_QtBindings.h>
+#include <PythonQt.h>
+#include <PythonQt_QtAll.h>
+#include <gui/PythonQtScriptingConsole.h>
+#include <PythonQtClassInfo.h>
+#include <PythonQt_QtBindings.h>
 
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
