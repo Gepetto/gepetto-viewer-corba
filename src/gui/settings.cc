@@ -218,6 +218,20 @@ namespace gepetto {
       }
     }
 
+    void Settings::restoreDockWidgetsState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not restore the dock widget state from" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        mw->restoreState (settings.value("state").toByteArray());
+        settings.endGroup();
+      }
+    }
+
     void Settings::saveState () const
     {
       QSettings settings (QSettings::SystemScope,

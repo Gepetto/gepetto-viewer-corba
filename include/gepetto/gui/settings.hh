@@ -114,6 +114,7 @@ namespace gepetto {
 
       void saveState () const;
       void restoreState () const;
+      void restoreDockWidgetsState () const;
 
     private:
       void writeRobotFile ();

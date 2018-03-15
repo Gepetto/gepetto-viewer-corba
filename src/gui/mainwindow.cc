@@ -275,6 +275,7 @@ namespace gepetto {
       actionSearchBar_->addAction(new NodeAction("Attach camera " + osgWidget->objectName() + " to selected node", osgWidget, this));
       osgWidget->addAction(actionSearchBar_->showAction());
       osgWindows_.append(osgWidget);
+      settings_->restoreDockWidgetsState ();
     }
 
     void MainWindow::openLoadRobotDialog()
