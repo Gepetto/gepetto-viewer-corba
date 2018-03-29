@@ -37,6 +37,7 @@ private:
 public:
     typedef CORBA::ULong WindowID;
     typedef gepetto::corbaserver::Transform Transform;
+    typedef gepetto::corbaserver::TransformSeq TransformSeq;
     typedef gepetto::corbaserver::PositionSeq PositionSeq;
     typedef gepetto::corbaserver::Position Position;
     typedef gepetto::corbaserver::Position_slice Position_slice;
@@ -136,6 +137,7 @@ public:
   virtual bool removeFromGroup (const char* nodeNameCorba,const char* groupNameCorba)  throw (Error);
 
   virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration)  throw (Error);
+  virtual bool applyConfigurations(const Names_t& nodeNameCorba, const TransformSeq& configuration)  throw (Error);
 
   virtual bool addLandmark(const char* nodeNameCorba, float size) throw (Error);
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);

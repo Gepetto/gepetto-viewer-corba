@@ -223,6 +223,7 @@ namespace graphics {
             virtual bool deleteNode (const std::string& nodeName, bool all);
 
             virtual bool applyConfiguration(const std::string& nodeName, const Configuration& configuration);
+            virtual bool applyConfigurations(const std::vector<std::string>& nodeName, const std::vector<Configuration>& configuration);
 
             virtual bool addLandmark(const std::string& nodeName, float size);
             virtual bool deleteLandmark(const std::string& nodeName);

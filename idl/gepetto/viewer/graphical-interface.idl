@@ -24,6 +24,7 @@ typedef unsigned long WindowID;
 typedef sequence <string> Names_t; /// Sequence of names
 typedef sequence<float> floatSeq;
 typedef sequence<Position> PositionSeq;
+typedef sequence<Transform> TransformSeq;
 
   /// IDL of the graphical interface.
   /// It contains the following groups:
@@ -347,6 +348,10 @@ typedef sequence<Position> PositionSeq;
     /// \param input nodeName : name of the node.
     /// \param input configuration : Float[7] new configuration.
     boolean applyConfiguration(in string nodeName, in Transform configuration) raises (Error);
+
+    /// Same as \ref applyConfiguration on a list of node name and configuration.
+    /// Both input list should be of same length.
+    boolean applyConfigurations(in Names_t nodeName, in TransformSeq configuration) raises (Error);
 
     /// Change configurations according to the last applyConfigurations.d
     void refresh() raises (Error);
