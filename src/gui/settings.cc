@@ -94,7 +94,7 @@ namespace gepetto {
 
       osg::ApplicationUsage::Type help (arguments.readHelpType());
       au->addCommandLineOption("-v or --verbose",  "Activate verbose output");
-      au->addCommandLineOption("-g or --generate-config-files", "generate configuration files and quit");
+      au->addCommandLineOption("-g or --generate-config-files", "generate configuration files in " + installDirectory.toStdString() + "/etc and quit");
       au->addCommandLineOption("-c or --config-file", "set the configuration file (do not include .conf)", configurationFile);
       au->addCommandLineOption("--predefined-robots", "set the predefined robots configuration file (do not include .conf)", predifinedRobotConf);
       au->addCommandLineOption("--predefined-environments", "set the predefined environments configuration file (do not include .conf)", predifinedEnvConf);
