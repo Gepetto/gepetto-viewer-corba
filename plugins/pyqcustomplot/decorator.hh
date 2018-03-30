@@ -8,7 +8,8 @@ class QCustomPlotDecorator : public QObject
 {
   Q_OBJECT
   public Q_SLOTS:
-    // add a constructor
+    /// \name QCustomPlot
+    /// \{
     QCustomPlot* new_QCustomPlot(QWidget* parent = 0)
     {
       return new QCustomPlot(parent);
@@ -17,27 +18,23 @@ class QCustomPlotDecorator : public QObject
     {
       delete o;
     }
-    /// \name QCustomPlot
-    /// \{
-    void clearGraphs(QCustomPlot* o) //add a graph inside the QCustomPlot object
+    void clearGraphs(QCustomPlot* o)
     {
       o->clearGraphs();
     }
-    QCPGraph* addGraph(QCustomPlot* o) //add a graph inside the QCustomPlot object
+
+    QCPGraph* addGraph(QCustomPlot* o)
     {
       return o->addGraph();
     }
+    void addPlottable(QCustomPlot* o, QCPAbstractPlottable* ap)
+    {
+      o->addPlottable(ap);
+    }
+
     QCPGraph* graph(QCustomPlot* o, int graphnum)
     {
       return o->graph(graphnum);
-    }
-    void setData (QCustomPlot* o,int graphnum, const QVector<double> &keys, const QVector<double> &values) //set data to a certain graph. Deletes existing data inside the graph
-    {
-      o->graph(graphnum)->setData(keys,values);
-    }
-    void addData (QCustomPlot* o,int graphnum, const QVector<double> &keys, const QVector<double> &values) //set data to a certain graph. Deletes existing data inside the graph
-    {
-      o->graph(graphnum)->addData(keys,values);
     }
     void replot (QCustomPlot* o) //replot object to visualise new data
     {
@@ -55,25 +52,10 @@ class QCustomPlotDecorator : public QObject
     {
       o->rescaleAxes(v);
     }
-    void plotLayout_insertRow(QCustomPlot* o, int row) //insert row above graph
-    {
-      o->plotLayout()->insertRow(row);
-    }
-    void plotLayout_insertColumn(QCustomPlot* o, int column) //insert column above graph
-    {
-      o->plotLayout()->insertColumn(column);
-    }
-    void plotLayout_addElement(QCustomPlot* o, int row, int column, QCPLayoutElement *element) //add text to graph at row,column
-    {
-      o->plotLayout()->addElement(row,column,element);
-    }
+    QCPLayoutGrid* plotLayout (QCustomPlot* o) { return o->plotLayout (); }
     void setAutoAddPlottableToLegend (QCustomPlot* o, bool v)
     {
       o->setAutoAddPlottableToLegend (v);
-    }
-    QCPLegend* legend (QCustomPlot* o)
-    {
-      return o->legend;
     }
     /// \param interaction See QCP::Interaction
     void setInteraction(QCustomPlot* o, int interaction, bool enabled = true)
@@ -84,6 +66,7 @@ class QCustomPlotDecorator : public QObject
     QCPAxis* xAxis2 (QCustomPlot* o) { return o->xAxis2; }
     QCPAxis* yAxis  (QCustomPlot* o) { return o->yAxis ; }
     QCPAxis* yAxis2 (QCustomPlot* o) { return o->yAxis2; }
+    QCPLegend* legend (QCustomPlot* o) { return o->legend; }
     /// \}
 
     /// \name QCPAxis
@@ -128,10 +111,8 @@ class QCustomPlotDecorator : public QObject
 
     /// \name QCPGraph
     /// \{
-    void rescaleAxes(QCPGraph* g, bool v = true)
-    {
-      g->rescaleAxes(v);
-    }
+    QCPGraph* new_QCPGraph (QCPAxis* key, QCPAxis* value) { return new QCPGraph (key, value); }
+    void delete_QCPGraph (QCPGraph* g) { delete g; }
     void setData (QCPGraph* g, const QVector<double> &keys, const QVector<double> &values)
     {
       g->setData(keys,values);
@@ -140,17 +121,52 @@ class QCustomPlotDecorator : public QObject
     {
       g->addData(keys,values);
     }
-    void setPen (QCPGraph* g, const QPen &pen)
+    void clearData (QCPGraph* o) { o->clearData (); }
+    /// \}
+
+    /// \name QCPCurve
+    /// \{
+    QCPCurve* new_QCPCurve (QCPAxis* key, QCPAxis* value) { return new QCPCurve (key, value); }
+    void delete_QCPCurve (QCPCurve* g) { delete g; }
+    void setData (QCPCurve* c, const QVector<double> &keys, const QVector<double> &values)
     {
-      g->setPen(pen);
+      c->setData(keys,values);
     }
+    void addData (QCPCurve* c, const QVector<double> &ts, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->addData(ts, keys,values);
+    }
+    void clearData (QCPCurve* o) { o->clearData (); }
+    /// \}
+
+    /// \name QCPBars
+    /// \{
+    QCPBars* new_QCPBars (QCPAxis* key, QCPAxis* value) { return new QCPBars (key, value); }
+    void delete_QCPBars (QCPBars* g) { delete g; }
+    void setData (QCPBars* c, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->setData(keys,values);
+    }
+    void addData (QCPBars* c, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->addData(keys,values);
+    }
+    void clearData (QCPBars* o) { o->clearData (); }
     /// \}
 
     /// \name QCPAbstractPlottable
     /// \{
+    void rescaleAxes(QCPAbstractPlottable* ap, bool v = true)
+    {
+      ap->rescaleAxes(v);
+    }
     void setName (QCPAbstractPlottable* ap, const QString &n)
     {
       ap->setName(n);
+    }
+    void setPen (QCPAbstractPlottable* ap, const QPen &pen)
+    {
+      ap->setPen(pen);
     }
     /// \}
 
@@ -159,6 +175,22 @@ class QCustomPlotDecorator : public QObject
     void setVisible (QCPLayerable* l, const bool &v)
     {
       l->setVisible(v);
+    }
+    /// \}
+
+    /// \name QCPLayoutGrid
+    /// \{
+    void insertRow (QCPLayoutGrid* lg, int row) //insert row above graph
+    {
+      lg->insertRow(row);
+    }
+    void insertColumn (QCPLayoutGrid* lg, int column) //insert column above graph
+    {
+      lg->insertColumn(column);
+    }
+    void addElement (QCPLayoutGrid* lg, int row, int column, QCPLayoutElement *element) //add text to graph at row,column
+    {
+      lg->addElement(row,column,element);
     }
     /// \}
 };
