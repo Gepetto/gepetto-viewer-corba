@@ -106,16 +106,9 @@ INSTALL(
 INSTALL(
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/corbaserver/__init__.py
-  DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver
-  )
-INSTALL(
-  FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/corbaserver/client.py
-  DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver
-  )
-INSTALL(
-  FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/corbaserver/exporttoblender.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/corbaserver/tools.py
   DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver
   )
 INSTALL(
