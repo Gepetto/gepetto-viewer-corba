@@ -75,6 +75,7 @@ class QCustomPlotDecorator : public QObject
     {
       return o->legend;
     }
+    /// \param interaction See QCP::Interaction
     void setInteraction(QCustomPlot* o, int interaction, bool enabled = true)
     {
       o->setInteraction((QCP::Interaction)interaction, enabled);
