@@ -24,12 +24,18 @@ class Plot (QtGui.QWidget):
     self.qcp.setInteraction(2, True) # iRangeZoom
     self.qcp.setAutoAddPlottableToLegend(True)
     self.qcp.legend().setVisible(True)
+    self.qcp.connect (Qt.SIGNAL("mouseDoubleClick(QMouseEvent*)"), self.doubleClick)
 
     # The timer user refresh the interface
     self.timer = Qt.QTimer(self)
     self.timer.setSingleShot(False)
     self.timer.setInterval(100)
     self.timer.connect(Qt.SIGNAL("timeout()"), self._step)
+
+  def doubleClick (self, event):
+      x =  self.qcp.xAxis().pixelToCoord (event.posF().x())
+      y =  self.qcp.yAxis().pixelToCoord (event.posF().y())
+      print("You double-clicked at ({0}, {1})".format(x, y))
 
   def makeCurves(self):
     self.qcp.clearGraphs()
