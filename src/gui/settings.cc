@@ -37,6 +37,7 @@ namespace gepetto {
       : configurationFile ("settings")
       , predifinedRobotConf ("robots")
       , predifinedEnvConf ("environments")
+      , stateConf (".state")
       , verbose (false)
       , noPlugin (false)
       , startGepettoCorbaServer (true)
@@ -93,7 +94,7 @@ namespace gepetto {
 
       osg::ApplicationUsage::Type help (arguments.readHelpType());
       au->addCommandLineOption("-v or --verbose",  "Activate verbose output");
-      au->addCommandLineOption("-g or --generate-config-files", "generate configuration files and quit");
+      au->addCommandLineOption("-g or --generate-config-files", "generate configuration files in " + installDirectory.toStdString() + "/etc and quit");
       au->addCommandLineOption("-c or --config-file", "set the configuration file (do not include .conf)", configurationFile);
       au->addCommandLineOption("--predefined-robots", "set the predefined robots configuration file (do not include .conf)", predifinedRobotConf);
       au->addCommandLineOption("--predefined-environments", "set the predefined environments configuration file (do not include .conf)", predifinedEnvConf);
@@ -196,6 +197,58 @@ namespace gepetto {
             "PYTHONQT flag. Cannot not load Python plugin " + name);
       }
 #endif
+    }
+
+    void Settings::restoreState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not restore the window state from" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        mw->restoreGeometry (settings.value("geometry").toByteArray());
+        mw->restoreState (settings.value("state").toByteArray());
+        mw->centralWidget()->setVisible (settings.value("centralWidgetVisibility", true).toBool());
+        settings.endGroup();
+#if GEPETTO_GUI_HAS_PYTHONQT
+        mw->pythonWidget()->restoreHistory(settings);
+#endif
+      }
+    }
+
+    void Settings::restoreDockWidgetsState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not restore the dock widget state from" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        mw->restoreState (settings.value("state").toByteArray());
+        settings.endGroup();
+      }
+    }
+
+    void Settings::saveState () const
+    {
+      QSettings settings (QSettings::SystemScope,
+          QCoreApplication::organizationName (),
+          getQSettingsFileName (stateConf));
+      if (settings.status() != QSettings::NoError) {
+        qDebug () << "Could not save the window state to" << settings.fileName();
+      } else {
+        settings.beginGroup("mainWindow");
+        settings.setValue("geometry", mw->saveGeometry());
+        settings.setValue("state"   , mw->saveState());
+        settings.setValue("centralWidgetVisibility", mw->centralWidget()->isVisible ());
+        settings.endGroup();
+#if GEPETTO_GUI_HAS_PYTHONQT
+        mw->pythonWidget()->saveHistory(settings);
+#endif
+      }
     }
 
     void Settings::setMainWindow(gepetto::gui::MainWindow *main)

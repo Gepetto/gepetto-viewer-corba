@@ -8,35 +8,33 @@ class QCustomPlotDecorator : public QObject
 {
   Q_OBJECT
   public Q_SLOTS:
-    // add a constructor
-    QCustomPlot* new_QCustomPlot()
+    /// \name QCustomPlot
+    /// \{
+    QCustomPlot* new_QCustomPlot(QWidget* parent = 0)
     {
-      return new QCustomPlot();
+      return new QCustomPlot(parent);
     }
-    //wrapper functions
     void delete_QCustomPlot(QCustomPlot* o) //delete QCustomPlot object
     {
       delete o;
     }
-    void clearGraphs(QCustomPlot* o) //add a graph inside the QCustomPlot object
+    void clearGraphs(QCustomPlot* o)
     {
       o->clearGraphs();
     }
-    QCPGraph* addGraph(QCustomPlot* o) //add a graph inside the QCustomPlot object
+
+    QCPGraph* addGraph(QCustomPlot* o)
     {
       return o->addGraph();
     }
+    void addPlottable(QCustomPlot* o, QCPAbstractPlottable* ap)
+    {
+      o->addPlottable(ap);
+    }
+
     QCPGraph* graph(QCustomPlot* o, int graphnum)
     {
       return o->graph(graphnum);
-    }
-    void setData (QCustomPlot* o,int graphnum, const QVector<double> &keys, const QVector<double> &values) //set data to a certain graph. Deletes existing data inside the graph
-    {
-      o->graph(graphnum)->setData(keys,values);
-    }
-    void addData (QCustomPlot* o,int graphnum, const QVector<double> &keys, const QVector<double> &values) //set data to a certain graph. Deletes existing data inside the graph
-    {
-      o->graph(graphnum)->addData(keys,values);
     }
     void replot (QCustomPlot* o) //replot object to visualise new data
     {
@@ -54,185 +52,67 @@ class QCustomPlotDecorator : public QObject
     {
       o->rescaleAxes(v);
     }
-    void plotLayout_insertRow(QCustomPlot* o, int row) //insert row above graph
-    {
-      o->plotLayout()->insertRow(row);
-    }
-    void plotLayout_insertColumn(QCustomPlot* o, int column) //insert column above graph
-    {
-      o->plotLayout()->insertColumn(column);
-    }
-    void plotLayout_addElement(QCustomPlot* o, int row, int column, QCPLayoutElement *element) //add text to graph at row,column
-    {
-      o->plotLayout()->addElement(row,column,element);
-    }
+    QCPLayoutGrid* plotLayout (QCustomPlot* o) { return o->plotLayout (); }
     void setAutoAddPlottableToLegend (QCustomPlot* o, bool v)
     {
       o->setAutoAddPlottableToLegend (v);
     }
-    QCPLegend* legend (QCustomPlot* o)
-    {
-      return o->legend;
-    }
-    //------------------------------------------------------- Axis adjustment stuff------------------------------------------------
-    //xAxis stuff
-    void xAxis_setLabel(QCustomPlot* o, const QString text)
-    {
-      o->xAxis->setLabel(text);
-    }
-    void xAxis_setVisible(QCustomPlot* o, bool visible)
-    {
-      o->setVisible(visible);
-    }
-    void xAxis_setRange(QCustomPlot* o, double position, double size)
-    {
-      o->xAxis->setRange(position, size);
-    }
-    void xAxis_setAutoTicks(QCustomPlot* o, bool on)
-    {
-      o->xAxis->setAutoSubTicks(on);
-    }
-    void xAxis_setAutoTickLabels(QCustomPlot* o, bool on)
-    {
-      o->xAxis->setAutoTickLabels(on);
-    }
-    void xAxis_setTickVector(QCustomPlot* o, const QVector<double> &ticks)
-    {
-      o->xAxis->setTickVector(ticks);
-    }
-    void xAxis_setTickVectorLabels(QCustomPlot* o, const QVector<QString> &labels)
-    {
-      o->xAxis->setTickVectorLabels(labels);
-    }
-    void xAxis_setTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->xAxis->setTickLength(inside,outside);
-    }
-    void xAxis_setSubTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->xAxis->setSubTickLength(inside, outside);
-    }
-    //xAxis2 stuff
-    void xAxis2_setLabel(QCustomPlot* o, const QString text)
-    {
-      o->xAxis2->setLabel(text);
-    }
-    void xAxis2_setVisible(QCustomPlot* o, bool visible)
-    {
-      o->setVisible(visible);
-    }
-    void xAxis2_setRange(QCustomPlot* o, double position, double size)
-    {
-      o->xAxis2->setRange(position, size);
-    }
-    void xAxis2_setAutoTicks(QCustomPlot* o, bool on)
-    {
-      o->xAxis2->setAutoSubTicks(on);
-    }
-    void xAxis2_setAutoTickLabels(QCustomPlot* o, bool on)
-    {
-      o->xAxis2->setAutoTickLabels(on);
-    }
-    void xAxis2_setTickVector(QCustomPlot* o, const QVector<double> &ticks)
-    {
-      o->xAxis2->setTickVector(ticks);
-    }
-    void xAxis2_setTickVectorLabels(QCustomPlot* o, const QVector<QString> &labels)
-    {
-      o->xAxis2->setTickVectorLabels(labels);
-    }
-    void xAxis2_setTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->xAxis2->setTickLength(inside,outside);
-    }
-    void xAxis2_setSubTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->xAxis2->setSubTickLength(inside, outside);
-    }
-    //yAxis stuff
-    void yAxis_setLabel(QCustomPlot* o, const QString text)
-    {
-      o->yAxis->setLabel(text);
-    }
-    void yAxis_setVisible(QCustomPlot* o, bool visible)
-    {
-      o->setVisible(visible);
-    }
-    void yAxis_setRange(QCustomPlot* o, double position, double size)
-    {
-      o->yAxis->setRange(position, size);
-    }
-    void yAxis_setAutoTicks(QCustomPlot* o, bool on)
-    {
-      o->yAxis->setAutoSubTicks(on);
-    }
-    void yAxis_setAutoTickLabels(QCustomPlot* o, bool on)
-    {
-      o->yAxis->setAutoTickLabels(on);
-    }
-    void yAxis_setTickVector(QCustomPlot* o, const QVector<double> &ticks)
-    {
-      o->yAxis->setTickVector(ticks);
-    }
-    void yAxis_setTickVectorLabels(QCustomPlot* o, const QVector<QString> &labels)
-    {
-      o->yAxis->setTickVectorLabels(labels);
-    }
-    void yAxis_setTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->yAxis->setTickLength(inside,outside);
-    }
-    void yAxis_setSubTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->yAxis->setSubTickLength(inside, outside);
-    }
-    //yAxis2 stuff
-    void yAxis2_setLabel(QCustomPlot* o, const QString text)
-    {
-      o->yAxis2->setLabel(text);
-    }
-    void yAxis2_setVisible(QCustomPlot* o, bool visible)
-    {
-      o->setVisible(visible);
-    }
-    void yAxis2_setRange(QCustomPlot* o, double position, double size)
-    {
-      o->yAxis2->setRange(position, size);
-    }
-    void yAxis2_setAutoTicks(QCustomPlot* o, bool on)
-    {
-      o->yAxis2->setAutoSubTicks(on);
-    }
-    void yAxis2_setAutoTickLabels(QCustomPlot* o, bool on)
-    {
-      o->yAxis2->setAutoTickLabels(on);
-    }
-    void yAxis2_setTickVector(QCustomPlot* o, const QVector<double> &ticks)
-    {
-      o->yAxis2->setTickVector(ticks);
-    }
-    void yAxis2_setTickVectorLabels(QCustomPlot* o, const QVector<QString> &labels)
-    {
-      o->yAxis2->setTickVectorLabels(labels);
-    }
-    void yAxis2_setTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->yAxis2->setTickLength(inside,outside);
-    }
-    void yAxis2_setSubTickLength(QCustomPlot* o, int inside, int outside)
-    {
-      o->yAxis2->setSubTickLength(inside, outside);
-    }
-    //Interaction
+    /// \param interaction See QCP::Interaction
     void setInteraction(QCustomPlot* o, int interaction, bool enabled = true)
     {
       o->setInteraction((QCP::Interaction)interaction, enabled);
     }
-    //QCPGraph
-    void rescaleAxes(QCPGraph* g, bool v = true)
+    QCPAxis* xAxis  (QCustomPlot* o) { return o->xAxis ; }
+    QCPAxis* xAxis2 (QCustomPlot* o) { return o->xAxis2; }
+    QCPAxis* yAxis  (QCustomPlot* o) { return o->yAxis ; }
+    QCPAxis* yAxis2 (QCustomPlot* o) { return o->yAxis2; }
+    QCPLegend* legend (QCustomPlot* o) { return o->legend; }
+    /// \}
+
+    /// \name QCPAxis
+    /// \{
+    void setLabel(QCPAxis* a, const QString text)
     {
-      g->rescaleAxes(v);
+      a->setLabel(text);
     }
+    void setRange(QCPAxis* a, double position, double size)
+    {
+      a->setRange(position, size);
+    }
+    void setAutoTicks(QCPAxis* a, bool on)
+    {
+      a->setAutoSubTicks(on);
+    }
+    void setAutoTickLabels(QCPAxis* a, bool on)
+    {
+      a->setAutoTickLabels(on);
+    }
+    void setTickVector(QCPAxis* a, const QVector<double> &ticks)
+    {
+      a->setTickVector(ticks);
+    }
+    void setTickVectorLabels(QCPAxis* a, const QVector<QString> &labels)
+    {
+      a->setTickVectorLabels(labels);
+    }
+    void setTickLength(QCPAxis* a, int inside, int outside)
+    {
+      a->setTickLength(inside,outside);
+    }
+    void setSubTickLength(QCPAxis* a, int inside, int outside)
+    {
+      a->setSubTickLength(inside, outside);
+    }
+    double pixelToCoord(QCPAxis* a, double pixel)
+    {
+      return a->pixelToCoord(pixel);
+    }
+    /// \}
+
+    /// \name QCPGraph
+    /// \{
+    QCPGraph* new_QCPGraph (QCPAxis* key, QCPAxis* value) { return new QCPGraph (key, value); }
+    void delete_QCPGraph (QCPGraph* g) { delete g; }
     void setData (QCPGraph* g, const QVector<double> &keys, const QVector<double> &values)
     {
       g->setData(keys,values);
@@ -241,18 +121,76 @@ class QCustomPlotDecorator : public QObject
     {
       g->addData(keys,values);
     }
-    void setPen (QCPGraph* g, const QPen &pen)
+    void clearData (QCPGraph* o) { o->clearData (); }
+    /// \}
+
+    /// \name QCPCurve
+    /// \{
+    QCPCurve* new_QCPCurve (QCPAxis* key, QCPAxis* value) { return new QCPCurve (key, value); }
+    void delete_QCPCurve (QCPCurve* g) { delete g; }
+    void setData (QCPCurve* c, const QVector<double> &keys, const QVector<double> &values)
     {
-      g->setPen(pen);
+      c->setData(keys,values);
     }
-    //QCPAbstractPlottable
+    void addData (QCPCurve* c, const QVector<double> &ts, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->addData(ts, keys,values);
+    }
+    void clearData (QCPCurve* o) { o->clearData (); }
+    /// \}
+
+    /// \name QCPBars
+    /// \{
+    QCPBars* new_QCPBars (QCPAxis* key, QCPAxis* value) { return new QCPBars (key, value); }
+    void delete_QCPBars (QCPBars* g) { delete g; }
+    void setData (QCPBars* c, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->setData(keys,values);
+    }
+    void addData (QCPBars* c, const QVector<double> &keys, const QVector<double> &values)
+    {
+      c->addData(keys,values);
+    }
+    void clearData (QCPBars* o) { o->clearData (); }
+    /// \}
+
+    /// \name QCPAbstractPlottable
+    /// \{
+    void rescaleAxes(QCPAbstractPlottable* ap, bool v = true)
+    {
+      ap->rescaleAxes(v);
+    }
     void setName (QCPAbstractPlottable* ap, const QString &n)
     {
       ap->setName(n);
     }
-    //QCPLayerable
+    void setPen (QCPAbstractPlottable* ap, const QPen &pen)
+    {
+      ap->setPen(pen);
+    }
+    /// \}
+
+    /// \name QCPLayerable
+    /// \{
     void setVisible (QCPLayerable* l, const bool &v)
     {
       l->setVisible(v);
     }
+    /// \}
+
+    /// \name QCPLayoutGrid
+    /// \{
+    void insertRow (QCPLayoutGrid* lg, int row) //insert row above graph
+    {
+      lg->insertRow(row);
+    }
+    void insertColumn (QCPLayoutGrid* lg, int column) //insert column above graph
+    {
+      lg->insertColumn(column);
+    }
+    void addElement (QCPLayoutGrid* lg, int row, int column, QCPLayoutElement *element) //add text to graph at row,column
+    {
+      lg->addElement(row,column,element);
+    }
+    /// \}
 };

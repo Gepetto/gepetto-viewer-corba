@@ -46,7 +46,7 @@ namespace graphics {
         }
 
         enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR,
-          TRANSFORM, POSITION, POSITION_SEQ,
+          TRANSFORM, TRANSFORM_SEQ, POSITION, POSITION_SEQ,
           FLOAT, SHORT, LONG, WINDOW_ID, BOOL, VOID,
           GLMODE
         };
@@ -69,6 +69,16 @@ namespace graphics {
             for(int i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
             for(int i=0; i<4; i++) ret[(ULong)i+3] = (float)in.quat[i];
             return ret;
+          }
+        };
+        template <> struct traits<TRANSFORM_SEQ> {
+          typedef const GraphicalInterface::TransformSeq& In_t;
+          typedef       std::vector<Configuration>        Out_t;
+          static Out_t op  (In_t in) {
+            Out_t out (in.length());
+            for (CORBA::ULong i = 0; i < in.length (); ++i)
+              out[i] = traits<TRANSFORM>::op (in[i]);
+            return out;
           }
         };
         template <> struct traits<POSITION> {
@@ -368,6 +378,8 @@ namespace graphics {
       BIND_TO_WINDOWS_MANAGER_2(BOOL, removeFromGroup, STRING, STRING)
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, applyConfiguration, STRING, TRANSFORM)
+
+      BIND_TO_WINDOWS_MANAGER_2(BOOL, applyConfigurations, STRING_LIST, TRANSFORM_SEQ)
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, addLandmark, STRING, FLOAT)
 

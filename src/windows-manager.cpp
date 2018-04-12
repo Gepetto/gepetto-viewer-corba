@@ -956,6 +956,35 @@ namespace graphics {
         return true;
     }
 
+    bool WindowsManager::applyConfigurations (const std::vector<std::string>& nodeNames,
+            const std::vector<Configuration>& configurations)
+    {
+        if (nodeNames.size() != configurations.size())
+          throw std::invalid_argument ("Number of node names and configurations must be equal.");
+
+        newNodeConfigurations_.reserve (
+            newNodeConfigurations_.capacity() + nodeNames.size());
+
+        bool success = true;
+        scoped_lock lock(configListMtx_);
+        for (std::size_t i = 0; i < nodeNames.size(); ++i) {
+          NodePtr_t updatedNode = getNode (nodeNames[i], false);
+          if (!updatedNode) {
+            success = false;
+            continue;
+          }
+
+          NodeConfiguration newNodeConfiguration;
+          newNodeConfiguration.node = updatedNode;
+          newNodeConfiguration.position = configurations[i].position;
+          newNodeConfiguration.quat = configurations[i].quat;
+
+          newNodeConfigurations_.push_back (newNodeConfiguration);
+        }
+
+        return success;
+    }
+
     bool WindowsManager::addLandmark (const std::string& nodeName,
             float size)
     {

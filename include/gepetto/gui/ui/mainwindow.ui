@@ -208,6 +208,7 @@
    <addaction name="actionSelection"/>
    <addaction name="actionHome"/>
    <addaction name="actionAdd_floor"/>
+   <addaction name="actionRecordMovie"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_log">
    <property name="windowIcon">
@@ -398,6 +399,22 @@
     <string>Add a floor</string>
    </property>
   </action>
+  <action name="actionRecordMovie">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="media-record">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Scene capture.</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the central widget as a sequence of images. You can find the images in /tmp/gepetto-gui/record/img_%d.jpeg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About...</string>
@@ -433,7 +450,9 @@
   </action>
   <action name="actionClose_connections">
    <property name="icon">
-    <iconset theme="network-disconnect"/>
+    <iconset theme="network-disconnect">
+     <normaloff/>
+    </iconset>
    </property>
    <property name="text">
     <string>Close connections</string>

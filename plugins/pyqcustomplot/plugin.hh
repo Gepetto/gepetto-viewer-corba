@@ -24,6 +24,8 @@
 namespace PyQCustomPlot {
   /// \ingroup pluginlist
   /// Provide bindings of QCustomPlot library in PythonQt terminal.
+  /// See QCustomPlotDecorator for the API available in Python.
+  ///
   /// Add the following to your settings file to activate it.
   ///
   ///     [plugins]

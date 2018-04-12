@@ -1,3 +1,19 @@
+// Copyright (c) 2015-2018, LAAS-CNRS
+// Authors: Joseph Mirabel (joseph.mirabel@laas.fr)
+//
+// This file is part of gepetto-viewer-corba.
+// gepetto-viewer-corba is free software: you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version
+// 3 of the License, or (at your option) any later version.
+//
+// gepetto-viewer-corba is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Lesser Public License for more details. You should have
+// received a copy of the GNU Lesser General Public License along with
+// gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
+
 #include "gepetto/gui/mainwindow.hh"
 #include "ui_mainwindow.h"
 
@@ -135,11 +151,6 @@ namespace gepetto {
       return osgViewerManagers_;
     }
 
-    OSGWidget *MainWindow::centralWidget() const
-    {
-      return centralWidget_;
-    }
-
     BodyTreeWidget *MainWindow::bodyTree() const
     {
       return ui_->bodyTreeContent;
@@ -237,7 +248,8 @@ namespace gepetto {
       emit refresh ();
     }
 
-    void MainWindow::createDefaultView() {
+    void MainWindow::createDefaultView()
+    {
       std::stringstream ss; ss << "hpp_gui_window_" << osgWindows_.size();
       createView (ss.str());
     }
@@ -246,6 +258,7 @@ namespace gepetto {
     {
       QDockWidget* dockOSG = new QDockWidget (
           tr("Window ") + osgWidget->objectName(), this);
+      dockOSG->setObjectName ("gepetto-gui.osg." + osgWidget->objectName());
       dockOSG->setWidget(osgWidget);
       connect(dockOSG,SIGNAL(visibilityChanged(bool)),SLOT(dockVisibilityChanged(bool)));
       addDockWidget(Qt::RightDockWidgetArea, dockOSG);
@@ -257,11 +270,12 @@ namespace gepetto {
 
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
         connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-
-        actionSearchBar_->addAction(new NodeAction("Attach camera to selected node", osgWidget, this));
+        connect(ui_->actionRecordMovie, SIGNAL (toggled(bool)), centralWidget_, SLOT (toggleCapture(bool)));
       }
+      actionSearchBar_->addAction(new NodeAction("Attach camera " + osgWidget->objectName() + " to selected node", osgWidget, this));
       osgWidget->addAction(actionSearchBar_->showAction());
       osgWindows_.append(osgWidget);
+      settings_->restoreDockWidgetsState ();
     }
 
     void MainWindow::openLoadRobotDialog()
@@ -392,7 +406,7 @@ namespace gepetto {
 
     void MainWindow::dockVisibilityChanged(bool visible)
     {
-      QWidget* cw = QMainWindow::centralWidget();
+      QWidget* cw = centralWidget();
       if (visible && cw->isVisible())
         cw->hide();
       else {

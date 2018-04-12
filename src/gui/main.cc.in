@@ -24,7 +24,7 @@ Q_DECLARE_METATYPE(QItemSelection)
 void setupApplication ()
 {
   QCoreApplication::setOrganizationName("gepetto-gui");
-  QCoreApplication::setOrganizationDomain("https://github.com/jmirabel/gepetto-viewer-corba");
+  QCoreApplication::setOrganizationDomain("https://github.com/humanoid-path-planner/gepetto-viewer-corba");
   QCoreApplication::setApplicationName("gepetto-gui");
   QCoreApplication::setApplicationVersion("@PROJECT_VERSION@");
   
@@ -83,8 +83,11 @@ int main(int argc, char *argv[])
   w.setWindowIcon (pixmap);
   settings.setMainWindow (&w);
   settings.initPlugins ();
+  settings.restoreState ();
   w.connect (&a, SIGNAL (log(QString)), SLOT (logError(const QString&)));
   w.show();
   splash.finish(&w);
-  return a.exec();
+  int retCode = a.exec();
+  settings.saveState ();
+  return retCode;
 }

@@ -10,6 +10,10 @@
 /// To get some help on the command line options, use
 /// \code{bash} gepetto-gui --help \endcode
 ///
+/// \section gui_settings Configuration files
+///
+/// See gepetto::gui::Settings::readSettingFile for more details on configuration files.
+///
 /// \section gui_extending_interface Extending the interface
 ///
 /// There are two ways of extending the interface: Python and C++. Python

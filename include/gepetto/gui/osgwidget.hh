@@ -1,3 +1,19 @@
+// Copyright (c) 2015-2018, LAAS-CNRS
+// Authors: Joseph Mirabel (joseph.mirabel@laas.fr)
+//
+// This file is part of gepetto-viewer-corba.
+// gepetto-viewer-corba is free software: you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version
+// 3 of the License, or (at your option) any later version.
+//
+// gepetto-viewer-corba is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Lesser Public License for more details. You should have
+// received a copy of the GNU Lesser General Public License along with
+// gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef GEPETTO_GUI_OSGWIDGET_HH
 #define GEPETTO_GUI_OSGWIDGET_HH
 
@@ -13,6 +29,9 @@
 
 #include <gepetto/gui/fwd.hh>
 #include <gepetto/gui/windows-manager.hh>
+
+class QProcess;
+class QTextBrowser;
 
 namespace gepetto {
   namespace gui {
@@ -40,10 +59,14 @@ namespace gepetto {
         virtual void onHome();
 
         void addFloor();
-        void attachToWindow (const std::string nodeName);
+
+        void toggleCapture (bool active);
 
       protected:
         virtual void paintEvent(QPaintEvent* event);
+
+      private slots:
+        void readyReadProcessOutput ();
 
       private:
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
@@ -54,6 +77,11 @@ namespace gepetto {
         QTimer timer_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
+
+        // To record movies.
+        QProcess* process_;
+        QDialog* showPOutput_;
+        QTextBrowser* pOutput_;
 
         friend class PickHandler;
     };

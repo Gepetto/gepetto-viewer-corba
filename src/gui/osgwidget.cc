@@ -1,8 +1,27 @@
+// Copyright (c) 2015-2018, LAAS-CNRS
+// Authors: Joseph Mirabel (joseph.mirabel@laas.fr)
+//
+// This file is part of gepetto-viewer-corba.
+// gepetto-viewer-corba is free software: you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version
+// 3 of the License, or (at your option) any later version.
+//
+// gepetto-viewer-corba is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Lesser Public License for more details. You should have
+// received a copy of the GNU Lesser General Public License along with
+// gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
+
 #include "gepetto/gui/osgwidget.hh"
 #include "gepetto/gui/mainwindow.hh"
 #include <gepetto/gui/pick-handler.hh>
 
 #include <boost/regex.hpp>
+
+#include <QProcess>
+#include <QTextBrowser>
 
 #include <osg/Camera>
 
@@ -87,6 +106,9 @@ namespace gepetto {
     , wm_ ()
     , viewer_ (new osgViewer::Viewer)
     , screenCapture_ ()
+    , process_ (new QProcess (this))
+    , showPOutput_ (new QDialog (this, Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint))
+    , pOutput_ (new QTextBrowser())
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
       osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
@@ -142,6 +164,13 @@ namespace gepetto {
 
       connect( &timer_, SIGNAL(timeout()), this, SLOT(update()) );
       timer_.start(parent->settings_->refreshRate);
+
+      // Setup widgets to record movies.
+      process_->setProcessChannelMode(QProcess::MergedChannels);
+      connect (process_, SIGNAL (readyReadStandardOutput ()), SLOT (readyReadProcessOutput()));
+      showPOutput_->setModal(false);
+      showPOutput_->setLayout(new QHBoxLayout ());
+      showPOutput_->layout()->addWidget(pOutput_);
     }
 
     OSGWidget::~OSGWidget()
@@ -185,9 +214,48 @@ namespace gepetto {
       wsm_->addFloor("hpp-gui/floor");
     }
 
-    void OSGWidget::attachToWindow(const std::string nodeName)
+    void OSGWidget::toggleCapture (bool active)
     {
-      wsm_->addSceneToWindow(nodeName, wid_);
+      MainWindow* main = MainWindow::instance();
+      if (active) {
+        QDir tmp ("/tmp");
+        tmp.mkpath ("gepetto-gui/record"); tmp.cd("gepetto-gui/record");
+        foreach (QString f, tmp.entryList(QStringList() << "img_0_*.jpeg", QDir::Files))
+          tmp.remove(f);
+        QString path = tmp.absoluteFilePath("img");
+        const char* ext = "jpeg";
+        osg ()->startCapture(windowID(), path.toLocal8Bit().data(), ext);
+        main->log("Saving images to " + path + "_*." + ext);
+      } else {
+        osg()->stopCapture(windowID());
+        QString outputFile = QFileDialog::getSaveFileName(this, tr("Save video to"), "untitled.mp4");
+        if (!outputFile.isNull()) {
+          if (QFile::exists(outputFile))
+            QFile::remove(outputFile);
+          QString avconv = "avconv";
+
+          QStringList args;
+          QString input = "/tmp/gepetto-gui/record/img_0_%d.jpeg";
+          args << "-r" << "50"
+            << "-i" << input
+            << "-vf" << "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+            << "-r" << "25"
+            << "-vcodec" << "libx264"
+            << outputFile;
+          qDebug () << args;
+
+          showPOutput_->setWindowTitle(avconv + " " + args.join(" "));
+          pOutput_->clear();
+          showPOutput_->resize(main->size() / 2);
+          showPOutput_->show();
+          process_->start(avconv, args);
+        }
+      }
+    }
+
+    void OSGWidget::readyReadProcessOutput()
+    {
+      pOutput_->append(process_->readAll());
     }
   } // namespace gui
 } // namespace gepetto

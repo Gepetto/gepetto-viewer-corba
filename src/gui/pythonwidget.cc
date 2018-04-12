@@ -1,7 +1,24 @@
+// Copyright (c) 2015-2018, LAAS-CNRS
+// Authors: Joseph Mirabel (joseph.mirabel@laas.fr)
+//
+// This file is part of gepetto-viewer-corba.
+// gepetto-viewer-corba is free software: you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version
+// 3 of the License, or (at your option) any later version.
+//
+// gepetto-viewer-corba is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Lesser Public License for more details. You should have
+// received a copy of the GNU Lesser General Public License along with
+// gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
+
 #include "gepetto/gui/pythonwidget.hh"
 
 #include <QAction>
 #include <QFileDialog>
+#include <QSettings>
 #include <PythonQt.h>
 #include <PythonQt_QtAll.h>
 #include <gui/PythonQtScriptingConsole.h>
@@ -41,6 +58,7 @@ namespace gepetto {
       PythonWidget::PythonWidget(QWidget *parent) :
         QDockWidget("&PythonQt console", parent)
       {
+        setObjectName ("gepetto-gui.pythonqtconsole");
         PythonQt::init(PythonQt::RedirectStdOut);
         PythonQt_init_QtBindings();
         PythonQtObjectPtr mainContext = PythonQt::self()->getMainModule();
@@ -100,6 +118,32 @@ namespace gepetto {
         }
         fd->close();
         fd->deleteLater();
+      }
+
+      void PythonWidget::saveHistory (QSettings& settings)
+      {
+        settings.beginGroup("pythonqt");
+        QStringList history = console_->history ();
+        int limit = 200;
+        int start = std::max(history.length() - limit, 0);
+        QList<QVariant> h;
+        foreach (QString s, history.mid(start)) {
+          h << s;
+        }
+        settings.setValue("history", h);
+        settings.endGroup();
+      }
+
+      void PythonWidget::restoreHistory (QSettings& settings)
+      {
+        settings.beginGroup("pythonqt");
+        QList<QVariant> h = settings.value("history").toList();
+        QStringList history;
+        foreach(QVariant v, h) {
+          history << v.toString();
+        }
+        console_->setHistory (history);
+        settings.endGroup();
       }
 
       void PythonWidget::loadScriptPlugin(QString moduleName, QString fileName)
