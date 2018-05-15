@@ -22,6 +22,16 @@ ELSE()
   SET(QT4 "")
 ENDIF()
 
+## 1. Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
+#
+#  LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
+
+## 2. Include macro GEPETTO_GUI_PLUGIN
+#
+# INCLUDE(${GEPETTO_VIEWER_CORBA_PREFIX}/${GEPETTO_VIEWER_CORBA_CMAKE_PLUGIN})
+
+## 3. Call GEPETTO_GUI_PLUGIN as follows
+#
 GEPETTO_GUI_PLUGIN(pluginskeleton
   # Use this option only if you write a plugin within
   # gepetto-viewer-corba package

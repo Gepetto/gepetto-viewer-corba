@@ -16,6 +16,7 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
+# See plugins/pluginskeleton/CMakeLists.txt for description of how to use this macro.
 MACRO(GEPETTO_GUI_PLUGIN PLUGIN_NAME)
 
   SET(options QT4 INSIDE_GEPETTO_VIEWER_CORBA)
