@@ -17,6 +17,8 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
+INCLUDE(gepetto-viewer-corba-plugin)
+
 #ADD_SUBDIRECTORY(plugin-skeleton)
 
 IF(PYTHONQT_FOUND)
