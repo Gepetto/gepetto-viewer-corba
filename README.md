@@ -136,25 +136,25 @@ OPTIONS=""
 
 # Using the core framework: hppcorbaserver
 gepetto-gui -g ${OPTIONS} \
-  --load-plugin libhppwidgetsplugin.so \
-  --load-plugin libhppcorbaserverplugin.so \
-  --load-plugin libremoteimuplugin.so
+  --load-plugin hppwidgetsplugin.so \
+  --load-plugin hppcorbaserverplugin.so \
+  --load-plugin remoteimuplugin.so
 
 # Using the manipulation framework: hpp-manipulation-server
 gepetto-gui -g ${OPTIONS} \
-  --load-plugin libhppmanipulationwidgetsplugin.so \
-  --load-plugin libhppmanipulationplugin.so \
-  --load-plugin libhppmonitoringplugin.so \
-  --load-plugin libremoteimuplugin.so
+  --load-plugin hppmanipulationwidgetsplugin.so \
+  --load-plugin hppmanipulationplugin.so \
+  --load-plugin hppmonitoringplugin.so \
+  --load-plugin remoteimuplugin.so
 ```
 
 ###### Manually
 Open `${CMAKE_INSTALL_PREFIX}/etc/gepetto-gui/settings.conf` and write:
 ```
 [plugins]
-libhppcorbaserverplugin.so=true
-libremoteimuplugin.so=true
-libhppwidgetsplugin.so=true
+hppcorbaserverplugin.so=true
+remoteimuplugin.so=true
+hppwidgetsplugin.so=true
 ```
 
 The plugins are looked for in the directory `${CMAKE_INSTALL_PREFIX}/lib/gepetto-gui-plugins`
@@ -165,7 +165,7 @@ As [HPP], the *GUI* can be controlled using a python interface. When the *GUI* s
 When you do so, pay attention to the following points:
 - the GUI has no way of knowing when to refresh the list of joints and bodies. **There is a refresh button in the `Tools` menu**.
 - you can run the `hppcorbaserver` (or any server embedding it, like `hpp-manipulation-server`) externally. Use `Tools > Reset connection` when the CORBA client has to reconnect to a new server.
-  In this case, set `libhppcorbaserverplugin.so` and `libhppmanipulationplugin.so` to `false` in your settings file because they are launching the servers themselves.
+  In this case, set `hppcorbaserverplugin.so` and `hppmanipulationplugin.so` to `false` in your settings file because they are launching the servers themselves.
 - moving the robot in the GUI while the server is processing data can lead to unexpected results, because you are modifying the *current configuration* of HPP when not expected.
 
 ## Installation procedure

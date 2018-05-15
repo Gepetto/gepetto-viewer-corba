@@ -98,8 +98,8 @@ namespace gepetto {
       ///
       /// [plugins]
       /// ; Put a list of C++ plugins followed by '=true'. For instance, HPP users may have
-      /// ; libhppwidgetsplugin.so=true
-      /// ; libhppcorbaserverplugin.so=true
+      /// ; hppwidgetsplugin.so=true
+      /// ; hppcorbaserverplugin.so=true
       ///
       /// [pyplugins]
       /// ; Put a list of Python plugins followed by '=true'. For instance, the example plugin can be loaded with
