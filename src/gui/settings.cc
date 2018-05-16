@@ -175,8 +175,10 @@ namespace gepetto {
 
     void Settings::initPlugins()
     {
-      foreach (QString name, pluginsToInit_)
+      foreach (QString name, pluginsToInit_) {
+        pluginManager_.loadPlugin (name);
         pluginManager_.initPlugin (name);
+      }
 #if GEPETTO_GUI_HAS_PYTHONQT
       PythonWidget* pw = mw->pythonWidget();
       foreach (QString name, pyplugins_) {
@@ -471,7 +473,7 @@ namespace gepetto {
     void Settings::addPlugin (const QString& plg, bool init)
     {
       if (init) pluginsToInit_.append (plg);
-      pluginManager_.add(plg, 0, false);
+      pluginManager_.declarePlugin (plg);
     }
 
     void Settings::addPyPlugin (const QString& plg, bool init)

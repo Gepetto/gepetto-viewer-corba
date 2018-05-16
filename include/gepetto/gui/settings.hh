@@ -116,11 +116,11 @@ namespace gepetto {
       void restoreState () const;
       void restoreDockWidgetsState () const;
 
-    private:
       void writeRobotFile ();
       void writeEnvFile ();
       void writeSettingFile ();
 
+    private:
       void addRobotFromString (const std::string& rbtStr);
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);

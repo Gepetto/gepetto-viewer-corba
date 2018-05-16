@@ -21,34 +21,13 @@
 #include <QMenu>
 
 #include "gepetto/gui/plugin-interface.hh"
+#include "gepetto/gui/mainwindow.hh"
 
 #include <iostream>
 
 namespace gepetto {
   namespace gui {
     QList <QDir> PluginManager::pluginDirs_;
-
-    bool PluginManager::add(const QString &name, QWidget *parent, bool init)
-    {
-      if (!plugins_.contains(name)) {
-          QString filename = name;
-          if (!QDir::isAbsolutePath(name)) {
-              foreach (QDir dir, pluginDirs_) {
-                  if (dir.exists(name)) {
-                      filename = dir.absoluteFilePath(name);
-                      break;
-                    }
-                }
-            }
-          plugins_[name] = new QPluginLoader (filename, parent);
-        }
-      if (!plugins_[name]->load()) {
-        qDebug() << name << ": " << plugins_[name]->errorString();
-        return false;
-      }
-      if (init) return initPlugin(name);
-      return false;
-    }
 
     QIcon PluginManager::icon(const QPluginLoader *pl)
     {
@@ -57,6 +36,7 @@ namespace gepetto {
         if (pi && pi->isInit ()) {
           return QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
         }
+        return QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
       }
       return QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     }
@@ -86,18 +66,69 @@ namespace gepetto {
 	}
     }
 
-    bool PluginManager::initPlugin(const QString &name)
+    void PluginManager::declareAllPlugins (QWidget *parent)
     {
-      if (!plugins_[name]->isLoaded()) {
+      foreach (const QDir& dir, pluginDirs_) {
+        qDebug() << "Looking for plugins into" << dir.absolutePath();
+        QStringList soFiles = dir.entryList(QStringList() << "*.so", QDir::Files);
+        foreach (const QString& soFile, soFiles) {
+          qDebug() << "Found" << soFile;
+          if (!plugins_.contains(soFile)) {
+            plugins_[soFile] = new QPluginLoader (dir.absoluteFilePath(soFile), parent);
+          }
+        }
+      }
+    }
+
+    bool PluginManager::declarePlugin(const QString &name, QWidget *parent)
+    {
+      if (!plugins_.contains(name)) {
+        QString filename = name;
+        if (!QDir::isAbsolutePath(name)) {
+            foreach (QDir dir, pluginDirs_) {
+                if (dir.exists(name)) {
+                    filename = dir.absoluteFilePath(name);
+                    break;
+                  }
+              }
+          }
+        plugins_[name] = new QPluginLoader (filename, parent);
+        return true;
+      }
+      qDebug () << "Plugin" << name << "already declared.";
+      return false;
+    }
+
+    bool PluginManager::loadPlugin(const QString &name)
+    {
+      if (!plugins_.contains(name)) {
+        qDebug () << "Plugin" << name << "not declared.";
+        return false;
+      }
+      if (!plugins_[name]->load()) {
         qDebug() << name << ": " << plugins_[name]->errorString();
         return false;
       }
-      PluginInterface* pi = qobject_cast <PluginInterface*> (plugins_[name]->instance());
+      return true;
+    }
+
+    bool PluginManager::initPlugin(const QString &name)
+    {
+      if (!plugins_.contains(name)) {
+        qDebug () << "Plugin" << name << "not declared.";
+        return false;
+      }
+      QPluginLoader* p = plugins_[name];
+      if (!p->isLoaded()) {
+        qDebug () << "Plugin" << name << "not loaded:" << p->errorString();
+        return false;
+      }
+      PluginInterface* pi = qobject_cast <PluginInterface*> (p->instance());
       if (!pi) {
         qDebug() << name << ": Wrong interface.";
         return false;
       }
-      pi->doInit();
+      if (!pi->isInit()) pi->doInit();
       return pi->isInit ();
     }
 
@@ -125,9 +156,13 @@ namespace gepetto {
       ui_->pluginList->setColumnHidden(P_FILE, true);
 
       connect(ui_->pluginList, SIGNAL (currentItemChanged (QTableWidgetItem*,QTableWidgetItem*)),
-          this, SLOT (onItemChanged(QTableWidgetItem*,QTableWidgetItem*)));
+          SLOT (onItemChanged(QTableWidgetItem*,QTableWidgetItem*)));
       connect(ui_->pluginList, SIGNAL(customContextMenuRequested(QPoint)),
-          this, SLOT(contextMenu(QPoint)));
+          SLOT(contextMenu(QPoint)));
+      connect(ui_->declareAllPluginsButton, SIGNAL(clicked()),
+          SLOT(declareAll()));
+      connect(ui_->saveButton, SIGNAL(clicked()),
+          SLOT(save()));
     }
 
     PluginManagerDialog::~PluginManagerDialog()
@@ -150,21 +185,29 @@ namespace gepetto {
       if (row == -1) return;
       QString key = ui_->pluginList->item(row, P_FILE)->text();
       QMenu contextMenu (tr("Plugin"), ui_->pluginList);
+      QSignalMapper sm;
       if (pm_->plugins()[key]->isLoaded()) {
-        QAction* unload = contextMenu.addAction("&Unload", &signalMapper_, SLOT(map()));
-        signalMapper_.setMapping (unload, key);
-        connect(&signalMapper_, SIGNAL (mapped(QString)), this, SLOT(unload(QString)));
+        QAction* unload = contextMenu.addAction("&Unload", &sm, SLOT(map()));
+        sm.setMapping (unload, key);
+        connect(&sm, SIGNAL (mapped(QString)), this, SLOT(unload(QString)));
         contextMenu.exec(ui_->pluginList->mapToGlobal(pos));
       } else {
-        QAction* load = contextMenu.addAction("&Load", &signalMapper_, SLOT(map()));
-        signalMapper_.setMapping (load, key);
-        connect(&signalMapper_, SIGNAL (mapped(QString)), this, SLOT(load(QString)));
+        QAction* load = contextMenu.addAction("&Load", &sm, SLOT(map()));
+        sm.setMapping (load, key);
+        connect(&sm, SIGNAL (mapped(QString)), this, SLOT(load(QString)));
         contextMenu.exec(ui_->pluginList->mapToGlobal(pos));
       }
     }
 
+    void PluginManagerDialog::declareAll()
+    {
+      pm_->declareAllPlugins();
+      updateList();
+    }
+
     void PluginManagerDialog::load(const QString &name)
     {
+      pm_->loadPlugin(name);
       pm_->initPlugin(name);
       updateList ();
     }
@@ -173,6 +216,11 @@ namespace gepetto {
     {
       pm_->unloadPlugin (name);
       updateList ();
+    }
+
+    void PluginManagerDialog::save ()
+    {
+      MainWindow::instance()->settings_->writeSettingFile();
     }
 
     const int PluginManagerDialog::P_NAME = 0;
@@ -186,7 +234,7 @@ namespace gepetto {
         ui_->pluginList->removeRow(0);
       for (PluginManager::Map::const_iterator p = pm_->plugins ().constBegin();
           p != pm_->plugins().constEnd(); p++) {
-        QString name = p.value()->fileName(),
+        QString name = p.key(),
                 filename = p.key(),
                 fullpath = p.value()->fileName(),
                 version = "";
