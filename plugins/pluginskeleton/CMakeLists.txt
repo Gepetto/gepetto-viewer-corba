@@ -16,47 +16,50 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SET(PLUGIN_NAME pluginskeleton)
+IF(USE_QT4)
+  SET(QT4 "QT4")
+ELSE()
+  SET(QT4 "")
+ENDIF()
 
-SET(${PLUGIN_NAME}_HEADERS_NO_MOC
-  )
+## 1. Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
+#
+#  LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
 
-SET(${PLUGIN_NAME}_HEADERS
+## 2. Include macro GEPETTO_GUI_PLUGIN
+#
+# INCLUDE(${GEPETTO_VIEWER_CORBA_PREFIX}/${GEPETTO_VIEWER_CORBA_CMAKE_PLUGIN})
+
+## 3. Call GEPETTO_GUI_PLUGIN as follows
+#
+GEPETTO_GUI_PLUGIN(pluginskeleton
+  # Use this option only if you write a plugin within
+  # gepetto-viewer-corba package
+  # INSIDE_GEPETTO_VIEWER_CORBA
+
+  # Whether to use Qt4 or Qt5
+  ${QT4}
+
+  # List of headers that need not to be moced.
+  HEADERS_NO_MOC
+
+  # List of headers to be moced
+  HEADERS
   plugin.hh
-  )
 
-SET(${PLUGIN_NAME}_FORMS
-  )
+  # List of Qt forms
+  FORMS
 
-SET(${PLUGIN_NAME}_RESOURCES
-  )
+  # List of Qt resources
+  RESOURCES
 
-# If you build this plugin outside gepetto-viewer-corba package,
-# you must pass the following extra option.
-QT4_WRAP_CPP(${PLUGIN_NAME}_HEADERS_MOC ${${PLUGIN_NAME}_HEADERS} OPTIONS -I${GEPETTO_VIEWER_CORBA_INCLUDEDIR})
-# QT4_WRAP_CPP(${PLUGIN_NAME}_HEADERS_MOC ${${PLUGIN_NAME}_HEADERS})
-QT4_WRAP_UI(${PLUGIN_NAME}_FORMS_HEADERS ${${PLUGIN_NAME}_FORMS})
-QT4_ADD_RESOURCES(${PLUGIN_NAME}_RESOURCES_RCC ${${PLUGIN_NAME}_RESOURCES})
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE(${QT_USE_FILE})
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-ADD_DEFINITIONS(-DQT_PLUGIN)
-ADD_DEFINITIONS(-DQT_NO_DEBUG)
-ADD_DEFINITIONS(-DQT_SHARED)
-
-SET (${PLUGIN_NAME}_SOURCES
+  # List of source files
+  SOURCES
   plugin.cc
+
+  # List of dependencies to be given to TARGET_LINK_LIBRARIES
+  LINK_DEPENDENCIES
+
+  # List of dependencies to be given to PKG_CONFIG_USE_DEPENDENCY
+  PKG_CONFIG_DEPENDENCIES
   )
-
-ADD_LIBRARY(${PLUGIN_NAME} SHARED ${${PLUGIN_NAME}_SOURCES}
-  ${${PLUGIN_NAME}_HEADERS_NO_MOC}
-  ${${PLUGIN_NAME}_HEADERS_MOC}
-  ${${PLUGIN_NAME}_FORMS_HEADERS}
-  ${${PLUGIN_NAME}_RESOURCES_RCC}
-  )
-
-TARGET_LINK_LIBRARIES(${PLUGIN_NAME} ${QT_LIBRARIES})
-
-# Uncomment to install
-INSTALL(TARGETS ${PLUGIN_NAME} DESTINATION lib/gepetto-gui-plugins)

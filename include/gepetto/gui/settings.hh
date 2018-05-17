@@ -98,8 +98,8 @@ namespace gepetto {
       ///
       /// [plugins]
       /// ; Put a list of C++ plugins followed by '=true'. For instance, HPP users may have
-      /// ; libhppwidgetsplugin.so=true
-      /// ; libhppcorbaserverplugin.so=true
+      /// ; hppwidgetsplugin.so=true
+      /// ; hppcorbaserverplugin.so=true
       ///
       /// [pyplugins]
       /// ; Put a list of Python plugins followed by '=true'. For instance, the example plugin can be loaded with
@@ -116,11 +116,11 @@ namespace gepetto {
       void restoreState () const;
       void restoreDockWidgetsState () const;
 
-    private:
       void writeRobotFile ();
       void writeEnvFile ();
       void writeSettingFile ();
 
+    private:
       void addRobotFromString (const std::string& rbtStr);
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);

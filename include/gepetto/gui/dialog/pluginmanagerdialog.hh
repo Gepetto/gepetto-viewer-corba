@@ -45,8 +45,6 @@ namespace gepetto {
           return plugins_;
         }
 
-        bool add (const QString& name, QWidget* parent = NULL, bool load = false);
-
         template <typename Interface> Interface* getFirstOf ();
 
         template <typename Interface> QList <Interface*> get ();
@@ -56,6 +54,12 @@ namespace gepetto {
         static QString status (const QPluginLoader* pl);
 
         static void addPluginDir (const QString& path);
+
+        void declareAllPlugins (QWidget* parent = NULL);
+
+        bool declarePlugin (const QString& name, QWidget* parent = NULL);
+
+        bool loadPlugin (const QString& name);
 
         bool initPlugin (const QString& name);
 
@@ -83,8 +87,10 @@ namespace gepetto {
           void onItemChanged (QTableWidgetItem* current, QTableWidgetItem* previous);
         void contextMenu(const QPoint& pos);
 
+        void declareAll ();
         void load (const QString& name);
         void unload (const QString& name);
+        void save ();
 
       private:
         static const int P_NAME;
@@ -97,7 +103,6 @@ namespace gepetto {
         ::Ui::PluginManagerDialog *ui_;
 
         PluginManager* pm_;
-        QSignalMapper signalMapper_;
     };
 
     template <typename Interface>
