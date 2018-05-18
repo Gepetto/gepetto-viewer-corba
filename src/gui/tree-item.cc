@@ -36,6 +36,9 @@ namespace gepetto {
       setEditable(false);
       connect (&vmMapper_, SIGNAL (mapped (QString)), SLOT(setViewingMode(QString)));
       connect (&vizMapper_, SIGNAL (mapped (QString)), SLOT(setVisibilityMode(QString)));
+      
+      const std::string & name = node->getID();
+      QStandardItem::setText(name.substr(name.find_last_of("/") + 1).c_str());
     }
 
     QStandardItem* BodyTreeItem::clone() const
