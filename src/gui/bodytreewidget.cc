@@ -29,29 +29,6 @@
 #include <QHBoxLayout>
 #include <QApplication>
 
-/*
-static void addColorSelector (QToolBox* tb, QString title, QObject* receiver, const char* slot) {
-  QWidget* newW = new QWidget();
-  newW->setObjectName(title);
-  QHBoxLayout* layout = new QHBoxLayout();
-  newW->setLayout(layout);
-  layout->setSpacing(6);
-  layout->setContentsMargins(11, 11, 11, 11);
-  layout->setObjectName(title + "_layout");
-  QPushButton* button = new QPushButton("Select color", newW);
-  button->setObjectName(title + "_buttonSelect");
-  layout->addWidget (button);
-
-  QColorDialog* colorDialog = new QColorDialog(newW);
-  colorDialog->setObjectName(title + "_colorDialog");
-  colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
-
-  colorDialog->connect(button, SIGNAL(clicked()), SLOT(open()));
-  receiver->connect (colorDialog, SIGNAL(colorSelected(QColor)), slot);
-  tb->addItem(newW, title);
-}
-*/
-
 namespace gepetto {
   namespace gui {
     void BodyTreeWidget::init(QTreeView* view, QWidget *propertyArea)
@@ -70,8 +47,6 @@ namespace gepetto {
           SLOT (currentChanged(QModelIndex,QModelIndex)));
 
 /*
-      addSlider(toolBox_, "Transparency", this, SLOT(setTransparency(int)));
-      addColorSelector(toolBox_, "Color", this, SLOT(setColor(QColor)));
       addSlider(toolBox_, "Scale", this, SLOT(setScale(int)));
 */
       propertyArea_->setLayout (new QVBoxLayout);
