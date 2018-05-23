@@ -50,7 +50,6 @@ namespace gepetto {
       int indexSelected = 0;
       for (std::size_t i = 0; i < enumMeta->values.size(); ++i)
       {
-        qDebug() << enumMeta->names[i].c_str() << ":" << enumMeta->values[i];
         cb->addItem(enumMeta->names[i].c_str(), enumMeta->values[i]);
         if (value == enumMeta->values[i]) indexSelected = i;
       }
@@ -149,7 +148,6 @@ namespace gepetto {
       if (sender != NULL) {
         QVariant nameVariant = sender->property("propertyName");
         if (nameVariant.isValid()) {
-          qDebug() << "Set property" << nameVariant;
           std::string name = nameVariant.toString().toStdString();
           boost::mutex::scoped_lock lock (MainWindow::instance()->osg()->osgFrameMutex());
           node_->setProperty<T>(name, value);
@@ -174,7 +172,6 @@ namespace gepetto {
 
     void BodyTreeItem::setFloatProperty (const double& value) const
     {
-      qDebug() << "Set property" << float(value);
       setProperty (QObject::sender(), float(value));
     }
 

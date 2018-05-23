@@ -29,26 +29,7 @@
 #include <QHBoxLayout>
 #include <QApplication>
 
-static void addSelector (QToolBox* tb, QString title, QStringList display, QStringList command,
-                         QObject* receiver, const char* slot) {
-  QWidget* newW = new QWidget();
-  newW->setObjectName(title);
-  QSignalMapper* mapper = new QSignalMapper (tb);
-  QHBoxLayout* layout = new QHBoxLayout(newW);
-  layout->setSpacing(6);
-  layout->setContentsMargins(11, 11, 11, 11);
-  layout->setObjectName(title + "_layout");
-  for (int i = 0; i < display.size(); ++i) {
-      QPushButton* button = new QPushButton(display[i], newW);
-      button->setObjectName(title + "_button_" + display[i]);
-      layout->addWidget (button);
-      mapper->setMapping(button, command[i]);
-      QObject::connect (button, SIGNAL(clicked(bool)), mapper, SLOT(map()));
-    }
-  receiver->connect (mapper, SIGNAL(mapped(QString)), slot);
-  tb->addItem(newW, title);
-}
-
+/*
 static void addColorSelector (QToolBox* tb, QString title, QObject* receiver, const char* slot) {
   QWidget* newW = new QWidget();
   newW->setObjectName(title);
@@ -69,16 +50,7 @@ static void addColorSelector (QToolBox* tb, QString title, QObject* receiver, co
   receiver->connect (colorDialog, SIGNAL(colorSelected(QColor)), slot);
   tb->addItem(newW, title);
 }
-
-static void addSlider (QToolBox* tb, QString title, QObject* receiver, const char* slot) {
-    QSlider* slider = new QSlider (Qt::Horizontal);
-    slider->setMinimum(0);
-    slider->setMaximum(100);
-    slider->setObjectName(title);
-
-  receiver->connect (slider, SIGNAL(valueChanged(int)), slot);
-  tb->addItem(slider, title);
-}
+*/
 
 namespace gepetto {
   namespace gui {
@@ -234,18 +206,5 @@ namespace gepetto {
           contextMenu.exec(view_->mapToGlobal(pos));
         }
     }
-
-    void BodyTreeWidget::changeAlphaValue(const float& alpha)
-    {
-        QSlider *tr = qobject_cast<QSlider *>(toolBox_->widget(0));
-
-        tr->setValue((int)alpha * 100);
-    }
-
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setTransparency, int, int, setAlpha)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, std::string, setVisibility)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, std::string, setWireFrameMode)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, WindowsManager::Color_t, setColor)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, int, setScale)
   }
 }
