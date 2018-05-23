@@ -137,23 +137,26 @@ namespace gepetto {
       disconnect (view_->selectionModel(),
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           this, SLOT (currentChanged(QModelIndex,QModelIndex)));
+      BodyTreeItem* item = NULL;
       if (event->node()) {
-        QList<QStandardItem*> matches;
-        matches = model_->findItems(event->nodeName(), Qt::MatchFixedString
-                                      | Qt::MatchCaseSensitive
-                                      | Qt::MatchRecursive);
+        WindowsManager::BodyTreeItems_t matches =
+          osg_->bodyTreeItems(event->node()->getID());
+
         if (matches.empty())
           view_->clearSelection();
         else {
+          item = matches[0];
           if (event->modKey() == Qt::ControlModifier)
-            view_->selectionModel()->setCurrentIndex
-                (matches.first()->index(),
+            view_->selectionModel()->setCurrentIndex (item->index(),
                  QItemSelectionModel::Toggle);
           else
-            view_->selectionModel()->select(matches.first()->index(), QItemSelectionModel::ClearAndSelect);
+            view_->selectionModel()->select          (item->index(),
+                QItemSelectionModel::ClearAndSelect);
+          view_->scrollTo (matches[0]->index());
         }
       } else
         view_->clearSelection();
+      updatePropertyArea(item);
       connect (view_->selectionModel(),
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           SLOT (currentChanged(QModelIndex,QModelIndex)));

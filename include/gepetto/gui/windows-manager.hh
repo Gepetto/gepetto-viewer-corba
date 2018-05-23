@@ -46,6 +46,8 @@ namespace gepetto {
         typedef graphics::NodePtr_t      NodePtr_t;
         typedef graphics::GroupNodePtr_t GroupNodePtr_t;
 
+        typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
+
         static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
         WindowID createWindow(const std::string& windowName);
@@ -57,6 +59,8 @@ namespace gepetto {
         bool removeFromGroup (const std::string& nodeName, const std::string& groupName);
         bool deleteNode (const std::string& nodeName, bool all);
 
+        BodyTreeItems_t bodyTreeItems (const std::string& name) const;
+
         public slots:
           int createWindow(QString windowName);
       protected:
@@ -66,7 +70,6 @@ namespace gepetto {
         virtual void addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent);
 
       private:
-        typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
         typedef std::pair<BodyTreeItems_t, bool> BodyTreeItemsAndGroup_t;
         typedef std::map<std::string, BodyTreeItemsAndGroup_t> BodyTreeItemMap_t;
         BodyTreeWidget* bodyTree_;

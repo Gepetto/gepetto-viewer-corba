@@ -149,6 +149,14 @@ namespace gepetto {
       return ret;
     }
 
+    WindowsManager::BodyTreeItems_t WindowsManager::bodyTreeItems (const std::string& name) const
+    {
+      BodyTreeItemMap_t::const_iterator _btis = nodeItemMap_.find(name);
+      if (_btis != nodeItemMap_.end())
+        return _btis->second.first;
+      return BodyTreeItems_t();
+    }
+
     void WindowsManager::deleteBodyItem(const std::string& nodeName)
     {
       BodyTreeItemMap_t::iterator _nodes = nodeItemMap_.find(nodeName);
