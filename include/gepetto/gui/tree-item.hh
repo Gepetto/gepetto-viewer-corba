@@ -36,6 +36,7 @@ namespace gepetto {
 
       public:
         BodyTreeItem (QObject* parent, graphics::NodePtr_t node);
+        void initialize();
 
         virtual QStandardItem* clone () const;
 
@@ -49,7 +50,12 @@ namespace gepetto {
 
         void setParentGroup (const std::string& parent);
 
-        virtual ~BodyTreeItem() {};
+        QWidget* propertyEditors () const
+        {
+          return propertyEditors_;
+        }
+
+        virtual ~BodyTreeItem();
 
       public:
         void attachToWindow (unsigned int windowID);
@@ -64,12 +70,23 @@ namespace gepetto {
         void deleteLandmark ();
         QString text () const { return QStandardItem::text(); }
 
+    signals:
+        void requestInitialize();
+    private slots:
+        void doInitialize();
+
+        void setBoolProperty (bool value) const;
+        void setIntProperty (int value) const;
+        void setStringProperty (const QString& value) const;
+        void setFloatProperty (const double& value) const;
+
       private:
+        template <typename T> void setProperty(const QObject* sender, const T& value) const;
+
         graphics::NodePtr_t node_;
         std::string parentGroup_;
 
-        QSignalMapper vmMapper_;
-        QSignalMapper vizMapper_;
+        QWidget* propertyEditors_;
 
         friend class VisibilityItem;
     };

@@ -58,8 +58,8 @@ namespace gepetto {
 
       /// Init the widget.
       /// \param view tree view to display.
-      /// \param toolBox menu in the window
-      void init(QTreeView *view, QToolBox* toolBox);
+      /// \param propertyArea menu in the window
+      void init(QTreeView *view, QWidget *propertyArea);
 
       virtual ~BodyTreeWidget () {}
 
@@ -132,10 +132,12 @@ namespace gepetto {
       /// is updated.
       void handleSelectionEvent (const SelectionEvent* event);
 
+      void updatePropertyArea (BodyTreeItem* item);
+
       QTreeView* view_;
       QStandardItemModel* model_;
       WindowsManagerPtr_t osg_;
-      QToolBox* toolBox_;
+      QWidget* propertyArea_;
     };
   }
 }

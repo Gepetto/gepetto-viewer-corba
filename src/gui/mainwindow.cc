@@ -61,7 +61,7 @@ namespace gepetto {
 
       // Setup the body tree view
       osgViewerManagers_ = WindowsManager::create(ui_->bodyTreeContent);
-      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->toolBox);
+      ui_->bodyTreeContent->init(ui_->bodyTree, ui_->propertyArea);
 
       if (settings_->startGepettoCorbaServer) {
         osgServer_ = new CorbaServer (new ViewerServerProcess (

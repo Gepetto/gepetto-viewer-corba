@@ -82,12 +82,12 @@ static void addSlider (QToolBox* tb, QString title, QObject* receiver, const cha
 
 namespace gepetto {
   namespace gui {
-    void BodyTreeWidget::init(QTreeView* view, QToolBox *toolBox)
+    void BodyTreeWidget::init(QTreeView* view, QWidget *propertyArea)
     {
       MainWindow* main = MainWindow::instance();
       osg_ = main->osg();
       view_ = view;
-      toolBox_ = toolBox;
+      propertyArea_ = propertyArea;
       model_  = new QStandardItemModel (this);
       view_->setModel(model_);
       view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -97,18 +97,12 @@ namespace gepetto {
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           SLOT (currentChanged(QModelIndex,QModelIndex)));
 
-      toolBox_->removeItem(0);
+/*
       addSlider(toolBox_, "Transparency", this, SLOT(setTransparency(int)));
-      addSelector (toolBox_, "Visibility",
-                   QStringList () << "On" << "Always on top" << "Off",
-                   QStringList () << "ON" << "ALWAYS_ON_TOP" << "OFF",
-                   this, SLOT(setVisibilityMode(QString)));
-      addSelector (toolBox_, "Wireframe mode",
-                   QStringList () << "Fill" << "Both" << "Wireframe",
-                   QStringList () << "FILL" << "FILL_AND_WIREFRAME" << "WIREFRAME",
-                   this, SLOT(setWireFrameMode(QString)));
       addColorSelector(toolBox_, "Color", this, SLOT(setColor(QColor)));
       addSlider(toolBox_, "Scale", this, SLOT(setScale(int)));
+*/
+      propertyArea_->setLayout (new QVBoxLayout);
     }
 
     QTreeView* BodyTreeWidget::view ()
@@ -177,6 +171,19 @@ namespace gepetto {
       event->done();
     }
 
+    void BodyTreeWidget::updatePropertyArea (BodyTreeItem* item)
+    {
+      QLayoutItem *child;
+      while ((child = propertyArea_->layout()->takeAt(0)) != 0) {
+        if (child->widget() != NULL) {
+          child->widget()->setParent(NULL);
+        }
+      }
+      if (item != NULL) {
+        propertyArea_->layout()->addWidget(item->propertyEditors());
+      }
+    }
+
     void BodyTreeWidget::currentChanged (const QModelIndex &current,
         const QModelIndex &/*previous*/)
     {
@@ -188,6 +195,7 @@ namespace gepetto {
           qobject_cast <const QStandardItemModel*>
           (view_->model())->itemFromIndex(current)
          );
+      updatePropertyArea(item);
       if (item) {
         SelectionEvent *event = new SelectionEvent(SelectionEvent::FromBodyTree, item->node(), QApplication::keyboardModifiers());
         emitBodySelected(event);

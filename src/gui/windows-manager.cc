@@ -73,6 +73,7 @@ namespace gepetto {
         nodeItemMap_[groupName].second = true;
         if (bti->thread() != bodyTree_->thread())
           bti->moveToThread(bodyTree_->thread());
+        bti->initialize();
         bodyTree_->model()->appendRow(bti);
       }
     }
@@ -87,6 +88,7 @@ namespace gepetto {
         bti->setParentGroup(groupName);
         if (bti->thread() != bodyTree_->thread())
           bti->moveToThread(bodyTree_->thread());
+        bti->initialize();
         groups[i]->appendRow(bti);
       }
     }

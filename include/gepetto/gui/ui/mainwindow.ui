@@ -37,7 +37,6 @@
    <property name="styleSheet">
     <string notr="true">image: url(:/img/gepetto.png);</string>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout_5"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -45,7 +44,7 @@
      <x>0</x>
      <y>0</y>
      <width>754</width>
-     <height>20</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -146,38 +145,15 @@
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
+        <widget class="QWidget" name="propertyArea">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>254</width>
-           <height>127</height>
+           <width>252</width>
+           <height>133</height>
           </rect>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QToolBox" name="toolBox">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="Info">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>238</width>
-               <height>83</height>
-              </rect>
-             </property>
-             <attribute name="label">
-              <string>Transparency</string>
-             </attribute>
-             <layout class="QHBoxLayout" name="horizontalLayout"/>
-            </widget>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </widget>
       </widget>
