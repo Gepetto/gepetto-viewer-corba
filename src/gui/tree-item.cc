@@ -47,13 +47,13 @@ namespace gepetto {
       QComboBox* cb = new QComboBox;
       int value;
       /* bool success = */ enumProp->get(value);
-      int indexSelected = 0;
+      std::size_t indexSelected = 0;
       for (std::size_t i = 0; i < enumMeta->values.size(); ++i)
       {
         cb->addItem(enumMeta->names[i].c_str(), enumMeta->values[i]);
         if (value == enumMeta->values[i]) indexSelected = i;
       }
-      cb->setCurrentIndex(indexSelected);
+      cb->setCurrentIndex((int)indexSelected);
       if (prop->hasWriteAccess())
         bti->connect(cb, SIGNAL(currentIndexChanged(int)), SLOT(setIntProperty(int)));
       else
@@ -85,6 +85,28 @@ namespace gepetto {
       else
         dsb->setEnabled(false);
       return dsb;
+    }
+
+    QWidget* colorPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      if (!prop->hasWriteAccess()) return NULL;
+      osgVector4 value;
+      /* bool success = */ prop->get(value);
+      QColor color;
+      color.setRgbF((qreal)value[0],(qreal)value[1],(qreal)value[2],(qreal)value[3]);
+
+      QPushButton* button = new QPushButton("Select color");
+      // Set icon for current color value
+
+      /// Color dialog should be opened in a different place
+      QColorDialog* colorDialog = new QColorDialog(color, MainWindow::instance());
+      colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
+
+      colorDialog->setProperty("propertyName", QString::fromStdString(prop->name()));
+      colorDialog->connect(button, SIGNAL(clicked()), SLOT(open()));
+      bti->connect (colorDialog, SIGNAL(colorSelected(QColor)), SLOT(setColorProperty(QColor)));
+
+      return button;
     }
 
     BodyTreeItem::BodyTreeItem(QObject *parent, graphics::NodePtr_t node) :
@@ -131,12 +153,18 @@ namespace gepetto {
           field = stringPropertyEditor(this, prop);
         } else if (prop->type() == "float") {
           field = floatPropertyEditor(this, prop);
-        } else {
-          qDebug() << "Unhandled property" << name << "of type" << prop->type().c_str() << ".";
+        } else if (prop->type() == "osgVector4") {
+          if (name.contains ("color", Qt::CaseInsensitive)) {
+            field = colorPropertyEditor (this, prop);
+          } else {
+            field = NULL;
+          }
         }
         if (field != NULL) {
           field->setProperty("propertyName", name);
           l->addRow(name + ':', field);
+        } else {
+          qDebug() << "Unhandled property" << name << "of type" << prop->type().c_str() << ".";
         }
       }
       disconnect(SIGNAL(requestInitialize()));
@@ -151,6 +179,8 @@ namespace gepetto {
           std::string name = nameVariant.toString().toStdString();
           boost::mutex::scoped_lock lock (MainWindow::instance()->osg()->osgFrameMutex());
           node_->setProperty<T>(name, value);
+        } else {
+          qDebug() << "Sender has no property propertyName" << sender;
         }
       }
     }
@@ -173,6 +203,16 @@ namespace gepetto {
     void BodyTreeItem::setFloatProperty (const double& value) const
     {
       setProperty (QObject::sender(), float(value));
+    }
+
+    void BodyTreeItem::setColorProperty (const QColor& value) const
+    {
+      osgVector4 c (
+          (float)value.redF(),
+          (float)value.greenF(),
+          (float)value.blueF(),
+          (float)value.alphaF());
+      setProperty (QObject::sender(), c);
     }
 
     BodyTreeItem::~BodyTreeItem()
