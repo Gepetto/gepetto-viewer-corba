@@ -121,6 +121,10 @@ class QCustomPlotDecorator : public QObject
     {
       g->addData(keys,values);
     }
+    void addData (QCPGraph* g, const double &key, const double &value)
+    {
+      g->addData(key,value);
+    }
     void clearData (QCPGraph* o) { o->clearData (); }
     /// \}
 
