@@ -20,6 +20,7 @@
 
 #include <boost/regex.hpp>
 
+#include <QFileDialog>
 #include <QProcess>
 #include <QTextBrowser>
 
