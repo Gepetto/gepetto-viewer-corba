@@ -17,6 +17,9 @@
 #include "gepetto/gui/tree-item.hh"
 
 #include <QDebug>
+#include <QLineEdit>
+#include <QColorDialog>
+#include <QFormLayout>
 
 #include <gepetto/viewer/group-node.h>
 
