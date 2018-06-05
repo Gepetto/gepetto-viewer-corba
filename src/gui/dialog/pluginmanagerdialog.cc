@@ -240,8 +240,10 @@ namespace gepetto {
                 version = "";
         if (p.value ()->isLoaded ()) {
           PluginInterface* pi = qobject_cast <PluginInterface*> (p.value()->instance());
-          name = pi->name();
-          // version = pi->version();
+          if (pi) {
+            name = pi->name();
+            // version = pi->version();
+          }
         }
         QIcon icon = pm_->icon (p.value());
 
