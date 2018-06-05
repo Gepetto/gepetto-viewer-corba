@@ -22,6 +22,7 @@
 
 #include "gepetto/gui/plugin-interface.hh"
 #include "gepetto/gui/mainwindow.hh"
+#include "gepetto/gui/pythonwidget.hh"
 
 #include <iostream>
 
@@ -141,6 +142,69 @@ namespace gepetto {
     {
       foreach (QPluginLoader* p, plugins_) {
         p->unload();
+      }
+    }
+
+    bool PluginManager::declarePyPlugin(const QString &name)
+    {
+      if (!pyplugins_.contains(name)) {
+        if (name.endsWith (".py")) {
+          QFileInfo fi (name);
+          QString moduleName = fi.baseName();
+          QString script;
+          if (fi.isAbsolute()) script = name;
+          else script = QDir::currentPath() + QDir::separator() + name;
+          pyplugins_[moduleName] = script;
+        } else
+          pyplugins_[name] = name;
+        return true;
+      }
+      qDebug () << "Python plugin" << name << "already declared.";
+      return false;
+    }
+
+    bool PluginManager::loadPyPlugin(const QString &name)
+    {
+      if (!pyplugins_.contains(name)) {
+        qDebug () << "Python plugin" << name << "not declared.";
+        return false;
+      }
+      MainWindow* main = MainWindow::instance();
+      const QString& pyfile = pyplugins_[name];
+
+#if GEPETTO_GUI_HAS_PYTHONQT
+      PythonWidget* pw = main->pythonWidget();
+      if (pyfile.endsWith (".py")) {
+        qDebug() << "Loading" << pyfile << "into module" << name;
+        pw->loadScriptPlugin (name, pyfile);
+      } else
+        pw->loadModulePlugin (name);
+      return true;
+#else
+      main->logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
+          "PYTHONQT flag. Cannot not load Python plugin " + name);
+      return false;
+#endif
+    }
+
+    bool PluginManager::unloadPyPlugin(const QString &name)
+    {
+      MainWindow* main = MainWindow::instance();
+#if GEPETTO_GUI_HAS_PYTHONQT
+      PythonWidget* pw = main->pythonWidget();
+      pw->unloadModulePlugin(name);
+      return true;
+#else
+      main->logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
+          "PYTHONQT flag. Cannot not unload Python plugin " + name);
+      return false;
+#endif
+    }
+
+    void PluginManager::clearPyPlugins()
+    {
+      foreach (QString p, pyplugins_.keys()) {
+        unloadPyPlugin(p);
       }
     }
 
