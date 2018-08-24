@@ -59,24 +59,19 @@ namespace gepetto {
 
     void BodyTreeWidget::selectBodyByName(const QString bodyName)
     {
-      QList<QStandardItem*> matches;
-      if (!bodyName.isEmpty() && !bodyName.isNull()) {
-        matches = model_->findItems(bodyName, Qt::MatchFixedString
-            | Qt::MatchCaseSensitive
-            | Qt::MatchRecursive);
-      }
-      if (matches.empty()) {
-        qDebug () << "Body" << bodyName << "not found.";
-        view_->clearSelection();
-      } else {
-        view_->setCurrentIndex(matches.first()->index());
-      }
+      qDebug () << "Use std::string instead of QString";
+      return selectBodyByName (bodyName.toStdString());
     }
 
     void BodyTreeWidget::selectBodyByName (const std::string& bodyName)
     {
-      qDebug () << "Use QString instead of std::string";
-      return selectBodyByName (QString::fromStdString (bodyName));
+      BodyTreeItems_t bodies = osg_->bodyTreeItems (bodyName);
+      if (bodies.empty()) {
+        qDebug () << "Body" << bodyName.c_str() << "not found.";
+        view_->clearSelection();
+      } else {
+        view_->setCurrentIndex(bodies[0]->index());
+      }
     }
 
     void BodyTreeWidget::handleSelectionEvent (const SelectionEvent* event)
@@ -86,8 +81,7 @@ namespace gepetto {
           this, SLOT (currentChanged(QModelIndex,QModelIndex)));
       BodyTreeItem* item = NULL;
       if (event->node()) {
-        WindowsManager::BodyTreeItems_t matches =
-          osg_->bodyTreeItems(event->node()->getID());
+        BodyTreeItems_t matches = osg_->bodyTreeItems(event->node()->getID());
 
         if (matches.empty())
           view_->clearSelection();

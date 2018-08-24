@@ -114,13 +114,10 @@ namespace gepetto {
 
     BodyTreeItem::BodyTreeItem(QObject *parent, graphics::NodePtr_t node) :
       QObject (parent),
-      QStandardItem (QString (node->getID().c_str())),
+      QStandardItem (QString::fromStdString (node->getID().substr(node->getID().find_last_of("/") + 1))),
       node_ (node)
     {
       setEditable(false);
-
-      const std::string & name = node->getID();
-      QStandardItem::setText(name.substr(name.find_last_of("/") + 1).c_str());
     }
 
     void BodyTreeItem::initialize ()

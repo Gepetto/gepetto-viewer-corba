@@ -46,8 +46,6 @@ namespace gepetto {
         typedef graphics::NodePtr_t      NodePtr_t;
         typedef graphics::GroupNodePtr_t GroupNodePtr_t;
 
-        typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
-
         static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
         WindowID createWindow(const std::string& windowName);
