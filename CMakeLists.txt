@@ -28,6 +28,7 @@ INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/idl.cmake)
 INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/boost.cmake)
+INCLUDE(cmake/test.cmake)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
