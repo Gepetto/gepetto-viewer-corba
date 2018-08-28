@@ -32,6 +32,16 @@ directory:
 Please note that CMake produces a `CMakeCache.txt` file which should
 be deleted to reconfigure a package from scratch.
 
+### Makefile
+
+A Makefile that installs the dependencies is provided for convinience. Please follow those steps:
+  - copy `doc/Makefile`,
+  - open and set the variable `SRC_DIR` and `INSTALL_DIR`,
+  - optionally, change `OSG_PACKAGE` and `QT_VERSION`,
+  - run `make all`
+
+Note that the environment variables `PATH`, `LD_LIBRARY_PATH` and `PKG_CONFIG_PATH` should include
+the path to the installation directory.
 
 ### Dependencies
 
