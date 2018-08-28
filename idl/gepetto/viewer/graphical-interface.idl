@@ -182,7 +182,7 @@ typedef sequence<Transform> TransformSeq;
     boolean setCurvePoints(in string curveName, in PositionSeq pos) raises (Error);
 
     /// \param mode The list of possible GL modes is provided in
-    ///             WindowsManager::setCurveMode.
+    ///             graphics::WindowsManager::setCurveMode.
     ///             From the GL modes, remove "GL_" and put it lower case.
     boolean setCurveMode (in string curveName, in string mode) raises (Error);
 

@@ -29,65 +29,14 @@
 #include <QHBoxLayout>
 #include <QApplication>
 
-static void addSelector (QToolBox* tb, QString title, QStringList display, QStringList command,
-                         QObject* receiver, const char* slot) {
-  QWidget* newW = new QWidget();
-  newW->setObjectName(title);
-  QSignalMapper* mapper = new QSignalMapper (tb);
-  QHBoxLayout* layout = new QHBoxLayout(newW);
-  layout->setSpacing(6);
-  layout->setContentsMargins(11, 11, 11, 11);
-  layout->setObjectName(title + "_layout");
-  for (int i = 0; i < display.size(); ++i) {
-      QPushButton* button = new QPushButton(display[i], newW);
-      button->setObjectName(title + "_button_" + display[i]);
-      layout->addWidget (button);
-      mapper->setMapping(button, command[i]);
-      QObject::connect (button, SIGNAL(clicked(bool)), mapper, SLOT(map()));
-    }
-  receiver->connect (mapper, SIGNAL(mapped(QString)), slot);
-  tb->addItem(newW, title);
-}
-
-static void addColorSelector (QToolBox* tb, QString title, QObject* receiver, const char* slot) {
-  QWidget* newW = new QWidget();
-  newW->setObjectName(title);
-  QHBoxLayout* layout = new QHBoxLayout();
-  newW->setLayout(layout);
-  layout->setSpacing(6);
-  layout->setContentsMargins(11, 11, 11, 11);
-  layout->setObjectName(title + "_layout");
-  QPushButton* button = new QPushButton("Select color", newW);
-  button->setObjectName(title + "_buttonSelect");
-  layout->addWidget (button);
-
-  QColorDialog* colorDialog = new QColorDialog(newW);
-  colorDialog->setObjectName(title + "_colorDialog");
-  colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
-
-  colorDialog->connect(button, SIGNAL(clicked()), SLOT(open()));
-  receiver->connect (colorDialog, SIGNAL(colorSelected(QColor)), slot);
-  tb->addItem(newW, title);
-}
-
-static void addSlider (QToolBox* tb, QString title, QObject* receiver, const char* slot) {
-    QSlider* slider = new QSlider (Qt::Horizontal);
-    slider->setMinimum(0);
-    slider->setMaximum(100);
-    slider->setObjectName(title);
-
-  receiver->connect (slider, SIGNAL(valueChanged(int)), slot);
-  tb->addItem(slider, title);
-}
-
 namespace gepetto {
   namespace gui {
-    void BodyTreeWidget::init(QTreeView* view, QToolBox *toolBox)
+    void BodyTreeWidget::init(QTreeView* view, QWidget *propertyArea)
     {
       MainWindow* main = MainWindow::instance();
       osg_ = main->osg();
       view_ = view;
-      toolBox_ = toolBox;
+      propertyArea_ = propertyArea;
       model_  = new QStandardItemModel (this);
       view_->setModel(model_);
       view_->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -97,18 +46,10 @@ namespace gepetto {
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           SLOT (currentChanged(QModelIndex,QModelIndex)));
 
-      toolBox_->removeItem(0);
-      addSlider(toolBox_, "Transparency", this, SLOT(setTransparency(int)));
-      addSelector (toolBox_, "Visibility",
-                   QStringList () << "On" << "Always on top" << "Off",
-                   QStringList () << "ON" << "ALWAYS_ON_TOP" << "OFF",
-                   this, SLOT(setVisibilityMode(QString)));
-      addSelector (toolBox_, "Wireframe mode",
-                   QStringList () << "Fill" << "Both" << "Wireframe",
-                   QStringList () << "FILL" << "FILL_AND_WIREFRAME" << "WIREFRAME",
-                   this, SLOT(setWireFrameMode(QString)));
-      addColorSelector(toolBox_, "Color", this, SLOT(setColor(QColor)));
+/*
       addSlider(toolBox_, "Scale", this, SLOT(setScale(int)));
+*/
+      propertyArea_->setLayout (new QVBoxLayout);
     }
 
     QTreeView* BodyTreeWidget::view ()
@@ -118,24 +59,19 @@ namespace gepetto {
 
     void BodyTreeWidget::selectBodyByName(const QString bodyName)
     {
-      QList<QStandardItem*> matches;
-      if (!bodyName.isEmpty() && !bodyName.isNull()) {
-        matches = model_->findItems(bodyName, Qt::MatchFixedString
-            | Qt::MatchCaseSensitive
-            | Qt::MatchRecursive);
-      }
-      if (matches.empty()) {
-        qDebug () << "Body" << bodyName << "not found.";
-        view_->clearSelection();
-      } else {
-        view_->setCurrentIndex(matches.first()->index());
-      }
+      qDebug () << "Use std::string instead of QString";
+      return selectBodyByName (bodyName.toStdString());
     }
 
     void BodyTreeWidget::selectBodyByName (const std::string& bodyName)
     {
-      qDebug () << "Use QString instead of std::string";
-      return selectBodyByName (QString::fromStdString (bodyName));
+      BodyTreeItems_t bodies = osg_->bodyTreeItems (bodyName);
+      if (bodies.empty()) {
+        qDebug () << "Body" << bodyName.c_str() << "not found.";
+        view_->clearSelection();
+      } else {
+        view_->setCurrentIndex(bodies[0]->index());
+      }
     }
 
     void BodyTreeWidget::handleSelectionEvent (const SelectionEvent* event)
@@ -143,23 +79,25 @@ namespace gepetto {
       disconnect (view_->selectionModel(),
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           this, SLOT (currentChanged(QModelIndex,QModelIndex)));
+      BodyTreeItem* item = NULL;
       if (event->node()) {
-        QList<QStandardItem*> matches;
-        matches = model_->findItems(event->nodeName(), Qt::MatchFixedString
-                                      | Qt::MatchCaseSensitive
-                                      | Qt::MatchRecursive);
+        BodyTreeItems_t matches = osg_->bodyTreeItems(event->node()->getID());
+
         if (matches.empty())
           view_->clearSelection();
         else {
+          item = matches[0];
           if (event->modKey() == Qt::ControlModifier)
-            view_->selectionModel()->setCurrentIndex
-                (matches.first()->index(),
+            view_->selectionModel()->setCurrentIndex (item->index(),
                  QItemSelectionModel::Toggle);
           else
-            view_->selectionModel()->select(matches.first()->index(), QItemSelectionModel::ClearAndSelect);
+            view_->selectionModel()->select          (item->index(),
+                QItemSelectionModel::ClearAndSelect);
+          view_->scrollTo (matches[0]->index());
         }
       } else
         view_->clearSelection();
+      updatePropertyArea(item);
       connect (view_->selectionModel(),
           SIGNAL (currentChanged(QModelIndex,QModelIndex)),
           SLOT (currentChanged(QModelIndex,QModelIndex)));
@@ -177,6 +115,19 @@ namespace gepetto {
       event->done();
     }
 
+    void BodyTreeWidget::updatePropertyArea (BodyTreeItem* item)
+    {
+      QLayoutItem *child;
+      while ((child = propertyArea_->layout()->takeAt(0)) != 0) {
+        if (child->widget() != NULL) {
+          child->widget()->setParent(NULL);
+        }
+      }
+      if (item != NULL) {
+        propertyArea_->layout()->addWidget(item->propertyEditors());
+      }
+    }
+
     void BodyTreeWidget::currentChanged (const QModelIndex &current,
         const QModelIndex &/*previous*/)
     {
@@ -188,6 +139,7 @@ namespace gepetto {
           qobject_cast <const QStandardItemModel*>
           (view_->model())->itemFromIndex(current)
          );
+      updatePropertyArea(item);
       if (item) {
         SelectionEvent *event = new SelectionEvent(SelectionEvent::FromBodyTree, item->node(), QApplication::keyboardModifiers());
         emitBodySelected(event);
@@ -223,18 +175,5 @@ namespace gepetto {
           contextMenu.exec(view_->mapToGlobal(pos));
         }
     }
-
-    void BodyTreeWidget::changeAlphaValue(const float& alpha)
-    {
-        QSlider *tr = qobject_cast<QSlider *>(toolBox_->widget(0));
-
-        tr->setValue((int)alpha * 100);
-    }
-
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setTransparency, int, int, setAlpha)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setVisibilityMode, QString, std::string, setVisibility)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setWireFrameMode, QString, std::string, setWireFrameMode)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setColor, QColor, WindowsManager::Color_t, setColor)
-    GEPETTO_GUI_BODYTREE_IMPL_FEATURE (setScale, int, int, setScale)
   }
 }

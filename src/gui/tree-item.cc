@@ -17,6 +17,9 @@
 #include "gepetto/gui/tree-item.hh"
 
 #include <QDebug>
+#include <QLineEdit>
+#include <QColorDialog>
+#include <QFormLayout>
 
 #include <gepetto/viewer/group-node.h>
 
@@ -26,19 +29,196 @@
 
 namespace gepetto {
   namespace gui {
+    QWidget* boolPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      QCheckBox* cb = new QCheckBox;
+      bool value;
+      /* bool success = */ prop->get(value);
+      cb->setChecked(value);
+      if (prop->hasWriteAccess())
+        bti->connect(cb, SIGNAL(toggled(bool)), SLOT(setBoolProperty(bool)));
+      else
+        cb->setEnabled(false);
+      return cb;
+    }
+
+    QWidget* enumPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      const graphics::EnumProperty::Ptr_t enumProp = boost::dynamic_pointer_cast<graphics::EnumProperty> (prop);
+      const graphics::MetaEnum* enumMeta = enumProp->metaEnum();
+
+      QComboBox* cb = new QComboBox;
+      int value;
+      /* bool success = */ enumProp->get(value);
+      std::size_t indexSelected = 0;
+      for (std::size_t i = 0; i < enumMeta->values.size(); ++i)
+      {
+        cb->addItem(enumMeta->names[i].c_str(), enumMeta->values[i]);
+        if (value == enumMeta->values[i]) indexSelected = i;
+      }
+      cb->setCurrentIndex((int)indexSelected);
+      if (prop->hasWriteAccess())
+        bti->connect(cb, SIGNAL(currentIndexChanged(int)), SLOT(setIntProperty(int)));
+      else
+        cb->setEnabled(false);
+      return cb;
+    }
+
+    QWidget* stringPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      QLineEdit* le = new QLineEdit;
+      std::string value;
+      /* bool success = */ prop->get(value);
+      le->setText(QString::fromStdString(value));
+      if (prop->hasWriteAccess())
+        bti->connect(le, SIGNAL(textChanged(QString)), SLOT(setStringProperty(QString)));
+      else
+        le->setReadOnly(true);
+      return le;
+    }
+
+    QWidget* floatPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      QDoubleSpinBox* dsb = new QDoubleSpinBox;
+      float value;
+      /* bool success = */ prop->get(value);
+      dsb->setValue(value);
+      if (prop->hasWriteAccess())
+        bti->connect(dsb, SIGNAL(valueChanged(double)), SLOT(setFloatProperty(double)));
+      else
+        dsb->setEnabled(false);
+      return dsb;
+    }
+
+    QWidget* colorPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    {
+      if (!prop->hasWriteAccess()) return NULL;
+      osgVector4 value;
+      /* bool success = */ prop->get(value);
+      QColor color;
+      color.setRgbF((qreal)value[0],(qreal)value[1],(qreal)value[2],(qreal)value[3]);
+
+      QPushButton* button = new QPushButton("Select color");
+      // Set icon for current color value
+
+      /// Color dialog should be opened in a different place
+      QColorDialog* colorDialog = new QColorDialog(color, MainWindow::instance());
+      colorDialog->setOption(QColorDialog::ShowAlphaChannel, true);
+
+      colorDialog->setProperty("propertyName", QString::fromStdString(prop->name()));
+      colorDialog->connect(button, SIGNAL(clicked()), SLOT(open()));
+      bti->connect (colorDialog, SIGNAL(colorSelected(QColor)), SLOT(setColorProperty(QColor)));
+
+      return button;
+    }
+
     BodyTreeItem::BodyTreeItem(QObject *parent, graphics::NodePtr_t node) :
       QObject (parent),
-      QStandardItem (QString (node->getID().c_str())),
-      node_ (node),
-      vmMapper_ (),
-      vizMapper_ ()
+      QStandardItem (QString::fromStdString (node->getID().substr(node->getID().find_last_of("/") + 1))),
+      node_ (node)
     {
       setEditable(false);
-      connect (&vmMapper_, SIGNAL (mapped (QString)), SLOT(setViewingMode(QString)));
-      connect (&vizMapper_, SIGNAL (mapped (QString)), SLOT(setVisibilityMode(QString)));
-      
-      const std::string & name = node->getID();
-      QStandardItem::setText(name.substr(name.find_last_of("/") + 1).c_str());
+    }
+
+    void BodyTreeItem::initialize ()
+    {
+      connect(this, SIGNAL(requestInitialize()), SLOT(doInitialize()));
+      emit requestInitialize();
+    }
+
+    void BodyTreeItem::doInitialize ()
+    {
+      propertyEditors_ = new QWidget();
+      BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
+      if (propertyEditors_->thread() != bt->thread())
+        propertyEditors_->moveToThread(bt->thread());
+      QFormLayout* l = new QFormLayout(propertyEditors_);
+
+      l->addRow("Node name:", new QLabel (node_->getID().c_str()));
+
+      const graphics::PropertyMap_t& props = node_->properties();
+      for (graphics::PropertyMap_t::const_iterator _prop = props.begin();
+           _prop != props.end(); ++_prop)
+      {
+        const graphics::PropertyPtr_t prop = _prop->second;
+        if (!prop->hasReadAccess()) continue;
+
+        QString name = _prop->first.c_str();
+        QWidget* field = NULL;
+        if (prop->type() == "enum") {
+          field = enumPropertyEditor(this, prop);
+        } else if (prop->type() == "bool") {
+          field = boolPropertyEditor(this, prop);
+        } else if (prop->type() == "string") {
+          field = stringPropertyEditor(this, prop);
+        } else if (prop->type() == "float") {
+          field = floatPropertyEditor(this, prop);
+        } else if (prop->type() == "osgVector4") {
+          if (name.contains ("color", Qt::CaseInsensitive)) {
+            field = colorPropertyEditor (this, prop);
+          } else {
+            field = NULL;
+          }
+        }
+        if (field != NULL) {
+          field->setProperty("propertyName", name);
+          l->addRow(name + ':', field);
+        } else {
+          qDebug() << "Unhandled property" << name << "of type" << prop->type().c_str() << ".";
+        }
+      }
+      disconnect(SIGNAL(requestInitialize()));
+    }
+
+    template <typename T>
+    void BodyTreeItem::setProperty (const QObject* sender, const T& value) const
+    {
+      if (sender != NULL) {
+        QVariant nameVariant = sender->property("propertyName");
+        if (nameVariant.isValid()) {
+          std::string name = nameVariant.toString().toStdString();
+          boost::mutex::scoped_lock lock (MainWindow::instance()->osg()->osgFrameMutex());
+          node_->setProperty<T>(name, value);
+        } else {
+          qDebug() << "Sender has no property propertyName" << sender;
+        }
+      }
+    }
+
+    void BodyTreeItem::setBoolProperty (bool value) const
+    {
+      setProperty (QObject::sender(), value);
+    }
+
+    void BodyTreeItem::setIntProperty (int value) const
+    {
+      setProperty (QObject::sender(), value);
+    }
+
+    void BodyTreeItem::setStringProperty (const QString& value) const
+    {
+      setProperty (QObject::sender(), value.toStdString());
+    }
+
+    void BodyTreeItem::setFloatProperty (const double& value) const
+    {
+      setProperty (QObject::sender(), float(value));
+    }
+
+    void BodyTreeItem::setColorProperty (const QColor& value) const
+    {
+      osgVector4 c (
+          (float)value.redF(),
+          (float)value.greenF(),
+          (float)value.blueF(),
+          (float)value.alphaF());
+      setProperty (QObject::sender(), c);
+    }
+
+    BodyTreeItem::~BodyTreeItem()
+    {
+      if (propertyEditors_->parent() != NULL)
+        delete propertyEditors_;
     }
 
     QStandardItem* BodyTreeItem::clone() const
@@ -68,28 +248,6 @@ namespace gepetto {
         QAction* rfg = contextMenu->addAction (tr("Remove from group"));
         connect (rfg, SIGNAL (triggered()), SLOT (removeFromGroup ()));
       }
-      /// Viewing mode
-      QMenu* viewmode = contextMenu->addMenu(tr("Viewing mode"));
-      QAction* f  = viewmode->addAction ("Fill");
-      QAction* w  = viewmode->addAction ("Wireframe");
-      QAction* fw = viewmode->addAction ("Fill and Wireframe");
-      vmMapper_.setMapping (f , QString ("FILL"));
-      vmMapper_.setMapping (w , QString ("WIREFRAME"));
-      vmMapper_.setMapping (fw, QString ("FILL_AND_WIREFRAME"));
-      connect (f , SIGNAL(triggered()), &vmMapper_, SLOT (map()));
-      connect (w , SIGNAL(triggered()), &vmMapper_, SLOT (map()));
-      connect (fw, SIGNAL(triggered()), &vmMapper_, SLOT (map()));
-      /// Visibility mode
-      QMenu* vizmode = contextMenu->addMenu(tr("Visibility mode"));
-      QAction* on  = vizmode->addAction ("On");
-      QAction* aot = vizmode->addAction ("Always on top");
-      QAction* off = vizmode->addAction ("Off");
-      vizMapper_.setMapping (on , QString ("ON"));
-      vizMapper_.setMapping (aot, QString ("ALWAYS_ON_TOP"));
-      vizMapper_.setMapping (off, QString ("OFF"));
-      connect (on , SIGNAL(triggered()), &vizMapper_, SLOT (map()));
-      connect (aot, SIGNAL(triggered()), &vizMapper_, SLOT (map()));
-      connect (off, SIGNAL(triggered()), &vizMapper_, SLOT (map()));
     }
 
     void BodyTreeItem::setParentGroup(const std::string &parent)

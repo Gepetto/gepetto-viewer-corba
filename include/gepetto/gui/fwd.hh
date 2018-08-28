@@ -17,6 +17,8 @@
 #ifndef GEPETTO_GUI_FWD_HH
 #define GEPETTO_GUI_FWD_HH
 
+#include <vector>
+
 #include <gepetto/viewer/macros.h>
 #include <gepetto/gui/config-dep.hh>
 
@@ -27,6 +29,7 @@ namespace gepetto {
     class PickHandler;
     class BodyTreeWidget;
     class BodyTreeItem;
+    typedef std::vector<BodyTreeItem*> BodyTreeItems_t;
     class ShortcutFactory;
     class SelectionHandler;
     class SelectionEvent;

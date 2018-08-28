@@ -17,23 +17,6 @@
 #ifndef GEPETTO_GUI_BODYTREEWIDGET_HH
 #define GEPETTO_GUI_BODYTREEWIDGET_HH
 
-// This does not work because of qt meta-object compiler
-#define GEPETTO_GUI_BODYTREE_DECL_FEATURE(func, ArgType) \
-  public slots: \
-    void func (ArgType arg)
-#define GEPETTO_GUI_BODYTREE_IMPL_FEATURE(func, ArgType, OutType, WindowsManagerFunc) \
-  void BodyTreeWidget::func (ArgType arg) { \
-    WindowsManagerPtr_t wsm = MainWindow::instance()->osg(); \
-    foreach (const QModelIndex& index, view_->selectionModel ()->selectedIndexes ()) { \
-      const BodyTreeItem *item = dynamic_cast <const BodyTreeItem*> \
-        (model_->itemFromIndex (index)); \
-      if (item) wsm->WindowsManagerFunc (item->node()->getID(), \
-                                         convertTo<OutType>::from(arg)); \
-      else \
-        qDebug() << model_->itemFromIndex(index)->text() << "is not a BodyTreeItem"; \
-    } \
-  }
-
 #include <QWidget>
 #include <QTreeView>
 #include <QToolBox>
@@ -58,14 +41,10 @@ namespace gepetto {
 
       /// Init the widget.
       /// \param view tree view to display.
-      /// \param toolBox menu in the window
-      void init(QTreeView *view, QToolBox* toolBox);
+      /// \param propertyArea menu in the window
+      void init(QTreeView *view, QWidget *propertyArea);
 
       virtual ~BodyTreeWidget () {}
-
-      /// Display the value in the slider.
-      /// \param alpha alpha value to convert
-      void changeAlphaValue(const float& alpha);
 
       /// Get the body tree view.
       QTreeView* view ();
@@ -95,26 +74,6 @@ namespace gepetto {
       /// Get selected bodies
       QList<BodyTreeItem*> selectedBodies() const;
 
-      /// Set the transparency of currently selected body.
-      /// \param value value of the slider to convert
-      void setTransparency(int value);
-
-      /// Set the visibility mode of currently selected body.
-      /// \param arg visibility mode
-      void setVisibilityMode (QString arg);
-
-      /// Set the wireframe mode of currently selected body.
-      /// \param arg wireframe mode
-      void setWireFrameMode (QString arg);
-
-      /// Set the color of currently selected body.
-      /// \param color new color of the body
-      void setColor (QColor color);
-
-      /// Set the scale of currently selected body.
-      /// \param scale new scale of the body
-      void setScale (int scale);
-
       /// \}
 
     protected slots:
@@ -132,10 +91,12 @@ namespace gepetto {
       /// is updated.
       void handleSelectionEvent (const SelectionEvent* event);
 
+      void updatePropertyArea (BodyTreeItem* item);
+
       QTreeView* view_;
       QStandardItemModel* model_;
       WindowsManagerPtr_t osg_;
-      QToolBox* toolBox_;
+      QWidget* propertyArea_;
     };
   }
 }

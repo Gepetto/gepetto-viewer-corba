@@ -67,12 +67,21 @@ namespace gepetto {
 
         void clearPlugins ();
 
+        bool declarePyPlugin (const QString& name);
+
+        bool loadPyPlugin (const QString& name);
+
+        bool unloadPyPlugin (const QString& name);
+
+        void clearPyPlugins ();
+
       private:
         template <typename Interface>
           static const Interface* const_instance_cast (const QPluginLoader* pl);
 
         QMap <QString, QPluginLoader*> plugins_;
         static QList <QDir> pluginDirs_;
+        QMap <QString, QString> pyplugins_;
     };
 
     class PluginManagerDialog : public QDialog

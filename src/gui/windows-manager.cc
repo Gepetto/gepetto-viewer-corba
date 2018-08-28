@@ -73,6 +73,7 @@ namespace gepetto {
         nodeItemMap_[groupName].second = true;
         if (bti->thread() != bodyTree_->thread())
           bti->moveToThread(bodyTree_->thread());
+        bti->initialize();
         bodyTree_->model()->appendRow(bti);
       }
     }
@@ -87,6 +88,7 @@ namespace gepetto {
         bti->setParentGroup(groupName);
         if (bti->thread() != bodyTree_->thread())
           bti->moveToThread(bodyTree_->thread());
+        bti->initialize();
         groups[i]->appendRow(bti);
       }
     }
@@ -145,6 +147,14 @@ namespace gepetto {
       bool ret = Parent_t::deleteNode(nodeName, all);
       if (ret) deleteBodyItem(nodeName);
       return ret;
+    }
+
+    BodyTreeItems_t WindowsManager::bodyTreeItems (const std::string& name) const
+    {
+      BodyTreeItemMap_t::const_iterator _btis = nodeItemMap_.find(name);
+      if (_btis != nodeItemMap_.end())
+        return _btis->second.first;
+      return BodyTreeItems_t();
     }
 
     void WindowsManager::deleteBodyItem(const std::string& nodeName)
