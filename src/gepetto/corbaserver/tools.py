@@ -118,8 +118,8 @@ class Vector6:
     ## \param groupName name of an **existing** group
     def __init__ (self, groupName, angFactor = pi, linFactor = 1.):
         self.name = groupName
-        self.linear  = Linear  (self.name + '/' + VelGetter.suffixLin)
-        self.angular = Angular (self.name + '/' + VelGetter.suffixAng)
+        self.linear  = Linear  (self.name + '/' + Vector6.suffixLin)
+        self.angular = Angular (self.name + '/' + Vector6.suffixAng)
         self.angF = angFactor
         self.linF = linFactor
 
