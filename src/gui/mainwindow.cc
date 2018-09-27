@@ -64,9 +64,11 @@ namespace gepetto {
       ui_->bodyTreeContent->init(ui_->bodyTree, ui_->propertyArea);
 
       if (settings_->startGepettoCorbaServer) {
+        int argc;
+        const char** argv = settings_->makeOmniORBargs (argc);
         osgServer_ = new CorbaServer (new ViewerServerProcess (
-              new graphics::corbaServer::Server (
-                osgViewerManagers_, 0, NULL, true)));
+              new graphics::corbaServer::Server (osgViewerManagers_,
+                  argc, argv, true)));
         osgServer_->start();
       }
       // This scene contains elements required for User Interaction.

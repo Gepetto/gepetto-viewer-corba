@@ -147,6 +147,13 @@ namespace gepetto {
         arguments.writeErrorMessages(std::cout);
       }
 
+      for (int i = 0; i < argc-1; ++i) {
+        if (strncmp (argv[i], "-ORB", 4) == 0) {
+          addOmniORB (argv[i], argv[i+1]);
+          ++i;
+        }
+      }
+
       if (genAndQuit && retVal < 1) retVal = 1;
 
       if (help != osg::ApplicationUsage::NO_HELP) {
@@ -262,7 +269,7 @@ namespace gepetto {
     {
       const char tab = '\t';
       const char nl = '\n';
-      return os
+      os
         << nl <<     "Configuration:"
         << nl << tab << "Configuration file:     " << tab << configurationFile
         << nl << tab << "Predefined robots:      " << tab << predifinedRobotConf
@@ -278,7 +285,12 @@ namespace gepetto {
         << nl << tab << "Directory:              " << tab << captureDirectory
         << nl << tab << "Filename:               " << tab << captureFilename
         << nl << tab << "Extension:              " << tab << captureExtension
-           ;
+        << nl
+        << nl << "omniORB configuration" ;
+      for (int i = 1; i < omniORBargv_.size(); i+=2)
+        os << nl << tab << omniORBargv_[i-1].toStdString()
+                        << " = " << omniORBargv_[i].toStdString();
+      return os;
     }
 
     QString Settings::getQSettingsFileName (const std::string& settingsName) const
@@ -362,6 +374,11 @@ namespace gepetto {
             addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+        env.beginGroup("omniORB");
+        foreach (QString name, env.childKeys()) {
+            addOmniORB ("-ORB" + name, env.value(name).toString());
+        }
+        env.endGroup ();
         log (QString ("Read configuration file ") + env.fileName());
       }
     }
@@ -428,7 +445,22 @@ namespace gepetto {
       foreach (QString name, pyplugins_)
         env.setValue(name, !noPlugin);
       env.endGroup ();
-      log (QString ("Read configuration file ") + env.fileName());
+      env.beginGroup("omniORB");
+      for (int i = 1; i < omniORBargv_.size(); i+=2)
+        env.setValue (omniORBargv_[i-1].mid(4), omniORBargv_[i]);
+      env.endGroup ();
+      log (QString ("Wrote configuration file ") + env.fileName());
+    }
+
+    const char** Settings::makeOmniORBargs (int& argc)
+    {
+      argc = omniORBargv_.size();
+      const char ** argv = new const char* [argc];
+      for (int i = 0; i < argc; ++i) {
+        const QString& v = omniORBargv_[i];
+        argv[i] = strdup (v.toLocal8Bit().constData());
+      }
+      return argv;
     }
 
     QVariant Settings::getSetting (const QString & key,
@@ -479,6 +511,11 @@ namespace gepetto {
     void Settings::addPyPlugin (const QString& plg, bool init)
     {
       if (init) pyplugins_.append (plg);
+    }
+
+    void Settings::addOmniORB (const QString& arg, const QString& value)
+    {
+      omniORBargv_ << arg << value;
     }
 
     void Settings::log(const QString &t)

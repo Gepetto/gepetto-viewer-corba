@@ -120,16 +120,20 @@ namespace gepetto {
       void writeEnvFile ();
       void writeSettingFile ();
 
+      const char** makeOmniORBargs (int &argc);
+
     private:
       void addRobotFromString (const std::string& rbtStr);
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);
       void addPyPlugin (const QString& plg, bool init);
+      void addOmniORB (const QString& arg, const QString& value);
 
       inline void log (const QString& t);
       inline void logError (const QString& t);
 
       MainWindow* mw;
+      QStringList omniORBargv_;
     };
   } // namespace gui
 } // namespace gepetto
