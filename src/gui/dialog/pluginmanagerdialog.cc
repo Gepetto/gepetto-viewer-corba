@@ -22,7 +22,9 @@
 
 #include "gepetto/gui/plugin-interface.hh"
 #include "gepetto/gui/mainwindow.hh"
-#include "gepetto/gui/pythonwidget.hh"
+#if GEPETTO_GUI_HAS_PYTHONQT
+  #include "gepetto/gui/pythonwidget.hh"
+#endif
 
 #include <iostream>
 
