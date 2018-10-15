@@ -1,5 +1,8 @@
-CORBA server/client for the Graphical Interface of Pinocchio and HPP
-====================================================================
+# CORBA server/client for the Graphical Interface of Pinocchio and HPP
+
+[![Building Status](https://travis-ci.org/gepetto/gepetto-viewer-corba.svg?branch=master)](https://travis-ci.org/gepetto/gepetto-viewer-corba)
+[![Pipeline status](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/pipeline.svg)](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/commits/master)
+[![Coverage report](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/gepetto/gepetto-viewer-corba/master/coverage/)
 
 ## Summary
 * [gepetto-viewer-corba](#gepetto-viewer-corba)
@@ -19,7 +22,6 @@ CORBA server/client for the Graphical Interface of Pinocchio and HPP
 
 ## gepetto-viewer-corba
 ### Setup
------
 
 To compile this package, it is recommended to create a separate build
 directory:
@@ -59,7 +61,7 @@ have to be available on your machine.
    - CMake (>=2.6)
    - pkg-config
    - usual compilation tools (GCC/G++, make, etc.)
- 
+
 ### Install standalone urdfdom
 
 In order to read urdf files (see http://wiki.ros.org/urdf for the description), one haves to install the urdfdom package which can come either along ROS library or be installed as a standalone library. Next section describes the second procedure.
@@ -67,7 +69,7 @@ In order to read urdf files (see http://wiki.ros.org/urdf for the description), 
 urdfdom depends on both console_bridge and urdfdom_headers. The installation of both dependencies can be done with the following command lines in a terminal :
   - `git clone git://github.com/ros/console_bridge.git && cd console_bridge && mkdir build && cd build && cmake .. && make && sudo make install`
   - `git clone git://github.com/ros/urdfdom_headers && cd urdfdom_headers && mkdir build && cd build && cmake .. && make && sudo make install`
-    
+
 Finally, you just need to apply the following command line to install urdfdom library :
   - `git clone git://github.com/ros/urdfdom && cd urdfdom && mkdir build && cd build && cmake .. && make && sudo make install`
 
