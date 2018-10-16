@@ -23,7 +23,6 @@ void registerQCustomPlot ()
   PythonQt::self()->addDecorators (new QCustomPlotDecorator ());
   PythonQt::self()->registerCPPClass ("QCPPainter"           , "QPainter", "QCustomPlot");
   PythonQt::self()->registerCPPClass ("QCustomPlot"          , "QWidget" , "QCustomPlot");
-  // PythonQt::self()->registerCPPClass ("QCPAxisRect"          , "QGraphicsItem" , "QCustomPlot");
   // PythonQt::self()->registerCPPClass ("QCPAxisPainterPrivate", "QGraphicsItem" , "QCustomPlot");
   // PythonQt::self()->registerCPPClass ("QCPItemPosition"      , "QGraphicsItem" , "QCustomPlot");
   PythonQt::self()->registerCPPClass ("QCPLayer"             , "QObject" , "QCustomPlot");
@@ -49,6 +48,7 @@ void registerQCustomPlot ()
 
   PythonQt::self()->registerCPPClass ("QCPLayoutElement"     , "QCPLayerable" , "QCustomPlot");
   PythonQt::self()->registerCPPClass ("QCPLayout"            , "QCPLayoutElement" , "QCustomPlot");
+  PythonQt::self()->registerCPPClass ("QCPAxisRect"          , "QCPLayoutElement" , "QCustomPlot");
   PythonQt::self()->registerCPPClass ("QCPLayoutGrid"        , "QCPLayout" , "QCustomPlot");
   PythonQt::self()->registerCPPClass ("QCPLegend"            , "QCPLayoutGrid" , "QCustomPlot");
 

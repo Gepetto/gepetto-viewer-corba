@@ -67,10 +67,15 @@ class QCustomPlotDecorator : public QObject
     QCPAxis* yAxis  (QCustomPlot* o) { return o->yAxis ; }
     QCPAxis* yAxis2 (QCustomPlot* o) { return o->yAxis2; }
     QCPLegend* legend (QCustomPlot* o) { return o->legend; }
+    QCPAxisRect* axisRect (QCustomPlot* o, int index=0) { return o->axisRect(index); }
     /// \}
 
     /// \name QCPAxis
     /// \{
+    int selectedParts(const QCPAxis* a)
+    {
+      return a->selectedParts();
+    }
     void setLabel(QCPAxis* a, const QString text)
     {
       a->setLabel(text);
@@ -195,6 +200,14 @@ class QCustomPlotDecorator : public QObject
     void addElement (QCPLayoutGrid* lg, int row, int column, QCPLayoutElement *element) //add text to graph at row,column
     {
       lg->addElement(row,column,element);
+    }
+    /// \}
+
+    /// \name QCPAxisRect
+    /// \{
+    void setRangeZoomAxes (QCPAxisRect* ar, QCPAxis* horizontal, QCPAxis* vertical)
+    {
+      ar->setRangeZoomAxes (horizontal, vertical);
     }
     /// \}
 };
