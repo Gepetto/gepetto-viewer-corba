@@ -6,7 +6,7 @@
 ///
 /// To use the graphical interface via python,
 /// \li start executable
-///     \code{bash} gepetto-viewer-server \endcode.
+///     \code{bash} gepetto-gui \endcode.
 /// \li in a python terminal, create a client
 /// \code{py}
 /// from gepetto.corbaserver import Client

@@ -78,15 +78,6 @@ IF(NOT CLIENT_ONLY)
 
   INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
 
-  # Standalone corba server
-  ADD_EXECUTABLE (gepetto-viewer-server corbaserver.cc)
-  TARGET_LINK_LIBRARIES(gepetto-viewer-server ${LIBRARY_NAME})
-  PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server omniORB4)
-  PKG_CONFIG_USE_DEPENDENCY(gepetto-viewer-server gepetto-viewer)
-  #TARGET_LINK_LIBRARIES(gepetto-viewer-server ${Boost_LIBRARIES})
-
-  INSTALL (TARGETS gepetto-viewer-server DESTINATION bin)
-
 ELSE(NOT CLIENT_ONLY)
 
   ADD_CUSTOM_TARGET(generate_idl_cpp ALL DEPENDS ${ALL_IDL_CPP_STUBS})
