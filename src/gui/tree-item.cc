@@ -44,7 +44,7 @@ namespace gepetto {
 
     QWidget* enumPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
-      const graphics::EnumProperty::Ptr_t enumProp = boost::dynamic_pointer_cast<graphics::EnumProperty> (prop);
+      const graphics::EnumProperty::Ptr_t enumProp = graphics::dynamic_pointer_cast<graphics::EnumProperty> (prop);
       const graphics::MetaEnum* enumMeta = enumProp->metaEnum();
 
       QComboBox* cb = new QComboBox;
