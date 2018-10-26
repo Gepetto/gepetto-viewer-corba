@@ -18,7 +18,7 @@
   * [Installation procedure](#installation-procedure)
     * [Dependencies](#dependencies)
     * [PythonQt](#pythonqt)
-    * [Python 3](#python3)
+    * [Python 3](#python-3)
 * [Troubleshooting](#troubleshooting)
 
 ## gepetto-viewer-corba
