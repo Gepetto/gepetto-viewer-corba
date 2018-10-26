@@ -203,6 +203,34 @@ To install `gepetto-gui` you just have to follow the installation step at the to
 ### PythonQt
 gepetto-gui offers the possibility to develop plugins in python. To do so, you must install PythonQt by following the instructions here: https://github.com/jmirabel/PythonQt#readme
 
+### Python 3
+This section describes the procedure to get bindings for Python 3.
+The support for Python 3 is from `OmniORB 4.2.2`. 
+In Ubuntu 16.04, the version is 4.2.1, and in Ubuntu 18.04 it is 4.2.2, but Ubuntu main repos do not provide python 3 support.
+Thus, to make it work you must manually compile `OmniORB 4.2.2`.
+Download latest versions of `OmniORB` and `OmniORBpy` from [sourceforge](https://sourceforge.net/projects/omniorb/).
+Then compile `OmniORB` making sure it finds python3:
+```bash
+export PYTHON=/usr/bin/python3
+cd omniORB-4.2.2/
+mkdir build
+cd build
+../configure --prefix=${CMAKE_INSTALL_PREFIX}
+make 
+make install
+```
+Compile `OmniORBpy` making sure it finds python3:
+```bash
+cd omniORBpy-4.2.2/
+mkdir build
+cd build
+../configure --prefix=${CMAKE_INSTALL_PREFIX}
+make 
+make install
+```
+Finally you can compile and install `gepetto-viewer-corba` making sure it finds `OmniORB 4.2.2`.
+
+
 # Troubleshooting
 
 ## `CORBA::TRANSIENT` when launching a server
