@@ -32,6 +32,8 @@ GEPETTO_GUI_PLUGIN(pyqcustomplot
   qcustomplot.h
   plugin.hh
   decorator.hh
+  wrapper/qcp.hh
+  qcpitemrichtext.hh
 
   SOURCES
   qcustomplot.cpp

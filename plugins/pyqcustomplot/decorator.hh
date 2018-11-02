@@ -1,4 +1,5 @@
 #include <qcustomplot.h>
+#include <qcpitemrichtext.hh>
 
 #include <QObject>
 
@@ -36,32 +37,37 @@ class QCustomPlotDecorator : public QObject
     {
       return o->graph(graphnum);
     }
-    void replot (QCustomPlot* o) //replot object to visualise new data
-    {
-      o->replot();
-    }
-    void show (QCustomPlot* o) //open new window with graph
-    {
-      o->show();
-    }
-    void setWindowTitle(QCustomPlot* o,QString title) //set title of window of graph
-    {
-      o->setWindowTitle(title);
-    }
     void rescaleAxes(QCustomPlot* o, bool v = true) //rescale axis automatically if data does not fit
     {
       o->rescaleAxes(v);
-    }
-    QCPLayoutGrid* plotLayout (QCustomPlot* o) { return o->plotLayout (); }
-    void setAutoAddPlottableToLegend (QCustomPlot* o, bool v)
-    {
-      o->setAutoAddPlottableToLegend (v);
     }
     /// \param interaction See QCP::Interaction
     void setInteraction(QCustomPlot* o, int interaction, bool enabled = true)
     {
       o->setInteraction((QCP::Interaction)interaction, enabled);
     }
+
+    bool savePdf (QCustomPlot* o, const QString &fileName, bool noCosmeticPen=false, int width=0, int height=0, const QString &pdfCreator=QString(), const QString &pdfTitle=QString())
+    {
+      return o->savePdf (fileName, noCosmeticPen, width, height, pdfCreator, pdfTitle);
+    }
+    bool savePng (QCustomPlot* o, const QString &fileName, int width=0, int height=0, double scale=1.0, int quality=-1)
+    {
+      return o->savePng (fileName, width, height, scale, quality);
+    }
+    bool saveJpg (QCustomPlot* o, const QString &fileName, int width=0, int height=0, double scale=1.0, int quality=-1)
+    {
+      return o->saveJpg (fileName, width, height, scale, quality);
+    }
+    bool saveBmp (QCustomPlot* o, const QString &fileName, int width=0, int height=0, double scale=1.0)
+    {
+      return o->saveBmp (fileName, width, height, scale);
+    }
+    bool saveRastered (QCustomPlot* o, const QString &fileName, int width, int height, double scale, const char *format, int quality=-1)
+    {
+      return o->saveRastered (fileName, width, height, scale, format, quality);
+    }
+
     QCPAxis* xAxis  (QCustomPlot* o) { return o->xAxis ; }
     QCPAxis* xAxis2 (QCustomPlot* o) { return o->xAxis2; }
     QCPAxis* yAxis  (QCustomPlot* o) { return o->yAxis ; }
@@ -71,6 +77,8 @@ class QCustomPlotDecorator : public QObject
     /// \}
 
     /// \name QCPAxis
+    /// \todo Most of this function should be removed as they duplicates the
+    ///       QProperty methods.
     /// \{
     int selectedParts(const QCPAxis* a)
     {
@@ -169,22 +177,10 @@ class QCustomPlotDecorator : public QObject
     {
       ap->rescaleAxes(v);
     }
-    void setName (QCPAbstractPlottable* ap, const QString &n)
-    {
-      ap->setName(n);
-    }
-    void setPen (QCPAbstractPlottable* ap, const QPen &pen)
-    {
-      ap->setPen(pen);
-    }
     /// \}
 
     /// \name QCPLayerable
     /// \{
-    void setVisible (QCPLayerable* l, const bool &v)
-    {
-      l->setVisible(v);
-    }
     /// \}
 
     /// \name QCPLayoutGrid
@@ -209,5 +205,42 @@ class QCustomPlotDecorator : public QObject
     {
       ar->setRangeZoomAxes (horizontal, vertical);
     }
+    /// \}
+
+    /// \name QCPItemPosition
+    /// \{
+    void setType (QCPItemPosition* ip, int type) { return ip->setType((QCPItemPosition::PositionType)type); }
+    bool setParentAnchor (QCPItemPosition* ip, QCPItemAnchor* a) { return ip->setParentAnchor (a); }
+    void setCoords (QCPItemPosition* ip, double k, double v) { return ip->setCoords (k, v); }
+    /// \}
+
+    /// \name QCPAbstractItem
+    /// \{
+    QCPItemPosition* position (QCPAbstractItem* ai, QString p) { return ai->position(p); }
+    QCPItemAnchor  * anchor   (QCPAbstractItem* ai, QString a) { return ai->anchor  (a); }
+    /// \}
+
+    /// \name QCPItemTracer
+    /// \{
+    QCPItemTracer* new_QCPItemTracer (QCustomPlot* parent) { return new QCPItemTracer (parent); }
+    void delete_QCPItemTracer (QCPItemTracer* it) { delete it; }
+    /// \}
+
+    /// \name QCPItemRichText
+    /// \{
+    QCPItemRichText* new_QCPItemRichText (QCustomPlot* parent) { return new QCPItemRichText (parent); }
+    void delete_QCPItemRichText (QCPItemRichText* it) { delete it; }
+    /// \}
+
+    /// \name QCPItemText
+    /// \{
+    QCPItemText* new_QCPItemText (QCustomPlot* parent) { return new QCPItemText (parent); }
+    void delete_QCPItemText (QCPItemText* it) { delete it; }
+    /// \}
+
+    /// \name QCPItemEllipse
+    /// \{
+    QCPItemEllipse* new_QCPItemEllipse (QCustomPlot* parent) { return new QCPItemEllipse (parent); }
+    void delete_QCPItemEllipse (QCPItemEllipse* it) { delete it; }
     /// \}
 };
