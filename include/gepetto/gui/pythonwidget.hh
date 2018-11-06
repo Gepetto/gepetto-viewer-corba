@@ -119,6 +119,7 @@ namespace gepetto {
       void loadModulePlugin(QString moduleName);
       void unloadModulePlugin(QString moduleName);
       void loadScriptPlugin(QString moduleName, QString fileName);
+      void runScript(QString fileName);
 
     private:
       void loadPlugin(QString moduleName, PythonQtObjectPtr module);
