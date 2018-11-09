@@ -169,7 +169,7 @@ namespace gepetto {
         } else {
           parent->takeRow(bti->row());
         }
-        delete bti;
+        bti->deleteLater();
         _nodes->second.first[i] = NULL;
       }
       nodeItemMap_.erase(_nodes);
