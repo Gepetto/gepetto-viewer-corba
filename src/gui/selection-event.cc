@@ -30,9 +30,9 @@ namespace gepetto {
         out.setZ(in[2]);
       }
       void toQVector3(const osg::Vec3d& in, QVector3D& out) {
-        out.setX(in[0]);
-        out.setY(in[1]);
-        out.setZ(in[2]);
+        out.setX((float)in[0]);
+        out.setY((float)in[1]);
+        out.setZ((float)in[2]);
       }
     }
 

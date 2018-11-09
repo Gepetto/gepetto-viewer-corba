@@ -28,6 +28,8 @@
 #include <gepetto/gui/bodytreewidget.hh>
 
 namespace gepetto {
+  using graphics::ScopedLock;
+
   namespace gui {
     QWidget* boolPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
@@ -177,7 +179,7 @@ namespace gepetto {
         QVariant nameVariant = sender->property("propertyName");
         if (nameVariant.isValid()) {
           std::string name = nameVariant.toString().toStdString();
-          boost::mutex::scoped_lock lock (MainWindow::instance()->osg()->osgFrameMutex());
+          ScopedLock lock (MainWindow::instance()->osg()->osgFrameMutex());
           node_->setProperty<T>(name, value);
         } else {
           qDebug() << "Sender has no property propertyName" << sender;

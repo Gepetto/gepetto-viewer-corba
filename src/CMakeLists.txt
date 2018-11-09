@@ -63,6 +63,11 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
     ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
   )
+  # Removes 5 warnings about anonymous variadic macros that were added from
+  # c++ 11.
+  SET_SOURCE_FILES_PROPERTIES(graphical-interface.impl.cpp
+    PROPERTIES
+    COMPILE_FLAGS "-Wno-variadic-macros")
 
   ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
   ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)

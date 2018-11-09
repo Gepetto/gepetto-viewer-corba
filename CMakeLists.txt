@@ -62,7 +62,7 @@ IF(NOT CLIENT_ONLY)
   ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
   ADD_REQUIRED_DEPENDENCY("urdfdom")
 
-  SET(BOOST_COMPONENTS system thread regex)
+  SET(BOOST_COMPONENTS system regex)
   SEARCH_FOR_BOOST ()
   FINDPYTHON()
 

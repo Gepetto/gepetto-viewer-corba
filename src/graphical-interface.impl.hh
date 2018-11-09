@@ -24,14 +24,14 @@ struct NodeConfiguration {
     osgQuat quat;
 };
 
-using graphics::WindowsManagerPtr_t;
+using gepetto::gui::WindowsManagerPtr_t;
 class GraphicalInterface :
     public virtual POA_gepetto::corbaserver::GraphicalInterface
 {
 private:
     WindowsManagerPtr_t windowsManager_;
     typedef gepetto::Error Error;
-    typedef graphics::WindowsManager::value_type value_type;
+    typedef gepetto::gui::WindowsManager::value_type value_type;
     typedef gepetto::corbaserver::Transform_slice Transform_slice;
 
 public:

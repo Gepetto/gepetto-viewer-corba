@@ -25,7 +25,7 @@ namespace graphics {
 
         template <typename Input, typename Output>
           void to (const Input& in, Output& out, const int size) {
-            for (CORBA::ULong i = 0; i < size; ++i)
+            for (CORBA::ULong i = 0; i < (CORBA::ULong)size; ++i)
               out[i] = in[i];
           }
 
