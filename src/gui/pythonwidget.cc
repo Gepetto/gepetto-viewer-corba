@@ -151,10 +151,10 @@ namespace gepetto {
         PythonQt* pqt = PythonQt::self();
         PythonQtObjectPtr module = pqt->createModuleFromFile (moduleName, fileName);
         if (pqt->handleError()) {
+          pqt->clearError();
           return;
         }
         if (module.isNull()) {
-          pqt->handleError();
           qDebug() << "Enable to load module" << moduleName << "from script"
             << fileName;
           return;
@@ -162,16 +162,28 @@ namespace gepetto {
         loadPlugin (moduleName, module);
       }
 
+      void PythonWidget::runScript(QString fileName)
+      {
+        PythonQt* pqt = PythonQt::self();
+        PythonQtObjectPtr mainContext = pqt->getMainModule();
+        mainContext.evalFile(fileName);
+
+        if (pqt->handleError()) {
+          pqt->clearError();
+          qDebug() << "Failed to run script" << fileName;
+        }
+      }
+
       void PythonWidget::loadModulePlugin(QString moduleName)
       {
         PythonQt* pqt = PythonQt::self();
         PythonQtObjectPtr module = pqt->importModule (moduleName);
         if (pqt->handleError()) {
+          pqt->clearError();
           return;
         }
         if (module.isNull()) {
-          pqt->handleError();
-          qDebug() << "Enable to load module" << moduleName;
+          qDebug() << "Unable to load module" << moduleName;
           return;
         }
         loadPlugin (moduleName, module);

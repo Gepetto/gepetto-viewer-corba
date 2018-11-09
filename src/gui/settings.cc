@@ -103,6 +103,7 @@ namespace gepetto {
       au->addCommandLineOption("-p or --load-plugin", "load the plugin");
 #if GEPETTO_GUI_HAS_PYTHONQT
       au->addCommandLineOption("-q or --load-pyplugin", "load the PythonQt module as a plugin");
+      au->addCommandLineOption("-x or --run-pyscript", "run a script into the PythonQt console");
 #endif
       au->addCommandLineOption("-P or --no-plugin", "do not load any plugin");
       au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
@@ -134,6 +135,8 @@ namespace gepetto {
         addPlugin (QString::fromStdString(opt), !noPlugin);
       while (arguments.read ("-q", opt) || arguments.read ("--load-pyplugin", opt))
         addPyPlugin (QString::fromStdString(opt), !noPlugin);
+      while (arguments.read ("-x", opt) || arguments.read ("--run-pyscript", opt))
+        addPyScript (QString::fromStdString(opt));
 
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
       if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
@@ -200,10 +203,18 @@ namespace gepetto {
         } else
           pw->loadModulePlugin (name);
       }
+      // TODO Wouldn't it be better to do this later ?
+      foreach (QString fileName, pyscripts_) {
+        pw->runScript(fileName);
+      }
 #else
       foreach (QString name, pyplugins_) {
         logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
             "PYTHONQT flag. Cannot not load Python plugin " + name);
+      }
+      foreach (QString fileName, pyscripts_) {
+        logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
+            "PYTHONQT flag. Cannot not load Python script " + fileName);
       }
 #endif
     }
@@ -511,6 +522,11 @@ namespace gepetto {
     void Settings::addPyPlugin (const QString& plg, bool init)
     {
       if (init) pyplugins_.append (plg);
+    }
+
+    void Settings::addPyScript (const QString& fileName)
+    {
+      pyscripts_.append (fileName);
     }
 
     void Settings::addOmniORB (const QString& arg, const QString& value)

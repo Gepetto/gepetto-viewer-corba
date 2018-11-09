@@ -61,40 +61,6 @@
 
 namespace gepetto {
   namespace gui {
-    namespace
-    {
-
-      QRect makeRectangle( const QPoint& first, const QPoint& second )
-      {
-        // Relative to the first point, the second point may be in either one of the
-        // four quadrants of an Euclidean coordinate system.
-        //
-        // We enumerate them in counter-clockwise order, starting from the lower-right
-        // quadrant that corresponds to the default case:
-        //
-        //            |
-        //       (3)  |  (4)
-        //            |
-        //     -------|-------
-        //            |
-        //       (2)  |  (1)
-        //            |
-
-        if( second.x() >= first.x() && second.y() >= first.y() )
-          return QRect( first, second );
-        else if( second.x() < first.x() && second.y() >= first.y() )
-          return QRect( QPoint( second.x(), first.y() ), QPoint( first.x(), second.y() ) );
-        else if( second.x() < first.x() && second.y() < first.y() )
-          return QRect( second, first );
-        else if( second.x() >= first.x() && second.y() < first.y() )
-          return QRect( QPoint( first.x(), second.y() ), QPoint( second.x(), first.y() ) );
-
-        // Should never reach that point...
-        return QRect();
-      }
-
-    }
-
     OSGWidget::OSGWidget(WindowsManagerPtr_t wm,
                          const std::string & name,
                          MainWindow *parent, Qt::WindowFlags f ,

@@ -79,6 +79,7 @@ namespace gepetto {
       PluginManager pluginManager_;
       QStringList pluginsToInit_;
       QStringList pyplugins_;
+      QStringList pyscripts_;
 
       void setMainWindow (MainWindow* main);
 
@@ -127,6 +128,7 @@ namespace gepetto {
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);
       void addPyPlugin (const QString& plg, bool init);
+      void addPyScript (const QString& fileName);
       void addOmniORB (const QString& arg, const QString& value);
 
       inline void log (const QString& t);
