@@ -21,6 +21,8 @@
 #include <QScrollBar>
 #include <QMessageBox>
 
+#include <osg/Version>
+
 #include <gepetto/viewer/corba/server.hh>
 
 #include "gepetto/gui/windows-manager.hh"
@@ -363,10 +365,20 @@ namespace gepetto {
       }
     }
 
+#define _to_str_(a) #a
+#define _to_str(a) _to_str_(a)
+#define _osg_version_str _to_str(OPENSCENEGRAPH_MAJOR_VERSION)"."_to_str(OPENSCENEGRAPH_MINOR_VERSION)"."_to_str(OPENSCENEGRAPH_PATCH_VERSION)
+
     void MainWindow::about()
     {
       QString devString;
       devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%2</a></p>"
+          "<p><ul>"
+          "<li>Compiled with Qt %4, run with Qt %5</li>"
+          "<li>Compiled with OpenSceneGraph version " _osg_version_str "</li>, run with version %6"
+          "<li></li>"
+          "<li></li>"
+          "</ul></p>"
           "<p><small>Copyright (c) 2015-2016 CNRS<br/>By Joseph Mirabel and others.</small></p>"
           "<p><small>"
           "%3 is free software: you can redistribute it and/or modify it under the "
@@ -383,10 +395,17 @@ namespace gepetto {
           )
         .arg(QApplication::applicationVersion())
         .arg(QApplication::organizationDomain())
-        .arg(QApplication::applicationName());
+        .arg(QApplication::applicationName())
+        .arg(QT_VERSION_STR)
+        .arg(qVersion())
+        .arg(osgGetVersion())
+        ;
 
       QMessageBox::about(this, QApplication::applicationName(), devString);
     }
+
+#undef _to_str
+#undef _osg_version_str
 
     void MainWindow::activateCollision(bool activate)
     {

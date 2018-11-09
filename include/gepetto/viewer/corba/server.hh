@@ -12,7 +12,7 @@
 # define SCENEVIEWER_CORBASERVER_SERVER_HH
 
 #include "gepetto/viewer/corba/fwd.hh"
-#include <gepetto/viewer/corba/windows-manager.hh>
+#include <gepetto/viewer/windows-manager.h>
 
 namespace graphics
 {

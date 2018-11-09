@@ -56,7 +56,6 @@ IF(NOT CLIENT_ONLY)
     SHARED
     graphical-interface.impl.cpp
     graphical-interface.impl.hh
-    windows-manager.cpp
     server.cc
     client.cc
     server-private.cc

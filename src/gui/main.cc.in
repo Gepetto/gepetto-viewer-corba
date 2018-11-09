@@ -24,7 +24,7 @@ Q_DECLARE_METATYPE(QItemSelection)
 void setupApplication ()
 {
   QCoreApplication::setOrganizationName("gepetto-gui");
-  QCoreApplication::setOrganizationDomain("https://github.com/humanoid-path-planner/gepetto-viewer-corba");
+  QCoreApplication::setOrganizationDomain("@PROJECT_URL@");
   QCoreApplication::setApplicationName("gepetto-gui");
   QCoreApplication::setApplicationVersion("@PROJECT_VERSION@");
   

@@ -18,7 +18,7 @@
 #define GEPETTO_GUI_WINDOWSMANAGER_HH
 
 #include <gepetto/gui/fwd.hh>
-#include <gepetto/viewer/corba/windows-manager.hh>
+#include <gepetto/viewer/windows-manager.h>
 
 #include <QColor>
 #include <QObject>

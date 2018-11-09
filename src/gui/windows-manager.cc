@@ -100,7 +100,7 @@ namespace gepetto {
         bool isGroup = true;
         try {
             getGroup(nodeName, true);
-        } catch (const gepetto::Error& exc) {
+        } catch (const std::invalid_argument& exc) {
             isGroup = false;
         }
         assert(node);
