@@ -34,7 +34,6 @@
 #include "gepetto/gui/action-search-bar.hh"
 #include "gepetto/gui/node-action.hh"
 
-#include <gepetto/gui/meta.hh>
 #include <gepetto/gui/config-dep.hh>
 
 #if GEPETTO_GUI_HAS_PYTHONQT

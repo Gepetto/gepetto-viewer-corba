@@ -20,7 +20,6 @@
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/osgwidget.hh>
-#include <gepetto/gui/meta.hh>
 #include <gepetto/gui/selection-event.hh>
 #include <gepetto/gui/node-action.hh>
 
