@@ -42,11 +42,14 @@ namespace gepetto {
     }
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName,
+                                                          gepetto::gui::OSGWidget* widget,
                                                           osgViewer::Viewer *viewer,
                                                           osg::GraphicsContext *gc)
     {
       graphics::WindowManagerPtr_t newWindow = graphics::WindowManager::create (viewer, gc);
       WindowID windowId = addWindow (windowName, newWindow);
+      assert (windowId == widgets_.size());
+      widgets_.push_back(widget);
       return windowId;
     }
 
@@ -185,6 +188,43 @@ namespace gepetto {
         return true;
       }
       return false;
+    }
+
+    void WindowsManager::captureFrame (const WindowID wid, const std::string& filename)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      QMetaObject::invokeMethod (widget, "captureFrame",
+            Qt::BlockingQueuedConnection,
+            Q_ARG (std::string, filename));
+    }
+
+    bool WindowsManager::startCapture (const WindowID wid, const std::string& filename,
+            const std::string& extension)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      bool res;
+      QMetaObject::invokeMethod (widget, "startCapture",
+          Qt::BlockingQueuedConnection,
+          Q_RETURN_ARG (bool, res),
+          Q_ARG (std::string, filename),
+          Q_ARG (std::string, extension));
+      return res;
+    }
+
+    bool WindowsManager::stopCapture (const WindowID wid)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      bool res;
+      QMetaObject::invokeMethod (widget, "stopCapture",
+          Qt::BlockingQueuedConnection,
+          Q_RETURN_ARG (bool, res));
+      return res;
     }
   } // namespace gui
 } // namespace gepetto

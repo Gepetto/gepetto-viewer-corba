@@ -39,6 +39,7 @@ namespace gepetto {
 
         WindowID createWindow(const std::string& windowName);
         WindowID createWindow(const std::string& windowName,
+                              OSGWidget* widget,
                               osgViewer::Viewer* viewer,
                               osg::GraphicsContext *gc);
 
@@ -47,6 +48,11 @@ namespace gepetto {
         bool deleteNode (const std::string& nodeName, bool all);
 
         BodyTreeItems_t bodyTreeItems (const std::string& name) const;
+
+        void captureFrame (const WindowID windowId, const std::string& filename);
+        bool startCapture (const WindowID windowId, const std::string& filename,
+            const std::string& extension);
+        bool stopCapture (const WindowID windowId);
 
         public slots:
           int createWindow(QString windowName);
@@ -67,6 +73,8 @@ namespace gepetto {
                          const NodePtr_t&   node,     const BodyTreeItems_t& groups,
                          bool isGroup);
         void deleteBodyItem(const std::string& nodeName);
+
+        std::vector<OSGWidget*> widgets_;
     };
   } // namespace gui
 } // namespace gepetto

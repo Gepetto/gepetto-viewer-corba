@@ -24,7 +24,6 @@
 #include <gepetto/gui/node-action.hh>
 
 #include <QSignalMapper>
-#include <QColorDialog>
 #include <QHBoxLayout>
 #include <QApplication>
 

@@ -116,7 +116,7 @@ namespace gepetto {
       viewer_->addEventHandler(new osgViewer::HelpHandler);
       viewer_->addEventHandler(pickHandler_);
 
-      wid_ = wm->createWindow (name, viewer_, graphicsWindow_.get());
+      wid_ = wm->createWindow (name, this, viewer_, graphicsWindow_.get());
       wm_ = wsm_->getWindowManager (wid_);
 
       viewer_->setThreadingModel(threadingModel);
@@ -151,9 +151,8 @@ namespace gepetto {
 
     void OSGWidget::paintEvent(QPaintEvent*)
     {
-      wsm_->osgFrameMutex().lock();
+      graphics::ScopedLock lock(wsm_->osgFrameMutex());
       viewer_->frame();
-      wsm_->osgFrameMutex().unlock();
     }
 
     graphics::WindowsManager::WindowID OSGWidget::windowID() const
@@ -218,6 +217,27 @@ namespace gepetto {
           process_->start(avconv, args);
         }
       }
+    }
+
+    void OSGWidget::captureFrame (const std::string& filename)
+    {
+      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      wm_->captureFrame (filename);
+    }
+
+    bool OSGWidget::startCapture (const std::string& filename,
+        const std::string& extension)
+    {
+      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      wm_->startCapture (filename, extension);
+      return true;
+    }
+
+    bool OSGWidget::stopCapture ()
+    {
+      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      wm_->stopCapture ();
+      return true;
     }
 
     void OSGWidget::readyReadProcessOutput()
