@@ -76,8 +76,6 @@ namespace gepetto {
       osg()->createScene("hpp-gui");
 
       // Setup the main OSG widget
-      connect (this, SIGNAL (createViewOnMainThread(std::string)), SLOT (createView(std::string)));
-
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 
       connect (&backgroundQueue_, SIGNAL (done(int)), this, SLOT (handleWorkerDone(int)));
@@ -227,23 +225,18 @@ namespace gepetto {
     OSGWidget *MainWindow::createView(const std::string& name)
     {
       if (thread() != QThread::currentThread()) {
-        delayedCreateView_.lock();
-        emit createViewOnMainThread(name);
-        delayedCreateView_.lock();
-        delayedCreateView_.unlock();
-        return osgWindows_.last();
-      } else {
-        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
-#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
-            , osgViewer::Viewer::SingleThreaded
-#endif
-            );
-        osgWidget->setObjectName(name.c_str());
-        addOSGWidget (osgWidget);
-        emit viewCreated(osgWidget);
-        delayedCreateView_.unlock();
-        return osgWidget;
+        qDebug() << "createView must be called from the main thread.";
+        throw std::runtime_error("Cannot create a new window.");
       }
+      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+          , osgViewer::Viewer::SingleThreaded
+#endif
+          );
+      osgWidget->setObjectName(name.c_str());
+      addOSGWidget (osgWidget);
+      emit viewCreated(osgWidget);
+      return osgWidget;
     }
 
     void MainWindow::requestRefresh()

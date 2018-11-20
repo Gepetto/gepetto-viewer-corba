@@ -38,7 +38,13 @@ namespace gepetto {
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName)
     {
-      return MainWindow::instance()->createView(windowName)->windowID();
+      MainWindow* main = MainWindow::instance();
+      OSGWidget* widget;
+      QMetaObject::invokeMethod (main, "createView",
+          Qt::BlockingQueuedConnection,
+          Q_RETURN_ARG (OSGWidget*, widget),
+          Q_ARG (std::string, windowName));
+      return widget->windowID();
     }
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName,
