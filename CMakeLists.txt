@@ -37,12 +37,6 @@ SET(PROJECT_URL "")
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 SET(USE_QT4 TRUE CACHE BOOL "Use Qt4 instead of Qt5")
 
-IF(USE_QT4)
-  SET(OSGQT_LIB_NAME openscenegraph-osgQt)
-ELSE(USE_QT4)
-  SET(OSGQT_LIB_NAME openscenegraph-osgQt5)
-ENDIF(USE_QT4)
-
 SET(${PROJECT_NAME}_HEADERS
   include/gepetto/viewer/corba/windows-manager.hh
   include/gepetto/viewer/corba/server.hh
@@ -64,6 +58,13 @@ ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
 
 IF(NOT CLIENT_ONLY)
   ADD_REQUIRED_DEPENDENCY("openscenegraph >= 3.2")
+
+  IF(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
+    SET(OSGQT_LIB_NAME openscenegraph-osgQt)
+  ELSE(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
+    SET(OSGQT_LIB_NAME openscenegraph-osgQt5)
+  ENDIF(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
+
   ADD_REQUIRED_DEPENDENCY(${OSGQT_LIB_NAME})
   ADD_REQUIRED_DEPENDENCY("openthreads >= 2.6")
   ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
