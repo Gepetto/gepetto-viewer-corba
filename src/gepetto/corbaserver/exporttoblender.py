@@ -38,7 +38,7 @@ def exportState(viewer, group, outData):
 		objNames.add(obj)
 	while len(objNames) > 0:
 		obj = objNames.pop()
-		if not outData.has_key(obj):
+		if obj not in outData:
 			outData[obj] = []
 		objFrame = outData[obj]
 		objFrame.append(gui.getNodeGlobalTransform(obj))
@@ -51,9 +51,8 @@ def writeDataToFile(group, outData, filename):
 	outFile = open(filename, "w+")
 	#write number of frames
 	outFile.write('nbFrames='+str(len(outData[outData.keys()[0]]))+'\n')
-	for obj, frames in outData.iteritems():
+	for obj, frames in outData.items():
 		outFile.write('OBJECT='+obj[len(group)+1:]+'\n')
 		for frame in range(0,len(frames)):
 			outFile.write(str(frame)+'='+str(frames[frame]).lstrip("[").rstrip("]")+'\n')
 	outFile.close()
-

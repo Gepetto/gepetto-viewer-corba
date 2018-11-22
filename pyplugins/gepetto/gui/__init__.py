@@ -1,1 +1,1 @@
-from pythonwidget import Plugin
+from .pythonwidget import Plugin
