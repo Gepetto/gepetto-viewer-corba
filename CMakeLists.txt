@@ -32,13 +32,12 @@ INCLUDE(cmake/test.cmake)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
-SET(PROJECT_URL "")
+SET(PROJECT_URL "https://github.com/Gepetto/gepetto-viewer-corba")
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 SET(USE_QT4 TRUE CACHE BOOL "Use Qt4 instead of Qt5")
 
 SET(${PROJECT_NAME}_HEADERS
-  include/gepetto/viewer/corba/windows-manager.hh
   include/gepetto/viewer/corba/server.hh
   include/gepetto/viewer/corba/client.hh
   include/gepetto/viewer/corba/fwd.hh
@@ -70,7 +69,7 @@ IF(NOT CLIENT_ONLY)
   ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
   ADD_REQUIRED_DEPENDENCY("urdfdom")
 
-  SET(BOOST_COMPONENTS system thread regex)
+  SET(BOOST_COMPONENTS system regex)
   SEARCH_FOR_BOOST ()
   FINDPYTHON()
 
@@ -136,7 +135,6 @@ IF(NOT CLIENT_ONLY)
   ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
   SET (${PROJECT_NAME}_HEADERS_NO_MOC
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/meta.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
     ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh

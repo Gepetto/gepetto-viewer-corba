@@ -21,6 +21,8 @@
 #include <QScrollBar>
 #include <QMessageBox>
 
+#include <osg/Version>
+
 #include <gepetto/viewer/corba/server.hh>
 
 #include "gepetto/gui/windows-manager.hh"
@@ -34,7 +36,6 @@
 #include "gepetto/gui/action-search-bar.hh"
 #include "gepetto/gui/node-action.hh"
 
-#include <gepetto/gui/meta.hh>
 #include <gepetto/gui/config-dep.hh>
 
 #if GEPETTO_GUI_HAS_PYTHONQT
@@ -75,8 +76,6 @@ namespace gepetto {
       osg()->createScene("hpp-gui");
 
       // Setup the main OSG widget
-      connect (this, SIGNAL (createViewOnMainThread(std::string)), SLOT (createView(std::string)));
-
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 
       connect (&backgroundQueue_, SIGNAL (done(int)), this, SLOT (handleWorkerDone(int)));
@@ -226,23 +225,18 @@ namespace gepetto {
     OSGWidget *MainWindow::createView(const std::string& name)
     {
       if (thread() != QThread::currentThread()) {
-        delayedCreateView_.lock();
-        emit createViewOnMainThread(name);
-        delayedCreateView_.lock();
-        delayedCreateView_.unlock();
-        return osgWindows_.last();
-      } else {
-        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
-#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
-            , osgViewer::Viewer::SingleThreaded
-#endif
-            );
-        osgWidget->setObjectName(name.c_str());
-        addOSGWidget (osgWidget);
-        emit viewCreated(osgWidget);
-        delayedCreateView_.unlock();
-        return osgWidget;
+        qDebug() << "createView must be called from the main thread.";
+        throw std::runtime_error("Cannot create a new window.");
       }
+      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+          , osgViewer::Viewer::SingleThreaded
+#endif
+          );
+      osgWidget->setObjectName(name.c_str());
+      addOSGWidget (osgWidget);
+      emit viewCreated(osgWidget);
+      return osgWidget;
     }
 
     void MainWindow::requestRefresh()
@@ -364,10 +358,20 @@ namespace gepetto {
       }
     }
 
+#define _to_str_(a) #a
+#define _to_str(a) _to_str_(a)
+#define _osg_version_str _to_str(OPENSCENEGRAPH_MAJOR_VERSION)"."_to_str(OPENSCENEGRAPH_MINOR_VERSION)"."_to_str(OPENSCENEGRAPH_PATCH_VERSION)
+
     void MainWindow::about()
     {
       QString devString;
       devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%2</a></p>"
+          "<p><ul>"
+          "<li>Compiled with Qt %4, run with Qt %5</li>"
+          "<li>Compiled with OpenSceneGraph version " _osg_version_str "</li>, run with version %6"
+          "<li></li>"
+          "<li></li>"
+          "</ul></p>"
           "<p><small>Copyright (c) 2015-2016 CNRS<br/>By Joseph Mirabel and others.</small></p>"
           "<p><small>"
           "%3 is free software: you can redistribute it and/or modify it under the "
@@ -384,10 +388,17 @@ namespace gepetto {
           )
         .arg(QApplication::applicationVersion())
         .arg(QApplication::organizationDomain())
-        .arg(QApplication::applicationName());
+        .arg(QApplication::applicationName())
+        .arg(QT_VERSION_STR)
+        .arg(qVersion())
+        .arg(osgGetVersion())
+        ;
 
       QMessageBox::about(this, QApplication::applicationName(), devString);
     }
+
+#undef _to_str
+#undef _osg_version_str
 
     void MainWindow::activateCollision(bool activate)
     {

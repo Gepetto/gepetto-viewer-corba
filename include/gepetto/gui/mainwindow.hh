@@ -109,9 +109,6 @@ namespace gepetto {
 
 signals:
         void sendToBackground (WorkItem* item);
-        /// You should not need to call this function.
-        /// Use MainWindow::createView(const std::string&)
-        void createViewOnMainThread(const std::string& name);
         /// Triggered when an OSGWidget is created.
         void viewCreated (OSGWidget* widget);
         void refresh ();
@@ -268,7 +265,6 @@ signals:
 
         ActionSearchBar* actionSearchBar_;
 
-        QMutex delayedCreateView_;
         QStringList robotNames_;
         QStringList lastBodiesInCollision_;
 

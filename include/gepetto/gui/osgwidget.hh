@@ -35,6 +35,9 @@ class QTextBrowser;
 
 namespace gepetto {
   namespace gui {
+    typedef graphics::WindowManagerPtr_t WindowManagerPtr_t;
+    typedef WindowsManager::WindowID WindowID;
+
     /// Widget that displays scenes.
     class OSGWidget : public QWidget
     {
@@ -48,9 +51,9 @@ namespace gepetto {
 
         virtual ~OSGWidget();
 
-        WindowsManager::WindowID windowID () const;
+        WindowID windowID () const;
 
-        graphics::WindowManagerPtr_t window () const;
+        WindowManagerPtr_t window () const;
 
         WindowsManagerPtr_t osg () const;
 
@@ -61,6 +64,10 @@ namespace gepetto {
         void addFloor();
 
         void toggleCapture (bool active);
+
+        void captureFrame (const std::string& filename);
+        bool startCapture (const std::string& filename, const std::string& extension);
+        bool stopCapture ();
 
       protected:
         virtual void paintEvent(QPaintEvent* event);
