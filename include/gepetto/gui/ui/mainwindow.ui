@@ -105,6 +105,7 @@
    <addaction name="actionReconnect"/>
    <addaction name="actionRefresh"/>
    <addaction name="actionFetch_configuration"/>
+   <addaction name="actionSend_configuration"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget_bodyTree">
@@ -417,6 +418,16 @@
    </property>
    <property name="text">
     <string>Fetch configuration</string>
+   </property>
+  </action>
+  <action name="actionSend_configuration">
+   <property name="icon">
+    <iconset theme="mail-send">
+     <normaloff/>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Send configuration</string>
    </property>
   </action>
   <action name="actionChange_shortcut">

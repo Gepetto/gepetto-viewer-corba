@@ -483,7 +483,6 @@ namespace gepetto {
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
       connect (ui_->actionClose_connections, SIGNAL (triggered ()), SLOT(closeConnection()));
-      connect (ui_->actionFetch_configuration, SIGNAL (triggered ()), SLOT(requestApplyCurrentConfiguration()));
 
       connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));
       connect (this, SIGNAL(logErrorString(QString)), SLOT(logError(QString)));
@@ -494,6 +493,7 @@ namespace gepetto {
       actionSearchBar_->addAction(new NodeAction(NodeAction::VISIBILITY_OFF, "Hide node", this));
       actionSearchBar_->addAction(new NodeAction(NodeAction::ALWAYS_ON_TOP, "Always on top", this));
       actionSearchBar_->addAction(ui_->actionFetch_configuration);
+      actionSearchBar_->addAction(ui_->actionSend_configuration);
       actionSearchBar_->addAction(ui_->actionClose_connections);
       actionSearchBar_->addAction(ui_->actionReconnect);
       actionSearchBar_->addAction(ui_->actionRefresh);
