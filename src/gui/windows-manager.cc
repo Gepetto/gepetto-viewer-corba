@@ -26,6 +26,16 @@
 
 namespace gepetto {
   namespace gui {
+    Qt::ConnectionType connectionType (QObject* o, int blocking)
+    {
+      if (o->thread() == QThread::currentThread())
+        return Qt::DirectConnection;
+      else if (blocking)
+        return Qt::BlockingQueuedConnection;
+      else
+        return Qt::QueuedConnection;
+    }
+
     WindowsManagerPtr_t WindowsManager::create(BodyTreeWidget* bodyTree)
     {
       return WindowsManagerPtr_t (new WindowsManager(bodyTree));
@@ -41,7 +51,7 @@ namespace gepetto {
       MainWindow* main = MainWindow::instance();
       OSGWidget* widget;
       QMetaObject::invokeMethod (main, "createView",
-          Qt::BlockingQueuedConnection,
+          connectionType (main, true),
           Q_RETURN_ARG (OSGWidget*, widget),
           Q_ARG (std::string, windowName));
       return widget->windowID();
@@ -201,9 +211,11 @@ namespace gepetto {
       WindowManagerPtr_t wm = getWindowManager(wid, true);
       OSGWidget* widget = widgets_[wid];
       assert(widget->windowID()==wid);
+      // Here, it is not requred that invokeMethod is blocking. However, it may
+      // be suprising in user script to have this call done later...
       QMetaObject::invokeMethod (widget, "captureFrame",
-            Qt::BlockingQueuedConnection,
-            Q_ARG (std::string, filename));
+          connectionType (widget, true),
+          Q_ARG (std::string, filename));
     }
 
     bool WindowsManager::startCapture (const WindowID wid, const std::string& filename,
@@ -214,7 +226,7 @@ namespace gepetto {
       assert(widget->windowID()==wid);
       bool res;
       QMetaObject::invokeMethod (widget, "startCapture",
-          Qt::BlockingQueuedConnection,
+          connectionType (widget, true),
           Q_RETURN_ARG (bool, res),
           Q_ARG (std::string, filename),
           Q_ARG (std::string, extension));
@@ -228,7 +240,7 @@ namespace gepetto {
       assert(widget->windowID()==wid);
       bool res;
       QMetaObject::invokeMethod (widget, "stopCapture",
-          Qt::BlockingQueuedConnection,
+          connectionType (widget, true),
           Q_RETURN_ARG (bool, res));
       return res;
     }
