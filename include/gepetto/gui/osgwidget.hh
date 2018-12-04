@@ -79,6 +79,7 @@ namespace gepetto {
 
       private:
         void initToolBar ();
+        void initGraphicsWindowsAndViewer (MainWindow* parent);
 
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
         WindowsManagerPtr_t wsm_;
