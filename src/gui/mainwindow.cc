@@ -53,7 +53,6 @@ namespace gepetto {
       centralWidget_ (),
       osgViewerManagers_ (),
       osgServer_ (NULL),
-      backgroundQueue_(),
       worker_ (),
       actionSearchBar_ (new ActionSearchBar(this))
     {
@@ -77,14 +76,6 @@ namespace gepetto {
 
       // Setup the main OSG widget
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
-
-      connect (&backgroundQueue_, SIGNAL (done(int)), this, SLOT (handleWorkerDone(int)));
-      connect (&backgroundQueue_, SIGNAL (failed(int,const QString&)),
-          this, SLOT (logJobFailed(int, const QString&)));
-      connect (this, SIGNAL (sendToBackground(WorkItem*)),
-          &backgroundQueue_, SLOT (perform(WorkItem*)));
-      backgroundQueue_.moveToThread(&worker_);
-      worker_.start();
 
       collisionLabel_ = new QLabel("No collisions.");
       shortcutFactory_ = new ShortcutFactory;
@@ -142,11 +133,6 @@ namespace gepetto {
       QMainWindow::removeDockWidget(dock);
     }
 
-    BackgroundQueue& MainWindow::worker()
-    {
-      return backgroundQueue_;
-    }
-
     WindowsManagerPtr_t MainWindow::osg() const
     {
       return osgViewerManagers_;
@@ -195,11 +181,6 @@ namespace gepetto {
       ui_->logText->insertHtml("<hr/><font color=red>"+text+"</font>");
       if (SBwasAtBottom)
         sb->setValue(sb->maximum());
-    }
-
-    void MainWindow::emitSendToBackground(WorkItem *item)
-    {
-      emit sendToBackground(item);
     }
 
     QMenu *MainWindow::pluginMenu() const
@@ -287,13 +268,9 @@ namespace gepetto {
         robotNames_.append (rd.robotName_);
 
         QString what = QString ("Loading robot ") + rd.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadRobot::RobotDefinition>
-                 (loader, &ModelInterface::loadRobotModel, rd);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadRobotModel, rd);
+          logString (what);
         }
       }
       d->close();
@@ -321,13 +298,9 @@ namespace gepetto {
         }
 
         QString what = QString ("Loading environment ") + ed.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadEnvironment::EnvironmentDefinition>
-                 (loader, &ModelInterface::loadEnvironmentModel, ed);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadEnvironmentModel, ed);
+          logString (what);
         }
       }
       statusBar()->clearMessage();

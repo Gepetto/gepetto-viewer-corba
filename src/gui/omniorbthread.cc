@@ -24,8 +24,6 @@
 
 namespace gepetto {
   namespace gui {
-    int WorkItem::idGlobal = 0;
-
     ServerProcess::ServerProcess()
       : initDone_ ()
     {
@@ -111,36 +109,6 @@ namespace gepetto {
     void CorbaServer::processed()
     {
       timerId_ = startTimer(interval_);
-    }
-
-    BackgroundQueue::BackgroundQueue(QObject *parent) :
-      QObject (parent)
-    {
-    }
-
-    void BackgroundQueue::perform(WorkItem *item)
-    {
-      try {
-        item->performWork();
-        emit done (item->id ());
-      } catch (std::exception& e) {
-        emit failed (item->id(), QString (e.what()));
-      } catch (const CORBA::Exception& e) {
-        /// Enable plugins to get corba errors.
-        /// hpp plugins can thus handle CORBA Exceptions (gepetto::Error)
-        bool handled = false;
-        foreach (CorbaInterface* errorHandler, MainWindow::instance()->pluginManager()->get <CorbaInterface>()) {
-          if (errorHandler->corbaException (item->id(), e)) {
-            handled = true;
-            break;
-          }
-        }
-        if (!handled)
-          emit failed (item->id(), QString ("Unhandled CORBA Exception %1").arg(e._name()));
-      } catch (...) {
-        emit failed (item->id(), QString ("Unkown error type"));
-      }
-      delete item;
     }
   } // namespace gui
 } // namespace gepetto
