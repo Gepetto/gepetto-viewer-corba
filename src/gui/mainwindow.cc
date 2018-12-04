@@ -98,7 +98,7 @@ namespace gepetto {
       selectionHandler_->addMode(new MultiSelection(osgViewerManagers_));
       selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
 
-      ui_->osgToolBar->addWidget(selectionHandler_);
+      ui_->mainToolBar->addWidget(selectionHandler_);
     }
 
     MainWindow::~MainWindow()
@@ -261,12 +261,7 @@ namespace gepetto {
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
-        ui_->osgToolBar->show();
-
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
-        connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-        connect(ui_->actionRecordMovie, SIGNAL (toggled(bool)), centralWidget_, SLOT (toggleCapture(bool)));
       }
       actionSearchBar_->addAction(new NodeAction("Attach camera " + osgWidget->objectName() + " to selected node", osgWidget, this));
       osgWidget->addAction(actionSearchBar_->showAction());
@@ -438,9 +433,7 @@ namespace gepetto {
       QMenu* toolbar = ui_->menuWindow->addMenu("Tool bar");
       toolbar->setIcon(QIcon::fromTheme("configure-toolbars"));
       ui_->mainToolBar->setVisible(true);
-      ui_->osgToolBar->setVisible(false);
       toolbar->addAction (ui_->mainToolBar->toggleViewAction ());
-      toolbar->addAction (ui_->osgToolBar->toggleViewAction ());
 
       ui_->menuWindow->addSeparator();
 

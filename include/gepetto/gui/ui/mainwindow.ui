@@ -162,31 +162,6 @@
     </layout>
    </widget>
   </widget>
-  <widget class="QToolBar" name="osgToolBar">
-   <property name="windowTitle">
-    <string>OSG</string>
-   </property>
-   <property name="toolTip">
-    <string>Selection</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>16</width>
-     <height>16</height>
-    </size>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionCamera_control_mode"/>
-   <addaction name="actionSelection"/>
-   <addaction name="actionHome"/>
-   <addaction name="actionAdd_floor"/>
-   <addaction name="actionRecordMovie"/>
-  </widget>
   <widget class="QDockWidget" name="dockWidget_log">
    <property name="windowIcon">
     <iconset theme="dialog-information">
@@ -296,32 +271,6 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionSelection">
-   <property name="icon">
-    <iconset theme="edit-select">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Select</string>
-   </property>
-   <property name="toolTip">
-    <string>Enter in select mode in the main OSG view</string>
-   </property>
-  </action>
-  <action name="actionHome">
-   <property name="icon">
-    <iconset theme="zoom-fit-best">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Home</string>
-   </property>
-   <property name="toolTip">
-    <string>Zoom to fit</string>
-   </property>
-  </action>
   <action name="actionPlugins">
    <property name="icon">
     <iconset theme="preferences-plugin">
@@ -333,19 +282,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
-   </property>
-  </action>
-  <action name="actionCamera_control_mode">
-   <property name="icon">
-    <iconset theme="transform-move">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Camera</string>
-   </property>
-   <property name="toolTip">
-    <string>Control the camera of the main OSG widget</string>
    </property>
   </action>
   <action name="actionRefresh">
@@ -362,34 +298,6 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
-   </property>
-  </action>
-  <action name="actionAdd_floor">
-   <property name="icon">
-    <iconset resource="../../../../res/images.qrc">
-     <normaloff>:/icons/floor.png</normaloff>:/icons/floor.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add floor</string>
-   </property>
-   <property name="toolTip">
-    <string>Add a floor</string>
-   </property>
-  </action>
-  <action name="actionRecordMovie">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="media-record">
-     <normaloff/>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>Scene capture.</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Record the central widget as a sequence of images. You can find the images in /tmp/gepetto-gui/record/img_%d.jpeg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
   <action name="actionAbout">
