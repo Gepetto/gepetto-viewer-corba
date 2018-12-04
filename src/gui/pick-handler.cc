@@ -42,7 +42,7 @@
 namespace gepetto {
   namespace gui {
     PickHandler::PickHandler(OSGWidget *parent, WindowsManagerPtr_t wsm)
-      : QObject (parent)
+      : osgGA::GUIEventHandler ()
       , wsm_ (wsm)
       , parent_ (parent)
       , pushed_ (false)

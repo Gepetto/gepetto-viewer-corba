@@ -121,7 +121,6 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadrobot.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadenvironment.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/pluginmanagerdialog.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/shortcut-factory.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-handler.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-event.hh
@@ -135,12 +134,13 @@ IF(NOT CLIENT_ONLY)
       ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pythonwidget.hh)
   ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
   SET (${PROJECT_NAME}_HEADERS_NO_MOC
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
     ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/plugin-interface.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/plugin-interface.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
+    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
     )
 
   SET(${PROJECT_NAME}_FORMS
