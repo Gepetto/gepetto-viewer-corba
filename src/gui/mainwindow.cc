@@ -53,7 +53,6 @@ namespace gepetto {
       centralWidget_ (),
       osgViewerManagers_ (),
       osgServer_ (NULL),
-      backgroundQueue_(),
       worker_ (),
       actionSearchBar_ (new ActionSearchBar(this))
     {
@@ -78,14 +77,6 @@ namespace gepetto {
       // Setup the main OSG widget
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
 
-      connect (&backgroundQueue_, SIGNAL (done(int)), this, SLOT (handleWorkerDone(int)));
-      connect (&backgroundQueue_, SIGNAL (failed(int,const QString&)),
-          this, SLOT (logJobFailed(int, const QString&)));
-      connect (this, SIGNAL (sendToBackground(WorkItem*)),
-          &backgroundQueue_, SLOT (perform(WorkItem*)));
-      backgroundQueue_.moveToThread(&worker_);
-      worker_.start();
-
       collisionLabel_ = new QLabel("No collisions.");
       shortcutFactory_ = new ShortcutFactory;
 #if GEPETTO_GUI_HAS_PYTHONQT
@@ -98,7 +89,7 @@ namespace gepetto {
       selectionHandler_->addMode(new MultiSelection(osgViewerManagers_));
       selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
 
-      ui_->osgToolBar->addWidget(selectionHandler_);
+      ui_->mainToolBar->addWidget(selectionHandler_);
     }
 
     MainWindow::~MainWindow()
@@ -140,11 +131,6 @@ namespace gepetto {
       ui_->menuWindow->removeAction(dock->toggleViewAction());
       disconnect(dock);
       QMainWindow::removeDockWidget(dock);
-    }
-
-    BackgroundQueue& MainWindow::worker()
-    {
-      return backgroundQueue_;
     }
 
     WindowsManagerPtr_t MainWindow::osg() const
@@ -195,11 +181,6 @@ namespace gepetto {
       ui_->logText->insertHtml("<hr/><font color=red>"+text+"</font>");
       if (SBwasAtBottom)
         sb->setValue(sb->maximum());
-    }
-
-    void MainWindow::emitSendToBackground(WorkItem *item)
-    {
-      emit sendToBackground(item);
     }
 
     QMenu *MainWindow::pluginMenu() const
@@ -261,12 +242,7 @@ namespace gepetto {
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
-        ui_->osgToolBar->show();
-
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
-        connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-        connect(ui_->actionRecordMovie, SIGNAL (toggled(bool)), centralWidget_, SLOT (toggleCapture(bool)));
       }
       actionSearchBar_->addAction(new NodeAction("Attach camera " + osgWidget->objectName() + " to selected node", osgWidget, this));
       osgWidget->addAction(actionSearchBar_->showAction());
@@ -292,13 +268,9 @@ namespace gepetto {
         robotNames_.append (rd.robotName_);
 
         QString what = QString ("Loading robot ") + rd.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadRobot::RobotDefinition>
-                 (loader, &ModelInterface::loadRobotModel, rd);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadRobotModel, rd);
+          logString (what);
         }
       }
       d->close();
@@ -326,13 +298,9 @@ namespace gepetto {
         }
 
         QString what = QString ("Loading environment ") + ed.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadEnvironment::EnvironmentDefinition>
-                 (loader, &ModelInterface::loadEnvironmentModel, ed);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadEnvironmentModel, ed);
+          logString (what);
         }
       }
       statusBar()->clearMessage();
@@ -438,9 +406,7 @@ namespace gepetto {
       QMenu* toolbar = ui_->menuWindow->addMenu("Tool bar");
       toolbar->setIcon(QIcon::fromTheme("configure-toolbars"));
       ui_->mainToolBar->setVisible(true);
-      ui_->osgToolBar->setVisible(false);
       toolbar->addAction (ui_->mainToolBar->toggleViewAction ());
-      toolbar->addAction (ui_->osgToolBar->toggleViewAction ());
 
       ui_->menuWindow->addSeparator();
 
@@ -483,7 +449,6 @@ namespace gepetto {
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
       connect (ui_->actionClose_connections, SIGNAL (triggered ()), SLOT(closeConnection()));
-      connect (ui_->actionFetch_configuration, SIGNAL (triggered ()), SLOT(requestApplyCurrentConfiguration()));
 
       connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));
       connect (this, SIGNAL(logErrorString(QString)), SLOT(logError(QString)));
@@ -494,6 +459,7 @@ namespace gepetto {
       actionSearchBar_->addAction(new NodeAction(NodeAction::VISIBILITY_OFF, "Hide node", this));
       actionSearchBar_->addAction(new NodeAction(NodeAction::ALWAYS_ON_TOP, "Always on top", this));
       actionSearchBar_->addAction(ui_->actionFetch_configuration);
+      actionSearchBar_->addAction(ui_->actionSend_configuration);
       actionSearchBar_->addAction(ui_->actionClose_connections);
       actionSearchBar_->addAction(ui_->actionReconnect);
       actionSearchBar_->addAction(ui_->actionRefresh);

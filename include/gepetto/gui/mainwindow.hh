@@ -75,9 +75,6 @@ namespace gepetto {
         /// \param dock widget to remove
         void removeDockWidget (QDockWidget* dock);
 
-        /// Get the worker.
-        BackgroundQueue &worker();
-
         /// Get
         WindowsManagerPtr_t osg () const;
 
@@ -94,9 +91,6 @@ namespace gepetto {
 
         ActionSearchBar* actionSearchBar () const;
 
-        /// Emit a signal to indicate that a job has been put in background.
-        void emitSendToBackground (WorkItem* item);
-
         QMenu* pluginMenu () const;
 
 #if GEPETTO_GUI_HAS_PYTHONQT
@@ -108,7 +102,6 @@ namespace gepetto {
 #endif
 
 signals:
-        void sendToBackground (WorkItem* item);
         /// Triggered when an OSGWidget is created.
         void viewCreated (OSGWidget* widget);
         void refresh ();
@@ -254,7 +247,6 @@ signals:
 
         WindowsManagerPtr_t osgViewerManagers_;
         CorbaServer* osgServer_;
-        BackgroundQueue backgroundQueue_;
         QThread worker_;
 
         QCheckBox* collisionValidationActivated_;

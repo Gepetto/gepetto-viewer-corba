@@ -30,6 +30,7 @@
 #include <gepetto/gui/fwd.hh>
 #include <gepetto/gui/windows-manager.hh>
 
+class QToolBar;
 class QProcess;
 class QTextBrowser;
 
@@ -59,12 +60,13 @@ namespace gepetto {
 
         public slots:
         /// Replace the camera at her home position.
-        virtual void onHome();
+        void onHome();
 
         void addFloor();
 
         void toggleCapture (bool active);
 
+        void captureFrame ();
         void captureFrame (const std::string& filename);
         bool startCapture (const std::string& filename, const std::string& extension);
         bool stopCapture ();
@@ -76,6 +78,9 @@ namespace gepetto {
         void readyReadProcessOutput ();
 
       private:
+        void initToolBar ();
+        void initGraphicsWindowsAndViewer (MainWindow* parent);
+
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
         WindowsManagerPtr_t wsm_;
         osg::ref_ptr<PickHandler> pickHandler_;
@@ -84,6 +89,8 @@ namespace gepetto {
         QTimer timer_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
+
+        QToolBar* toolBar_;
 
         // To record movies.
         QProcess* process_;

@@ -50,8 +50,12 @@
 
 #include <QDebug>
 #include <QKeyEvent>
-#include <QWheelEvent>
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+# include <QStandardPaths>
+#endif
+#include <QToolBar>
 #include <QVBoxLayout>
+#include <QWheelEvent>
 
 #include <gepetto/viewer/urdf-parser.h>
 #include <gepetto/viewer/OSGManipulator/keyboard-manipulator.h>
@@ -73,48 +77,13 @@ namespace gepetto {
     , wm_ ()
     , viewer_ (new osgViewer::Viewer)
     , screenCapture_ ()
+    , toolBar_ (new QToolBar (QString::fromStdString(name) + " tool bar"))
     , process_ (new QProcess (this))
     , showPOutput_ (new QDialog (this, Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint))
     , pOutput_ (new QTextBrowser())
     {
-      osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-      osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
-      traits_ptr->windowName = "Gepetto Viewer";
-      traits_ptr->x = this->x();
-      traits_ptr->y = this->y();
-      traits_ptr->width = this->width();
-      traits_ptr->height = this->height();
-      traits_ptr->windowDecoration = false;
-      traits_ptr->doubleBuffer = true;
-      traits_ptr->vsync = true;
-      //  traits_ptr->sharedContext = 0;
-
-      graphicsWindow_ = new osgQt::GraphicsWindowQt ( traits_ptr );
-
-      osg::Camera* camera = viewer_->getCamera();
-      camera->setGraphicsContext( graphicsWindow_ );
-
-      camera->setClearColor( osg::Vec4(0.2f, 0.2f, 0.6f, 1.0f) );
-      camera->setViewport( new osg::Viewport(0, 0, traits_ptr->width, traits_ptr->height) );
-      camera->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(traits_ptr->width)/static_cast<double>(traits_ptr->height), 1.0f, 10000.0f );
-
-      viewer_->setKeyEventSetsDone(0);
-
-
-      osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
-      keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
-      keyswitchManipulator->addMatrixManipulator( '2', "First person", new ::osgGA::KeyboardManipulator(graphicsWindow_));
-      keyswitchManipulator->selectMatrixManipulator (0);
-      viewer_->setCameraManipulator( keyswitchManipulator.get() );
-
-      screenCapture_ = new osgViewer::ScreenCaptureHandler (
-            new osgViewer::ScreenCaptureHandler::WriteToFile (
-              parent->settings_->captureDirectory + "/" + parent->settings_->captureFilename,
-              parent->settings_->captureExtension),
-            1);
-      viewer_->addEventHandler(screenCapture_);
-      viewer_->addEventHandler(new osgViewer::HelpHandler);
-      viewer_->addEventHandler(pickHandler_);
+      initGraphicsWindowsAndViewer (parent);
+      initToolBar ();
 
       wid_ = wm->createWindow (name, this, viewer_, graphicsWindow_.get());
       wm_ = wsm_->getWindowManager (wid_);
@@ -126,8 +95,9 @@ namespace gepetto {
       QVBoxLayout* hblayout = new QVBoxLayout (this);
       hblayout->setContentsMargins(1,1,1,1);
       setLayout (hblayout);
+      hblayout->addWidget(toolBar_);
       hblayout->addWidget(glWidget);
-      setMinimumSize(10,10);
+      glWidget->setMinimumSize(50,10);
 
       connect( &timer_, SIGNAL(timeout()), this, SLOT(update()) );
       timer_.start(parent->settings_->refreshRate);
@@ -219,6 +189,27 @@ namespace gepetto {
       }
     }
 
+    void OSGWidget::captureFrame ()
+    {
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+      QString pathname = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+#else
+      QString pathname = QDir::home().filePath("Pictures");
+#endif
+      if (pathname.isEmpty()) {
+        qDebug() << "Unable to get the directory where to write images";
+        return;
+      }
+      QDir path (pathname);
+      if (!path.mkpath(".")) {
+        qDebug() << "Unable to create directory" << pathname;
+        return;
+      }
+      QString filename (path.filePath (
+            QDateTime::currentDateTime().toString("yyyy-MM-dd.hh-mm-ss'.png'")));
+      captureFrame (filename.toStdString());
+    }
+
     void OSGWidget::captureFrame (const std::string& filename)
     {
       graphics::ScopedLock lock(wsm_->osgFrameMutex());
@@ -243,6 +234,81 @@ namespace gepetto {
     void OSGWidget::readyReadProcessOutput()
     {
       pOutput_->append(process_->readAll());
+    }
+
+    QIcon iconFromTheme (const QString& name)
+    {
+      QIcon icon;
+      if (QIcon::hasThemeIcon(name)) {
+        icon = QIcon::fromTheme(name);
+      } else {
+        icon.addFile(QString::fromUtf8(""), QSize(), QIcon::Normal, QIcon::Off);
+      }
+      return icon;
+    }
+
+    void OSGWidget::initToolBar ()
+    {
+      toolBar_->addAction(
+          iconFromTheme("zoom-fit-best"), "Zoom to fit", this, SLOT(onHome()))
+        ->setToolTip("Zoom to fit");
+
+      QIcon icon;
+      icon.addFile(QString::fromUtf8(":/icons/floor.png"), QSize(), QIcon::Normal, QIcon::Off);
+      toolBar_->addAction(icon, "Add floor", this, SLOT(addFloor()))
+        ->setToolTip("Add a floor");
+
+      toolBar_->addAction(iconFromTheme("insert-image"), "Take snapshot",
+          this, SLOT(captureFrame()))
+        ->setToolTip("Take a snapshot");
+
+      QAction* recordMovie = toolBar_->addAction(iconFromTheme("media-record"), "Record movie",
+          this, SLOT(toggleCapture(bool)));
+      recordMovie->setCheckable (true);
+      recordMovie->setToolTip("Record the central widget as a sequence of images. You can find the images in /tmp/gepetto-gui/record/img_%d.jpeg");
+    }
+
+    void OSGWidget::initGraphicsWindowsAndViewer (MainWindow* parent)
+    {
+      osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+      osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
+      traits_ptr->windowName = "Gepetto Viewer";
+      traits_ptr->x = this->x();
+      traits_ptr->y = this->y();
+      traits_ptr->width = this->width();
+      traits_ptr->height = this->height();
+      traits_ptr->windowDecoration = false;
+      traits_ptr->doubleBuffer = true;
+      traits_ptr->vsync = true;
+      //  traits_ptr->sharedContext = 0;
+
+      graphicsWindow_ = new osgQt::GraphicsWindowQt ( traits_ptr );
+
+      osg::Camera* camera = viewer_->getCamera();
+      camera->setGraphicsContext( graphicsWindow_ );
+
+      camera->setClearColor( osg::Vec4(0.2f, 0.2f, 0.6f, 1.0f) );
+      camera->setViewport( new osg::Viewport(0, 0, traits_ptr->width, traits_ptr->height) );
+      camera->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(traits_ptr->width)/static_cast<double>(traits_ptr->height), 1.0f, 10000.0f );
+
+      viewer_->setKeyEventSetsDone(0);
+
+      // Manipulators
+      osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+      keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+      keyswitchManipulator->addMatrixManipulator( '2', "First person", new ::osgGA::KeyboardManipulator(graphicsWindow_));
+      keyswitchManipulator->selectMatrixManipulator (0);
+      viewer_->setCameraManipulator( keyswitchManipulator.get() );
+
+      // Event handlers
+      screenCapture_ = new osgViewer::ScreenCaptureHandler (
+            new osgViewer::ScreenCaptureHandler::WriteToFile (
+              parent->settings_->captureDirectory + "/" + parent->settings_->captureFilename,
+              parent->settings_->captureExtension),
+            1);
+      viewer_->addEventHandler(screenCapture_);
+      viewer_->addEventHandler(new osgViewer::HelpHandler);
+      viewer_->addEventHandler(pickHandler_);
     }
   } // namespace gui
 } // namespace gepetto
