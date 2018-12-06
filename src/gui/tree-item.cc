@@ -92,6 +92,29 @@ namespace gepetto {
       return dsb;
     }
 
+    QWidget* intPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop,
+        bool isSigned)
+    {
+      QSpinBox* dsb = new QSpinBox;
+      int value;
+      if (isSigned) {
+        /* bool success = */ prop->get(value);
+      } else {
+        unsigned long v;
+        /* bool success = */ prop->get(v);
+        value = (int)v;
+      }
+      dsb->setValue(value);
+      if (prop->hasWriteAccess()) {
+        if (isSigned)
+          bti->connect(dsb, SIGNAL(valueChanged(int)), SLOT(setIntProperty(int)));
+        else
+          bti->connect(dsb, SIGNAL(valueChanged(int)), SLOT(setUIntProperty(int)));
+      } else
+        dsb->setEnabled(false);
+      return dsb;
+    }
+
     QWidget* colorPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
     {
       if (!prop->hasWriteAccess()) return NULL;
@@ -155,6 +178,10 @@ namespace gepetto {
           field = stringPropertyEditor(this, prop);
         } else if (prop->type() == "float") {
           field = floatPropertyEditor(this, prop);
+        } else if (prop->type() == "int") {
+          field = intPropertyEditor(this, prop, true);
+        } else if (prop->type() == "unsigned long") {
+          field = intPropertyEditor(this, prop, false);
         } else if (prop->type() == "osgVector4") {
           if (name.contains ("color", Qt::CaseInsensitive)) {
             field = colorPropertyEditor (this, prop);
@@ -195,6 +222,11 @@ namespace gepetto {
     void BodyTreeItem::setIntProperty (int value) const
     {
       setProperty (QObject::sender(), value);
+    }
+
+    void BodyTreeItem::setUIntProperty (int value) const
+    {
+      setProperty (QObject::sender(), (unsigned long)value);
     }
 
     void BodyTreeItem::setStringProperty (const QString& value) const
