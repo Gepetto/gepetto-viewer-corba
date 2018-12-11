@@ -221,7 +221,15 @@ namespace gepetto {
 
     void BodyTreeItem::setIntProperty (int value) const
     {
-      setProperty (QObject::sender(), value);
+      QObject* sender = QObject::sender();
+      QComboBox* cb = qobject_cast<QComboBox*>(sender);
+      if (cb != NULL) {
+        // Enum property
+        int enumValue = cb->itemData (value).toInt();
+        setProperty (sender, enumValue);
+      } else {
+        setProperty (sender, value);
+      }
     }
 
     void BodyTreeItem::setUIntProperty (int value) const
