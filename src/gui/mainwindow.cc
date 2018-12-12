@@ -400,6 +400,47 @@ namespace gepetto {
       }
     }
 
+    void MainWindow::hsplitTabifiedDockWidget()
+    {
+      splitTabifiedDockWidget(Qt::Horizontal);
+    }
+
+    void MainWindow::vsplitTabifiedDockWidget()
+    {
+      splitTabifiedDockWidget(Qt::Vertical);
+    }
+
+    QDockWidget* getParentDockWidget (QObject* child)
+    {
+      QDockWidget* dock = NULL;
+      while (child != NULL) {
+        dock = qobject_cast<QDockWidget*> (child);
+        if (dock!=NULL) break;
+        child = child->parent();
+      }
+      return dock;
+    }
+
+    void MainWindow::splitTabifiedDockWidget(Qt::Orientation orientation)
+    {
+      // QDockWidget focused
+      QDockWidget* dock = getParentDockWidget (QApplication::focusWidget());
+      if (dock==NULL) {
+        qDebug() << "No QDockWidget focused";
+        return;
+      }
+      // QDockWidget under cursor
+      QDockWidget* other = getParentDockWidget (
+          QApplication::widgetAt (QCursor::pos()));
+      if (other==NULL) {
+        qDebug() << "No QDockWidget under cursor";
+        return;
+      }
+      if (other == dock) return;
+      qDebug() << "Split " << dock->objectName() << other->objectName() << orientation;
+      splitDockWidget(dock, other, orientation);
+    }
+
     void MainWindow::setupInterface()
     {
       // Menu "Window"
@@ -423,6 +464,16 @@ namespace gepetto {
       registerShortcut("Python console", "Toggle view", pythonWidget_->toggleViewAction());
 #endif
 
+      // Add QActions to split dock widgets
+      QAction* vsplit = new QAction("Split focused dock widget vertically", this);
+      vsplit->setShortcut (Qt::CTRL + Qt::Key_S);
+      addAction (vsplit);
+      connect(vsplit, SIGNAL(triggered ()), SLOT(vsplitTabifiedDockWidget()));
+      QAction* hsplit = new QAction("Split focused dock widget horizontally", this);
+      hsplit->setShortcut (Qt::CTRL + Qt::Key_H);
+      addAction (hsplit);
+      connect(hsplit, SIGNAL(triggered ()), SLOT(hsplitTabifiedDockWidget()));
+
       registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
       registerShortcut("Body tree widget", "Toggle view", ui_->dockWidget_bodyTree->toggleViewAction ());
       registerShortcut("Main window", ui_->actionLoad_robot_from_file);
@@ -432,6 +483,8 @@ namespace gepetto {
       registerShortcut("Main window", ui_->actionReconnect);
       registerShortcut("Main window", ui_->actionRefresh);
       registerShortcut("Main window", ui_->actionPlugins);
+      registerShortcut("Main window", vsplit);
+      registerShortcut("Main window", hsplit);
 
       ui_->menuWindow->addSeparator();
 
