@@ -451,12 +451,14 @@ typedef sequence<Transform> TransformSeq;
     /// \param filename, extension image files will be
     /// '<filename>_<sequence_number>.<extension>'
     ///
-    /// \note To make a movie from the sequence of images, you can run:
+    /// To make a movie from the sequence of images, you can run:
     /// \code{.sh}
-    ///   ffmpeg -r 50 -i capture_0_%d.jpeg -r 25 -vcodec libx264 video.mp4
+    ///   avconv -r 25 -i capture_%6d.png -vf crop=1908:1000:0:0 -r 25 -pix_fmt yuv420p -c:v libx264 ../video2.mp4
     /// \endcode
-    /// Note that <EM>libx264</EM> is not installed by default. On ubuntu 12.04,
-    /// it is part of the package <EM>libavcodec-extra-53</EM>
+    /// \note
+    /// - \c libx264 is not installed by default. On ubuntu 12.04,
+    ///   it is part of the package \c libavcodec-extra-53.
+    /// - \c yuv420p is required only to enable support for old media players.
     boolean startCapture (in unsigned long windowId, in string filename,
       in string extension) raises (Error);
 

@@ -6,6 +6,4 @@ INPUT           = @CMAKE_SOURCE_DIR@/include    \
                   @CMAKE_SOURCE_DIR@/pyplugins  \
                   @CMAKE_SOURCE_DIR@/doc
 
-GENERATE_TREEVIEW      = NO
-
-EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/
+EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/examples
