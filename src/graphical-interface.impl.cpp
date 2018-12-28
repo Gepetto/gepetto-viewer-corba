@@ -286,8 +286,6 @@ namespace graphics {
       {
       }
 
-      BIND_TO_WINDOWS_MANAGER_1(BOOL, setRate, LONG)
-
       BIND_TO_WINDOWS_MANAGER_1(WINDOW_ID, createWindow, STRING)
 
       BIND_TO_WINDOWS_MANAGER_1(WINDOW_ID, getWindowID, STRING)

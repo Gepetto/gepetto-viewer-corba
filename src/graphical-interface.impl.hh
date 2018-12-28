@@ -55,7 +55,6 @@ public:
   virtual Names_t* getSceneList() throw (Error);
   virtual Names_t* getWindowList() throw (Error);
 
-  virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
 
   virtual WindowID createWindow(const char* windowNameCorba) throw (Error);

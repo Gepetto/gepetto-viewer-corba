@@ -41,10 +41,6 @@ typedef sequence<Transform> TransformSeq;
     /// \anchor idl_windows_and_scenes
     /// \{
 
-    /// Set time between window frames
-    /// \param input rate : waiting time (ms) between two frames.
-    boolean setRate(in long rate) raises (Error);
-
     /// Create a new window.
     /// \param input name : name of the new window.
     /// return the ID of the newly create window.
