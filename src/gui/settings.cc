@@ -375,16 +375,24 @@ namespace gepetto {
       if (env.status() != QSettings::NoError) {
         logError(QString ("Enable to open configuration file ") + env.fileName());
       } else {
+        env.beginGroup("viewer");
+        QVariant rr (env.value ("refreshRate", refreshRate));
+        if (rr.canConvert<int>()) refreshRate = rr.toInt ();
+        else logError ("Setting viewer/refreshRate should be an integer.");
+        env.endGroup ();
+
         env.beginGroup("plugins");
         foreach (QString name, env.childKeys()) {
             addPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+
         env.beginGroup("pyplugins");
         foreach (QString name, env.childKeys()) {
             addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+
         env.beginGroup("omniORB");
         foreach (QString name, env.childKeys()) {
             addOmniORB ("-ORB" + name, env.value(name).toString());
@@ -443,19 +451,25 @@ namespace gepetto {
           QCoreApplication::organizationName (),
           getQSettingsFileName (configurationFile));
       if (!env.isWritable()) {
-          logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
-          return;
-        }
+        logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
+        return;
+      }
+      env.beginGroup("viewer");
+      env.setValue ("refreshRate", refreshRate);
+      env.endGroup ();
+
       env.beginGroup("plugins");
       for (PluginManager::Map::const_iterator p = pluginManager_.plugins ().constBegin();
-           p != pluginManager_.plugins().constEnd(); p++) {
-          env.setValue(p.key(), (noPlugin)?false:p.value()->isLoaded());
-        }
+          p != pluginManager_.plugins().constEnd(); p++) {
+        env.setValue(p.key(), (noPlugin)?false:p.value()->isLoaded());
+      }
       env.endGroup ();
+
       env.beginGroup("pyplugins");
       foreach (QString name, pyplugins_)
         env.setValue(name, !noPlugin);
       env.endGroup ();
+
       env.beginGroup("omniORB");
       for (int i = 1; i < omniORBargv_.size(); i+=2)
         env.setValue (omniORBargv_[i-1].mid(4), omniORBargv_[i]);
