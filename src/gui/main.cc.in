@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
       break;
   }
   settings.fromFiles ();
+  if (settings.verbose) settings.print (std::cout) << std::endl;
 
   QSplashScreen splash(pixmap);
   splash.show();

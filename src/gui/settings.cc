@@ -163,7 +163,6 @@ namespace gepetto {
         au->write(std::cout, help, 80, true);
         if (retVal < 1) retVal = 1;
       }
-      if (verbose) print (std::cout) << std::endl;
       if (genAndQuit) writeSettings ();
 
       return retVal;
