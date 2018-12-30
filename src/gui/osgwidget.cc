@@ -82,7 +82,7 @@ namespace gepetto {
     , showPOutput_ (new QDialog (this, Qt::Dialog | Qt::WindowCloseButtonHint | Qt::WindowMinMaxButtonsHint))
     , pOutput_ (new QTextBrowser())
     {
-      initGraphicsWindowsAndViewer (parent);
+      initGraphicsWindowsAndViewer (parent, name);
       initToolBar ();
 
       wid_ = wm->createWindow (name, this, viewer_, graphicsWindow_.get());
@@ -268,11 +268,11 @@ namespace gepetto {
       recordMovie->setToolTip("Record the central widget as a sequence of images. You can find the images in /tmp/gepetto-gui/record/img_%d.jpeg");
     }
 
-    void OSGWidget::initGraphicsWindowsAndViewer (MainWindow* parent)
+    void OSGWidget::initGraphicsWindowsAndViewer (MainWindow* parent, const std::string& name)
     {
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
       osg::ref_ptr <osg::GraphicsContext::Traits> traits_ptr (new osg::GraphicsContext::Traits(ds));
-      traits_ptr->windowName = "Gepetto Viewer";
+      traits_ptr->windowName = name;
       traits_ptr->x = this->x();
       traits_ptr->y = this->y();
       traits_ptr->width = this->width();
