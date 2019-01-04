@@ -80,7 +80,7 @@ MACRO(GEPETTO_GUI_PLUGIN PLUGIN_NAME)
 ENDMACRO()
 
 # Declare a Python plugin
-MACRO(GEPETTO_GUI_DECLARE_PYPLUGIN file)
+MACRO(GEPETTO_GUI_PYPLUGIN file)
   STRING(MD5 file_md5 "${PYTHON_SITELIB}/${file}")
   STRING(REGEX REPLACE ".py$" "" module "${file}")
   STRING(REPLACE "/" "." module "${module}")

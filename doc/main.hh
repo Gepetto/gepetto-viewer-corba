@@ -48,6 +48,7 @@ plugins are easier to write than C++ plugins, but they do not offer
 full control of the interface (yet).
 
 See the \ref pluginlist for some examples.
+Building and installing plugins is made easy with \ref gepetto_viewer_corba_cmake_macros.
 
 - *Python plugins*
   See the documentation of gepetto::gui::PythonWidget for instructions
