@@ -188,29 +188,16 @@ namespace gepetto {
         pluginManager_.loadPlugin (name);
         pluginManager_.initPlugin (name);
       }
+      foreach (QString name, pyplugins_) {
+        pluginManager_.loadPyPlugin (name);
+      }
 #if GEPETTO_GUI_HAS_PYTHONQT
       PythonWidget* pw = mw->pythonWidget();
-      foreach (QString name, pyplugins_) {
-        if (name.endsWith (".py")) {
-          QFileInfo fi (name);
-          QString moduleName = fi.baseName();
-          QString script;
-          if (fi.isAbsolute()) script = name;
-          else script = QDir::currentPath() + QDir::separator() + name;
-          qDebug() << "Loading" << script << "into module" << moduleName;
-          pw->loadScriptPlugin (moduleName, script);
-        } else
-          pw->loadModulePlugin (name);
-      }
       // TODO Wouldn't it be better to do this later ?
       foreach (QString fileName, pyscripts_) {
         pw->runScript(fileName);
       }
 #else
-      foreach (QString name, pyplugins_) {
-        logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
-            "PYTHONQT flag. Cannot not load Python plugin " + name);
-      }
       foreach (QString fileName, pyscripts_) {
         logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
             "PYTHONQT flag. Cannot not load Python script " + fileName);
@@ -535,6 +522,7 @@ namespace gepetto {
     void Settings::addPyPlugin (const QString& plg, bool init)
     {
       if (init) pyplugins_.append (plg);
+      pluginManager_.declarePyPlugin (plg);
     }
 
     void Settings::addPyScript (const QString& fileName)

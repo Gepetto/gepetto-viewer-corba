@@ -282,7 +282,7 @@ namespace gepetto {
           SLOT(contextMenu(QPoint)));
 
       // Python plugin list
-      ui_->pypluginList->setColumnHidden(P_FILE, true);
+      //ui_->pypluginList->setColumnHidden(P_FILE, true);
       ui_->pypluginList->setColumnHidden(P_FULLPATH, true);
 
       connect(ui_->pypluginList, SIGNAL(customContextMenuRequested(QPoint)),
@@ -421,13 +421,13 @@ namespace gepetto {
       for (PluginManager::PyMap::const_iterator p = pm_->pyplugins ().constBegin();
           p != pm_->pyplugins().constEnd(); p++) {
         QString name = p.key(),
-                filename = p.key(),
+                filename = p.value(),
                 version = "";
         QIcon icon = pyicon (pm_->isPyPluginLoaded (p.key()));
 
         ui_->pypluginList->insertRow(ui_->pypluginList->rowCount());
         ui_->pypluginList->setItem(ui_->pypluginList->rowCount() - 1, P_NAME, new QTableWidgetItem (icon, name));
-        //ui_->pypluginList->setItem(ui_->pypluginList->rowCount() - 1, P_FILE, new QTableWidgetItem (filename));
+        ui_->pypluginList->setItem(ui_->pypluginList->rowCount() - 1, P_FILE, new QTableWidgetItem (filename));
         //ui_->pypluginList->setItem(ui_->pypluginList->rowCount() - 1, P_VERSION, new QTableWidgetItem (version));
         //ui_->pypluginList->setItem(ui_->pypluginList->rowCount() - 1, P_FULLPATH, new QTableWidgetItem (fullpath));
       }
