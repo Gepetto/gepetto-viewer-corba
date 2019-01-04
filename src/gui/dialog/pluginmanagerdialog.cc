@@ -37,7 +37,7 @@ namespace gepetto {
       if (pl->isLoaded()) {
         const PluginInterface* pi = const_instance_cast <PluginInterface> (pl);
         if (pi && pi->isInit ()) {
-          return QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+          return QApplication::style()->standardIcon(QStyle::SP_DialogOkButton);
         }
         return QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning);
       }
@@ -47,7 +47,7 @@ namespace gepetto {
     QIcon pyicon(bool loaded)
     {
       if (loaded)
-        return QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+        return QApplication::style()->standardIcon(QStyle::SP_DialogOkButton);
       return QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical);
     }
 
