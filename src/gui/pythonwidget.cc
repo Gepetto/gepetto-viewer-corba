@@ -146,6 +146,11 @@ namespace gepetto {
         settings.endGroup();
       }
 
+      bool PythonWidget::hasPlugin (const QString& name)
+      {
+        return modules_.contains (name);
+      }
+
       void PythonWidget::loadScriptPlugin(QString moduleName, QString fileName)
       {
         PythonQt* pqt = PythonQt::self();

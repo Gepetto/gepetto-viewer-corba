@@ -101,6 +101,8 @@ namespace gepetto {
       void saveHistory (QSettings& settings);
       void restoreHistory (QSettings& settings);
 
+      bool hasPlugin (const QString& name);
+
     public slots:
       /// Load a plugin by importing a module
       ///
