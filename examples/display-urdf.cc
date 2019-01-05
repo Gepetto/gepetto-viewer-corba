@@ -23,9 +23,7 @@ int main(int argc, const char ** argv)
     client.connect ();
 
     Client::WindowID windowId = client.gui()->createWindow("urdf-display");
-    client.gui()->createScene("scene-urdf");
-    client.gui()->addSceneToWindow("scene-urdf",windowId);
-    client.gui()->addURDF("scene-urdf/urdf", argv[1], argv[2]);
+    client.gui()->addURDF("urdf-display/urdf", argv[1], argv[2]);
 
     client.gui()->refresh();
 
