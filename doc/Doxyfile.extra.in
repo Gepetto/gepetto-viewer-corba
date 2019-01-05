@@ -8,3 +8,5 @@ INPUT           = @CMAKE_SOURCE_DIR@/include    \
 
 EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/examples
 LAYOUT_FILE     = @CMAKE_SOURCE_DIR@/doc/layout.xml
+
+TAGFILES        += @QT_TAGFILES@
