@@ -16,6 +16,8 @@
 # <http://www.gnu.org/licenses/>.
 
 SET(LIBRARY_NAME ${PROJECT_NAME})
+
+# {{{ Generate C++ and Python files from IDL files.
 SET(IDL_SOURCES
   graphical-interface
   )
@@ -47,45 +49,132 @@ FOREACH(IDL ${IDL_SOURCES})
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver)
 ENDFOREACH()
 
+ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
+ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
+# }}}
+
+# {{{ C++ client: generate the library
+ADD_LIBRARY(${LIBRARY_NAME}
+  SHARED
+  client.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
+  ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
+)
+ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
+ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
+
+PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
+
+INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
+# }}}
+
+# {{{ C++ application: generate the executable if requested
 IF(NOT CLIENT_ONLY)
 
-  ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
-  ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
-
-  ADD_LIBRARY(${LIBRARY_NAME}
-    SHARED
+  # {{{ Setup source files
+  SET (${PROJECT_NAME}_SOURCES
     graphical-interface.impl.cpp
-    graphical-interface.impl.hh
     server.cc
-    client.cc
     server-private.cc
-    server-private.hh
-    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interface.hh
     ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/graphical-interfaceSK.cc
-  )
+
+    ${CMAKE_BINARY_DIR}/src/gui/main.cc
+    gui/settings.cc
+    gui/windows-manager.cc
+    gui/safeapplication.cc
+    gui/mainwindow.cc
+    gui/osgwidget.cc
+    gui/pick-handler.cc
+    gui/tree-item.cc
+    gui/omniorbthread.cc
+    gui/bodytreewidget.cc
+    gui/ledindicator.cc
+    gui/dialog/dialogloadrobot.cc
+    gui/dialog/dialogloadenvironment.cc
+    gui/dialog/pluginmanagerdialog.cc
+    gui/shortcut-factory.cc
+    gui/selection-handler.cc
+    gui/selection-event.cc
+    gui/action-search-bar.cc
+    gui/node-action.cc
+    )
+
   # Removes 5 warnings about anonymous variadic macros that were added from
   # c++ 11.
   SET_SOURCE_FILES_PROPERTIES(graphical-interface.impl.cpp
     PROPERTIES
     COMPILE_FLAGS "-Wno-variadic-macros")
+  # }}}
 
-  ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
-  ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
+  # {{{ Configure PythonQt
+  IF(GEPETTO_GUI_HAS_PYTHONQT)
+    INCLUDE_DIRECTORIES(SYSTEM "${PYTHON_INCLUDE_DIR}" "${PYTHONQT_INCLUDE_DIR}")
+    SET (${PROJECT_NAME}_SOURCES
+      ${${PROJECT_NAME}_SOURCES}
+      gui/pythonwidget.cc)
+    SET (${PROJECT_NAME}_MOC
+      ${${PROJECT_NAME}_HEADERS_MOC}
+      gui/python-decorator.hh
+      )
+  ELSE (GEPETTO_GUI_HAS_PYTHONQT)
+    MESSAGE(STATUS "Skipping PythonQt settings")
+    SET (${PROJECT_NAME}_MOC
+      ${${PROJECT_NAME}_HEADERS_MOC}
+      )
+  ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
+  # }}}
 
-  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} omniORB4)
-  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} gepetto-viewer)
-  PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} urdfdom)
-  TARGET_LINK_LIBRARIES(${LIBRARY_NAME} ${Boost_LIBRARIES})
+  # {{{ QT config: Compile meta-objects and executable
+  SET (${PROJECT_NAME}_HEADERS
+    ${${PROJECT_NAME}_HEADERS_MOC}
+    ${${PROJECT_NAME}_HEADERS_NO_MOC}
+    )
 
-  INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION lib)
+  IF(USE_QT4)
+    QT4_WRAP_CPP(${PROJECT_NAME}_HEADERS_MOCED ${${PROJECT_NAME}_MOC})
+    QT4_WRAP_UI(${PROJECT_NAME}_FORMS_HEADERS ${${PROJECT_NAME}_FORMS})
+    QT4_ADD_RESOURCES(${PROJECT_NAME}_RESOURCES_RCC ${${PROJECT_NAME}_RESOURCES})
+    INCLUDE(${QT_USE_FILE})
+  ELSE(USE_QT4)
+    QT5_WRAP_CPP(${PROJECT_NAME}_HEADERS_MOCED ${${PROJECT_NAME}_MOC})
+    QT5_WRAP_UI(${PROJECT_NAME}_FORMS_HEADERS ${${PROJECT_NAME}_FORMS})
+    QT5_ADD_RESOURCES(${PROJECT_NAME}_RESOURCES_RCC ${${PROJECT_NAME}_RESOURCES})
+  ENDIF(USE_QT4)
 
-ELSE(NOT CLIENT_ONLY)
+  ADD_DEFINITIONS(${QT_DEFINITIONS})
+  # }}}
 
-  ADD_CUSTOM_TARGET(generate_idl_cpp ALL DEPENDS ${ALL_IDL_CPP_STUBS})
-  ADD_CUSTOM_TARGET(generate_idl_python ALL DEPENDS ${ALL_IDL_PYTHON_STUBS})
+  # {{{ Compile, link and install
+  ADD_EXECUTABLE(gepetto-gui ${${PROJECT_NAME}_SOURCES}
+    ${${PROJECT_NAME}_HEADERS_MOCED}
+    ${${PROJECT_NAME}_HEADERS_NO_MOC}
+    ${${PROJECT_NAME}_FORMS_HEADERS}
+    ${${PROJECT_NAME}_RESOURCES_RCC}
+    )
+
+  ADD_DEPENDENCIES (gepetto-gui generate_idl_cpp)
+  ADD_DEPENDENCIES (gepetto-gui generate_idl_python)
+
+  TARGET_LINK_LIBRARIES(gepetto-gui ${QT_LIBRARIES} ${Boost_LIBRARIES})
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-gui gepetto-viewer)
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openscenegraph)
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-gui openthreads)
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-gui ${OSGQT_LIB_NAME})
+  PKG_CONFIG_USE_DEPENDENCY(gepetto-gui omniORB4)
+  IF (GEPETTO_GUI_HAS_PYTHONQT)
+    TARGET_LINK_LIBRARIES(gepetto-gui ${PYTHONQT_LIBRARIES})
+  ENDIF (GEPETTO_GUI_HAS_PYTHONQT)
+
+  INSTALL(TARGETS gepetto-gui DESTINATION bin)
+
+  #PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} urdfdom)
+
+  # }}}
 
 ENDIF(NOT CLIENT_ONLY)
+# }}}
 
+# {{{ Python client: install Python files
 MAKE_DIRECTORY(${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba)
 
 INSTALL(
@@ -108,3 +197,4 @@ INSTALL(
   ${CMAKE_CURRENT_SOURCE_DIR}/../blender/gepettoimport.py
   DESTINATION ${PYTHON_SITELIB}/gepetto/blender
   )
+# }}}
