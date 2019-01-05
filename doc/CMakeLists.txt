@@ -15,6 +15,7 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+# {{{ Find Qt tags
 SET(_use_qt_local_doc FALSE)
 SET(qt_online_doc "http://doc.qt.io")
 
@@ -57,3 +58,6 @@ ELSE(USE_QT4)
   ENDFOREACH()
   SET(QT_TAGFILES ${_QT_TAGFILES} PARENT_SCOPE)
 ENDIF(USE_QT4)
+# }}}
+
+# vim: foldmethod=marker foldlevel=0

@@ -198,3 +198,5 @@ INSTALL(
   DESTINATION ${PYTHON_SITELIB}/gepetto/blender
   )
 # }}}
+
+# vim: foldmethod=marker foldlevel=0
