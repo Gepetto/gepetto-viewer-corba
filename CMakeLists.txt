@@ -45,11 +45,6 @@ SET(${PROJECT_NAME}_HEADERS
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-OPTION(DISABLE_SAMPLING "Activate this option if your computer have no graphic card or a small one" OFF)
-if(DISABLE_SAMPLING)
-  ADD_DEFINITIONS(-DDISABLE_SAMPLING)
-endif()
-
 SETUP_PROJECT ()
 
 # Dependencies
