@@ -100,6 +100,7 @@ IF(NOT CLIENT_ONLY)
   ELSE()
     SET(GEPETTO_GUI_HAS_PYTHONQT FALSE CACHE BOOL "Use PythonQt dependency")
   ENDIF()
+  ADD_OPTIONAL_DEPENDENCY("qgv")
   # }}}
 
   # {{{ Packaging
