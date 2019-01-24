@@ -331,7 +331,7 @@ namespace gepetto {
 
 #define _to_str_(a) #a
 #define _to_str(a) _to_str_(a)
-#define _osg_version_str _to_str(OPENSCENEGRAPH_MAJOR_VERSION)"."_to_str(OPENSCENEGRAPH_MINOR_VERSION)"."_to_str(OPENSCENEGRAPH_PATCH_VERSION)
+#define _osg_version_str _to_str(OPENSCENEGRAPH_MAJOR_VERSION) "." _to_str(OPENSCENEGRAPH_MINOR_VERSION) "." _to_str(OPENSCENEGRAPH_PATCH_VERSION)
 
     void MainWindow::about()
     {
