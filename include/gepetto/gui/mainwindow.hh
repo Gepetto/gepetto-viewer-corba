@@ -75,9 +75,6 @@ namespace gepetto {
         /// \param dock widget to remove
         void removeDockWidget (QDockWidget* dock);
 
-        /// Get the worker.
-        BackgroundQueue &worker();
-
         /// Get
         WindowsManagerPtr_t osg () const;
 
@@ -94,9 +91,6 @@ namespace gepetto {
 
         ActionSearchBar* actionSearchBar () const;
 
-        /// Emit a signal to indicate that a job has been put in background.
-        void emitSendToBackground (WorkItem* item);
-
         QMenu* pluginMenu () const;
 
 #if GEPETTO_GUI_HAS_PYTHONQT
@@ -108,10 +102,6 @@ namespace gepetto {
 #endif
 
 signals:
-        void sendToBackground (WorkItem* item);
-        /// You should not need to call this function.
-        /// Use MainWindow::createView(const std::string&)
-        void createViewOnMainThread(const std::string& name);
         /// Triggered when an OSGWidget is created.
         void viewCreated (OSGWidget* widget);
         void refresh ();
@@ -233,6 +223,8 @@ signals:
         void openLoadEnvironmentDialog ();
         void activateCollision(bool activate);
         void dockVisibilityChanged(bool visible);
+        void hsplitTabifiedDockWidget();
+        void vsplitTabifiedDockWidget();
 
         void handleWorkerDone (int id);
 
@@ -241,6 +233,7 @@ signals:
         void about ();
 
       private:
+        void splitTabifiedDockWidget(Qt::Orientation orientation);
         void setupInterface ();
         void createCentralWidget ();
 
@@ -257,7 +250,6 @@ signals:
 
         WindowsManagerPtr_t osgViewerManagers_;
         CorbaServer* osgServer_;
-        BackgroundQueue backgroundQueue_;
         QThread worker_;
 
         QCheckBox* collisionValidationActivated_;
@@ -268,7 +260,6 @@ signals:
 
         ActionSearchBar* actionSearchBar_;
 
-        QMutex delayedCreateView_;
         QStringList robotNames_;
         QStringList lastBodiesInCollision_;
 

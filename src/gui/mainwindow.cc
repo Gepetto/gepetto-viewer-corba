@@ -20,6 +20,11 @@
 #include <QtGlobal>
 #include <QScrollBar>
 #include <QMessageBox>
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+# include <QtConcurrent>
+#endif
+
+#include <osg/Version>
 
 #include <gepetto/viewer/corba/server.hh>
 
@@ -34,7 +39,6 @@
 #include "gepetto/gui/action-search-bar.hh"
 #include "gepetto/gui/node-action.hh"
 
-#include <gepetto/gui/meta.hh>
 #include <gepetto/gui/config-dep.hh>
 
 #if GEPETTO_GUI_HAS_PYTHONQT
@@ -52,7 +56,6 @@ namespace gepetto {
       centralWidget_ (),
       osgViewerManagers_ (),
       osgServer_ (NULL),
-      backgroundQueue_(),
       worker_ (),
       actionSearchBar_ (new ActionSearchBar(this))
     {
@@ -75,17 +78,7 @@ namespace gepetto {
       osg()->createScene("hpp-gui");
 
       // Setup the main OSG widget
-      connect (this, SIGNAL (createViewOnMainThread(std::string)), SLOT (createView(std::string)));
-
       connect (ui_->actionRefresh, SIGNAL (triggered()), SLOT (requestRefresh()));
-
-      connect (&backgroundQueue_, SIGNAL (done(int)), this, SLOT (handleWorkerDone(int)));
-      connect (&backgroundQueue_, SIGNAL (failed(int,const QString&)),
-          this, SLOT (logJobFailed(int, const QString&)));
-      connect (this, SIGNAL (sendToBackground(WorkItem*)),
-          &backgroundQueue_, SLOT (perform(WorkItem*)));
-      backgroundQueue_.moveToThread(&worker_);
-      worker_.start();
 
       collisionLabel_ = new QLabel("No collisions.");
       shortcutFactory_ = new ShortcutFactory;
@@ -99,7 +92,7 @@ namespace gepetto {
       selectionHandler_->addMode(new MultiSelection(osgViewerManagers_));
       selectionHandler_->addMode(new UniqueSelection(osgViewerManagers_));
 
-      ui_->osgToolBar->addWidget(selectionHandler_);
+      ui_->mainToolBar->addWidget(selectionHandler_);
     }
 
     MainWindow::~MainWindow()
@@ -141,11 +134,6 @@ namespace gepetto {
       ui_->menuWindow->removeAction(dock->toggleViewAction());
       disconnect(dock);
       QMainWindow::removeDockWidget(dock);
-    }
-
-    BackgroundQueue& MainWindow::worker()
-    {
-      return backgroundQueue_;
     }
 
     WindowsManagerPtr_t MainWindow::osg() const
@@ -198,11 +186,6 @@ namespace gepetto {
         sb->setValue(sb->maximum());
     }
 
-    void MainWindow::emitSendToBackground(WorkItem *item)
-    {
-      emit sendToBackground(item);
-    }
-
     QMenu *MainWindow::pluginMenu() const
     {
       return ui_->menuWindow;
@@ -226,23 +209,18 @@ namespace gepetto {
     OSGWidget *MainWindow::createView(const std::string& name)
     {
       if (thread() != QThread::currentThread()) {
-        delayedCreateView_.lock();
-        emit createViewOnMainThread(name);
-        delayedCreateView_.lock();
-        delayedCreateView_.unlock();
-        return osgWindows_.last();
-      } else {
-        OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
-#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
-            , osgViewer::Viewer::SingleThreaded
-#endif
-            );
-        osgWidget->setObjectName(name.c_str());
-        addOSGWidget (osgWidget);
-        emit viewCreated(osgWidget);
-        delayedCreateView_.unlock();
-        return osgWidget;
+        qDebug() << "createView must be called from the main thread.";
+        throw std::runtime_error("Cannot create a new window.");
       }
+      OSGWidget* osgWidget = new OSGWidget (osgViewerManagers_, name, this, 0
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+          , osgViewer::Viewer::SingleThreaded
+#endif
+          );
+      osgWidget->setObjectName(name.c_str());
+      addOSGWidget (osgWidget);
+      emit viewCreated(osgWidget);
+      return osgWidget;
     }
 
     void MainWindow::requestRefresh()
@@ -267,12 +245,7 @@ namespace gepetto {
       if (osgWindows_.empty()) {
         // This OSGWidget should be the central view
         centralWidget_ = osgWidget;
-        connect(ui_->actionHome, SIGNAL (triggered()), centralWidget_, SLOT (onHome()));
-        ui_->osgToolBar->show();
-
         osg()->addSceneToWindow("hpp-gui", centralWidget_->windowID());
-        connect(ui_->actionAdd_floor, SIGNAL (triggered()), centralWidget_, SLOT (addFloor()));
-        connect(ui_->actionRecordMovie, SIGNAL (toggled(bool)), centralWidget_, SLOT (toggleCapture(bool)));
       }
       actionSearchBar_->addAction(new NodeAction("Attach camera " + osgWidget->objectName() + " to selected node", osgWidget, this));
       osgWidget->addAction(actionSearchBar_->showAction());
@@ -298,13 +271,9 @@ namespace gepetto {
         robotNames_.append (rd.robotName_);
 
         QString what = QString ("Loading robot ") + rd.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadRobot::RobotDefinition>
-                 (loader, &ModelInterface::loadRobotModel, rd);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadRobotModel, rd);
+          logString (what);
         }
       }
       d->close();
@@ -332,13 +301,9 @@ namespace gepetto {
         }
 
         QString what = QString ("Loading environment ") + ed.name_;
-        WorkItem* item;
         foreach (ModelInterface* loader, pluginManager()->get <ModelInterface> ()) {
-          item = new WorkItem_1 <ModelInterface, void,
-               DialogLoadEnvironment::EnvironmentDefinition>
-                 (loader, &ModelInterface::loadEnvironmentModel, ed);
-          logJobStarted(item->id(), what);
-          emit sendToBackground(item);
+          QtConcurrent::run (loader, &ModelInterface::loadEnvironmentModel, ed);
+          logString (what);
         }
       }
       statusBar()->clearMessage();
@@ -364,10 +329,20 @@ namespace gepetto {
       }
     }
 
+#define _to_str_(a) #a
+#define _to_str(a) _to_str_(a)
+#define _osg_version_str _to_str(OPENSCENEGRAPH_MAJOR_VERSION) "." _to_str(OPENSCENEGRAPH_MINOR_VERSION) "." _to_str(OPENSCENEGRAPH_PATCH_VERSION)
+
     void MainWindow::about()
     {
       QString devString;
       devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%2</a></p>"
+          "<p><ul>"
+          "<li>Compiled with Qt %4, run with Qt %5</li>"
+          "<li>Compiled with OpenSceneGraph version " _osg_version_str "</li>, run with version %6"
+          "<li></li>"
+          "<li></li>"
+          "</ul></p>"
           "<p><small>Copyright (c) 2015-2016 CNRS<br/>By Joseph Mirabel and others.</small></p>"
           "<p><small>"
           "%3 is free software: you can redistribute it and/or modify it under the "
@@ -384,10 +359,17 @@ namespace gepetto {
           )
         .arg(QApplication::applicationVersion())
         .arg(QApplication::organizationDomain())
-        .arg(QApplication::applicationName());
+        .arg(QApplication::applicationName())
+        .arg(QT_VERSION_STR)
+        .arg(qVersion())
+        .arg(osgGetVersion())
+        ;
 
       QMessageBox::about(this, QApplication::applicationName(), devString);
     }
+
+#undef _to_str
+#undef _osg_version_str
 
     void MainWindow::activateCollision(bool activate)
     {
@@ -421,15 +403,54 @@ namespace gepetto {
       }
     }
 
+    void MainWindow::hsplitTabifiedDockWidget()
+    {
+      splitTabifiedDockWidget(Qt::Horizontal);
+    }
+
+    void MainWindow::vsplitTabifiedDockWidget()
+    {
+      splitTabifiedDockWidget(Qt::Vertical);
+    }
+
+    QDockWidget* getParentDockWidget (QObject* child)
+    {
+      QDockWidget* dock = NULL;
+      while (child != NULL) {
+        dock = qobject_cast<QDockWidget*> (child);
+        if (dock!=NULL) break;
+        child = child->parent();
+      }
+      return dock;
+    }
+
+    void MainWindow::splitTabifiedDockWidget(Qt::Orientation orientation)
+    {
+      // QDockWidget focused
+      QDockWidget* dock = getParentDockWidget (QApplication::focusWidget());
+      if (dock==NULL) {
+        qDebug() << "No QDockWidget focused";
+        return;
+      }
+      // QDockWidget under cursor
+      QDockWidget* other = getParentDockWidget (
+          QApplication::widgetAt (QCursor::pos()));
+      if (other==NULL) {
+        qDebug() << "No QDockWidget under cursor";
+        return;
+      }
+      if (other == dock) return;
+      qDebug() << "Split " << dock->objectName() << other->objectName() << orientation;
+      splitDockWidget(dock, other, orientation);
+    }
+
     void MainWindow::setupInterface()
     {
       // Menu "Window"
       QMenu* toolbar = ui_->menuWindow->addMenu("Tool bar");
       toolbar->setIcon(QIcon::fromTheme("configure-toolbars"));
       ui_->mainToolBar->setVisible(true);
-      ui_->osgToolBar->setVisible(false);
       toolbar->addAction (ui_->mainToolBar->toggleViewAction ());
-      toolbar->addAction (ui_->osgToolBar->toggleViewAction ());
 
       ui_->menuWindow->addSeparator();
 
@@ -446,6 +467,16 @@ namespace gepetto {
       registerShortcut("Python console", "Toggle view", pythonWidget_->toggleViewAction());
 #endif
 
+      // Add QActions to split dock widgets
+      QAction* vsplit = new QAction("Split focused dock widget vertically", this);
+      vsplit->setShortcut (Qt::CTRL + Qt::Key_S);
+      addAction (vsplit);
+      connect(vsplit, SIGNAL(triggered ()), SLOT(vsplitTabifiedDockWidget()));
+      QAction* hsplit = new QAction("Split focused dock widget horizontally", this);
+      hsplit->setShortcut (Qt::CTRL + Qt::Key_H);
+      addAction (hsplit);
+      connect(hsplit, SIGNAL(triggered ()), SLOT(hsplitTabifiedDockWidget()));
+
       registerShortcut("Log widget", "Toggle view", ui_->dockWidget_log->toggleViewAction ());
       registerShortcut("Body tree widget", "Toggle view", ui_->dockWidget_bodyTree->toggleViewAction ());
       registerShortcut("Main window", ui_->actionLoad_robot_from_file);
@@ -455,6 +486,8 @@ namespace gepetto {
       registerShortcut("Main window", ui_->actionReconnect);
       registerShortcut("Main window", ui_->actionRefresh);
       registerShortcut("Main window", ui_->actionPlugins);
+      registerShortcut("Main window", vsplit);
+      registerShortcut("Main window", hsplit);
 
       ui_->menuWindow->addSeparator();
 
@@ -472,7 +505,6 @@ namespace gepetto {
       connect (ui_->actionAbout, SIGNAL (triggered ()), SLOT(about()));
       connect (ui_->actionReconnect, SIGNAL (triggered ()), SLOT(resetConnection()));
       connect (ui_->actionClose_connections, SIGNAL (triggered ()), SLOT(closeConnection()));
-      connect (ui_->actionFetch_configuration, SIGNAL (triggered ()), SLOT(requestApplyCurrentConfiguration()));
 
       connect (this, SIGNAL(logString(QString)), SLOT(log(QString)));
       connect (this, SIGNAL(logErrorString(QString)), SLOT(logError(QString)));
@@ -483,6 +515,7 @@ namespace gepetto {
       actionSearchBar_->addAction(new NodeAction(NodeAction::VISIBILITY_OFF, "Hide node", this));
       actionSearchBar_->addAction(new NodeAction(NodeAction::ALWAYS_ON_TOP, "Always on top", this));
       actionSearchBar_->addAction(ui_->actionFetch_configuration);
+      actionSearchBar_->addAction(ui_->actionSend_configuration);
       actionSearchBar_->addAction(ui_->actionClose_connections);
       actionSearchBar_->addAction(ui_->actionReconnect);
       actionSearchBar_->addAction(ui_->actionRefresh);

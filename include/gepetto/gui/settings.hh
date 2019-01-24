@@ -63,8 +63,16 @@ namespace gepetto {
       /// Get the filename of a configuration file.
       QString getQSettingsFileName (const std::string& settingsName) const;
 
-      /// Update values accordingly with command arguments
-      int fromArgv (int argc, char* argv[]);
+      /// Initialize the settings.
+      /// It uses the following elements, in this order:
+      /// \li read config file names from command line.
+      /// \li read config files.
+      /// \li read other command line arguments.
+      /// \return \li 0 if no error,
+      ///         \li 1 if no error and the user requested to generate config
+      ///             files or to print the help,
+      ///         \li 2 in case of error.
+      int initSettings (int argc, char * argv[]);
 
       /// Update settings from setting files
       void fromFiles ();
@@ -79,6 +87,7 @@ namespace gepetto {
       PluginManager pluginManager_;
       QStringList pluginsToInit_;
       QStringList pyplugins_;
+      QStringList pyscripts_;
 
       void setMainWindow (MainWindow* main);
 
@@ -127,6 +136,7 @@ namespace gepetto {
       void addEnvFromString (const std::string& envStr);
       void addPlugin (const QString& plg, bool init);
       void addPyPlugin (const QString& plg, bool init);
+      void addPyScript (const QString& fileName);
       void addOmniORB (const QString& arg, const QString& value);
 
       inline void log (const QString& t);

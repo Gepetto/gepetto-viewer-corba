@@ -26,6 +26,16 @@
 
 namespace gepetto {
   namespace gui {
+    Qt::ConnectionType connectionType (QObject* o, int blocking)
+    {
+      if (o->thread() == QThread::currentThread())
+        return Qt::DirectConnection;
+      else if (blocking)
+        return Qt::BlockingQueuedConnection;
+      else
+        return Qt::QueuedConnection;
+    }
+
     WindowsManagerPtr_t WindowsManager::create(BodyTreeWidget* bodyTree)
     {
       return WindowsManagerPtr_t (new WindowsManager(bodyTree));
@@ -38,15 +48,24 @@ namespace gepetto {
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName)
     {
-      return MainWindow::instance()->createView(windowName)->windowID();
+      MainWindow* main = MainWindow::instance();
+      OSGWidget* widget;
+      QMetaObject::invokeMethod (main, "createView",
+          connectionType (main, true),
+          Q_RETURN_ARG (OSGWidget*, widget),
+          Q_ARG (std::string, windowName));
+      return widget->windowID();
     }
 
     WindowsManager::WindowID WindowsManager::createWindow(const std::string& windowName,
+                                                          gepetto::gui::OSGWidget* widget,
                                                           osgViewer::Viewer *viewer,
                                                           osg::GraphicsContext *gc)
     {
       graphics::WindowManagerPtr_t newWindow = graphics::WindowManager::create (viewer, gc);
       WindowID windowId = addWindow (windowName, newWindow);
+      assert (windowId == widgets_.size());
+      widgets_.push_back(widget);
       return windowId;
     }
 
@@ -100,7 +119,7 @@ namespace gepetto {
         bool isGroup = true;
         try {
             getGroup(nodeName, true);
-        } catch (const gepetto::Error& exc) {
+        } catch (const std::invalid_argument& exc) {
             isGroup = false;
         }
         assert(node);
@@ -169,7 +188,7 @@ namespace gepetto {
         } else {
           parent->takeRow(bti->row());
         }
-        delete bti;
+        bti->deleteLater();
         _nodes->second.first[i] = NULL;
       }
       nodeItemMap_.erase(_nodes);
@@ -185,6 +204,45 @@ namespace gepetto {
         return true;
       }
       return false;
+    }
+
+    void WindowsManager::captureFrame (const WindowID wid, const std::string& filename)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      // Here, it is not requred that invokeMethod is blocking. However, it may
+      // be suprising in user script to have this call done later...
+      QMetaObject::invokeMethod (widget, "captureFrame",
+          connectionType (widget, true),
+          Q_ARG (std::string, filename));
+    }
+
+    bool WindowsManager::startCapture (const WindowID wid, const std::string& filename,
+            const std::string& extension)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      bool res;
+      QMetaObject::invokeMethod (widget, "startCapture",
+          connectionType (widget, true),
+          Q_RETURN_ARG (bool, res),
+          Q_ARG (std::string, filename),
+          Q_ARG (std::string, extension));
+      return res;
+    }
+
+    bool WindowsManager::stopCapture (const WindowID wid)
+    {
+      WindowManagerPtr_t wm = getWindowManager(wid, true);
+      OSGWidget* widget = widgets_[wid];
+      assert(widget->windowID()==wid);
+      bool res;
+      QMetaObject::invokeMethod (widget, "stopCapture",
+          connectionType (widget, true),
+          Q_RETURN_ARG (bool, res));
+      return res;
     }
   } // namespace gui
 } // namespace gepetto

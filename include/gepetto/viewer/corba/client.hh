@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include <omniORB4/CORBA.h>
-#include <gepetto/viewer/corba/deprecated.hh>
 #include <gepetto/viewer/corba/graphical-interface.hh>
 
 

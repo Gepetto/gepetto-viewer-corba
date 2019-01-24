@@ -1,5 +1,8 @@
-from PythonQt import QtGui, Qt
+from __future__ import print_function
+
 from gepetto.corbaserver import Client
+from PythonQt import Qt, QtGui
+
 
 ### This class represents one special tab of the new QDockWidget
 class _NodeCreator (QtGui.QWidget):
@@ -61,7 +64,7 @@ class _NodeCreator (QtGui.QWidget):
         self.refreshBodyTree()
 
     def createWindow (self):
-        self.plugin.windowsManager.createWindow(str(self.nodeName.text))
+        self.plugin.main.createView(str(self.nodeName.text))
 
     def createGroup (self):
         self.plugin.client.gui.createGroup(str(self.nodeName.text))
@@ -95,7 +98,6 @@ class Plugin(QtGui.QDockWidget):
         self.nodeCreator = _NodeCreator(self, self)
         self.tabWidget.addTab (self.nodeCreator, "Node Creator")
         self.main = mainWindow
-        self.windowsManager = windowsManager
         mainWindow.connect('refresh()', self.refresh)
         mainWindow.bodyTree().connect('bodySelected(SelectionEvent*)', self.selected)
 
@@ -111,9 +113,9 @@ class Plugin(QtGui.QDockWidget):
 
     def selected(self, event):
         #QtGui.QMessageBox.information(self, "Selected object", event.nodeName() + " " + str(event.point(False)))
-        print "name: ", event.nodeName()
+        print("name: ", event.nodeName())
         if event.hasIntersection():
-            print "point LF: ", event.point(True)
-            print "point WF: ", event.point(False)
-            print "normal LF: ", event.normal(True)
-            print "normal WF: ", event.normal(False)
+            print("point LF: ", event.point(True))
+            print("point WF: ", event.point(False))
+            print("normal LF: ", event.normal(True))
+            print("normal WF: ", event.normal(False))

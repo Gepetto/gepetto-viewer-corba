@@ -10,18 +10,12 @@
 
 int main(int, const char **)
 {
-    using namespace graphics;
-    using namespace corbaServer;
-    using namespace std;
-
-    Client client (0, NULL);
+    graphics::corbaServer::Client client (0, NULL);
     client.connect ();
 
-    Client::WindowID windowId = client.gui()->createWindow("window1");
-    client.gui()->createScene("scene1");
-    client.gui()->addSceneToWindow("scene1",windowId);
     float white[4] = {1.,1.,1.,1.};
-    client.gui()->addSphere ("scene1/sphere", 0.5, white);
+    client.gui()->createWindow("window1");
+    client.gui()->addSphere ("window1/sphere", 0.5, white);
 
     client.gui()->refresh();
 

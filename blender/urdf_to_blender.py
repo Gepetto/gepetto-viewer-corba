@@ -196,7 +196,7 @@ def setParent (children, parent):
 
     def __call__ (self, link):
         geometry = link.visual.geometry
-        if self.run.has_key (type(geometry)):
+        if type(geometry) in self.run:
             self.run[type(geometry)](geometry)
             self.setName(link.name)
             if link.visual.material is not None:

@@ -35,9 +35,11 @@ namespace gepetto {
       } catch (const std::exception& e) {
         qDebug () << e.what();
       } catch (const CORBA::TRANSIENT& e) {
-        emit log (QString ("CORBA Exception %1 - %2.\nYou may need to reset the connections (see Tools menu)").arg(e._name()).arg(e._rep_id()));
+        emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
       } catch (const CORBA::COMM_FAILURE& e) {
-        emit log (QString ("CORBA Exception %1 - %2.\nYou may need to reset the connections (see Tools menu)").arg(e._name()).arg(e._rep_id()));
+        emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
+      } catch (const CORBA::MARSHAL& e) {
+        emit log (QString ("CORBA Exception %1 - %2.<br/><b>A CORBA client or server is not up to date.</b>").arg(e._name()).arg(e._rep_id()));
       } catch (const CORBA::Exception& e) {
         bool handled = false;
         foreach (CorbaInterface* errorHandler, MainWindow::instance()->pluginManager()->get <CorbaInterface>()) {

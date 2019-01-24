@@ -18,25 +18,14 @@
 #define GEPETTO_GUI_WINDOWSMANAGER_HH
 
 #include <gepetto/gui/fwd.hh>
-#include <gepetto/viewer/corba/windows-manager.hh>
+#include <gepetto/viewer/windows-manager.h>
 
-#include <gepetto/gui/meta.hh>
 #include <QColor>
 #include <QObject>
 #include <QVector3D>
 
 namespace gepetto {
   namespace gui {
-    template <> struct convertTo<graphics::WindowsManager::Color_t> {
-      typedef graphics::WindowsManager::Color_t T;
-      typedef typename T::value_type v_t;
-      static inline T from (const QColor& in) {
-        T v((v_t)in.redF(), (v_t)in.greenF(), (v_t)in.blueF(), (v_t)in.alphaF());
-        // in.getRgbF(&v[0],&v[1],&v[2],&v[3]);
-        return v;
-      }
-    };
-
     class WindowsManager : public QObject, public graphics::WindowsManager
     {
       Q_OBJECT
@@ -50,6 +39,7 @@ namespace gepetto {
 
         WindowID createWindow(const std::string& windowName);
         WindowID createWindow(const std::string& windowName,
+                              OSGWidget* widget,
                               osgViewer::Viewer* viewer,
                               osg::GraphicsContext *gc);
 
@@ -58,6 +48,11 @@ namespace gepetto {
         bool deleteNode (const std::string& nodeName, bool all);
 
         BodyTreeItems_t bodyTreeItems (const std::string& name) const;
+
+        void captureFrame (const WindowID windowId, const std::string& filename);
+        bool startCapture (const WindowID windowId, const std::string& filename,
+            const std::string& extension);
+        bool stopCapture (const WindowID windowId);
 
         public slots:
           int createWindow(QString windowName);
@@ -78,6 +73,8 @@ namespace gepetto {
                          const NodePtr_t&   node,     const BodyTreeItems_t& groups,
                          bool isGroup);
         void deleteBodyItem(const std::string& nodeName);
+
+        std::vector<OSGWidget*> widgets_;
     };
   } // namespace gui
 } // namespace gepetto

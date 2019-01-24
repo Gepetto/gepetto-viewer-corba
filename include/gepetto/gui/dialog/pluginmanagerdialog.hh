@@ -36,14 +36,16 @@ namespace gepetto {
       public:
         typedef QPair <QString, QPluginLoader*> Pair;
         typedef QMap <QString, QPluginLoader*> Map;
+        typedef QPair <QString, QString> PyPair;
+        typedef QMap <QString, QString> PyMap;
 
         ~PluginManager () {
           qDeleteAll (plugins_);
         }
 
-        const QMap <QString, QPluginLoader*>& plugins () const {
-          return plugins_;
-        }
+        const Map& plugins () const { return plugins_; }
+
+        const PyMap& pyplugins () const { return pyplugins_; }
 
         template <typename Interface> Interface* getFirstOf ();
 
@@ -67,11 +69,15 @@ namespace gepetto {
 
         void clearPlugins ();
 
+        void declareAllPyPlugins ();
+
         bool declarePyPlugin (const QString& name);
 
         bool loadPyPlugin (const QString& name);
 
         bool unloadPyPlugin (const QString& name);
+
+        bool isPyPluginLoaded (const QString& name);
 
         void clearPyPlugins ();
 
@@ -92,13 +98,18 @@ namespace gepetto {
         explicit PluginManagerDialog(PluginManager* pm, QWidget *parent = 0);
         ~PluginManagerDialog();
 
-        public slots:
-          void onItemChanged (QTableWidgetItem* current, QTableWidgetItem* previous);
+      public slots:
+        void onItemChanged (QTableWidgetItem* current, QTableWidgetItem* previous);
         void contextMenu(const QPoint& pos);
-
-        void declareAll ();
         void load (const QString& name);
         void unload (const QString& name);
+
+        //void pyOnItemChanged (QTableWidgetItem* current, QTableWidgetItem* previous);
+        void pyContextMenu(const QPoint& pos);
+        void pyLoad (const QString& name);
+        void pyUnload (const QString& name);
+
+        void declareAll ();
         void save ();
 
       private:

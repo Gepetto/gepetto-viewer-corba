@@ -31,6 +31,9 @@ namespace PyQCustomPlot {
   ///     [plugins]
   ///     libpyqcustomplot.so=true
   ///
+  /// \par Example: Simple usage of QCustomPlot Python bindings.
+  /// \include pyplugin/qcustomplot_example_1.py
+  /// \sa See examples \ref pyplugin/qcustomplot_example_2.py
   class Plugin : public QObject, public gepetto::gui::PluginInterface {
     Q_OBJECT
     Q_INTERFACES (gepetto::gui::PluginInterface)
@@ -44,4 +47,6 @@ namespace PyQCustomPlot {
       /// Calls \ref registerQCustomPlot
       void init();
   };
-} // namespace PyQgv
+  /// \example pyplugin/qcustomplot_example_2.py
+  /// Advanced example usage of QCustomPlot Python bindings.
+} // namespace PyQCustomPlot

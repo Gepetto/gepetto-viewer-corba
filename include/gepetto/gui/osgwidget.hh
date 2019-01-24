@@ -30,11 +30,15 @@
 #include <gepetto/gui/fwd.hh>
 #include <gepetto/gui/windows-manager.hh>
 
+class QToolBar;
 class QProcess;
 class QTextBrowser;
 
 namespace gepetto {
   namespace gui {
+    typedef graphics::WindowManagerPtr_t WindowManagerPtr_t;
+    typedef WindowsManager::WindowID WindowID;
+
     /// Widget that displays scenes.
     class OSGWidget : public QWidget
     {
@@ -48,19 +52,24 @@ namespace gepetto {
 
         virtual ~OSGWidget();
 
-        WindowsManager::WindowID windowID () const;
+        WindowID windowID () const;
 
-        graphics::WindowManagerPtr_t window () const;
+        WindowManagerPtr_t window () const;
 
         WindowsManagerPtr_t osg () const;
 
         public slots:
         /// Replace the camera at her home position.
-        virtual void onHome();
+        void onHome();
 
         void addFloor();
 
         void toggleCapture (bool active);
+
+        void captureFrame ();
+        void captureFrame (const std::string& filename);
+        bool startCapture (const std::string& filename, const std::string& extension);
+        bool stopCapture ();
 
       protected:
         virtual void paintEvent(QPaintEvent* event);
@@ -69,6 +78,9 @@ namespace gepetto {
         void readyReadProcessOutput ();
 
       private:
+        void initToolBar ();
+        void initGraphicsWindowsAndViewer (MainWindow* parent, const std::string& name);
+
         osg::ref_ptr<osgQt::GraphicsWindowQt> graphicsWindow_;
         WindowsManagerPtr_t wsm_;
         osg::ref_ptr<PickHandler> pickHandler_;
@@ -77,6 +89,8 @@ namespace gepetto {
         QTimer timer_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
+
+        QToolBar* toolBar_;
 
         // To record movies.
         QProcess* process_;

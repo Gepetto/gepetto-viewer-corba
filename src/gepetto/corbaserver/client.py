@@ -32,7 +32,7 @@ class Client:
 
     try:
       obj = self.rootContext.resolve (name)
-    except CosNaming.NamingContext.NotFound, ex:
+    except CosNaming.NamingContext.NotFound:
       raise CorbaError (
         'failed to find the service ``{0}\'\''.format (serviceName [0]))
 

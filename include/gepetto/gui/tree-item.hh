@@ -77,6 +77,7 @@ namespace gepetto {
 
         void setBoolProperty (bool value) const;
         void setIntProperty (int value) const;
+        void setUIntProperty (int value) const;
         void setStringProperty (const QString& value) const;
         void setFloatProperty (const double& value) const;
         void setColorProperty (const QColor& value) const;

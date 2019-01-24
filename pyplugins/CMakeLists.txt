@@ -17,10 +17,9 @@
 
 INSTALL(
   FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/pythonwidget.py
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/blenderexport.py
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/matplotlibwidget.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/matplotlib_example.py
   ${CMAKE_CURRENT_SOURCE_DIR}/gepetto/gui/__init__.py
   DESTINATION ${PYTHON_SITELIB}/gepetto/gui
   )
+GEPETTO_GUI_PYPLUGIN(gepetto/gui/blenderexport.py)

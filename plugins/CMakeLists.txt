@@ -22,8 +22,6 @@ INCLUDE(gepetto-viewer-corba-plugin)
 #ADD_SUBDIRECTORY(plugin-skeleton)
 
 IF(PYTHONQT_FOUND)
-  ADD_OPTIONAL_DEPENDENCY("QGVCore")
-
   OPTION(BUILD_PY_QGV "Build PyQGV plugin" ${QGVCORE_FOUND})
   OPTION(BUILD_PY_QCUSTOM_PLOT "Build PyQCustomPlot plugin" OFF)
 ENDIF(PYTHONQT_FOUND)

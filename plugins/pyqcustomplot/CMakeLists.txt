@@ -22,7 +22,7 @@ ELSE()
   SET(QT4 "")
 ENDIF()
 
-INCLUDE_DIRECTORIES("${PYTHON_INCLUDE_DIR}" "${PYTHONQT_INCLUDE_DIR}")
+INCLUDE_DIRECTORIES(SYSTEM "${PYTHON_INCLUDE_DIR}" "${PYTHONQT_INCLUDE_DIR}")
 ADD_DEFINITIONS(-DQCUSTOMPLOT_COMPILE_LIBRARY)
 
 GEPETTO_GUI_PLUGIN(pyqcustomplot
@@ -32,6 +32,8 @@ GEPETTO_GUI_PLUGIN(pyqcustomplot
   qcustomplot.h
   plugin.hh
   decorator.hh
+  wrapper/qcp.hh
+  qcpitemrichtext.hh
 
   SOURCES
   qcustomplot.cpp
@@ -45,3 +47,7 @@ GEPETTO_GUI_PLUGIN(pyqcustomplot
   PKG_CONFIG_DEPENDENCIES
   omniORB4
   )
+
+SET_SOURCE_FILES_PROPERTIES(qcustomplot.cpp
+  PROPERTIES
+  COMPILE_FLAGS "-Wno-conversion")

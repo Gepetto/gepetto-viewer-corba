@@ -28,10 +28,8 @@
 
 namespace gepetto {
   namespace gui {
-    class PickHandler : public QObject, public osgGA::GUIEventHandler
+    class PickHandler : public osgGA::GUIEventHandler
     {
-      Q_OBJECT
-
     public:
       PickHandler (OSGWidget* parent, WindowsManagerPtr_t wsm);
 

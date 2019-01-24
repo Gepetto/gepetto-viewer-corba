@@ -4,9 +4,6 @@ import numpy as np
 
 from gepetto.gui.matplotlibwidget import MatplotlibWidget
 
-### \ingroup pluginlist
-### Example of Python plugin using \ref matplotlibwidget.MatplotlibWidget "MatplotlibWidget".
-### This example uses \ref matplotlibwidget.MatplotlibWidget to plot matplotlib figures.
 class Plugin(QtGui.QDockWidget):
     def __init__ (self, mainWindow, flags = None):
         if flags is None:

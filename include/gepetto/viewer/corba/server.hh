@@ -12,14 +12,14 @@
 # define SCENEVIEWER_CORBASERVER_SERVER_HH
 
 #include "gepetto/viewer/corba/fwd.hh"
-#include <gepetto/viewer/corba/windows-manager.hh>
+#include <gepetto/gui/windows-manager.hh>
 
 namespace graphics
 {
   namespace corbaServer
   {
-    using graphics::WindowsManager;
-    using graphics::WindowsManagerPtr_t;
+    using gepetto::gui::WindowsManager;
+    using gepetto::gui::WindowsManagerPtr_t;
 
     /// Implementation of Hpp module Corba server.
 

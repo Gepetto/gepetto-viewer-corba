@@ -24,14 +24,14 @@ struct NodeConfiguration {
     osgQuat quat;
 };
 
-using graphics::WindowsManagerPtr_t;
+using gepetto::gui::WindowsManagerPtr_t;
 class GraphicalInterface :
     public virtual POA_gepetto::corbaserver::GraphicalInterface
 {
 private:
     WindowsManagerPtr_t windowsManager_;
     typedef gepetto::Error Error;
-    typedef graphics::WindowsManager::value_type value_type;
+    typedef gepetto::gui::WindowsManager::value_type value_type;
     typedef gepetto::corbaserver::Transform_slice Transform_slice;
 
 public:
@@ -55,7 +55,6 @@ public:
   virtual Names_t* getSceneList() throw (Error);
   virtual Names_t* getWindowList() throw (Error);
 
-  virtual bool setRate(CORBA::Long rate) throw (Error);
   virtual void refresh() throw (Error);
 
   virtual WindowID createWindow(const char* windowNameCorba) throw (Error);

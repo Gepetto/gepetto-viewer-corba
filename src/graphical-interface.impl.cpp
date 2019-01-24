@@ -25,7 +25,7 @@ namespace graphics {
 
         template <typename Input, typename Output>
           void to (const Input& in, Output& out, const int size) {
-            for (CORBA::ULong i = 0; i < size; ++i)
+            for (CORBA::ULong i = 0; i < (CORBA::ULong)size; ++i)
               out[i] = in[i];
           }
 
@@ -285,8 +285,6 @@ namespace graphics {
 	windowsManager_ (server->windowsManager ())
       {
       }
-
-      BIND_TO_WINDOWS_MANAGER_1(BOOL, setRate, LONG)
 
       BIND_TO_WINDOWS_MANAGER_1(WINDOW_ID, createWindow, STRING)
 
