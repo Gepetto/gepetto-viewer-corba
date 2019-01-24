@@ -28,7 +28,7 @@ INCLUDE(cmake/test.cmake)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
-SET(PROJECT_URL "https://github.com/Gepetto/gepetto-viewer-corba")
+SET(PROJECT_URL "https://github.com/Gepetto/${PROJECT_NAME}")
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 SET(USE_QT4 FALSE CACHE BOOL "Use Qt4 instead of Qt5")
@@ -59,7 +59,7 @@ IF(NOT CLIENT_ONLY)
 
   ADD_REQUIRED_DEPENDENCY(${OSGQT_LIB_NAME})
   ADD_REQUIRED_DEPENDENCY("openthreads >= 2.6")
-  ADD_REQUIRED_DEPENDENCY("gepetto-viewer")
+  ADD_REQUIRED_DEPENDENCY("gepetto-viewer >= 4.3.0")
   ADD_REQUIRED_DEPENDENCY("urdfdom")
 
   SET(BOOST_COMPONENTS system regex)
