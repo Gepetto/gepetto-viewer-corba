@@ -78,3 +78,17 @@ MACRO(GEPETTO_GUI_PLUGIN PLUGIN_NAME)
   # Uncomment to install
   INSTALL(TARGETS ${PLUGIN_NAME} DESTINATION lib/gepetto-gui-plugins)
 ENDMACRO()
+
+# Declare a Python plugin
+MACRO(GEPETTO_GUI_PYPLUGIN file)
+  STRING(MD5 file_md5 "${PYTHON_SITELIB}/${file}")
+  STRING(REGEX REPLACE ".py$" "" module "${file}")
+  STRING(REPLACE "/" "." module "${module}")
+  FILE(GENERATE
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${file_md5}
+    CONTENT "${file}\n${module}")
+
+  INSTALL(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/${file_md5}
+    DESTINATION etc/gepetto-gui/pyplugin.conf.d)
+ENDMACRO()

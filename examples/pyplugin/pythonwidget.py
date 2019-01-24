@@ -64,7 +64,7 @@ class _NodeCreator (QtGui.QWidget):
         self.refreshBodyTree()
 
     def createWindow (self):
-        self.plugin.windowsManager.createWindow(str(self.nodeName.text))
+        self.plugin.main.createView(str(self.nodeName.text))
 
     def createGroup (self):
         self.plugin.client.gui.createGroup(str(self.nodeName.text))
@@ -98,7 +98,6 @@ class Plugin(QtGui.QDockWidget):
         self.nodeCreator = _NodeCreator(self, self)
         self.tabWidget.addTab (self.nodeCreator, "Node Creator")
         self.main = mainWindow
-        self.windowsManager = windowsManager
         mainWindow.connect('refresh()', self.refresh)
         mainWindow.bodyTree().connect('bodySelected(SelectionEvent*)', self.selected)
 

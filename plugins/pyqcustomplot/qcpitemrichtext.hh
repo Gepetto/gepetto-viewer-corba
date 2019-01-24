@@ -2,6 +2,8 @@
 #define QCP_ITEM_RICH_TEXT
 #include <qcustomplot.h>
 
+#include <QTextDocument>
+
 class QCP_LIB_DECL QCPItemRichText : public QCPItemText
 { Q_OBJECT
   Q_PROPERTY(QString text READ text WRITE setText)

@@ -83,8 +83,7 @@ namespace gepetto {
     ///     MainWindow::logJobFailed to inform users when
     ///     starting and finishing (Done or Failed) actions that may take some time.
     ///
-    /// \sa See examples \ref pyplugins/gepetto/gui/pythonwidget.py and
-    ///     \ref pyplugins/gepetto/gui/matplotlib_example.py
+    /// \sa See examples \ref pyplugin/pythonwidget.py.
     class PythonWidget : public QDockWidget
     {
       Q_OBJECT
@@ -101,6 +100,8 @@ namespace gepetto {
 
       void saveHistory (QSettings& settings);
       void restoreHistory (QSettings& settings);
+
+      bool hasPlugin (const QString& name);
 
     public slots:
       /// Load a plugin by importing a module
@@ -136,18 +137,18 @@ namespace gepetto {
     public slots:
       void browseFile();
     };
-
-    /// \example pyplugins/gepetto/gui/pythonwidget.py
+    /// \example pyplugin/pythonwidget.py
     /// This is an example Python Plugin for \link hpp::gui::PythonWidget \endlink. Two classes are defined:
     /// \b _NodeCreator and \b Plugin. Two signals are used: \a mainWindow.refresh()
     /// and \a osgWidget.
-    /// Add this to your configuration file to load this plugin
+    /// Load the widget with:
     /// \code
-    /// [pyplugins]
-    /// gepetto.gui=true
+    /// gepetto-gui --load-pyplugin pythonwidget.py
     /// \endcode
     /// Then right-click on a tool bar, menu bar or title bar of dock widgets
     /// to open your window.
+    ///
+    /// \example examples/pyplugin/matplotlib_example_deprecated.py
   } // namespace gui
 } // namespace gepetto
 

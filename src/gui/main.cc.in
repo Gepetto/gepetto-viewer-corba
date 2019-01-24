@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
   Settings settings ("@CMAKE_INSTALL_PREFIX@");
   settings.setupPaths ();
-  switch (settings.fromArgv (argc, argv)) {
+  switch (settings.initSettings (argc, argv)) {
     case 0:
       break;
     case 1:
@@ -73,7 +73,6 @@ int main(int argc, char *argv[])
       qDebug () << "Settings.fromArgv returned unknow error code";
       break;
   }
-  settings.fromFiles ();
 
   QSplashScreen splash(pixmap);
   splash.show();

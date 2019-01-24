@@ -223,6 +223,8 @@ signals:
         void openLoadEnvironmentDialog ();
         void activateCollision(bool activate);
         void dockVisibilityChanged(bool visible);
+        void hsplitTabifiedDockWidget();
+        void vsplitTabifiedDockWidget();
 
         void handleWorkerDone (int id);
 
@@ -231,6 +233,7 @@ signals:
         void about ();
 
       private:
+        void splitTabifiedDockWidget(Qt::Orientation orientation);
         void setupInterface ();
         void createCentralWidget ();
 

@@ -81,18 +81,14 @@ namespace gepetto {
       }
     }
 
-    int Settings::fromArgv(int argc, char * argv[])
+    int Settings::initSettings (int argc, char * argv[])
     {
-      bool genAndQuit = false;
-      int retVal = 0;
-
-      // Declare the supported options.
+      // 1. Declare the supported options.
       osg::ArgumentParser arguments(&argc, argv);
       osg::ApplicationUsage* au (arguments.getApplicationUsage());
       au->setApplicationName(arguments.getApplicationName());
       au->setCommandLineUsage(arguments.getApplicationName()+" [options]");
 
-      osg::ApplicationUsage::Type help (arguments.readHelpType());
       au->addCommandLineOption("-v or --verbose",  "Activate verbose output");
       au->addCommandLineOption("-g or --generate-config-files", "generate configuration files in " + installDirectory.toStdString() + "/etc and quit");
       au->addCommandLineOption("-c or --config-file", "set the configuration file (do not include .conf)", configurationFile);
@@ -109,15 +105,20 @@ namespace gepetto {
       au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
       au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
 
+      // 2. Read configuration files
+      if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
+      if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
+      if (arguments.read("--predefined-environments", predifinedEnvConf)) {}
+      fromFiles ();
+
+      // 3. Read other command line arguments
+      bool genAndQuit = false;
+      int retVal = 0;
+
+      // Declare the supported options.
+      osg::ApplicationUsage::Type help (arguments.readHelpType());
+
       osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
-      // This should not be done here. Two osg built-in way:
-      // - Environment variable OSG_MULTI_SAMPLES  : a bit tedious
-      // - Command line option --samples           : slight better with an alias
-#ifndef DISABLE_SAMPLING
-      ds->setNumMultiSamples(4);
-#else
-      ds->setNumMultiSamples(0);
-#endif
       ds->readCommandLine (arguments); // populate the help message.
 
       verbose =                 (arguments.read("-v") || arguments.read("--verbose"));
@@ -138,10 +139,6 @@ namespace gepetto {
       while (arguments.read ("-x", opt) || arguments.read ("--run-pyscript", opt))
         addPyScript (QString::fromStdString(opt));
 
-      if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
-      if (arguments.read("--predefined-robots",       predifinedRobotConf)) {}
-      if (arguments.read("--predefined-environments", predifinedEnvConf)) {}
-
       arguments.reportRemainingOptionsAsUnrecognized(osg::ArgumentParser::BENIGN);
       if (arguments.errors(osg::ArgumentParser::CRITICAL)) {
         arguments.writeErrorMessages(std::cout);
@@ -150,17 +147,18 @@ namespace gepetto {
         arguments.writeErrorMessages(std::cout);
       }
 
-      for (int i = 0; i < argc-1; ++i) {
-        if (strncmp (argv[i], "-ORB", 4) == 0) {
-          addOmniORB (argv[i], argv[i+1]);
+      for (int i = 0; i < arguments.argc()-1; ) {
+        if (strncmp (arguments.argv()[i], "-ORB", 4) == 0) {
+          addOmniORB (arguments.argv()[i], arguments.argv()[i+1]);
+          arguments.remove (i, 2);
+        } else
           ++i;
-        }
       }
 
       if (genAndQuit && retVal < 1) retVal = 1;
 
       if (help != osg::ApplicationUsage::NO_HELP) {
-        au->write(std::cout, help, 80, true);
+        arguments.getApplicationUsage()->write(std::cout, help, 80, true);
         if (retVal < 1) retVal = 1;
       }
       if (verbose) print (std::cout) << std::endl;
@@ -189,29 +187,16 @@ namespace gepetto {
         pluginManager_.loadPlugin (name);
         pluginManager_.initPlugin (name);
       }
+      foreach (QString name, pyplugins_) {
+        pluginManager_.loadPyPlugin (name);
+      }
 #if GEPETTO_GUI_HAS_PYTHONQT
       PythonWidget* pw = mw->pythonWidget();
-      foreach (QString name, pyplugins_) {
-        if (name.endsWith (".py")) {
-          QFileInfo fi (name);
-          QString moduleName = fi.baseName();
-          QString script;
-          if (fi.isAbsolute()) script = name;
-          else script = QDir::currentPath() + QDir::separator() + name;
-          qDebug() << "Loading" << script << "into module" << moduleName;
-          pw->loadScriptPlugin (moduleName, script);
-        } else
-          pw->loadModulePlugin (name);
-      }
       // TODO Wouldn't it be better to do this later ?
       foreach (QString fileName, pyscripts_) {
         pw->runScript(fileName);
       }
 #else
-      foreach (QString name, pyplugins_) {
-        logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
-            "PYTHONQT flag. Cannot not load Python plugin " + name);
-      }
       foreach (QString fileName, pyscripts_) {
         logError ("gepetto-viewer-corba was compiled without GEPETTO_GUI_HAS_"
             "PYTHONQT flag. Cannot not load Python script " + fileName);
@@ -367,6 +352,13 @@ namespace gepetto {
       }
     }
 
+#define GET_PARAM(what, type, variantMethod)                                   \
+    {                                                                          \
+      QVariant param (env.value (#what, what));                                \
+      if (param.canConvert<type>()) what = param.variantMethod ();             \
+      else logError ("Setting viewer/" #what " should be an " #type ".");      \
+    }
+
     void Settings::readSettingFile ()
     {
       QSettings env (QSettings::SystemScope,
@@ -375,16 +367,26 @@ namespace gepetto {
       if (env.status() != QSettings::NoError) {
         logError(QString ("Enable to open configuration file ") + env.fileName());
       } else {
+        osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+        env.beginGroup("viewer");
+        GET_PARAM(refreshRate, int, toInt);
+        int nbMultiSamples = 4;
+        GET_PARAM(nbMultiSamples, int, toInt);
+        ds->setNumMultiSamples(nbMultiSamples);
+        env.endGroup ();
+
         env.beginGroup("plugins");
         foreach (QString name, env.childKeys()) {
             addPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+
         env.beginGroup("pyplugins");
         foreach (QString name, env.childKeys()) {
             addPyPlugin (name, (noPlugin)?false:env.value(name, true).toBool());
         }
         env.endGroup ();
+
         env.beginGroup("omniORB");
         foreach (QString name, env.childKeys()) {
             addOmniORB ("-ORB" + name, env.value(name).toString());
@@ -443,19 +445,28 @@ namespace gepetto {
           QCoreApplication::organizationName (),
           getQSettingsFileName (configurationFile));
       if (!env.isWritable()) {
-          logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
-          return;
-        }
+        logError (QString ("Configuration file") + env.fileName() + QString("is not writable."));
+        return;
+      }
+
+      osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
+      env.beginGroup("viewer");
+      env.setValue ("refreshRate", refreshRate);
+      env.setValue ("nbMultiSamples", ds->getNumMultiSamples());
+      env.endGroup ();
+
       env.beginGroup("plugins");
       for (PluginManager::Map::const_iterator p = pluginManager_.plugins ().constBegin();
-           p != pluginManager_.plugins().constEnd(); p++) {
-          env.setValue(p.key(), (noPlugin)?false:p.value()->isLoaded());
-        }
+          p != pluginManager_.plugins().constEnd(); p++) {
+        env.setValue(p.key(), (noPlugin)?false:p.value()->isLoaded());
+      }
       env.endGroup ();
+
       env.beginGroup("pyplugins");
       foreach (QString name, pyplugins_)
         env.setValue(name, !noPlugin);
       env.endGroup ();
+
       env.beginGroup("omniORB");
       for (int i = 1; i < omniORBargv_.size(); i+=2)
         env.setValue (omniORBargv_[i-1].mid(4), omniORBargv_[i]);
@@ -522,6 +533,7 @@ namespace gepetto {
     void Settings::addPyPlugin (const QString& plg, bool init)
     {
       if (init) pyplugins_.append (plg);
+      pluginManager_.declarePyPlugin (plg);
     }
 
     void Settings::addPyScript (const QString& fileName)

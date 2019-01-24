@@ -5,6 +5,8 @@
 
 void registerQCustomPlot ();
 
+/// \sa See examples \ref pyplugin/qcustomplot_example_1.py
+///     and \ref pyplugin/qcustomplot_example_2.py
 class QCustomPlotDecorator : public QObject
 {
   Q_OBJECT

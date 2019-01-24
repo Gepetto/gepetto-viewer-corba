@@ -1,4 +1,4 @@
-FILE_PATTERNS   = *.idl *.hh *.py *.idl
+FILE_PATTERNS   = *.idl *.hh *.py *.idl *.dox
 
 INPUT           = @CMAKE_SOURCE_DIR@/include    \
                   @CMAKE_SOURCE_DIR@/idl        \
@@ -6,6 +6,7 @@ INPUT           = @CMAKE_SOURCE_DIR@/include    \
                   @CMAKE_SOURCE_DIR@/pyplugins  \
                   @CMAKE_SOURCE_DIR@/doc
 
-GENERATE_TREEVIEW      = NO
+EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/examples
+LAYOUT_FILE     = @CMAKE_SOURCE_DIR@/doc/layout.xml
 
-EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/
+TAGFILES        += @QT_TAGFILES@

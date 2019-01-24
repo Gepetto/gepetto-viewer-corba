@@ -13,8 +13,8 @@ int main(int argc, const char ** argv)
     using namespace graphics;
     using namespace corbaServer;
 
-    if (argc != 3) {
-      std::cout << "Usage " << argv[0] << " <urdf-filename> <path-to-meshes>"
+    if (argc != 2) {
+      std::cout << "Usage " << argv[0] << " <urdf-filename>"
         << std::endl;
       return 1;
     }
@@ -22,10 +22,10 @@ int main(int argc, const char ** argv)
     Client client (0, NULL);
     client.connect ();
 
-    Client::WindowID windowId = client.gui()->createWindow("urdf-display");
-    client.gui()->createScene("scene-urdf");
-    client.gui()->addSceneToWindow("scene-urdf",windowId);
-    client.gui()->addURDF("scene-urdf/urdf", argv[1], argv[2]);
+    client.gui()->createWindow("urdf-display");
+    // The second argument is deprecated and ignored. File link starting with
+    // "package://" are resolved using ROS_PACKAGE_PATH environment variable.
+    client.gui()->addURDF("urdf-display/urdf", argv[1], "");
 
     client.gui()->refresh();
 
