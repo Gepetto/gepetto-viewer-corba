@@ -134,3 +134,50 @@ class Vector6:
     def set (self, gui, v):
         self.linear .set (gui, v[0:3], self.linF)
         self.angular.set (gui, v[3:6], self.angF)
+
+## Plot a function of 2 arguments i.e. (x, y, f(x, y))
+# \param gui the CORBA client
+# \param name the curve node name
+# \param args a list [X,Y] of two lists X and Y, where the arguments that should
+#             be considered are all the possible pairs of elements of X and Y.
+# \param func a function that takes x,y as arguments
+# \param color
+def graphOfFunction(gui, name, args, func, color=Color.red):
+    # Generate the
+    def _recursiveBuildPoints(arg, iarg, args, func):
+        if iarg == len(args):
+            return (func(arg),)
+        points = []
+        for k in xrange(len(args[iarg])):
+            cur = arg[:]
+            cur.append(args[iarg][k])
+            points.extend (_recursiveBuildPoints(cur, iarg+1, args, func))
+        return points
+
+    # Build the vector of points
+    points = _recursiveBuildPoints([], 0, args, func)
+    if len(args) == 2:
+        # Duplicate the points to have triangles
+        nx = len(args[0])
+        ny = len(args[1])
+        pts = []
+        for ix in xrange(nx-1):
+            for iy in xrange(ny-1):
+                iv0 = ix * ny + iy
+                iv1 = ix * ny + iy + 1
+                iv2 = (ix + 1) * ny + iy
+                iv3 = (ix + 1) * ny + iy + 1
+                pts.append(points[iv0])
+                pts.append(points[iv1])
+                pts.append(points[iv2])
+                pts.append(points[iv1])
+                pts.append(points[iv2])
+                pts.append(points[iv3])
+
+        gui.addCurve(name, pts, color)
+        gui.setCurveMode(name, "triangles")
+    else:
+        gui.addCurve(name, points, color)
+        gui.setCurveMode(name, "line_strip")
+
+    return points
