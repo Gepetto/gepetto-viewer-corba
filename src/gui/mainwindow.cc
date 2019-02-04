@@ -71,7 +71,7 @@ namespace gepetto {
         const char** argv = settings_->makeOmniORBargs (argc);
         osgServer_ = new CorbaServer (new ViewerServerProcess (
               new graphics::corbaServer::Server (osgViewerManagers_,
-                  argc, argv, true)));
+                  argc, argv, true, settings_->useNameService)));
         osgServer_->start();
       }
       // This scene contains elements required for User Interaction.

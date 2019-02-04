@@ -41,6 +41,7 @@ namespace gepetto {
       , verbose (false)
       , noPlugin (false)
       , startGepettoCorbaServer (true)
+      , useNameService (false)
       , refreshRate (30)
       , captureDirectory ()
       , captureFilename ("screenshot")
@@ -104,6 +105,7 @@ namespace gepetto {
       au->addCommandLineOption("-P or --no-plugin", "do not load any plugin");
       au->addCommandLineOption("-w or --auto-write-settings", "write the settings in the configuration file");
       au->addCommandLineOption("--no-viewer-server", "do not start the Gepetto Viewer server");
+      au->addCommandLineOption("--use-nameservice" , "The server will be registered to the Omni NameService");
 
       // 2. Read configuration files
       if (arguments.read("-c", configurationFile) || arguments.read("--config-file", configurationFile)) {}
@@ -126,6 +128,7 @@ namespace gepetto {
       noPlugin =                (arguments.read("-P") || arguments.read("--no-plugin"));
       autoWriteSettings =       (arguments.read("-w") || arguments.read("--auto-write-settings"));
       startGepettoCorbaServer = (!arguments.read("--no-viewer-server"));
+      while (arguments.read ("--use-nameservice", useNameService)) {}
 
       std::string opt;
       while (arguments.read ("--add-robot", opt))
@@ -154,6 +157,9 @@ namespace gepetto {
         } else
           ++i;
       }
+
+      if (!omniORBargv_.contains("-ORBendPoint"))
+        addOmniORB ("-ORBendPoint", "::localhost:12321");
 
       if (genAndQuit && retVal < 1) retVal = 1;
 
@@ -275,6 +281,7 @@ namespace gepetto {
         << nl << tab << "Verbose:                " << tab << verbose
         << nl << tab << "No plugin:              " << tab << noPlugin
         << nl << tab << "Start Viewer server:    " << tab << startGepettoCorbaServer
+        << nl << tab << "Use omni name service:  " << tab << useNameService
         << nl << tab << "Refresh rate:           " << tab << refreshRate
 
         << nl << nl << "Screen capture options:"
@@ -373,6 +380,8 @@ namespace gepetto {
         int nbMultiSamples = 4;
         GET_PARAM(nbMultiSamples, int, toInt);
         ds->setNumMultiSamples(nbMultiSamples);
+
+        GET_PARAM(useNameService, bool, toBool);
         env.endGroup ();
 
         env.beginGroup("plugins");
@@ -453,6 +462,7 @@ namespace gepetto {
       env.beginGroup("viewer");
       env.setValue ("refreshRate", refreshRate);
       env.setValue ("nbMultiSamples", ds->getNumMultiSamples());
+      env.setValue ("useNameService", useNameService);
       env.endGroup ();
 
       env.beginGroup("plugins");

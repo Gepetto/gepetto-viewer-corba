@@ -42,11 +42,11 @@ namespace graphics
 
 
     Server::Server(WindowsManagerPtr_t wm, int argc, const char *argv[],
-        bool inMultiThread) : windowsManager_ (wm)
+        bool inMultiThread, bool useNameService) : windowsManager_ (wm)
     {
       private_ = new impl::Server;
 
-      initORBandServers (argc, argv, inMultiThread);
+      initORBandServers (argc, argv, inMultiThread, useNameService);
     }
 
     /// \brief Shutdown CORBA server
@@ -60,7 +60,7 @@ namespace graphics
     /// CORBA SERVER INITIALIZATION
 
     void Server::initORBandServers(int argc, const char* argv[],
-				   bool inMultiThread)
+				   bool inMultiThread, bool useNameService)
     {
       Object_var obj;
       PortableServer::ThreadPolicy_var threadPolicy;
@@ -73,54 +73,70 @@ namespace graphics
 	throw std::runtime_error (msg.c_str ());
       }
       /// ORB init
-      obj = private_->orb_->resolve_initial_references("RootPOA");
+      if (useNameService) {
+        obj = private_->orb_->resolve_initial_references("RootPOA");
 
-      /// Create thread policy
-      //
-      // Make the CORBA object single-threaded to avoid GUI krash
-      //
-      // Create a sigle threaded policy object
-      rootPoa = PortableServer::POA::_narrow(obj);
+        /// Create thread policy
+        //
+        // Make the CORBA object single-threaded to avoid GUI krash
+        //
+        // Create a sigle threaded policy object
+        rootPoa = PortableServer::POA::_narrow(obj);
 
-      if (inMultiThread) {
-	threadPolicy = rootPoa->create_thread_policy
-	  (PortableServer::ORB_CTRL_MODEL);
-      }
-      else {
-	threadPolicy = rootPoa->create_thread_policy
-	  (PortableServer::MAIN_THREAD_MODEL);
-      }
-      /// Duplicate thread policy
-      PolicyList policyList;
-      policyList.length(1);
-      policyList[0] = PortableServer::ThreadPolicy::_duplicate(threadPolicy);
+        if (inMultiThread) {
+          threadPolicy = rootPoa->create_thread_policy
+            (PortableServer::ORB_CTRL_MODEL);
+        }
+        else {
+          threadPolicy = rootPoa->create_thread_policy
+            (PortableServer::MAIN_THREAD_MODEL);
+        }
+        /// Duplicate thread policy
+        PolicyList policyList;
+        policyList.length(1);
+        policyList[0] = PortableServer::ThreadPolicy::_duplicate(threadPolicy);
 
-      try {
-        private_->poa_ = rootPoa->create_POA
-          ("child", PortableServer::POAManager::_nil(), policyList);
-      } catch (PortableServer::POA::AdapterAlreadyExists& /*e*/) {
-        private_->poa_ = rootPoa->find_POA ("child", false);
+        try {
+          private_->poa_ = rootPoa->create_POA
+            ("child", PortableServer::POAManager::_nil(), policyList);
+        } catch (PortableServer::POA::AdapterAlreadyExists& /*e*/) {
+          private_->poa_ = rootPoa->find_POA ("child", false);
+        }
+        // Destroy policy object
+        threadPolicy->destroy();
+      } else {
+        // TODO: There is no way to use omniINSPOA with a different policy.
+        // A rather easy workaround can be found here:
+        // http://www.omniorb-support.com/pipermail/omniorb-list/2006-January/027358.html
+        obj = private_->orb_->resolve_initial_references("omniINSPOA");
+        private_->poa_ = PortableServer::POA::_narrow(obj);
       }
-      // Destroy policy object
-      threadPolicy->destroy();
-      private_->createAndActivateServers(this);
+
+      private_->useNameService_ = useNameService;
+      private_->createServant(this);
+      if (useNameService)
+        private_->initRootPOA();
+      else
+        private_->initOmniINSPOA();
     }
 
     void Server::startCorbaServer()
     {
-      // Obtain a reference to objects, and register them in
-      // the naming service.
-      Object_var graphicalInterfaceObj = private_->graphicalInterfaceServant_->_this();
+      if (private_->useNameService_) {
+        // Obtain a reference to objects, and register them in
+        // the naming service.
+        Object_var graphicalInterfaceObj = private_->graphicalInterfaceServant_->_this();
 
-      private_->createContext ();
-      // Bind graphicalInterfaceObj with name graphicalinterface to the Context:
-      CosNaming::Name objectName;
-      objectName.length(1);
-      objectName[0].id   = (const char*) "corbaserver";   // string copied
-      objectName[0].kind = (const char*) "gui"; // string copied
+        private_->createContext ();
+        // Bind graphicalInterfaceObj with name graphicalinterface to the Context:
+        CosNaming::Name objectName;
+        objectName.length(1);
+        objectName[0].id   = (const char*) "corbaserver";   // string copied
+        objectName[0].kind = (const char*) "gui"; // string copied
 
-      private_->bindObjectToName(graphicalInterfaceObj, objectName);
-      private_->graphicalInterfaceServant_->_remove_ref();
+        private_->bindObjectToName(graphicalInterfaceObj, objectName);
+        private_->graphicalInterfaceServant_->_remove_ref();
+      }
 
       PortableServer::POAManager_var pman = private_->poa_->the_POAManager();
       pman->activate();

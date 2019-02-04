@@ -23,35 +23,42 @@ class Client:
 
   defaultClients = [('gui', 'GraphicalInterface')]
 
-  def makeClient(self, serviceName):
-    """
-    Create a client to a new CORBA service and add it to this class.
-    """
+  def initWithNameService (self, urlNameService):
+    obj = self.orb.string_to_object (urlNameService)
+    self.rootContext = obj._narrow(CosNaming.NamingContext)
+    if self.rootContext is None:
+      raise CorbaError ('Failed to narrow the root context')
+
     name = [CosNaming.NameComponent ("gepetto", "viewer"),
-            CosNaming.NameComponent ("corbaserver", serviceName [0])]
+            CosNaming.NameComponent ("corbaserver", "gui")]
 
     try:
       obj = self.rootContext.resolve (name)
     except CosNaming.NamingContext.NotFound:
-      raise CorbaError (
-        'failed to find the service ``{0}\'\''.format (serviceName [0]))
+      raise CorbaError ('Failed to find the service "gui"')
 
     try:
-      client = obj._narrow (gepetto.corbaserver.__dict__
-                            [serviceName [1]])
+      client = obj._narrow (gepetto.corbaserver.GraphicalInterface)
     except KeyError:
-      raise CorbaError ('invalid service name ``{0}\'\''.format \
-                          (serviceName [0]))
+      raise CorbaError ('Invalid service name "gui"')
 
     if client is None:
       # This happens when stubs from client and server are not synchronized.
-      raise CorbaError (
-        'failed to narrow client for service named ``{0}\'\''.format
-        (serviceName [0]))
-    self.__dict__[serviceName [0]] = client
+      raise CorbaError ( 'Failed to narrow client for service named "gui"')
 
+    self.gui = client
 
-  def __init__(self, clients = defaultClients, url = None, host = None):
+  def initWithDirectLink (self, url):
+    obj = self.orb.string_to_object (url)
+    client = obj._narrow(gepetto.corbaserver.GraphicalInterface)
+
+    if client is None:
+      # This happens when stubs from client and server are not synchronized.
+      raise CorbaError ( 'Failed to narrow client for service named "gui"')
+
+    self.gui = client
+
+  def __init__(self, clients = defaultClients, url = None, host = None, port = None):
     """
     Initialize CORBA and create default clients.
     :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
@@ -60,19 +67,28 @@ class Client:
                 If None, url is initialized with param host, or alternatively with _getIIOPurl
     :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
     """
-    if host is not None:
-        url = "corbaloc:iiop:" + str(host) + "/NameService"
-    elif url is None:
-        url = _getIIOPurl()
     import sys
     self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
-    obj = self.orb.string_to_object (url)
-    self.rootContext = obj._narrow(CosNaming.NamingContext)
-    if self.rootContext is None:
-      raise CorbaError ('failed to narrow the root context')
 
-    for client in clients:
-      self.makeClient (client)
+    if url is not None:
+        try:
+            self.initWithDirectLink (url)
+        except CorbaError:
+            pass
+        if self.gui is None:
+            self.initWithNameService (url)
+    else:
+        urlNameService = _getIIOPurl(service="NameService", host=host,
+                port = port if port else 2809)
+        urlGepettoGui = _getIIOPurl(service="gepetto-gui", host=host,
+                port = port if port else 12321)
+        try:
+            self.initWithDirectLink (urlGepettoGui)
+        except CorbaError as e:
+            print e
+            pass
+        if self.gui is None:
+            self.initWithNameService (urlNameService)
 
     # In the python interpreter of gepetto-gui, gui.createWindow
     # crashes for an obscure reason. This hack makes it work.
@@ -84,7 +100,7 @@ class Client:
       # At this point, we are NOT in the python interpreter of gepetto-gui
       pass
 
-def _getIIOPurl ():
+def _getIIOPurl (service="NameService", host=None, port=None):
   """
   Returns "corbaloc:iiop:<host>:<port>/NameService"
   where host and port are, in this order of priority:
@@ -92,21 +108,23 @@ def _getIIOPurl ():
   - /gepetto_viewer/host, /gepetto_viewer/port ROS parameters
   - use default values ("localhost", 2809)
   """
-  host = "localhost"
-  port = 2809
+  _host = "localhost"
+  _port = 2809
   import os
   try:
     import rospy
     # Check is ROS master is reachable.
     if rospy.client.get_master().target is not None:
-      host = rospy.get_param("/gepetto_viewer/host", host)
-      port = rospy.get_param("/gepetto_viewer/port", port)
+      _host = rospy.get_param("/gepetto_viewer/host", _host)
+      _port = rospy.get_param("/gepetto_viewer/port", _port)
   except:
     pass
-  host = os.getenv ("GEPETTO_VIEWER_HOST", host)
-  port = os.getenv ("GEPETTO_VIEWER_PORT", port)
-  if host is None and port is None:
-      url = "corbaloc:iiop:/NameService"
+  _host = os.getenv ("GEPETTO_VIEWER_HOST", _host)
+  _port = os.getenv ("GEPETTO_VIEWER_PORT", _port)
+  if host: _host = host
+  if port: _port = port
+  if _host is None and _port is None:
+      url = "corbaloc:iiop:"
   else:
-      url = "corbaloc:iiop:{}:{}/NameService".format(host, port)
-  return url
+      url = "corbaloc:iiop:{}:{}".format(_host, _port)
+  return url + "/" + service

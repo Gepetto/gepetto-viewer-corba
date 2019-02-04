@@ -25,13 +25,18 @@ namespace graphics
       public:
 	~Server ();
 
-	/// \brief Create and activate the Corba servers.
-	void createAndActivateServers (graphics::corbaServer::Server* server);
+        void initRootPOA ();
+
+        void initOmniINSPOA ();
+
+	void createServant (graphics::corbaServer::Server* server);
 
       private:
 	CORBA::ORB_var orb_;
 	PortableServer::POA_var poa_;
-	GraphicalInterface* graphicalInterfaceServant_;
+        PortableServer::ObjectId_var objectId_;
+        bool useNameService_;
+        GraphicalInterface* graphicalInterfaceServant_;
 
 	/// \brief It seems that we need to store this object to
 	/// deactivate the server.
