@@ -17,6 +17,8 @@
 #include "gepetto/gui/mainwindow.hh"
 #include "ui_mainwindow.h"
 
+#include <sstream>
+
 #include <QtGlobal>
 #include <QScrollBar>
 #include <QMessageBox>

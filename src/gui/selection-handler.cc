@@ -28,6 +28,10 @@
 
 namespace gepetto {
   namespace gui {
+    static const unsigned int LAST_SELECTED = 7;
+    static const unsigned int SELECTED      = 8;
+    static const unsigned int CLEAR_SELECT  = 0;
+
     SelectionHandler::SelectionHandler(WindowsManagerPtr_t wsm, QWidget *parent)
       : QComboBox(parent),
 	index_(-1),
@@ -50,7 +54,7 @@ namespace gepetto {
     {
       BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
       foreach(QString name, selected_) {
-        wsm_->setHighlight(name.toStdString(), 0);
+        wsm_->setHighlight(name.toStdString(), CLEAR_SELECT);
       }
       if (index_ != -1) {
         modes_[index_]->reset();
@@ -91,10 +95,12 @@ namespace gepetto {
     {
       if (!event) return;
       if (currentSelected_ == event->nodeName()) return;
-      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString(), 0);
+      if (currentSelected_ != "") wsm_->setHighlight(currentSelected_.toStdString(), CLEAR_SELECT);
       currentSelected_ = event->nodeName();
-      wsm_->setHighlight(event->node()->getID(), 8);
-      emit selectedBodies(QStringList() << currentSelected_);
+      if (event->node()) {
+        wsm_->setHighlight(event->node()->getID(), LAST_SELECTED);
+        emit selectedBodies(QStringList() << currentSelected_);
+      }
       event->done();
     }
 
@@ -119,25 +125,25 @@ namespace gepetto {
       int i = selectedBodies_.indexOf(event->nodeName());
       if (event->modKey() != Qt::ControlModifier) { // CTRL not pressed
         foreach (QString n, selectedBodies_) {
-          wsm_->setHighlight(n.toStdString(), 0);
+          wsm_->setHighlight(n.toStdString(), CLEAR_SELECT);
         }
         selectedBodies_.clear();
         currentSelected_ = event->nodeName();
         if (event->node()) {
-          wsm_->setHighlight(event->node()->getID(), 8);
+          wsm_->setHighlight(event->node()->getID(), LAST_SELECTED);
           selectedBodies_ << currentSelected_;
         }
       } else {                                    // CTRL pressed
         if (!currentSelected_.isEmpty())
-          wsm_->setHighlight(currentSelected_.toStdString(), 7);
+          wsm_->setHighlight(currentSelected_.toStdString(), SELECTED);
         if (i >= 0) {                             // Already selected.
-          wsm_->setHighlight(event->node()->getID(), 0);
+          wsm_->setHighlight(event->node()->getID(), CLEAR_SELECT);
           currentSelected_ = "";
           selectedBodies_.removeAt(i);
         } else {
           currentSelected_ = event->nodeName();
           if (event->node()){   // Add to the list if not empty
-            wsm_->setHighlight(event->node()->getID(), 8);
+            wsm_->setHighlight(event->node()->getID(), LAST_SELECTED);
             selectedBodies_ << currentSelected_;
           }
         }
