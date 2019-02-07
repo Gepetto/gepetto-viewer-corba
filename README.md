@@ -234,6 +234,21 @@ Finally you can compile and install `gepetto-viewer-corba` making sure it finds 
 
 # Troubleshooting
 
+## Display of large meshes is very slow
+
+A solution to help reducing the rendering time is to use Level Of Details (LOD).
+In short, you can use the following command to generate a LOD for mesh named `mesh.ext`.
+```sh
+gvtools --input mesh.ext --simplify 1,0,1 --simplify 0.5,1,3 --simplify 0.2,3,100 --output mesh.ext.osgb
+```
+This will create a LOD with three levels:
+- from 0 to 1 meters, use original mesh,
+- from 1 to 3 meters, use simplified mesh with ratio 0.5 (half less vertices),
+- from 3 to 100 meters, use simplified mesh with ratio 0.2,
+- farther than 100 meters, don't show anything.
+
+`gvtools` is part of *gepetto-viewer* package.  See `gvtools --help` for more details.
+
 ## `CORBA::TRANSIENT` when launching a server
 
 It very often happens that the OmniNames server failed to start properly at boot.
