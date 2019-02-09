@@ -351,6 +351,11 @@ typedef sequence<Transform> TransformSeq;
 
     /// Change configurations according to the last applyConfigurations.d
     void refresh() raises (Error);
+
+    /// Set to false if you do not want refresh to be synchronized
+    /// with the rendering loop.
+    /// \note This is an experimental features.
+    void setRefreshIsSynchronous (in boolean synchonous) raises (Error);
     
     /// Return the Position + Quaternion orientation of an object in the global frame
     /// \param input nodeName : name of the node.

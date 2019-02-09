@@ -26,6 +26,8 @@
 
 namespace gepetto {
   namespace gui {
+    using graphics::ScopedLock;
+
     Qt::ConnectionType connectionType (QObject* o, int blocking)
     {
       if (o->thread() == QThread::currentThread())
@@ -72,6 +74,7 @@ namespace gepetto {
     WindowsManager::WindowsManager(BodyTreeWidget* bodyTree)
       : Parent_t ()
       , bodyTree_ (bodyTree)
+      , refreshIsSynchronous_ (true)
     {
     }
 
@@ -243,6 +246,66 @@ namespace gepetto {
           connectionType (widget, true),
           Q_RETURN_ARG (bool, res));
       return res;
+    }
+
+    struct ApplyConfigurationFunctor
+    {
+      void operator() (const graphics::NodeConfiguration& nc) const
+      {
+        nc.node->applyConfiguration ( nc.position, nc.quat);
+      }
+    };
+
+    void WindowsManager::refresh ()
+    {
+      if (refreshIsSynchronous_) {
+        {
+          ScopedLock lock(configListMtx_);
+          {
+            ScopedLock lock(osgFrameMutex());
+            //refresh scene with the new configuration
+            std::for_each(newNodeConfigurations_.begin(),
+                newNodeConfigurations_.end(), ApplyConfigurationFunctor());
+          }
+          newNodeConfigurations_.resize (0);
+        }
+        if (autoCaptureTransform_) captureTransform ();
+      } else {
+        {
+          ScopedLock lock1(configsAsyncMtx_);
+          ScopedLock lock2(configListMtx_);
+          if (configsAsync_.size() == 0) {
+            configsAsync_.swap (newNodeConfigurations_);
+            QMetaObject::invokeMethod (this, "asyncRefresh", Qt::QueuedConnection);
+          } else {
+            configsAsync_.insert (configsAsync_.end(),
+                newNodeConfigurations_.begin(),
+                newNodeConfigurations_.end());
+            newNodeConfigurations_.resize(0);
+            // No need to reinvoke asyncRefresh as it hasn't been ran yet.
+          }
+        }
+      }
+    }
+
+    void WindowsManager::asyncRefresh ()
+    {
+      NodeConfigurations_t& cfgs = configsAsync_;
+      {
+        ScopedLock lock(configsAsyncMtx_);
+        {
+          ScopedLock lock(osgFrameMutex());
+          //refresh scene with the new configuration
+          std::for_each(cfgs.begin(), cfgs.end(), ApplyConfigurationFunctor());
+        }
+        cfgs.resize (0);
+      }
+      if (autoCaptureTransform_) captureTransform ();
+    }
+
+    void WindowsManager::setRefreshIsSynchronous (bool synchonous)
+    {
+      refreshIsSynchronous_ = synchonous;
     }
   } // namespace gui
 } // namespace gepetto

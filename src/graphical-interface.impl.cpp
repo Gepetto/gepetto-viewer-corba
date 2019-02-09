@@ -292,6 +292,8 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_0(VOID, refresh)
 
+      BIND_TO_WINDOWS_MANAGER_1(VOID, setRefreshIsSynchronous, BOOL)
+
       BIND_TO_WINDOWS_MANAGER_1(VOID, createScene, STRING)
 
       BIND_TO_WINDOWS_MANAGER_1(VOID, createSceneWithFloor, STRING)

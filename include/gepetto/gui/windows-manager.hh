@@ -54,8 +54,13 @@ namespace gepetto {
             const std::string& extension);
         bool stopCapture (const WindowID windowId);
 
-        public slots:
-          int createWindow(QString windowName);
+        void refresh ();
+        void setRefreshIsSynchronous (bool synchonous);
+
+      public slots:
+        int createWindow(QString windowName);
+        void asyncRefresh ();
+
       protected:
         WindowsManager (BodyTreeWidget* bodyTree);
 
@@ -75,6 +80,10 @@ namespace gepetto {
         void deleteBodyItem(const std::string& nodeName);
 
         std::vector<OSGWidget*> widgets_;
+
+        bool refreshIsSynchronous_;
+        graphics::Mutex configsAsyncMtx_;
+        NodeConfigurations_t configsAsync_;
     };
   } // namespace gui
 } // namespace gepetto

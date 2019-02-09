@@ -56,6 +56,7 @@ public:
   virtual Names_t* getWindowList() throw (Error);
 
   virtual void refresh() throw (Error);
+  virtual void setRefreshIsSynchronous(bool synchronous) throw (Error);
 
   virtual WindowID createWindow(const char* windowNameCorba) throw (Error);
   virtual WindowID getWindowID (const char* windowNameCorba) throw (Error);
