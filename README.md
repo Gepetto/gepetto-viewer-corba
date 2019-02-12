@@ -22,7 +22,13 @@
 * [Troubleshooting](#troubleshooting)
 
 ## gepetto-viewer-corba
-### Setup
+
+### Setup from robotpkg apt binary package repository
+
+1. Add robotpkg to your apt configuration: http://robotpkg.openrobots.org/debian.html
+2. `sudo apt update && sudo apt install robotpkg-qt4-gepetto-viewer-corba`
+
+### Setup from sources
 
 To compile this package, it is recommended to create a separate build
 directory:
@@ -206,7 +212,7 @@ gepetto-gui offers the possibility to develop plugins in python. To do so, you m
 
 ### Python 3
 This section describes the procedure to get bindings for Python 3.
-The support for Python 3 is from `OmniORB 4.2.2`. 
+The support for Python 3 is from `OmniORB 4.2.2`.
 In Ubuntu 16.04, the version is 4.2.1, and in Ubuntu 18.04 it is 4.2.2, but Ubuntu main repos do not provide python 3 support.
 Thus, to make it work you must manually compile `OmniORB 4.2.2`.
 Download latest versions of `OmniORB` and `OmniORBpy` from [sourceforge](https://sourceforge.net/projects/omniorb/).
@@ -217,7 +223,7 @@ cd omniORB-4.2.2/
 mkdir build
 cd build
 ../configure --prefix=${CMAKE_INSTALL_PREFIX}
-make 
+make
 make install
 ```
 Compile `OmniORBpy` making sure it finds python3:
@@ -226,7 +232,7 @@ cd omniORBpy-4.2.2/
 mkdir build
 cd build
 ../configure --prefix=${CMAKE_INSTALL_PREFIX}
-make 
+make
 make install
 ```
 Finally you can compile and install `gepetto-viewer-corba` making sure it finds `OmniORB 4.2.2`.
