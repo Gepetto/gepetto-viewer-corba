@@ -85,6 +85,12 @@ namespace gepetto {
         initParent(node, parent, false);
     }
 
+    void WindowsManager::insertNode(const std::string& nodeName, NodePtr_t node)
+    {
+      ScopedLock lock(osgFrameMutex());
+      addNode (nodeName, node, GroupNodePtr_t());
+    }
+
     void WindowsManager::addGroup(const std::string& groupName, GroupNodePtr_t group, GroupNodePtr_t parent)
     {
       Parent_t::addGroup (groupName, group, parent);
