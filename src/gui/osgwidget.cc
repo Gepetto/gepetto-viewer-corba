@@ -63,6 +63,7 @@
 
 #include <gepetto/gui/windows-manager.hh>
 #include <gepetto/gui/selection-event.hh>
+#include <gepetto/gui/action-search-bar.hh>
 
 namespace gepetto {
   namespace gui {
@@ -256,8 +257,10 @@ namespace gepetto {
 
       QIcon icon;
       icon.addFile(QString::fromUtf8(":/icons/floor.png"), QSize(), QIcon::Normal, QIcon::Off);
-      toolBar_->addAction(icon, "Add floor", this, SLOT(addFloor()))
-        ->setToolTip("Add a floor");
+      QAction* addFloor = toolBar_->addAction(icon, "Add floor", this, SLOT(addFloor()));
+      addFloor->setToolTip("Add a floor");
+      MainWindow* main = MainWindow::instance();
+      main->actionSearchBar()->addAction (addFloor);
 
       toolBar_->addAction(iconFromTheme("insert-image"), "Take snapshot",
           this, SLOT(captureFrame()))

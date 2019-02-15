@@ -341,7 +341,7 @@ namespace gepetto {
       devString = trUtf8("<p>Version %1. For more information visit <a href=\"%2\">%2</a></p>"
           "<p><ul>"
           "<li>Compiled with Qt %4, run with Qt %5</li>"
-          "<li>Compiled with OpenSceneGraph version " _osg_version_str "</li>, run with version %6"
+          "<li>Compiled with OpenSceneGraph version " _osg_version_str ", run with version %6</li>"
           "<li></li>"
           "<li></li>"
           "</ul></p>"
