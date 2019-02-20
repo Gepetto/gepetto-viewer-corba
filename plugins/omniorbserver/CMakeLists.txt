@@ -1,4 +1,3 @@
-#
 # Copyright (c) 2018 CNRS
 # Authors: Joseph Mirabel
 #
@@ -17,21 +16,36 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
-INCLUDE(gepetto-viewer-corba-plugin)
+IF(USE_QT4)
+  SET(QT4 "QT4")
+ELSE()
+  SET(QT4 "")
+ENDIF()
 
-#ADD_SUBDIRECTORY(plugin-skeleton)
+GEPETTO_GUI_PLUGIN(omniorbserver
+  INSIDE_GEPETTO_VIEWER_CORBA
 
-IF(PYTHONQT_FOUND)
-  OPTION(BUILD_PY_QGV "Build PyQGV plugin" ${QGVCORE_FOUND})
-  OPTION(BUILD_PY_QCUSTOM_PLOT "Build PyQCustomPlot plugin" OFF)
-ENDIF(PYTHONQT_FOUND)
+  ${QT4}
 
-IF(PYTHONQT_FOUND AND BUILD_PY_QGV)
-  ADD_SUBDIRECTORY(pyqgv)
-ENDIF(PYTHONQT_FOUND AND BUILD_PY_QGV)
+  # List of headers that need not to be moced.
+  HEADERS_NO_MOC
 
-IF(PYTHONQT_FOUND AND BUILD_PY_QCUSTOM_PLOT)
-  ADD_SUBDIRECTORY(pyqcustomplot)
-ENDIF(PYTHONQT_FOUND AND BUILD_PY_QCUSTOM_PLOT)
+  # List of headers to be moced
+  HEADERS
+  plugin.hh
+  omniorbthread.hh
 
-ADD_SUBDIRECTORY(omniorbserver)
+  # List of source files
+  SOURCES
+  plugin.cc
+  omniorbthread.cc
+
+  # List of dependencies to be given to TARGET_LINK_LIBRARIES
+  LINK_DEPENDENCIES
+  "gepetto-viewer-corba"
+
+  # List of dependencies to be given to PKG_CONFIG_USE_DEPENDENCY
+  PKG_CONFIG_DEPENDENCIES
+  "gepetto-viewer"
+  "omniORB4"
+  )

@@ -33,10 +33,6 @@ ENDIF()
 ## 3. Call GEPETTO_GUI_PLUGIN as follows
 #
 GEPETTO_GUI_PLUGIN(pluginskeleton
-  # Use this option only if you write a plugin within
-  # gepetto-viewer-corba package
-  # INSIDE_GEPETTO_VIEWER_CORBA
-
   # Whether to use Qt4 or Qt5
   ${QT4}
 

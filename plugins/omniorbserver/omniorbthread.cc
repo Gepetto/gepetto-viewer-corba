@@ -14,7 +14,7 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
-#include "gui/omniorbthread.hh"
+#include "omniorbthread.hh"
 
 #include <gepetto/viewer/corba/server.hh>
 #include <QDebug>

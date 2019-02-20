@@ -126,7 +126,7 @@ IF(NOT CLIENT_ONLY)
     )
   # }}}
 ENDIF(NOT CLIENT_ONLY)
-# }}}
+# }}}
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(doc)
