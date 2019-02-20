@@ -31,7 +31,6 @@ SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "https://github.com/Gepetto/${PROJECT_NAME}")
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
-SET(USE_QT4 FALSE CACHE BOOL "Use Qt4 instead of Qt5")
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
@@ -49,30 +48,33 @@ SET(${PROJECT_NAME}_HEADERS
 # {{{ C++ server.
 IF(NOT CLIENT_ONLY)
   # {{{ Dependencies for the server.
-  ADD_REQUIRED_DEPENDENCY("openscenegraph >= 3.2")
-
-  IF(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
-    SET(OSGQT_LIB_NAME openscenegraph-osgQt)
-  ELSE(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
-    SET(OSGQT_LIB_NAME openscenegraph-osgQt5)
-  ENDIF(USE_QT4 OR OPENSCENEGRAPH_VERSION VERSION_LESS 3.5.7)
-
-  ADD_REQUIRED_DEPENDENCY(${OSGQT_LIB_NAME})
-  ADD_REQUIRED_DEPENDENCY("openthreads >= 2.6")
-  ADD_REQUIRED_DEPENDENCY("gepetto-viewer >= 4.3.0")
-  ADD_REQUIRED_DEPENDENCY("urdfdom")
-
-  SET(BOOST_COMPONENTS system regex)
-  SEARCH_FOR_BOOST ()
   FINDPYTHON()
+
+  # Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
+  # TODO move the cmake_plugin cmake files to gepetto-viewer
+  LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
+  ADD_REQUIRED_DEPENDENCY("gepetto-viewer > 4.3.0")
+
+  # Get desired Qt version
+  string(REPLACE "." ";" DESIRED_QT_VERSION_LIST ${GEPETTO_VIEWER_QTVERSION})
+  list(GET DESIRED_QT_VERSION_LIST 0 DESIRED_QT_VERSION_MAJOR)
+
+  IF(${DESIRED_QT_VERSION_MAJOR} EQUAL 4)
+    SET(USE_QT4 True)
+  ELSEIF(${DESIRED_QT_VERSION_MAJOR} EQUAL 5)
+    SET(USE_QT4 False)
+  ELSE()
+    MESSAGE(FATAL_ERROR "This package is only compatible with Qt 4 and Qt 5")
+  ENDIF()
+  MESSAGE(STATUS "Looking for Qt ${DESIRED_QT_VERSION_MAJOR}.")
 
   SET(CMAKE_INCLUDE_CURRENT_DIR ON)
   IF(USE_QT4)
-    FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtOpenGl QtNetwork)
+    FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtNetwork)
     SET(PKG_CONFIG_EXTRA "qtversion=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
     INCLUDE(${QT_USE_FILE})
   ELSE(USE_QT4)
-    FOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network" "Concurrent")
+    FOREACH (component "Core" "Widgets" "Gui" "Network" "Concurrent")
       FIND_PACKAGE ("Qt5${component}" REQUIRED)
       LIST(APPEND QT_INCLUDE_DIRS ${Qt5${component}_INCLUDE_DIRS})
       LIST(APPEND QT_LIBRARIES    ${Qt5${component}_LIBRARIES}   )
@@ -113,57 +115,13 @@ IF(NOT CLIENT_ONLY)
   # }}}
 
   # {{{ Set list of headers
-  SET (${PROJECT_NAME}_HEADERS_MOC
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/mainwindow.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/safeapplication.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/osgwidget.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/tree-item.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/bodytreewidget.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ledindicator.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/omniorbthread.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadrobot.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/dialogloadenvironment.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/dialog/pluginmanagerdialog.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/shortcut-factory.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-handler.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/selection-event.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/windows-manager.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/action-search-bar.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/node-action.hh
-    )
-  IF(GEPETTO_GUI_HAS_PYTHONQT)
-    SET (${PROJECT_NAME}_HEADERS_MOC
-      ${${PROJECT_NAME}_HEADERS_MOC}
-      ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pythonwidget.hh)
-  ENDIF(GEPETTO_GUI_HAS_PYTHONQT)
-  SET (${PROJECT_NAME}_HEADERS_NO_MOC
+  SET (${PROJECT_NAME}_HEADERS
     ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/server.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/fwd.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/color-map.hh
-    ${CMAKE_BINARY_DIR}/include/gepetto/gui/config-dep.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/fwd.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/plugin-interface.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/pick-handler.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/settings.hh
     )
-
-  SET(${PROJECT_NAME}_FORMS
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/mainwindow.ui
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/dialogloadrobot.ui
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/dialogloadenvironment.ui
-    ${CMAKE_SOURCE_DIR}/include/gepetto/gui/ui/pluginmanagerdialog.ui
-    )
-
-  SET(${PROJECT_NAME}_RESOURCES ${CMAKE_SOURCE_DIR}/res/images.qrc)
-
-  SET(${PROJECT_NAME}_HEADERS
-    ${${PROJECT_NAME}_HEADERS}
-    ${${PROJECT_NAME}_HEADERS_MOC}
-    ${${PROJECT_NAME}_HEADERS_NO_MOC})
 
   config_files(
-    include/gepetto/gui/config-dep.hh
     src/gui/main.cc
     )
   # }}}

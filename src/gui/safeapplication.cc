@@ -14,47 +14,35 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
-#include "gepetto/gui/safeapplication.hh"
+#include "safeapplication.hh"
 
 #include <QDebug>
 #include <omniORB4/CORBA.h>
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/plugin-interface.hh>
 
-namespace gepetto {
-  namespace gui {
-    SafeApplication::SafeApplication(int& argc, char** argv) :
-      QApplication(argc, argv)
-    {
-    }
+SafeApplication::SafeApplication(int& argc, char** argv) :
+  QApplication(argc, argv)
+{
+}
 
-    bool SafeApplication::notify(QObject *receiver, QEvent *e)
-    {
-      try {
-        return QApplication::notify(receiver, e);
-      } catch (const std::exception& e) {
-        qDebug () << e.what();
-      } catch (const CORBA::TRANSIENT& e) {
-        emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
-      } catch (const CORBA::COMM_FAILURE& e) {
-        emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
-      } catch (const CORBA::MARSHAL& e) {
-        emit log (QString ("CORBA Exception %1 - %2.<br/><b>A CORBA client or server is not up to date.</b>").arg(e._name()).arg(e._rep_id()));
-      } catch (const CORBA::Exception& e) {
-        bool handled = false;
-        foreach (CorbaInterface* errorHandler, MainWindow::instance()->pluginManager()->get <CorbaInterface>()) {
-          if (errorHandler->corbaException (0, e)) {
-            handled = true;
-            break;
-          }
-        }
-        if (!handled)
-          emit log (QString ("Unhandled CORBA Exception %1 - %2").arg(e._name()).arg(e._rep_id()));
-      } catch (...) {
-        qDebug() << "Unknown exception";
-        qDebug() << "Catch it in SafeApplication::notify";
-      }
-      return false;
-    }
-  } // namespace gui
-} // namespace gepetto
+bool SafeApplication::notify(QObject *receiver, QEvent *e)
+{
+  try {
+    return QApplication::notify(receiver, e);
+  } catch (const std::exception& e) {
+    qDebug () << e.what();
+  } catch (const CORBA::TRANSIENT& e) {
+    emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
+  } catch (const CORBA::COMM_FAILURE& e) {
+    emit log (QString ("CORBA Exception %1 - %2.<br/><b>You may need to reset the connections (see Tools menu).<b/>").arg(e._name()).arg(e._rep_id()));
+  } catch (const CORBA::MARSHAL& e) {
+    emit log (QString ("CORBA Exception %1 - %2.<br/><b>A CORBA client or server is not up to date.</b>").arg(e._name()).arg(e._rep_id()));
+  } catch (const CORBA::Exception& e) {
+    emit log (QString ("Unhandled CORBA Exception %1 - %2").arg(e._name()).arg(e._rep_id()));
+  } catch (...) {
+    qDebug() << "Unknown exception";
+    qDebug() << "Catch it in SafeApplication::notify";
+  }
+  return false;
+}

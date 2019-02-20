@@ -41,4 +41,5 @@ GEPETTO_GUI_PLUGIN(pyqgv
 
   PKG_CONFIG_DEPENDENCIES
   "qgv"
+  "gepetto-viewer"
   )

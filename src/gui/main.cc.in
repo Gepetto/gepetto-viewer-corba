@@ -8,10 +8,13 @@
 
 #include <QItemSelection>
 
-#include "gepetto/gui/safeapplication.hh"
-#include "gepetto/gui/mainwindow.hh"
-#include "gepetto/gui/dialog/pluginmanagerdialog.hh"
-#include "gepetto/gui/settings.hh"
+#include <gepetto/gui/mainwindow.hh>
+#include <gepetto/gui/settings.hh>
+
+#include <gepetto/viewer/corba/server.hh>
+
+#include "gui/omniorbthread.hh"
+#include "gui/safeapplication.hh"
 
 using namespace gepetto::gui;
 
@@ -20,6 +23,8 @@ using namespace gepetto::gui;
 #if (QT_VERSION < QT_VERSION_CHECK(5,5,1))
 Q_DECLARE_METATYPE(QItemSelection)
 #endif
+
+using graphics::corbaServer::Server;
 
 void setupApplication ()
 {
@@ -84,9 +89,19 @@ int main(int argc, char *argv[])
   settings.initPlugins ();
   settings.restoreState ();
   w.connect (&a, SIGNAL (log(QString)), SLOT (logError(const QString&)));
+
+  CorbaServer* osgServer = NULL;
+  if (settings.startGepettoCorbaServer) {
+    int argc;
+    const char** argv = settings.makeOmniORBargs (argc);
+    osgServer = new CorbaServer (new ViewerServerProcess (
+          new Server (w.osg(), argc, argv, true, settings.useNameService)));
+    osgServer->start();
+  }
   w.show();
   splash.finish(&w);
   int retCode = a.exec();
   settings.saveState ();
+  if (osgServer != NULL) delete osgServer;
   return retCode;
 }

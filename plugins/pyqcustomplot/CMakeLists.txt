@@ -46,6 +46,7 @@ GEPETTO_GUI_PLUGIN(pyqcustomplot
 
   PKG_CONFIG_DEPENDENCIES
   omniORB4
+  "gepetto-viewer"
   )
 
 SET_SOURCE_FILES_PROPERTIES(qcustomplot.cpp

@@ -14,26 +14,22 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GEPETTO_GUI_SAFEAPPLICATION_HH
-#define GEPETTO_GUI_SAFEAPPLICATION_HH
+#ifndef SAFEAPPLICATION_HH
+#define SAFEAPPLICATION_HH
 
 #include <QApplication>
 
-namespace gepetto {
-  namespace gui {
-    class SafeApplication : public QApplication
-    {
-      Q_OBJECT
+class SafeApplication : public QApplication
+{
+  Q_OBJECT
 
-      public:
-        explicit SafeApplication (int& argc, char ** argv);
+  public:
+    explicit SafeApplication (int& argc, char ** argv);
 
-        virtual bool notify(QObject* receiver, QEvent* e);
+    virtual bool notify(QObject* receiver, QEvent* e);
 
-      signals:
-        void log (QString text);
-    };
-  } // namespace gui
-} // namespace gepetto
+  signals:
+    void log (QString text);
+};
 
-#endif // GEPETTO_GUI_SAFEAPPLICATION_HH
+#endif // SAFEAPPLICATION_HH
