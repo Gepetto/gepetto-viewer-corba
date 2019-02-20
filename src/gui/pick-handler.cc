@@ -129,7 +129,8 @@ namespace gepetto {
           //intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
 
           osgUtil::IntersectionVisitor iv( intersector_ );
-          iv.setTraversalMask(graphics::IntersectionBit);
+          iv.setTraversalMask(viewer::IntersectionBit);
+          //iv.setTraversalMask(viewer::IntersectionBit | viewer::EditionBit);
 
           osg::Camera* camera = viewer->getCamera();
           camera->accept( iv );
@@ -154,8 +155,13 @@ namespace gepetto {
         intersection = intersector_->getFirstIntersection();
       bool hasSkipped = false;
       for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
-        if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
-        graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
+        //if (intersection.nodePath[i]->getNodeMask() == viewer::EditionBit) {
+          // TODO start editing node configuration.
+          // qDebug() << "edition bit";
+          //break;
+        //}
+        if (!(intersection.nodePath[i]->getNodeMask() & viewer::NodeBit)) continue;
+        NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
         if (n) {
           if (!hasSkipped && boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$"))) {
             hasSkipped = true;
@@ -216,7 +222,7 @@ namespace gepetto {
         bool zoom)
     {
       MainWindow* main = MainWindow::instance();
-      graphics::NodePtr_t last = main->osg()->getNode(
+      NodePtr_t last = main->osg()->getNode(
             main->selectionHandler()->mode()->currentBody().toStdString()
             );
       if (!last) return;

@@ -123,16 +123,16 @@ namespace gepetto {
 
     void OSGWidget::paintEvent(QPaintEvent*)
     {
-      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      viewer::ScopedLock lock(wsm_->osgFrameMutex());
       wm_->frame();
     }
 
-    graphics::WindowsManager::WindowID OSGWidget::windowID() const
+    WindowsManager::WindowID OSGWidget::windowID() const
     {
       return wid_;
     }
 
-    graphics::WindowManagerPtr_t OSGWidget::window() const
+    WindowManagerPtr_t OSGWidget::window() const
     {
       return wm_;
     }
@@ -214,21 +214,21 @@ namespace gepetto {
 
     void OSGWidget::captureFrame (const std::string& filename)
     {
-      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      viewer::ScopedLock lock(wsm_->osgFrameMutex());
       wm_->captureFrame (filename);
     }
 
     bool OSGWidget::startCapture (const std::string& filename,
         const std::string& extension)
     {
-      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      viewer::ScopedLock lock(wsm_->osgFrameMutex());
       wm_->startCapture (filename, extension);
       return true;
     }
 
     bool OSGWidget::stopCapture ()
     {
-      graphics::ScopedLock lock(wsm_->osgFrameMutex());
+      viewer::ScopedLock lock(wsm_->osgFrameMutex());
       wm_->stopCapture ();
       return true;
     }

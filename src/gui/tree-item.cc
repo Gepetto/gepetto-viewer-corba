@@ -28,10 +28,11 @@
 #include <gepetto/gui/bodytreewidget.hh>
 
 namespace gepetto {
-  using graphics::ScopedLock;
-
   namespace gui {
-    QWidget* boolPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    using viewer::ScopedLock;
+    using viewer::PropertyPtr_t;
+
+    QWidget* boolPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop)
     {
       QCheckBox* cb = new QCheckBox;
       bool value;
@@ -44,10 +45,10 @@ namespace gepetto {
       return cb;
     }
 
-    QWidget* enumPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    QWidget* enumPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop)
     {
-      const graphics::EnumProperty::Ptr_t enumProp = graphics::dynamic_pointer_cast<graphics::EnumProperty> (prop);
-      const graphics::MetaEnum* enumMeta = enumProp->metaEnum();
+      const viewer::EnumProperty::Ptr_t enumProp = viewer::dynamic_pointer_cast<viewer::EnumProperty> (prop);
+      const viewer::MetaEnum* enumMeta = enumProp->metaEnum();
 
       QComboBox* cb = new QComboBox;
       int value;
@@ -66,7 +67,7 @@ namespace gepetto {
       return cb;
     }
 
-    QWidget* stringPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    QWidget* stringPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop)
     {
       QLineEdit* le = new QLineEdit;
       std::string value;
@@ -79,7 +80,7 @@ namespace gepetto {
       return le;
     }
 
-    QWidget* floatPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    QWidget* floatPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop)
     {
       QDoubleSpinBox* dsb = new QDoubleSpinBox;
       float value;
@@ -92,7 +93,7 @@ namespace gepetto {
       return dsb;
     }
 
-    QWidget* intPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop,
+    QWidget* intPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop,
         bool isSigned)
     {
       QSpinBox* dsb = new QSpinBox;
@@ -115,7 +116,7 @@ namespace gepetto {
       return dsb;
     }
 
-    QWidget* colorPropertyEditor (BodyTreeItem* bti, const graphics::PropertyPtr_t prop)
+    QWidget* colorPropertyEditor (BodyTreeItem* bti, const PropertyPtr_t prop)
     {
       if (!prop->hasWriteAccess()) return NULL;
       osgVector4 value;
@@ -137,7 +138,7 @@ namespace gepetto {
       return button;
     }
 
-    BodyTreeItem::BodyTreeItem(QObject *parent, graphics::NodePtr_t node) :
+    BodyTreeItem::BodyTreeItem(QObject *parent, NodePtr_t node) :
       QObject (parent),
       QStandardItem (QString::fromStdString (node->getID().substr(node->getID().find_last_of("/") + 1))),
       node_ (node)
@@ -161,11 +162,11 @@ namespace gepetto {
 
       l->addRow("Node name:", new QLabel (node_->getID().c_str()));
 
-      const graphics::PropertyMap_t& props = node_->properties();
-      for (graphics::PropertyMap_t::const_iterator _prop = props.begin();
+      const viewer::PropertyMap_t& props = node_->properties();
+      for (viewer::PropertyMap_t::const_iterator _prop = props.begin();
            _prop != props.end(); ++_prop)
       {
-        const graphics::PropertyPtr_t prop = _prop->second;
+        const PropertyPtr_t prop = _prop->second;
         if (!prop->hasReadAccess()) continue;
 
         QString name = _prop->first.c_str();
@@ -268,7 +269,7 @@ namespace gepetto {
       return new BodyTreeItem (QObject::parent(), node_);
     }
 
-    graphics::NodePtr_t BodyTreeItem::node() const
+    NodePtr_t BodyTreeItem::node() const
     {
       return node_;
     }

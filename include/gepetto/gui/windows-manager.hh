@@ -26,14 +26,12 @@
 
 namespace gepetto {
   namespace gui {
-    class WindowsManager : public QObject, public graphics::WindowsManager
+    class WindowsManager : public QObject, public viewer::WindowsManager
     {
       Q_OBJECT
 
       public:
-        typedef graphics::WindowsManager Parent_t;
-        typedef graphics::NodePtr_t      NodePtr_t;
-        typedef graphics::GroupNodePtr_t GroupNodePtr_t;
+        typedef viewer::WindowsManager Parent_t;
 
         static WindowsManagerPtr_t create (BodyTreeWidget* bodyTree);
 
@@ -83,7 +81,7 @@ namespace gepetto {
         std::vector<OSGWidget*> widgets_;
 
         bool refreshIsSynchronous_;
-        graphics::Mutex configsAsyncMtx_;
+        viewer::Mutex configsAsyncMtx_;
         NodeConfigurations_t configsAsync_;
     };
   } // namespace gui

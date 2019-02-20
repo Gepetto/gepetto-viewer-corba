@@ -26,7 +26,7 @@
 
 namespace gepetto {
   namespace gui {
-    using graphics::ScopedLock;
+    using viewer::ScopedLock;
 
     Qt::ConnectionType connectionType (QObject* o, int blocking)
     {
@@ -64,7 +64,7 @@ namespace gepetto {
                                                           osgViewer::Viewer *viewer,
                                                           osg::GraphicsContext *gc)
     {
-      graphics::WindowManagerPtr_t newWindow = graphics::WindowManager::create (viewer, gc);
+      viewer::WindowManagerPtr_t newWindow = viewer::WindowManager::create (viewer, gc);
       WindowID windowId = addWindow (windowName, newWindow);
       assert (windowId == widgets_.size());
       widgets_.push_back(widget);
@@ -256,7 +256,7 @@ namespace gepetto {
 
     struct ApplyConfigurationFunctor
     {
-      void operator() (const graphics::NodeConfiguration& nc) const
+      void operator() (const viewer::NodeConfiguration& nc) const
       {
         nc.node->applyConfiguration ( nc.position, nc.quat);
       }

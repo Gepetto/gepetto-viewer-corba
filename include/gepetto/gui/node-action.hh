@@ -28,11 +28,11 @@ namespace gepetto {
       Q_OBJECT
 
     public:
-        NodeActionBase(const QString& text, graphics::NodePtr_t node, QWidget* parent);
+        NodeActionBase(const QString& text, NodePtr_t node, QWidget* parent);
 
         virtual ~NodeActionBase () {}
 
-        graphics::NodePtr_t node () const;
+        NodePtr_t node () const;
 
     protected:
       virtual void act(bool checked) = 0;
@@ -41,7 +41,7 @@ namespace gepetto {
       void _act(bool checked);
 
     private:
-      graphics::NodePtr_t node_;
+      NodePtr_t node_;
     };
 
     class NodeAction : public NodeActionBase {
@@ -54,12 +54,12 @@ namespace gepetto {
           ATTACH_CAMERA_TO_NODE
         };
 
-        NodeAction(const Type& t, const QString& text, graphics::NodePtr_t node, QWidget* parent);
+        NodeAction(const Type& t, const QString& text, NodePtr_t node, QWidget* parent);
 
         NodeAction(const Type& t, const QString& text, QWidget* parent);
 
         /// Attach to window
-        NodeAction(const QString& text, graphics::NodePtr_t node, OSGWidget* window, QWidget* parent);
+        NodeAction(const QString& text, NodePtr_t node, OSGWidget* window, QWidget* parent);
 
         /// Attach camera to node
         NodeAction(const QString& text, OSGWidget* window, QWidget* parent);

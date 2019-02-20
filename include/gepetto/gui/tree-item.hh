@@ -35,7 +35,7 @@ namespace gepetto {
       Q_OBJECT
 
       public:
-        BodyTreeItem (QObject* parent, graphics::NodePtr_t node);
+        BodyTreeItem (QObject* parent, NodePtr_t node);
         void initialize();
 
         virtual QStandardItem* clone () const;
@@ -44,7 +44,7 @@ namespace gepetto {
           return QStandardItem::UserType+1;
         }
 
-        graphics::NodePtr_t node () const;
+        NodePtr_t node () const;
 
         void populateContextMenu (QMenu* menu);
 
@@ -85,7 +85,7 @@ namespace gepetto {
       private:
         template <typename T> void setProperty(const QObject* sender, const T& value) const;
 
-        graphics::NodePtr_t node_;
+        NodePtr_t node_;
         std::string parentGroup_;
 
         QWidget* propertyEditors_;

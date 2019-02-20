@@ -32,6 +32,8 @@
 #include "../../src/gui/python-decorator.hh"
 
 namespace gepetto {
+    typedef gui::MainWindow GMainWindow;
+
     namespace gui {
       namespace {
         void addSignalHandler (PythonQtObjectPtr obj, const QString& callable,
@@ -67,12 +69,15 @@ namespace gepetto {
         mainContext.evalScript ("import PythonQt");
         console_ = new PythonQtScriptingConsole(NULL, mainContext);
 
+        PythonQt::self()->addDecorators (new PythonDecorator());
+
         PythonQt::self()->registerQObjectClassNames(QStringList()
             << "BodyTreeWidget"
             << "BodyTreeItem"
             << "SelectionEvent"
+            << "MainWindow"
             << "WindowsManager");
-        PythonQt::self()->addDecorators (new PythonDecorator());
+
         PythonQt::self()->registerCPPClass ("MainWindow", "QMainWindow", "gepetto");
         PythonQt::self()->registerCPPClass ("OSGWidget" , "QWidget"    , "gepetto");
 

@@ -23,6 +23,7 @@
 #include <QAtomicInt>
 
 #include <gepetto/viewer/node.h>
+#include <gepetto/gui/fwd.hh>
 
 namespace gepetto {
   namespace gui {
@@ -35,7 +36,7 @@ namespace gepetto {
           FromBodyTree
         };
 
-        SelectionEvent (const Type& t, graphics::NodePtr_t node = graphics::NodePtr_t(), Qt::KeyboardModifiers modKey = Qt::NoModifier)
+        SelectionEvent (const Type& t, NodePtr_t node = NodePtr_t(), Qt::KeyboardModifiers modKey = Qt::NoModifier)
           : type_ (t)
           , node_ (node)
           , modKey_ (modKey)
@@ -55,7 +56,7 @@ namespace gepetto {
 
         void setupIntersection(const osgUtil::LineSegmentIntersector::Intersection& it);
 
-        const graphics::NodePtr_t& node () const { return node_; }
+        const NodePtr_t& node () const { return node_; }
 
         void modKey (const Qt::KeyboardModifiers& m) { modKey_ = m; }
 
@@ -80,7 +81,7 @@ namespace gepetto {
     private:
         Type type_;
         QString nodeName_;
-        graphics::NodePtr_t node_;
+        NodePtr_t node_;
         Qt::KeyboardModifiers modKey_;
 
         bool hasIntersection_;

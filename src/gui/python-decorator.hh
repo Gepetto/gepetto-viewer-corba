@@ -36,6 +36,10 @@ namespace gepetto {
 
       QList <OSGWidget*> osgWindows (MainWindow* w) const { return w->osgWindows(); }
 
+      WindowsManager* osg (MainWindow* w) const { return w->osg().get(); }
+
+      QObject* getFromSlot (MainWindow* w, const char* slot) const { return w->getFromSlot(slot); }
+
       OSGWidget* createView (MainWindow* w, const QString& name) const { return w->createView(name.toStdString()); }
 
       /// \}

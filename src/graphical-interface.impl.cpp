@@ -11,6 +11,8 @@
 
 namespace graphics {
   namespace corbaServer {
+    using namespace gepetto::viewer;
+
     namespace impl {
       namespace {
         typedef GraphicalInterface::WindowID WindowID;

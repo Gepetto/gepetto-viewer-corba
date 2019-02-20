@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <gepetto/viewer/macros.h>
+#include <gepetto/viewer/fwd.h>
 #include <gepetto/gui/config-dep.hh>
 
 namespace gepetto {
@@ -35,10 +36,13 @@ namespace gepetto {
     class SelectionEvent;
     class ActionSearchBar;
 
+    typedef viewer::NodePtr_t NodePtr_t;
+    typedef viewer::GroupNodePtr_t GroupNodePtr_t;
+
     class ViewerCorbaServer;
 
     class WindowsManager;
-    typedef graphics::shared_ptr <WindowsManager> WindowsManagerPtr_t;
+    typedef viewer::shared_ptr <WindowsManager> WindowsManagerPtr_t;
 
 #if GEPETTO_GUI_HAS_PYTHONQT
     class PythonWidget;

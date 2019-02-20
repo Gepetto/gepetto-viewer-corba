@@ -18,12 +18,6 @@ namespace graphics {
 namespace corbaServer {
 namespace impl {
 
-struct NodeConfiguration {
-    NodePtr_t node;
-    osgVector3 position;
-    osgQuat quat;
-};
-
 using gepetto::gui::WindowsManagerPtr_t;
 class GraphicalInterface :
     public virtual POA_gepetto::corbaserver::GraphicalInterface

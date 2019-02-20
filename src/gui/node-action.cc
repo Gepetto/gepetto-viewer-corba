@@ -23,14 +23,14 @@
 
 namespace gepetto {
   namespace gui {
-    NodeActionBase::NodeActionBase(const QString& text, graphics::NodePtr_t node, QWidget* parent)
+    NodeActionBase::NodeActionBase(const QString& text, NodePtr_t node, QWidget* parent)
       : QAction (text, parent)
       , node_ (node)
     {
       connect(this, SIGNAL(triggered(bool)), SLOT(_act(bool)));
     }
 
-    graphics::NodePtr_t NodeActionBase::node () const
+    NodePtr_t NodeActionBase::node () const
     {
       if (node_) return node_;
       QString s = MainWindow::instance()->selectionHandler()->mode()->currentBody();
@@ -42,41 +42,41 @@ namespace gepetto {
       act(checked);
     }
 
-    NodeAction::NodeAction(const NodeAction::Type& t, const QString& text, graphics::NodePtr_t node, QWidget* parent)
+    NodeAction::NodeAction(const NodeAction::Type& t, const QString& text, NodePtr_t node, QWidget* parent)
       : NodeActionBase (text, node, parent)
       , type_ (t)
     {}
 
     NodeAction::NodeAction(const NodeAction::Type& t, const QString& text, QWidget* parent)
-      : NodeActionBase (text, graphics::NodePtr_t(), parent)
+      : NodeActionBase (text, NodePtr_t(), parent)
       , type_ (t)
     {}
 
-    NodeAction::NodeAction(const QString& text, graphics::NodePtr_t node, OSGWidget* window, QWidget* parent)
+    NodeAction::NodeAction(const QString& text, NodePtr_t node, OSGWidget* window, QWidget* parent)
       : NodeActionBase (text, node, parent)
       , type_ (ATTACH_TO_WINDOW)
       , window_ (window)
     {}
 
     NodeAction::NodeAction(const QString& text, OSGWidget* window, QWidget* parent)
-      : NodeActionBase (text, graphics::NodePtr_t(), parent)
+      : NodeActionBase (text, NodePtr_t(), parent)
       , type_ (ATTACH_CAMERA_TO_NODE)
       , window_ (window)
     {}
 
     void NodeAction::act(bool)
     {
-      graphics::NodePtr_t n = node();
+      NodePtr_t n = node();
       if (!n) return;
       switch (type_) {
         case VISIBILITY_ON:
-          n->setVisibilityMode(graphics::VISIBILITY_ON);
+          n->setVisibilityMode(viewer::VISIBILITY_ON);
           break;
         case VISIBILITY_OFF:
-          n->setVisibilityMode(graphics::VISIBILITY_OFF);
+          n->setVisibilityMode(viewer::VISIBILITY_OFF);
           break;
         case ALWAYS_ON_TOP:
-          n->setVisibilityMode(graphics::ALWAYS_ON_TOP);
+          n->setVisibilityMode(viewer::ALWAYS_ON_TOP);
           break;
         case ATTACH_TO_WINDOW:
           window_->osg()->addSceneToWindow(n->getID(), window_->windowID());

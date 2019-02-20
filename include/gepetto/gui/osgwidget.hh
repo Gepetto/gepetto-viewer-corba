@@ -36,7 +36,7 @@ class QTextBrowser;
 
 namespace gepetto {
   namespace gui {
-    typedef graphics::WindowManagerPtr_t WindowManagerPtr_t;
+    typedef viewer::WindowManagerPtr_t WindowManagerPtr_t;
     typedef WindowsManager::WindowID WindowID;
 
     /// Widget that displays scenes.
@@ -85,7 +85,7 @@ namespace gepetto {
         WindowsManagerPtr_t wsm_;
         osg::ref_ptr<PickHandler> pickHandler_;
         WindowsManager::WindowID wid_;
-        graphics::WindowManagerPtr_t wm_;
+        WindowManagerPtr_t wm_;
         QTimer timer_;
         osgViewer::ViewerRefPtr viewer_;
         osg::ref_ptr <osgViewer::ScreenCaptureHandler> screenCapture_;
