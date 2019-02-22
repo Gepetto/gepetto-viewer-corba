@@ -51,7 +51,6 @@ IF(NOT CLIENT_ONLY)
   FINDPYTHON()
 
   # Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
-  # TODO move the cmake_plugin cmake files to gepetto-viewer
   LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
   ADD_REQUIRED_DEPENDENCY("gepetto-viewer > 4.3.0")
 
@@ -108,10 +107,9 @@ IF(NOT CLIENT_ONLY)
   # {{{ Packaging
   PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
-  INSTALL(FILES cmake-modules/gepetto-viewer-corba-plugin.cmake
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake/
-    PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
-  SET(PKG_CONFIG_EXTRA "${PKG_CONFIG_EXTRA}\ncmake_plugin=${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake/gepetto-viewer-corba-plugin.cmake")
+  # For backward compatibility
+  SET(PKG_CONFIG_EXTRA "${PKG_CONFIG_EXTRA}\ncmake_plugin=${GEPETTO_VIEWER_CMAKE_PLUGIN}")
+  INCLUDE(${GEPETTO_VIEWER_CMAKE_PLUGIN})
   # }}}
 
   # {{{ Set list of headers

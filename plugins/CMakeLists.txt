@@ -17,7 +17,7 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
-INCLUDE(gepetto-viewer-corba-plugin)
+INCLUDE(${GEPETTO_VIEWER_CMAKE_PLUGIN})
 
 #ADD_SUBDIRECTORY(plugin-skeleton)
 
