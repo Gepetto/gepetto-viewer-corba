@@ -123,7 +123,7 @@ namespace gepetto {
     void OSGWidget::paintEvent(QPaintEvent*)
     {
       graphics::ScopedLock lock(wsm_->osgFrameMutex());
-      viewer_->frame();
+      wm_->frame();
     }
 
     graphics::WindowsManager::WindowID OSGWidget::windowID() const
@@ -310,6 +310,7 @@ namespace gepetto {
       viewer_->addEventHandler(screenCapture_);
       viewer_->addEventHandler(new osgViewer::HelpHandler);
       viewer_->addEventHandler(pickHandler_);
+      viewer_->addEventHandler(new osgViewer::StatsHandler);
     }
   } // namespace gui
 } // namespace gepetto

@@ -41,9 +41,14 @@ namespace gepetto {
       void getUsage (osg::ApplicationUsage &usage) const;
 
     private:
-      std::list <graphics::NodePtr_t> computeIntersection (osgGA::GUIActionAdapter& aa,
-                                                           const float& x, const float& y,
-							   int modMask);
+      void computeIntersection (osgGA::GUIActionAdapter& aa,
+          const float& x, const float& y);
+
+      void selectionNodeUnderCursor (osgGA::GUIActionAdapter& aa,
+          const float& x, const float& y, int modMask);
+
+      void centerViewToMouse (osgGA::GUIActionAdapter& aa,
+          const float& x, const float& y);
 
       void setCameraToSelected (osgGA::GUIActionAdapter& aa, bool zoom);
 
@@ -52,6 +57,8 @@ namespace gepetto {
       OSGWidget* parent_;
       bool pushed_;
       float lastX_, lastY_;
+
+      osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector_;
     };
   }
 }

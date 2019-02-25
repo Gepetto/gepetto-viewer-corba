@@ -48,7 +48,10 @@ namespace gepetto {
       , pushed_ (false)
       , lastX_ (0)
       , lastY_ (0)
-    {}
+      , intersector_ (new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, 0., 0.))
+    {
+      intersector_->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
+    }
 
     PickHandler::~PickHandler()
     {
@@ -63,9 +66,9 @@ namespace gepetto {
             if (pushed_
                 && ea.getEventType() == osgGA::GUIEventAdapter::RELEASE) {
               pushed_ = false;
-              if ((int)floor(lastX_ - ea.getX()+0.05) == 0
+              if (   (int)floor(lastX_ - ea.getX() + 0.5) == 0
                   && (int)floor(lastY_ - ea.getY() + 0.5) == 0) {
-                computeIntersection(aa, ea.getX(), ea.getY(), ea.getModKeyMask());
+                selectionNodeUnderCursor (aa, ea.getX(), ea.getY(), ea.getModKeyMask());
                 return true;
               }
             }
@@ -85,6 +88,9 @@ namespace gepetto {
             case 'Z':
                 setCameraToSelected (aa, true);
               return true;
+            case 'f':
+                centerViewToMouse (aa, ea.getX(), ea.getY());
+              return true;
             default:
               break;
           }
@@ -100,14 +106,16 @@ namespace gepetto {
       usage.addKeyboardMouseBinding ("Right click", "Select node");
       usage.addKeyboardMouseBinding ('z', "Move camera on selected node");
       usage.addKeyboardMouseBinding ('Z', "Move and zoom on selected node");
+      usage.addKeyboardMouseBinding ('f', "Center view to mouse");
     }
 
-    std::list<graphics::NodePtr_t> PickHandler::computeIntersection(osgGA::GUIActionAdapter &aa,
-                                                                    const float &x, const float &y,
-								    int modKeyMask)
+    void PickHandler::computeIntersection(osgGA::GUIActionAdapter &aa,
+        const float &x, const float &y)
     {
-      BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
-      std::list<graphics::NodePtr_t> nodes;
+      intersector_->reset();
+      intersector_->setStart (osg::Vec3d(x,y,0.));
+      intersector_->setEnd   (osg::Vec3d(x,y,1.));
+
       osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
       if( viewer )
       {
@@ -116,45 +124,92 @@ namespace gepetto {
           // On the contrary, locking here creates a deadlock as the lock is
           // already acquired by OSGWidget::paintEvent.
           // wsm_->lock().lock();
-          osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
-              new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
-          intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
+          //osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector =
+              //new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
+          //intersector->setIntersectionLimit( osgUtil::Intersector::LIMIT_NEAREST );
 
-          osgUtil::IntersectionVisitor iv( intersector );
+          osgUtil::IntersectionVisitor iv( intersector_ );
           iv.setTraversalMask(graphics::IntersectionBit);
 
           osg::Camera* camera = viewer->getCamera();
           camera->accept( iv );
+      }
+    }
 
-          if( !intersector->containsIntersections() ) {
-            bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
-            return nodes;
-          }
+    void PickHandler::selectionNodeUnderCursor (osgGA::GUIActionAdapter &aa,
+        const float &x, const float &y, int modKeyMask)
+    {
+      computeIntersection (aa, x, y);
+      BodyTreeWidget* bt = MainWindow::instance()->bodyTree();
 
-          // Only one intersection. Otherwise, one has to loop on elements of
-          // intersector->getIntersections();
-          const osgUtil::LineSegmentIntersector::Intersection&
-            intersection = intersector->getFirstIntersection();
-          bool hasSkipped = false;
-          for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
-            if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
-            graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
-            if (n) {
-              if (!hasSkipped && boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$"))) {
-                hasSkipped = true;
-                continue;
-              }
-              SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
-                  n,
-                  mapper_.getQtModKey(modKeyMask));
-              event->setupIntersection(intersection);
-              bt->emitBodySelected(event);
-              return nodes;
-            }
+      if( !intersector_->containsIntersections() ) {
+        bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow,
+              QApplication::keyboardModifiers()));
+        return;
+      }
+
+      // Only one intersection. Otherwise, one has to loop on elements of
+      // intersector->getIntersections();
+      const osgUtil::LineSegmentIntersector::Intersection&
+        intersection = intersector_->getFirstIntersection();
+      bool hasSkipped = false;
+      for (int i = (int) intersection.nodePath.size()-1; i >= 0 ; --i) {
+        if (intersection.nodePath[i]->getNodeMask() & graphics::NodeBit) continue;
+        graphics::NodePtr_t n = wsm_->getNode(intersection.nodePath[i]->getName ());
+        if (n) {
+          if (!hasSkipped && boost::regex_match (n->getID(), boost::regex ("^.*_[0-9]+$"))) {
+            hasSkipped = true;
+            continue;
           }
+          SelectionEvent *event = new SelectionEvent(SelectionEvent::FromOsgWindow,
+              n,
+              mapper_.getQtModKey(modKeyMask));
+          event->setupIntersection(intersection);
+          bt->emitBodySelected(event);
+          return;
         }
-      bt->emitBodySelected(new SelectionEvent(SelectionEvent::FromOsgWindow, QApplication::keyboardModifiers()));
-      return nodes;
+      }
+    }
+
+    void PickHandler::centerViewToMouse (osgGA::GUIActionAdapter &aa,
+        const float &x, const float &y)
+    {
+      osgViewer::View* viewer = dynamic_cast<osgViewer::View*>( &aa );
+      if(!viewer) return;
+
+      computeIntersection (aa, x, y);
+      if( !intersector_->containsIntersections() ) return;
+
+      // Only one intersection. Otherwise, one has to loop on elements of
+      // intersector->getIntersections();
+      const osgUtil::LineSegmentIntersector::Intersection&
+        intersection = intersector_->getFirstIntersection();
+
+      osg::Vec3f P (intersection.getWorldIntersectPoint());
+
+      osgGA::TrackballManipulator* tbm = dynamic_cast<osgGA::TrackballManipulator*>(viewer->getCameraManipulator());
+      if (!tbm) {
+        osgGA::KeySwitchMatrixManipulator* ksm = dynamic_cast<osgGA::KeySwitchMatrixManipulator*>(viewer->getCameraManipulator());
+        if (ksm) {
+          tbm = dynamic_cast<osgGA::TrackballManipulator*>(ksm->getCurrentMatrixManipulator());
+        }
+      }
+      if (tbm) {
+        tbm->setCenter(P);
+      } else {
+        osg::Vec3f eye, center, up;
+        viewer->getCameraManipulator()->getInverseMatrix ()
+          .getLookAt (eye, center, up);
+
+        osg::Vec3f u (center-eye); u.normalize();
+        osg::Vec3f v (up^u);
+        osg::Vec3f t (v * (v * (P-eye)));
+        eye    += t;
+        center += t;
+        viewer->getCameraManipulator()->setByInverseMatrix (
+            osg::Matrix::lookAt (eye, center, up)
+            );
+      }
     }
 
     void PickHandler::setCameraToSelected (osgGA::GUIActionAdapter &aa,

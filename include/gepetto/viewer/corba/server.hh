@@ -64,7 +64,7 @@ namespace graphics
       ///       CORBA request processing if this library is run from an openGL
       ///       based GUI, since OpenGL does not support multithreading.
       Server (WindowsManagerPtr_t windowsManager, int argc,
-          const char* argv[], bool multiThread = false);
+          const char* argv[], bool multiThread = false, bool useNameService = false);
 
       /// \brief Shutdown CORBA server
       ~Server ();
@@ -93,7 +93,7 @@ namespace graphics
       /// \param argc, argv parameter to feed ORB initialization.
       /// \param multiThread whether the server may process request using
       ///        multithred policy.
-      void initORBandServers (int argc, const char* argv[], bool multiThread);
+      void initORBandServers (int argc, const char* argv[], bool multiThread, bool useNameService);
 
       /// \}
 

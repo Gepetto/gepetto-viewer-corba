@@ -38,17 +38,15 @@ namespace graphics
       }
 
       void
-      Server::createAndActivateServers (corbaServer::Server* inServer)
+      Server::createServant (corbaServer::Server* inServer)
       {
 	graphicalInterfaceServant_ = new GraphicalInterface (inServer);
-	graphicalInterfaceServantid_ = poa_->activate_object(graphicalInterfaceServant_);
       }
 
       void Server::deactivateAndDestroyServers()
       {
 	  poa_->deactivate_object(*graphicalInterfaceServantid_);
       }
-
 
       void Server::createContext ()
       {
@@ -95,6 +93,17 @@ namespace graphics
 	    throw std::runtime_error (msg.c_str ());
 	  }
 	}
+      }
+
+      void Server::initRootPOA ()
+      {
+	graphicalInterfaceServantid_ = poa_->activate_object(graphicalInterfaceServant_);
+      }
+
+      void Server::initOmniINSPOA ()
+      {
+        objectId_ = PortableServer::string_to_ObjectId("gepetto-gui");
+        poa_->activate_object_with_id(objectId_, graphicalInterfaceServant_);
       }
 
       void Server::bindObjectToName(Object_ptr objref,
