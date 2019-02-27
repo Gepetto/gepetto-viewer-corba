@@ -14,8 +14,9 @@
 #include <gepetto/viewer/corba/graphical-interface.hh>
 
 
-namespace graphics {
-namespace corbaServer {
+namespace gepetto {
+namespace viewer {
+namespace corba {
   class Client
   {
     public:
@@ -32,11 +33,12 @@ namespace corbaServer {
       }
 
     private:
-      gepetto::corbaserver::GraphicalInterface_var gui_;
+      corbaserver::GraphicalInterface_var gui_;
 
       CORBA::ORB_var orb_;
   };
-} //end of namespace corbaserver
-} //end of namespace graphics
+} //end of namespace corba
+} //end of namespace viewer
+} //end of namespace gepetto
 
 #endif // SCENEVIEWER_CORBASERVER_CLIENTCPP_HH

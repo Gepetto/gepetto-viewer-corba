@@ -26,7 +26,7 @@
 
 using namespace gepetto::gui;
 
-using graphics::corbaServer::Server;
+using gepetto::viewer::corba::Server;
 
 OmniOrbServerPlugin::OmniOrbServerPlugin ()
   : server_ (NULL)

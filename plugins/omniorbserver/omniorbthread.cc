@@ -22,25 +22,8 @@
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/plugin-interface.hh>
 
-ServerProcess::ServerProcess()
-  : initDone_ ()
-{
-  initDone_.lock();
-}
-
-void ServerProcess::waitForInitDone()
-{
-  initDone_.lock();
-  initDone_.unlock();
-}
-
-void ServerProcess::init()
-{
-  initDone_.unlock();
-}
-
-ViewerServerProcess::ViewerServerProcess (graphics::corbaServer::Server *server)
-  : server_ (server)
+ViewerServerProcess::ViewerServerProcess (gepetto::viewer::corba::Server *server)
+  : server_ (server), timerId_ (-1), interval_ (100)
 {}
 
 ViewerServerProcess::~ViewerServerProcess()
@@ -51,23 +34,27 @@ ViewerServerProcess::~ViewerServerProcess()
 void ViewerServerProcess::init()
 {
   server_->startCorbaServer ();
-  emit done ();
-  ServerProcess::init();
+
+  timerId_ = startTimer(interval_);
+}
+
+void ViewerServerProcess::timerEvent(QTimerEvent* event)
+{
+  if (event->timerId () == timerId_)
+    processRequest (false);
 }
 
 void ViewerServerProcess::processRequest(bool loop)
 {
   server_->processRequest (loop);
-  emit done();
 }
 
-CorbaServer::CorbaServer (ServerProcess* process) :
-  QObject (), control_ (process), worker_ (), timerId_ (-1), interval_ (100)
+CorbaServer::CorbaServer (ViewerServerProcess* process) :
+  QObject (), control_ (process), worker_ ()
 {
-  connect (this, SIGNAL (process(bool)), control_, SLOT (processRequest (bool)));
-  connect (control_, SIGNAL (done()), this, SLOT (processed()));
-  connect (&worker_, SIGNAL (started()), control_, SLOT (init()));
   control_->moveToThread(&worker_);
+
+  connect (&worker_, SIGNAL (started()), control_, SLOT (init()));
 }
 
 CorbaServer::~CorbaServer()
@@ -86,25 +73,7 @@ void CorbaServer::wait ()
   }
 }
 
-void CorbaServer::waitForInitDone()
-{
-  control_->waitForInitDone();
-}
-
 void CorbaServer::start()
 {
   worker_.start();
-}
-
-void CorbaServer::timerEvent(QTimerEvent* event)
-{
-  Q_UNUSED (event);
-  assert (event->timerId () == timerId_);
-  emit process (false);
-  killTimer(timerId_);
-}
-
-void CorbaServer::processed()
-{
-  timerId_ = startTimer(interval_);
 }

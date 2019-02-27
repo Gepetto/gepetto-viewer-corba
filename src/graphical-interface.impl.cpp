@@ -9,15 +9,12 @@
 #include <iostream>
 #include "graphical-interface.impl.hh"
 
-namespace graphics {
-  namespace corbaServer {
-    using namespace gepetto::viewer;
-
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     namespace impl {
       namespace {
         typedef GraphicalInterface::WindowID WindowID;
-        using gepetto::corbaserver::Names_t;
-        using gepetto::corbaserver::Transform_slice;
 
         template <typename Input, typename Output>
           void to (const Input& in, Output& out) {
@@ -56,25 +53,25 @@ namespace graphics {
         template <int what> struct traits {};
         template <> struct traits<COLOR> {
           typedef       WindowsManager::Color_t   Out_t;
-          typedef const GraphicalInterface::Color In_t;
-          typedef GraphicalInterface::Color_slice* Ret_t;
+          typedef const Color In_t;
+          typedef Color_slice* Ret_t;
           static Out_t op (In_t color) { return Out_t (color[0], color[1], color[2], color[3]); }
           static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Color_alloc(); to(in, r, 4); return r; }
         };
         template <> struct traits<TRANSFORM> {
-          typedef const GraphicalInterface::Transform  In_t;
+          typedef const Transform  In_t;
           typedef       Configuration  Out_t;
           typedef       Transform_slice* Ret_t;
           static Out_t op  (In_t in) { return Out_t(in, true); /* true = (x,y,z,w) -> (x,y,z,w), false = (w,x,y,z) -> (x,y,z,w) */ }
           static Ret_t ret (const Out_t& in) {
-            Ret_t ret = new GraphicalInterface::Transform();
+            Ret_t ret = new Transform();
             for(int i=0; i<3; i++) ret[(ULong)i]   = in.position[i];
             for(int i=0; i<4; i++) ret[(ULong)i+3] = (float)in.quat[i];
             return ret;
           }
         };
         template <> struct traits<TRANSFORM_SEQ> {
-          typedef const GraphicalInterface::TransformSeq& In_t;
+          typedef const TransformSeq& In_t;
           typedef       std::vector<Configuration>        Out_t;
           static Out_t op  (In_t in) {
             Out_t out (in.length());
@@ -85,13 +82,13 @@ namespace graphics {
         };
         template <> struct traits<POSITION> {
           typedef       osgVector3    Out_t;
-          typedef const GraphicalInterface::Position In_t;
-          typedef GraphicalInterface::Color_slice* Ret_t;
+          typedef const Position In_t;
+          typedef Color_slice* Ret_t;
           static Out_t op (In_t pos) { return Out_t (pos[0], pos[1], pos[2]); }
           static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Position_alloc(); to(in, r, 3); return r; }
         };
         template <> struct traits<POSITION_SEQ> {
-          typedef const GraphicalInterface::PositionSeq& In_t;
+          typedef const PositionSeq& In_t;
           typedef       ::osg::Vec3ArrayRefPtr           Out_t;
           static inline Out_t op (In_t in) {
             Out_t out = new ::osg::Vec3Array;
@@ -283,8 +280,8 @@ namespace graphics {
           }                                                                    \
       }
 
-      GraphicalInterface::GraphicalInterface (corbaServer::Server* server) :
-	windowsManager_ (server->windowsManager ())
+      GraphicalInterface::GraphicalInterface (corba::Server* server)
+        : windowsManager_ (server->windowsManager ())
       {
       }
 
@@ -462,5 +459,6 @@ namespace graphics {
 
       BIND_TO_WINDOWS_MANAGER_3(VOID,setIntProperty,STRING,STRING,LONG)
     } //end namespace impl
-  } //end namespace corbaServer
+  } //end namespace corba
+  } //end namespace viewer
 } //end namespace graphics

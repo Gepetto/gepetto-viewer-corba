@@ -14,9 +14,11 @@
 #include "gepetto/viewer/corba/server.hh"
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
-namespace graphics {
-namespace corbaServer {
+namespace gepetto {
+namespace viewer {
+namespace corba {
 namespace impl {
+  using namespace ::gepetto::corbaserver;
 
 using gepetto::gui::WindowsManagerPtr_t;
 class GraphicalInterface :
@@ -24,25 +26,15 @@ class GraphicalInterface :
 {
 private:
     WindowsManagerPtr_t windowsManager_;
-    typedef gepetto::Error Error;
     typedef gepetto::gui::WindowsManager::value_type value_type;
-    typedef gepetto::corbaserver::Transform_slice Transform_slice;
 
 public:
     typedef CORBA::ULong WindowID;
-    typedef gepetto::corbaserver::Transform Transform;
-    typedef gepetto::corbaserver::TransformSeq TransformSeq;
-    typedef gepetto::corbaserver::PositionSeq PositionSeq;
-    typedef gepetto::corbaserver::Position Position;
-    typedef gepetto::corbaserver::Position_slice Position_slice;
-    typedef gepetto::corbaserver::Color Color;
-    typedef gepetto::corbaserver::Color_slice Color_slice;
-    typedef gepetto::corbaserver::Names_t Names_t;
 
     /**
         \brief Default constructor
         */
-    GraphicalInterface (corbaServer::Server* server);
+    GraphicalInterface (corba::Server* server);
 
   virtual Names_t* getNodeList() throw (Error);
   virtual Names_t* getGroupNodeList(const char* group) throw (Error);
@@ -137,7 +129,7 @@ public:
   virtual bool deleteLandmark(const char* nodeNameCorba) throw (Error);
 
   virtual Transform_slice* getStaticTransform (const char* nodeName) throw (Error);
-  virtual bool setStaticTransform (const char* nodeName, const ::gepetto::corbaserver::Transform transform) throw (Error);
+  virtual bool setStaticTransform (const char* nodeName, const Transform transform) throw (Error);
 
   virtual bool setVisibility(const char* nodeNameCorba, const char* visibilityModeCorba)  throw (Error);
   virtual bool setScale(const char* nodeNameCorba, const value_type* scale)throw (Error);
@@ -182,7 +174,8 @@ public:
 }; // end of class
 
 } /* namespace impl */
-} /* namespace corbaServer */
-} /* namespace graphics */
+} /* namespace corba */
+} /* namespace viewer */
+} /* namespace gepetto */
 
 #endif /* SCENEVIEWER_CORBASERVER_GRAPHICALINTERFACE_HH */

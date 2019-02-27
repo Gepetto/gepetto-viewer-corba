@@ -15,10 +15,9 @@
 #include "server-private.hh"
 #include "gepetto/viewer/corba/fwd.hh"
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     namespace impl
     {
       using CORBA::Exception;
@@ -38,7 +37,7 @@ namespace graphics
       }
 
       void
-      Server::createServant (corbaServer::Server* inServer)
+      Server::createServant (corba::Server* inServer)
       {
 	graphicalInterfaceServant_ = new GraphicalInterface (inServer);
       }
@@ -122,5 +121,6 @@ namespace graphics
 	// bound. [This is incorrect behaviour - it should just bind].
       }
     } // end of namespace impl.
-  } // end of namespace corbaServer.
-} // end of namespace graphics.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.

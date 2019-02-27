@@ -14,10 +14,9 @@
 #include "gepetto/viewer/corba/fwd.hh"
 #include <gepetto/gui/windows-manager.hh>
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     using gepetto::gui::WindowsManager;
     using gepetto::gui::WindowsManagerPtr_t;
 
@@ -102,6 +101,7 @@ namespace graphics
       WindowsManagerPtr_t windowsManager_;
     };
 
-  } // end of namespace corbaServer.
-} // end of namespace sceneViewer.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.
 #endif
