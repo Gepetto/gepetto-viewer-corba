@@ -1,7 +1,4 @@
-import omniORB
-omniORB.updateModule("gepetto.corbaserver")
+from .gepetto.corbaserver import GraphicalInterface
+from .gepetto__POA.corbaserver import NodeCallback as POA_NodeCallback
 
-import gepetto.corbaserver.graphical_interface_idl
-
-from gepetto.corbaserver.client import Client
-
+from .client import Client

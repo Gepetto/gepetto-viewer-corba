@@ -26,25 +26,30 @@ OMNIIDL_INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/idl)
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
 
 FOREACH(IDL ${IDL_SOURCES})
+  # C++
   GENERATE_IDL_CPP (gepetto/viewer/corba/${IDL}
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
-  GENERATE_IDL_PYTHON (gepetto/viewer/corba/${IDL}
-    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer)
-
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}.hh
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/gepetto/viewer/corba)
 
-  STRING(REGEX REPLACE "-" "_" IDL_UNDERSCORE "${IDL}")
-  IF(NOT ${IDL} EQUAL ${IDL_UNDERSCORE})
-    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL_UNDERSCORE}_idl.py
-      COMMAND ${CMAKE_COMMAND}
-      ARGS -E copy ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL}_idl.py
-      )
-  ENDIF(NOT ${IDL} EQUAL ${IDL_UNDERSCORE})
+  # Python
+  GENERATE_IDL_PYTHON (gepetto/viewer/corba/${IDL}
+    ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer
+    ARGUMENTS
+    -C${CMAKE_CURRENT_BINARY_DIR}
+    -Wbpackage=gepetto.corbaserver
+    )
 
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/viewer/corba/${IDL_UNDERSCORE}_idl.py
+  STRING(REGEX REPLACE "-" "_" IDL_UNDERSCORE "${IDL}")
+
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/${IDL_UNDERSCORE}_idl.py
+    DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver)
+  INSTALL(DIRECTORY
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/gepetto
+    ${CMAKE_CURRENT_BINARY_DIR}/gepetto/corbaserver/gepetto__POA
     DESTINATION ${PYTHON_SITELIB}/gepetto/corbaserver)
 
+  # IDL
   INSTALL(FILES ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer/${IDL}.idl
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/idl/gepetto/corbaserver)
 ENDFOREACH()
@@ -63,14 +68,32 @@ SET (${PROJECT_NAME}_SOURCES
 
 # {{{ C++ application: generate the executable if requested
 IF(NOT CLIENT_ONLY)
+  # {{{ Configure Qt
+  SET(${PROJECT_NAME}_MOC
+    node-callback.hh)
+  IF(PROJECT_USE_QT4)
+    QT4_WRAP_CPP(${PROJECT_NAME}_HEADERS_MOCED ${${PROJECT_NAME}_MOC})
+    #QT4_WRAP_UI(${PROJECT_NAME}_FORMS_HEADERS ${${PROJECT_NAME}_FORMS})
+    #QT4_ADD_RESOURCES(${PROJECT_NAME}_RESOURCES_RCC ${${PROJECT_NAME}_RESOURCES})
+    INCLUDE(${QT_USE_FILE})
+  ELSE(PROJECT_USE_QT4)
+    QT5_WRAP_CPP(${PROJECT_NAME}_HEADERS_MOCED ${${PROJECT_NAME}_MOC})
+    #QT5_WRAP_UI(${PROJECT_NAME}_FORMS_HEADERS ${${PROJECT_NAME}_FORMS})
+    #QT5_ADD_RESOURCES(${PROJECT_NAME}_RESOURCES_RCC ${${PROJECT_NAME}_RESOURCES})
+  ENDIF(PROJECT_USE_QT4)
 
   # {{{ Setup source files
   SET (${PROJECT_NAME}_SOURCES
     ${${PROJECT_NAME}_SOURCES}
     graphical-interface.impl.cpp
+    node-callback.cpp
     server.cc
     server-private.cc
+    ${${PROJECT_NAME}_HEADERS_MOCED}
     )
+
+ADD_DEFINITIONS(${QT_DEFINITIONS})
+# }}}
 
   # Removes 5 warnings about anonymous variadic macros that were added from
   # c++ 11.
