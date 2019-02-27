@@ -33,6 +33,7 @@ ViewerServerProcess::~ViewerServerProcess()
 
 void ViewerServerProcess::init()
 {
+  server_->qparent (this);
   server_->startCorbaServer ();
 
   timerId_ = startTimer(interval_);

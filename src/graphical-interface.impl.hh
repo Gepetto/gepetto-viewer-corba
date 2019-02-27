@@ -26,6 +26,7 @@ class GraphicalInterface :
 {
 private:
     WindowsManagerPtr_t windowsManager_;
+    QObject* qparent_;
     typedef gepetto::gui::WindowsManager::value_type value_type;
 
 public:
@@ -35,6 +36,11 @@ public:
         \brief Default constructor
         */
     GraphicalInterface (corba::Server* server);
+
+    void qparent (QObject* parent)
+    {
+      qparent_ = parent;
+    }
 
   virtual Names_t* getNodeList() throw (Error);
   virtual Names_t* getGroupNodeList(const char* group) throw (Error);
@@ -171,6 +177,9 @@ public:
   virtual void setBoolProperty(const char* nodeName, const char* propName, bool value) throw (Error);
   virtual CORBA::Long getIntProperty(const char* nodeName, const char* propName) throw (Error);
   virtual void setIntProperty(const char* nodeName, const char* propName, CORBA::Long value) throw (Error);
+
+  // ------------- Callbacks -------------------- //
+  bool registerNodeCallback (NodeCallback_ptr cb) throw (Error);
 }; // end of class
 
 } /* namespace impl */

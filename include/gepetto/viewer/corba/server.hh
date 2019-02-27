@@ -14,6 +14,8 @@
 #include "gepetto/viewer/corba/fwd.hh"
 #include <gepetto/gui/windows-manager.hh>
 
+class QObject;
+
 namespace gepetto {
   namespace viewer {
   namespace corba {
@@ -82,6 +84,8 @@ namespace gepetto {
       {
         return windowsManager_;
       }
+
+      void qparent (QObject* parent);
 
     private:
 

@@ -26,6 +26,10 @@ typedef sequence<float> floatSeq;
 typedef sequence<Position> PositionSeq;
 typedef sequence<Transform> TransformSeq;
 
+  interface NodeCallback {
+    void selected (in string name, in Position positionInWorldFrame, in Position normalInLocalFrame) raises (Error);
+  };
+
   /// IDL of the graphical interface.
   /// It contains the following groups:
   /// \li \ref idl_windows_and_scenes "Windows and scenes"
@@ -517,6 +521,9 @@ typedef sequence<Transform> TransformSeq;
     /// \param input windowId : ID of the window
     /// \param input configuration : the desired configuration of the camera
     boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
+
+    // register a Node callback
+    boolean registerNodeCallback (in NodeCallback cb) raises (Error);
 
     /// \}
   };
