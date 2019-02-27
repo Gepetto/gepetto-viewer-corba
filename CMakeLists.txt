@@ -59,27 +59,27 @@ IF(NOT CLIENT_ONLY)
   list(GET DESIRED_QT_VERSION_LIST 0 DESIRED_QT_VERSION_MAJOR)
 
   IF(${DESIRED_QT_VERSION_MAJOR} EQUAL 4)
-    SET(USE_QT4 True)
+    SET(PROJECT_USE_QT4 True)
   ELSEIF(${DESIRED_QT_VERSION_MAJOR} EQUAL 5)
-    SET(USE_QT4 False)
+    SET(PROJECT_USE_QT4 False)
   ELSE()
     MESSAGE(FATAL_ERROR "This package is only compatible with Qt 4 and Qt 5")
   ENDIF()
   MESSAGE(STATUS "Looking for Qt ${DESIRED_QT_VERSION_MAJOR}.")
 
   SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-  IF(USE_QT4)
+  IF(PROJECT_USE_QT4)
     FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtNetwork)
     SET(PKG_CONFIG_EXTRA "qtversion=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
     INCLUDE(${QT_USE_FILE})
-  ELSE(USE_QT4)
+  ELSE(PROJECT_USE_QT4)
     FOREACH (component "Core" "Widgets" "Gui" "Network" "Concurrent")
       FIND_PACKAGE ("Qt5${component}" REQUIRED)
       LIST(APPEND QT_INCLUDE_DIRS ${Qt5${component}_INCLUDE_DIRS})
       LIST(APPEND QT_LIBRARIES    ${Qt5${component}_LIBRARIES}   )
     ENDFOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
     SET(PKG_CONFIG_EXTRA "qtversion=${Qt5Core_VERSION}")
-  ENDIF(USE_QT4)
+  ENDIF(PROJECT_USE_QT4)
 
   INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS} ${QT_INCLUDE_DIRS})
   # }}}
@@ -117,10 +117,6 @@ IF(NOT CLIENT_ONLY)
     ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/server.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/fwd.hh
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
-    )
-
-  config_files(
-    src/gui/main.cc
     )
   # }}}
 ENDIF(NOT CLIENT_ONLY)
