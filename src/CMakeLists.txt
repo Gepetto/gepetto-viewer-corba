@@ -36,7 +36,10 @@ FOREACH(IDL ${IDL_SOURCES})
   GENERATE_IDL_PYTHON (gepetto/viewer/corba/${IDL}
     ${CMAKE_SOURCE_DIR}/idl/gepetto/viewer
     ARGUMENTS
+    -p${CMAKE_SOURCE_DIR}/doc
+    -bomniidl_be_python_with_docstring
     -C${CMAKE_CURRENT_BINARY_DIR}
+    -K
     -Wbpackage=gepetto.corbaserver
     )
 

@@ -249,7 +249,6 @@ typedef sequence<Transform> TransformSeq;
     /// a groupNode is created and each link will be child node of this node.
     /// Links are named "prefix/linkName", linkName is the name of the link
     /// in the URDF file.
-
     boolean addURDF (in string robotName, in string urdfFilePath,
 		     in string meshDataRootDir) raises (Error);
 
