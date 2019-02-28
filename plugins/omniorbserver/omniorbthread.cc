@@ -23,7 +23,7 @@
 #include <gepetto/gui/plugin-interface.hh>
 
 ViewerServerProcess::ViewerServerProcess (gepetto::viewer::corba::Server *server)
-  : server_ (server), timerId_ (-1), interval_ (100)
+  : server_ (server), timerId_ (-1), interval_ (20)
 {}
 
 ViewerServerProcess::~ViewerServerProcess()
