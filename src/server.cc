@@ -162,6 +162,11 @@ namespace gepetto {
       return 0;
     }
 
+    void Server::shutdown (bool wait)
+    {
+      private_->orb_->shutdown(wait);
+    }
+
   } // end of namespace corba.
   } // end of namespace viewer.
 } // end of namespace gepetto.

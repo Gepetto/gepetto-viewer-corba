@@ -80,6 +80,12 @@ namespace gepetto {
       ///             returns.
       int processRequest (bool loop);
 
+      /// Stop processing requests.
+      /// \param wait if true, the method waits for the server to be shut down.
+      /// \warning From a servant method, set wait to false. Otherwise the
+      ///          application will be deadlocked.
+      void shutdown (bool wait);
+
       WindowsManagerPtr_t windowsManager () const
       {
         return windowsManager_;

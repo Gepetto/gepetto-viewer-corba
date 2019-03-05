@@ -27,44 +27,22 @@
 #include "gepetto/gui/fwd.hh"
 #include "gepetto/viewer/corba/fwd.hh"
 
-class ViewerServerProcess : public QObject
+class ViewerServerProcess : public QThread
 {
   Q_OBJECT
 
   public:
-    ViewerServerProcess (gepetto::viewer::corba::Server* server);
+    ViewerServerProcess (gepetto::viewer::corba::Server* server, QObject* parent = NULL);
 
     ~ViewerServerProcess ();
 
-  public slots:
-    void init ();
+    void shutdown ();
 
-  protected slots:
-    void timerEvent(QTimerEvent* event);
+  protected:
+    void run ();
 
   private:
-    void processRequest (bool loop);
-
     gepetto::viewer::corba::Server* server_;
-    int timerId_, interval_;
-};
-
-class CorbaServer : public QObject
-{
-  Q_OBJECT
-
-  public:
-    CorbaServer(ViewerServerProcess* process);
-
-    ~CorbaServer ();
-
-    void wait ();
-
-    void start ();
-
-  private:
-    ViewerServerProcess* control_;
-    QThread worker_;
 };
 
 #endif // GEPETTO_GUI_OMNIORBTHREAD_HH

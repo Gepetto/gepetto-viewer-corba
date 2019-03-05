@@ -35,8 +35,20 @@ OmniOrbServerPlugin::OmniOrbServerPlugin ()
 OmniOrbServerPlugin::~OmniOrbServerPlugin ()
 {
   if (server_ != NULL) {
-    server_->wait();
+    stopServer ();
     delete server_;
+  }
+}
+
+void OmniOrbServerPlugin::stopServer ()
+{
+  if (server_ == NULL) return;
+  server_->shutdown ();
+  server_->quit ();
+  server_->wait(200);
+  if (server_->isRunning()) {
+    server_->terminate();
+    server_->wait();
   }
 }
 
@@ -46,8 +58,8 @@ void OmniOrbServerPlugin::init() {
 
   int argc;
   const char** argv = settings.makeOmniORBargs (argc);
-  server_ = new CorbaServer (new ViewerServerProcess (
-        new Server (main->osg(), argc, argv, true, settings.useNameService)));
+  server_ = new ViewerServerProcess (
+        new Server (main->osg(), argc, argv, true, settings.useNameService));
   server_->start();
 }
 

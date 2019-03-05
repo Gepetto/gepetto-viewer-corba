@@ -20,7 +20,7 @@
 
 #include <gepetto/gui/plugin-interface.hh>
 
-class CorbaServer;
+class ViewerServerProcess;
 
 /// Launch a OmniORB CORBA server for remote access to the GUI.
 class OmniOrbServerPlugin : public QObject, public gepetto::gui::PluginInterface
@@ -38,9 +38,11 @@ class OmniOrbServerPlugin : public QObject, public gepetto::gui::PluginInterface
 
     QString name () const { return QString("OmniORB Server"); }
 
+    void stopServer ();
+
   protected:
     void init();
 
   private:
-    CorbaServer* server_;
+    ViewerServerProcess* server_;
 };

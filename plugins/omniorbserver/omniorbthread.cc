@@ -22,8 +22,9 @@
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/plugin-interface.hh>
 
-ViewerServerProcess::ViewerServerProcess (gepetto::viewer::corba::Server *server)
-  : server_ (server), timerId_ (-1), interval_ (20)
+ViewerServerProcess::ViewerServerProcess (
+    gepetto::viewer::corba::Server *server, QObject* parent)
+  : QThread (parent), server_ (server)
 {}
 
 ViewerServerProcess::~ViewerServerProcess()
@@ -31,50 +32,15 @@ ViewerServerProcess::~ViewerServerProcess()
   delete server_;
 }
 
-void ViewerServerProcess::init()
+void ViewerServerProcess::run()
 {
   server_->qparent (this);
   server_->startCorbaServer ();
 
-  timerId_ = startTimer(interval_);
+  server_->processRequest (true);
 }
 
-void ViewerServerProcess::timerEvent(QTimerEvent* event)
+void ViewerServerProcess::shutdown()
 {
-  if (event->timerId () == timerId_)
-    processRequest (false);
-}
-
-void ViewerServerProcess::processRequest(bool loop)
-{
-  server_->processRequest (loop);
-}
-
-CorbaServer::CorbaServer (ViewerServerProcess* process) :
-  QObject (), control_ (process), worker_ ()
-{
-  control_->moveToThread(&worker_);
-
-  connect (&worker_, SIGNAL (started()), control_, SLOT (init()));
-}
-
-CorbaServer::~CorbaServer()
-{
-  if (control_)
-    delete control_;
-}
-
-void CorbaServer::wait ()
-{
-  worker_.quit ();
-  worker_.wait(200);
-  if (worker_.isRunning()) {
-    worker_.terminate();
-    worker_.wait();
-  }
-}
-
-void CorbaServer::start()
-{
-  worker_.start();
+  server_->shutdown (true);
 }
