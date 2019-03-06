@@ -26,6 +26,7 @@ INCLUDE(cmake/idl.cmake)
 INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/test.cmake)
+INCLUDE(cmake/apple.cmake)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
@@ -37,6 +38,10 @@ SET(USE_QT4 FALSE CACHE BOOL "Use Qt4 instead of Qt5")
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 SETUP_PROJECT ()
+
+IF(APPLE)
+  APPLY_DEFAULT_APPLE_CONFIGURATION()
+ENDIF(APPLE)
 
 # {{{ C++ and Python client.
 # Dependencies
