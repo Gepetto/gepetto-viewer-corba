@@ -19,12 +19,14 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(CXX_DISABLE_WERROR true)
+SET(CMAKE_CXX_STANDARD 11)
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/idl.cmake)
 INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/test.cmake)
+INCLUDE(cmake/apple.cmake)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
@@ -35,6 +37,10 @@ SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 SETUP_PROJECT ()
+
+IF(APPLE)
+  APPLY_DEFAULT_APPLE_CONFIGURATION()
+ENDIF(APPLE)
 
 # {{{ C++ and Python client.
 # Dependencies
