@@ -17,45 +17,4 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-## Helper class 
-class Color(object):
-    # Define some RGBA-normalized color (osg convention)
-    white       = [1.0,1.0,1.0,1.0]
-    lightWhite  = [1.0,1.0,1.0,0.5]
-    green       = [0,1,0,1]
-    lightGreen  = [0,1,0,0.5]
-    yellow      = [1,1,0,1]
-    lightYellow = [1,1,0,0.5]
-    blue        = [0.0, 0.0, 1, 1.0]
-    lightBlue   = [0.0, 0.0, 1, 0.5]
-    grey        = [0.7,0.7,0.7,1.0]
-    lightGrey   = [0.7,0.7,0.7,0.7]
-    red         = [1,0.0,0.0,1.0]
-    lightRed    = [1,0.0,0.0,0.5]
-    black       = [0,0,0,1.0]
-    lightBlack  = [0,0,0,0.5]
-    brown       = [0.85,0.75,0.15,1.0]
-    lightBrown  = [0.85,0.75,0.15,1.0]
-    
-    def __init__(self):
-        self.colors = (
-                self.white       ,
-                self.lightWhite  ,
-                self.green       ,
-                self.lightGreen  ,
-                self.yellow      ,
-                self.lightYellow ,
-                self.blue        ,
-                self.lightBlue   ,
-                self.grey        ,
-                self.lightGrey   ,
-                self.red         ,
-                self.lightRed    ,
-                self.black       ,
-                self.lightBlack  ,
-                self.brown       ,
-                self.lightBrown  ,
-                )
-
-    def __getitem__ (self, i):
-        return self.colors[i]
+from .corbaserver import Color
