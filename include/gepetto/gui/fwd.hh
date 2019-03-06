@@ -20,10 +20,10 @@
 #include <vector>
 
 #include <QtGlobal>
-#include <QtGui>
 #if QT_VERSION >= 0x050000
     #include <QtGui/qopengl.h>
 #endif
+#include <QtGui>
 
 
 #include <gepetto/viewer/macros.h>
