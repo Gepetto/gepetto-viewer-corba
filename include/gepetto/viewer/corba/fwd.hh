@@ -14,10 +14,9 @@
 //FIXME: should be replaced by CORBA base types forward declarations.
 # include <omniORB4/CORBA.h>
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     class Server;
  
     namespace impl
@@ -32,7 +31,8 @@ namespace graphics
       class GraphicalInterface;
       class Server;
     } // end of namespace impl
-  } // end of namespace corbaServer.
-} // end of namespace hpp.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.
 
 #endif //! SCENEVIEWER_CORBASERVER_FWD_HH

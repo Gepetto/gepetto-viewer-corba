@@ -14,40 +14,33 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GEPETTO_GUI_PYTHON_DECORATOR_HH
-#define GEPETTO_GUI_PYTHON_DECORATOR_HH
+#include "omniorbthread.hh"
 
-#include <PythonQt.h>
+#include <gepetto/viewer/corba/server.hh>
+#include <QDebug>
 
 #include <gepetto/gui/mainwindow.hh>
-#include <gepetto/gui/osgwidget.hh>
+#include <gepetto/gui/plugin-interface.hh>
 
-namespace gepetto {
-  namespace gui {
-    class PythonDecorator : public QObject
-    {
-      Q_OBJECT
+ViewerServerProcess::ViewerServerProcess (
+    gepetto::viewer::corba::Server *server, QObject* parent)
+  : QThread (parent), server_ (server)
+{}
 
-      public slots:
-      /// \name MainWindow
-      /// \{
+ViewerServerProcess::~ViewerServerProcess()
+{
+  delete server_;
+}
 
-      MainWindow* static_MainWindow_instance () const { return MainWindow::instance (); }
+void ViewerServerProcess::run()
+{
+  server_->qparent (this);
+  server_->startCorbaServer ();
 
-      QList <OSGWidget*> osgWindows (MainWindow* w) const { return w->osgWindows(); }
+  server_->processRequest (true);
+}
 
-      OSGWidget* createView (MainWindow* w, const QString& name) const { return w->createView(name.toStdString()); }
-
-      /// \}
-
-      /// \name OSGWidget
-      /// \{
-
-      int windowID (OSGWidget* o) const { return o->windowID(); }
-
-      /// \}
-    };
-  } // namespace gui
-} // namespace gepetto
-
-#endif // GEPETTO_GUI_PYTHON_DECORATOR_HH
+void ViewerServerProcess::shutdown()
+{
+  server_->shutdown (true);
+}

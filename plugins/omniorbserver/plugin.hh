@@ -16,16 +16,33 @@
 // gepetto-viewer-corba  If not, see
 // <http://www.gnu.org/licenses/>.
 
-#include <plugin.hh>
+#include <QObject>
 
-#include <decorator.hh>
+#include <gepetto/gui/plugin-interface.hh>
 
-namespace PyQCustomPlot {
-  void Plugin::init() {
-    registerQCustomPlot();
-  }
+class ViewerServerProcess;
 
-#if (QT_VERSION < QT_VERSION_CHECK(5,0,0))
-  Q_EXPORT_PLUGIN2 (pyqcustomplot, Plugin)
+/// Launch a OmniORB CORBA server for remote access to the GUI.
+class OmniOrbServerPlugin : public QObject, public gepetto::gui::PluginInterface
+{
+  Q_OBJECT
+  Q_INTERFACES (gepetto::gui::PluginInterface)
+#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
+    Q_PLUGIN_METADATA (IID "gepetto-viewer-corba.omniorbserver")
 #endif
-} // namespace PyQCustomPlot
+
+  public:
+    OmniOrbServerPlugin ();
+
+    ~OmniOrbServerPlugin ();
+
+    QString name () const { return QString("OmniORB Server"); }
+
+    void stopServer ();
+
+  protected:
+    void init();
+
+  private:
+    ViewerServerProcess* server_;
+};

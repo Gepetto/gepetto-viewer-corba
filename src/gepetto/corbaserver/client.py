@@ -2,10 +2,6 @@
 Provide a client for CORBA services which initialize CORBA automatically and
 create client to wanted HPP services.
 """
-from omniORB import CORBA
-import CosNaming
-
-import gepetto.corbaserver
 
 class CorbaError(Exception):
   """
@@ -24,6 +20,9 @@ class Client:
   defaultClients = [('gui', 'GraphicalInterface')]
 
   def initWithNameService (self, urlNameService):
+    import CosNaming
+    from .gepetto.corbaserver import GraphicalInterface
+
     obj = self.orb.string_to_object (urlNameService)
     self.rootContext = obj._narrow(CosNaming.NamingContext)
     if self.rootContext is None:
@@ -38,7 +37,7 @@ class Client:
       raise CorbaError ('Failed to find the service "gui"')
 
     try:
-      client = obj._narrow (gepetto.corbaserver.GraphicalInterface)
+      client = obj._narrow (GraphicalInterface)
     except KeyError:
       raise CorbaError ('Invalid service name "gui"')
 
@@ -49,8 +48,9 @@ class Client:
     self.gui = client
 
   def initWithDirectLink (self, url):
+    from .gepetto.corbaserver import GraphicalInterface
     obj = self.orb.string_to_object (url)
-    client = obj._narrow(gepetto.corbaserver.GraphicalInterface)
+    client = obj._narrow(GraphicalInterface)
 
     if client is None:
       # This happens when stubs from client and server are not synchronized.
@@ -67,6 +67,7 @@ class Client:
                 If None, url is initialized with param host, or alternatively with _getIIOPurl
     :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
     """
+    from omniORB import CORBA
     import sys
     self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
 

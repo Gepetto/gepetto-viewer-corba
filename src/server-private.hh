@@ -14,10 +14,9 @@
 # include "graphical-interface.impl.hh"
 # include "gepetto/viewer/corba/fwd.hh"
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     namespace impl
     {
       class Server
@@ -29,7 +28,12 @@ namespace graphics
 
         void initOmniINSPOA ();
 
-	void createServant (graphics::corbaServer::Server* server);
+	void createServant (corba::Server* server);
+
+        void qparent (QObject* parent)
+        {
+          graphicalInterfaceServant_->qparent(parent);
+        }
 
       private:
 	CORBA::ORB_var orb_;
@@ -58,11 +62,12 @@ namespace graphics
 	/// Destroying active servers raises a Corba exception.
 	void deactivateAndDestroyServers ();
 
-	friend class corbaServer::Server;
+	friend class corba::Server;
       };
 
     } // end of namespace impl.
-  } // end of namespace corbaServer.
-} // end of namespace graphics.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.
 
 #endif // SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH

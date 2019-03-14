@@ -22,23 +22,30 @@ ELSE()
   SET(QT4 "")
 ENDIF()
 
-INCLUDE_DIRECTORIES(SYSTEM "${PYTHON_INCLUDE_DIR}" "${PYTHONQT_INCLUDE_DIR}")
-
-GEPETTO_GUI_PLUGIN(pyqgv
+GEPETTO_GUI_PLUGIN(omniorbserver
   INSIDE_GEPETTO_VIEWER_CORBA
+
   ${QT4}
 
+  # List of headers that need not to be moced.
+  HEADERS_NO_MOC
+
+  # List of headers to be moced
   HEADERS
   plugin.hh
-  decorator.hh
+  omniorbthread.hh
 
+  # List of source files
   SOURCES
   plugin.cc
-  decorator.cc
+  omniorbthread.cc
 
+  # List of dependencies to be given to TARGET_LINK_LIBRARIES
   LINK_DEPENDENCIES
-  ${PYTHONQT_LIBRARIES}
+  "gepetto-viewer-corba"
 
+  # List of dependencies to be given to PKG_CONFIG_USE_DEPENDENCY
   PKG_CONFIG_DEPENDENCIES
-  "qgv"
+  "gepetto-viewer"
+  "omniORB4"
   )

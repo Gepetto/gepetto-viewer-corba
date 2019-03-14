@@ -18,8 +18,9 @@
 
 #include <iostream>
 
-namespace graphics {
-  namespace corbaServer {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     using CORBA::Exception;
     using CORBA::Object_var;
     using CORBA::SystemException;
@@ -64,5 +65,6 @@ namespace graphics {
         }
       }
     }
-  } // end of namespace corbaServer.
-} // end of namespace graphics.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.

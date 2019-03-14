@@ -14,37 +14,35 @@
 // received a copy of the GNU Lesser General Public License along with
 // gepetto-viewer-corba. If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GEPETTO_GUI_LEDINDICATOR_HH
-#define GEPETTO_GUI_LEDINDICATOR_HH
+#ifndef GEPETTO_GUI_OMNIORBTHREAD_HH
+#define GEPETTO_GUI_OMNIORBTHREAD_HH
 
-#include <QWidget>
+#include <assert.h>
 
-namespace gepetto {
-  namespace gui {
-    class LedIndicator : public QWidget
-    {
-      Q_OBJECT
+#include <QThread>
+#include <QMutex>
+#include <QTimerEvent>
+#include <QElapsedTimer>
 
-      public:
-        LedIndicator (QWidget *parent = 0);
+#include "gepetto/gui/fwd.hh"
+#include "gepetto/viewer/corba/fwd.hh"
 
-signals:
-        void switched (bool on);
-        void mouseClickEvent ();
+class ViewerServerProcess : public QThread
+{
+  Q_OBJECT
 
-        public slots:
-          void switchLed();
-        void switchLed(bool on);
+  public:
+    ViewerServerProcess (gepetto::viewer::corba::Server* server, QObject* parent = NULL);
 
-      protected:
-        void paintEvent(QPaintEvent *);
-        void mouseReleaseEvent(QMouseEvent* event);
+    ~ViewerServerProcess ();
 
-      private:
-        bool lit;
-        const int width, height;
-    };
-  } // namespace gui
-} // namespace gepetto
+    void shutdown ();
 
-#endif // GEPETTO_GUI_LEDINDICATOR_HH
+  protected:
+    void run ();
+
+  private:
+    gepetto::viewer::corba::Server* server_;
+};
+
+#endif // GEPETTO_GUI_OMNIORBTHREAD_HH

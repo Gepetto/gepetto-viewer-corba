@@ -15,5 +15,6 @@
 # hpp-corbaserver.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from gepetto.color import Color
-from gepetto.quaternion import Quaternion
+from .color import Color
+from .quaternion import Quaternion
+from .corbaserver import Error

@@ -1,4 +1,4 @@
-from gepetto.color import Color
+from . import Color
 
 import numpy as np
 from math import pi, sqrt, cos, sin

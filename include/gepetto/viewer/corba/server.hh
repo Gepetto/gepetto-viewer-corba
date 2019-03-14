@@ -14,10 +14,11 @@
 #include "gepetto/viewer/corba/fwd.hh"
 #include <gepetto/gui/windows-manager.hh>
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+class QObject;
+
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     using gepetto::gui::WindowsManager;
     using gepetto::gui::WindowsManagerPtr_t;
 
@@ -79,10 +80,18 @@ namespace graphics
       ///             returns.
       int processRequest (bool loop);
 
+      /// Stop processing requests.
+      /// \param wait if true, the method waits for the server to be shut down.
+      /// \warning From a servant method, set wait to false. Otherwise the
+      ///          application will be deadlocked.
+      void shutdown (bool wait);
+
       WindowsManagerPtr_t windowsManager () const
       {
         return windowsManager_;
       }
+
+      void qparent (QObject* parent);
 
     private:
 
@@ -102,6 +111,7 @@ namespace graphics
       WindowsManagerPtr_t windowsManager_;
     };
 
-  } // end of namespace corbaServer.
-} // end of namespace sceneViewer.
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.
 #endif

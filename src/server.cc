@@ -16,10 +16,9 @@
 #include "gepetto/viewer/corba/server.hh"
 #include "server-private.hh"
 
-namespace graphics
-{
-  namespace corbaServer
-  {
+namespace gepetto {
+  namespace viewer {
+  namespace corba {
     using CORBA::Exception;
     using CORBA::Object_var;
     using CORBA::SystemException;
@@ -42,11 +41,17 @@ namespace graphics
 
 
     Server::Server(WindowsManagerPtr_t wm, int argc, const char *argv[],
-        bool inMultiThread, bool useNameService) : windowsManager_ (wm)
+        bool inMultiThread, bool useNameService)
+      : windowsManager_ (wm)
     {
       private_ = new impl::Server;
 
       initORBandServers (argc, argv, inMultiThread, useNameService);
+    }
+
+    void Server::qparent (QObject* parent)
+    {
+      private_->qparent (parent);
     }
 
     /// \brief Shutdown CORBA server
@@ -157,5 +162,11 @@ namespace graphics
       return 0;
     }
 
-  } // end of namespace corbaServer.
-} // end of namespace graphics.
+    void Server::shutdown (bool wait)
+    {
+      private_->orb_->shutdown(wait);
+    }
+
+  } // end of namespace corba.
+  } // end of namespace viewer.
+} // end of namespace gepetto.
