@@ -51,7 +51,7 @@ gepetto-viewer_repository=${HPP_REPO}
 gepetto-viewer-corba_branch=devel
 gepetto-viewer-corba_repository=${HPP_REPO}
 ifeq (${QT_VERSION}, 5)
-  gepetto-viewer-corba_extra_flags= -DUSE_QT4=OFF
+  gepetto-viewer-corba_extra_flags= -DPROJECT_USE_QT4=OFF
 endif
 
 pythonqt_branch=qt${QT_VERSION}
