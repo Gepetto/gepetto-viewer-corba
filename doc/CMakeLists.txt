@@ -19,7 +19,7 @@
 SET(_use_qt_local_doc FALSE)
 SET(qt_online_doc "http://doc.qt.io")
 
-IF(USE_QT4)
+IF(PROJECT_USE_QT4)
   FIND_FILE(QT4_TAGFILE doc/html/qt.tags
     HINTS / /usr
     PATH_SUFFIXES share/qt4)
@@ -34,7 +34,7 @@ IF(USE_QT4)
       SET(QT_TAGFILES "\"${QT4_TAGFILE}=${qt_doc}/archives/qt-4.8\"" PARENT_SCOPE)
     ENDIF(_use_qt_local_doc)
   ENDIF()
-ELSE(USE_QT4)
+ELSE(PROJECT_USE_QT4)
   SET(_QT_TAGFILES)
   # Available components
   # qtcore qtgui qtwidgets qtnetwork qtsql
@@ -57,7 +57,7 @@ ELSE(USE_QT4)
     ENDIF()
   ENDFOREACH()
   SET(QT_TAGFILES ${_QT_TAGFILES} PARENT_SCOPE)
-ENDIF(USE_QT4)
+ENDIF(PROJECT_USE_QT4)
 # }}}
 
 # vim: foldmethod=marker foldlevel=0
