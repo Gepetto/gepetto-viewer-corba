@@ -30,8 +30,10 @@ void NodeCallback::selected (SelectionEvent* event)
     corbaserver::Position_slice* pos = corbaserver::Position_alloc();
     corbaserver::Position_slice* nor = corbaserver::Position_alloc();
     if (event->hasIntersection()) {
-      impl::to(event->point (false), pos, 3);
-      impl::to(event->normal(false), nor, 3);
+      QVector3D v = event->point (false);
+      pos[0] = (float)v.x(); pos[1] = (float)v.y(); pos[2] = (float)v.z();
+      v = event->normal(false);
+      nor[0] = (float)v.x(); nor[1] = (float)v.y(); nor[2] = (float)v.z();
     } else {
       pos[0] = pos[1] = pos[2] = 0;
       nor[0] = nor[1] = nor[2] = 0;
