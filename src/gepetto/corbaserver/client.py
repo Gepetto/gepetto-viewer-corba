@@ -86,7 +86,7 @@ class Client:
         try:
             self.initWithDirectLink (urlGepettoGui)
         except CorbaError as e:
-            print e
+            print(e)
             pass
         if self.gui is None:
             self.initWithNameService (urlNameService)
