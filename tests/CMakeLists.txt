@@ -43,3 +43,5 @@ ENDMACRO(ADD_TESTCASE)
 
 ADD_TESTCASE (colormap FALSE)
 # ADD_TESTCASE (osgviewerQt FALSE)
+
+ADD_PYTHON_UNIT_TEST("py-trivial" "tests/trivial.py" "src")
