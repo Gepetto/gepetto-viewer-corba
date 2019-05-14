@@ -171,6 +171,8 @@ public:
   virtual void setColorProperty(const char* nodeName, const char* propName, const Color value) throw (Error);
   virtual Position_slice* getVector3Property(const char* nodeName, const char* propName) throw (Error);
   virtual void setVector3Property(const char* nodeName, const char* propName, const Position value) throw (Error);
+  virtual Position_slice* getVector2Property(const char* nodeName, const char* propName) throw (Error);
+  virtual void setVector2Property(const char* nodeName, const char* propName, const Position value) throw (Error);
   virtual float getFloatProperty(const char* nodeName, const char* propName) throw (Error);
   virtual void setFloatProperty(const char* nodeName, const char* propName, float value) throw (Error);
   virtual bool getBoolProperty(const char* nodeName, const char* propName) throw (Error);

@@ -45,7 +45,7 @@ namespace gepetto {
         enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR,
           TRANSFORM, TRANSFORM_SEQ, POSITION, POSITION_SEQ,
           FLOAT, SHORT, LONG, WINDOW_ID, BOOL, VOID,
-          GLMODE
+          GLMODE, VECTOR2
         };
 
         template <int what> struct traits {};
@@ -77,6 +77,13 @@ namespace gepetto {
               out[i] = traits<TRANSFORM>::op (in[i]);
             return out;
           }
+        };
+        template <> struct traits<VECTOR2> {
+          typedef       osgVector2    Out_t;
+          typedef const Vector2 In_t;
+          typedef Vector2_slice* Ret_t;
+          static Out_t op (In_t pos) { return Out_t (pos[0], pos[1]); }
+          static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Vector2_alloc(); to(in, r, 2); return r; }
         };
         template <> struct traits<POSITION> {
           typedef       osgVector3    Out_t;

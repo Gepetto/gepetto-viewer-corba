@@ -18,6 +18,7 @@ module corbaserver {
 //     This system is used to synchronize movement of all objects.
 
 typedef float Transform [7];
+typedef float Vector2 [2];
 typedef float Position [3];
 typedef float Color [4];
 typedef unsigned long WindowID;
@@ -431,6 +432,9 @@ typedef sequence<Transform> TransformSeq;
 
     void setVector3Property(in string nodeName, in string propName, in Position value) raises (Error);
     Position getVector3Property(in string nodeName, in string propName) raises (Error);
+
+    void setVector2Property(in string nodeName, in string propName, in Vector2 value) raises (Error);
+    Position getVector2Property(in string nodeName, in string propName) raises (Error);
 
     void setFloatProperty(in string nodeName, in string propName, in float value) raises (Error);
     float getFloatProperty(in string nodeName, in string propName) raises (Error);
