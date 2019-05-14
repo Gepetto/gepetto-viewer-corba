@@ -20,6 +20,7 @@
 
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/settings.hh>
+#include <gepetto/gui/safeapplication.hh>
 #include <gepetto/viewer/corba/server.hh>
 
 #include <omniorbthread.hh>
@@ -27,6 +28,27 @@
 using namespace gepetto::gui;
 
 using gepetto::viewer::corba::Server;
+
+class OmniOrbCatch : public SlotExceptionCatch
+{
+  public:
+    bool safeNotify (QApplication* app, QObject* receiver, QEvent* e)
+    {
+      try {
+        return impl_notify (app, receiver, e);
+      } catch (const CORBA::Exception& e) {
+        qDebug () << e._name() << " : " << e._rep_id();
+        MainWindow* main = MainWindow::instance();
+        if (main != NULL) {
+          QString err (e._name());
+          err += " : ";
+          err += e._rep_id();
+          main->logError (err);
+        }
+      }
+      return false;
+    }
+};
 
 OmniOrbServerPlugin::OmniOrbServerPlugin ()
   : server_ (NULL)
@@ -52,7 +74,11 @@ void OmniOrbServerPlugin::stopServer ()
   }
 }
 
-void OmniOrbServerPlugin::init() {
+void OmniOrbServerPlugin::init()
+{
+  SafeApplication* app = dynamic_cast<SafeApplication*>(QApplication::instance());
+  if (app) app->addAsLeaf(new OmniOrbCatch);
+
   MainWindow* main = MainWindow::instance ();
   Settings& settings = *main->settings_;
 
