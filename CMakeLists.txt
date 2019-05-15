@@ -89,26 +89,6 @@ IF(NOT CLIENT_ONLY)
   INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS} ${QT_INCLUDE_DIRS})
   # }}}
 
-  # {{{ PythonQt settings
-  SET(CMAKE_MODULE_PATH
-    ${CMAKE_SOURCE_DIR}/cmake-modules/
-    ${CMAKE_MODULE_PATH})
-  # If GEPETTO_GUI_HAS_PYTHONQT is set to TRUE, then PythonQt is required.
-  IF(DEFINED GEPETTO_GUI_HAS_PYTHONQT AND GEPETTO_GUI_HAS_PYTHONQT)
-    FIND_PACKAGE(PythonQt REQUIRED COMPONENTS QtAll)
-  ELSE()
-    FIND_PACKAGE(PythonQt COMPONENTS QtAll)
-  ENDIF()
-  # Declare option GEPETTO_GUI_HAS_PYTHONQT
-  # If GEPETTO_GUI_HAS_PYTHONQT was defined, this does not change its value.
-  IF (PythonQt_FOUND AND PythonQt_QtAll_FOUND)
-    SET(GEPETTO_GUI_HAS_PYTHONQT TRUE CACHE BOOL "Use PythonQt dependency")
-  ELSE()
-    SET(GEPETTO_GUI_HAS_PYTHONQT FALSE CACHE BOOL "Use PythonQt dependency")
-  ENDIF()
-  ADD_OPTIONAL_DEPENDENCY("qgv")
-  # }}}
-
   # {{{ Packaging
   PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
