@@ -376,3 +376,46 @@ class Quaternion (object):
         Return quaternion as a tuple a float starting with real part.
         """
         return tuple (self.array)
+
+    def fromTwoVectors(self,a,b):
+        """
+        Return a quaternion build representing the rotation between the two vectors.
+        In other words, the built rotation represent a rotation sending the line of direction a to the line of direction b,
+         both lines passing through the origin.
+         Equations from Eigen https://eigen.tuxfamily.org/dox/classEigen_1_1Quaternion.html#title13
+        """
+        if len(a) != 3 or len(b) != 3:
+            raise TypeError ("fromTwoVector method require two 3D vectors as input.")
+
+        v0 = np.array(a)
+        n0 = np.linalg.norm(v0)
+        v1 = np.array(b)
+        n1 = np.linalg.norm(v1)
+        if n0 < (np.finfo(np.float32).eps) or n1 < (np.finfo(np.float32).eps) :
+          return self
+        v0 = v0 / n0
+        v1 = v1 / n1
+        c = v1.dot(v0)
+
+        if c > -1. + (np.finfo(np.float32).eps) :
+          axis = np.cross(v0,v1)
+          s = np.sqrt((1. + c)*2.)
+          invs = 1./s
+          self.array[0:3] = axis*invs
+          self.array[3] = 0.5*s
+          return self.normalize()
+        else :
+        # both vectors are nearly opposite, previous method may lead to numerical error.
+        # here we accurately compute the rotation axis by computing the intersection between two planes :
+        # x^T v1 = 0
+        # x^T v0 = 0
+        # ||x|| = 1
+        # which lead to a singular value problem
+          c = max(c,-1.)
+          m = np.matrix([v0,v1]).transpose()
+          u,s,vh  = np.linalg.svd(m)
+          axis = u[:,2].transpose()
+          w2 = (1.+c)*0.5
+          self.array[0:3] = axis*np.sqrt(1.-w2)
+          self.array[3] = np.sqrt(w2)
+          return self.normalize()
