@@ -43,6 +43,7 @@ ENDIF(APPLE)
 
 # {{{ C++ and Python client.
 # Dependencies
+FINDPYTHON()
 ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
 
 SET(${PROJECT_NAME}_HEADERS
@@ -53,7 +54,6 @@ SET(${PROJECT_NAME}_HEADERS
 # {{{ C++ server.
 IF(NOT CLIENT_ONLY)
   # {{{ Dependencies for the server.
-  FINDPYTHON()
 
   # Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
   LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
