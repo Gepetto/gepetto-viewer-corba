@@ -148,7 +148,7 @@ def graphOfFunction(gui, name, args, func, color=Color.red):
         if iarg == len(args):
             return (func(arg),)
         points = []
-        for k in xrange(len(args[iarg])):
+        for k in range(len(args[iarg])):
             cur = arg[:]
             cur.append(args[iarg][k])
             points.extend (_recursiveBuildPoints(cur, iarg+1, args, func))
@@ -161,8 +161,8 @@ def graphOfFunction(gui, name, args, func, color=Color.red):
         nx = len(args[0])
         ny = len(args[1])
         pts = []
-        for ix in xrange(nx-1):
-            for iy in xrange(ny-1):
+        for ix in range(nx-1):
+            for iy in range(ny-1):
                 iv0 = ix * ny + iy
                 iv1 = ix * ny + iy + 1
                 iv2 = (ix + 1) * ny + iy
