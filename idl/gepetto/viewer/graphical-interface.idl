@@ -517,10 +517,16 @@ typedef sequence<Transform> TransformSeq;
     boolean detachCamera(in unsigned long windowId) raises (Error);
 
     /// get the matrix transform of the current position of the camera
+    /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
+    /// axis are: X -> right, Y -> up, Z -> behind
+    /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
     /// \param input windowId : ID of the window
     Transform getCameraTransform(in unsigned long windowId) raises (Error);
 
     /// set the matrix transform of the current camera
+    /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
+    /// axis are: X -> right, Y -> up, Z -> behind
+    /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
     /// \param input windowId : ID of the window
     /// \param input configuration : the desired configuration of the camera
     boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
