@@ -78,6 +78,8 @@ public:
 
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
+  virtual void removeLightSources (const char* meshNameCorba)  throw (Error);
+
   virtual bool addCone(const char* coneName, float radius, float height, const Color color) throw (Error);
 
   virtual bool addCylinder(const char* cylinderName, float radius, float height, const Color color) throw (Error);

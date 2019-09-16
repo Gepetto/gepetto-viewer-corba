@@ -123,6 +123,10 @@ typedef sequence<Transform> TransformSeq;
     /// \param input meshPath : full path to the mesh file.
     boolean addMesh(in string meshName, in string meshPath) raises (Error);
 
+    /// Remove light sources from mesh
+    /// \param input meshName : name of the new meshNode.
+    void removeLightSources(in string meshName) raises (Error);
+
     /// create a node to display a mesh (works for .dae, .obj and some other formats)
     /// \param input meshName : name of the new meshNode.
     /// \param input meshPath : full path to the mesh file.
