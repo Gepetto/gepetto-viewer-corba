@@ -312,6 +312,8 @@ namespace gepetto {
 
       BIND_TO_WINDOWS_MANAGER_3(VOID,setIntProperty,STRING,STRING,LONG)
 
+      BIND_TO_WINDOWS_MANAGER_2(VOID,callVoidProperty,STRING,STRING)
+
       // ------------- Callbacks -------------------- //
       bool GraphicalInterface::registerNodeCallback (NodeCallback_ptr _cb) throw (Error)
       {

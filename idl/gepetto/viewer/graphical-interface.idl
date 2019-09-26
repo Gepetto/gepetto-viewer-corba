@@ -449,6 +449,7 @@ typedef sequence<Transform> TransformSeq;
     void setIntProperty(in string nodeName, in string propName, in long value) raises (Error);
     long getIntProperty(in string nodeName, in string propName) raises (Error);
 
+    void callVoidProperty(in string nodeName, in string propName) raises (Error);
     /// \}
 
     /// \name Export of scenes to images or to blender

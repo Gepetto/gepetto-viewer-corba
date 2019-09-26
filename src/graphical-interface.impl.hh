@@ -181,6 +181,7 @@ public:
   virtual void setBoolProperty(const char* nodeName, const char* propName, bool value) throw (Error);
   virtual CORBA::Long getIntProperty(const char* nodeName, const char* propName) throw (Error);
   virtual void setIntProperty(const char* nodeName, const char* propName, CORBA::Long value) throw (Error);
+  virtual void callVoidProperty(const char* nodeName, const char* propName) throw (Error);
 
   // ------------- Callbacks -------------------- //
   bool registerNodeCallback (NodeCallback_ptr cb) throw (Error);
