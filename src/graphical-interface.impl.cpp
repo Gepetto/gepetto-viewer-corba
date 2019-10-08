@@ -168,6 +168,8 @@ namespace gepetto {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, addMesh, STRING, STRING)
 
+      BIND_TO_WINDOWS_MANAGER_1(VOID, removeLightSources, STRING)
+
       BIND_TO_WINDOWS_MANAGER_4(BOOL, addCone, STRING, FLOAT, FLOAT, COLOR)
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, setTexture, STRING, STRING)
@@ -309,6 +311,8 @@ namespace gepetto {
       BIND_TO_WINDOWS_MANAGER_2(LONG,getIntProperty,STRING,STRING)
 
       BIND_TO_WINDOWS_MANAGER_3(VOID,setIntProperty,STRING,STRING,LONG)
+
+      BIND_TO_WINDOWS_MANAGER_2(VOID,callVoidProperty,STRING,STRING)
 
       // ------------- Callbacks -------------------- //
       bool GraphicalInterface::registerNodeCallback (NodeCallback_ptr _cb) throw (Error)

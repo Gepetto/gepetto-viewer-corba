@@ -78,6 +78,8 @@ public:
 
   virtual bool addMesh(const char* meshNameCorba, const char* meshPathCorba)  throw (Error);
 
+  virtual void removeLightSources (const char* meshNameCorba)  throw (Error);
+
   virtual bool addCone(const char* coneName, float radius, float height, const Color color) throw (Error);
 
   virtual bool addCylinder(const char* cylinderName, float radius, float height, const Color color) throw (Error);
@@ -179,6 +181,7 @@ public:
   virtual void setBoolProperty(const char* nodeName, const char* propName, bool value) throw (Error);
   virtual CORBA::Long getIntProperty(const char* nodeName, const char* propName) throw (Error);
   virtual void setIntProperty(const char* nodeName, const char* propName, CORBA::Long value) throw (Error);
+  virtual void callVoidProperty(const char* nodeName, const char* propName) throw (Error);
 
   // ------------- Callbacks -------------------- //
   bool registerNodeCallback (NodeCallback_ptr cb) throw (Error);
