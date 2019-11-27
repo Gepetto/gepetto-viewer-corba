@@ -58,7 +58,7 @@ IF(NOT CLIENT_ONLY)
 
   # Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
   LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
-  ADD_REQUIRED_DEPENDENCY("gepetto-viewer > 4.3.0")
+  ADD_REQUIRED_DEPENDENCY("gepetto-viewer >= 4.3.0")
 
   # Get desired Qt version
   string(REPLACE "." ";" DESIRED_QT_VERSION_LIST ${GEPETTO_VIEWER_QTVERSION})
