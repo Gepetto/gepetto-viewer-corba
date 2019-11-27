@@ -18,6 +18,10 @@
 # Requires at least CMake 2.8 to configure the package.
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+SET(PROJECT_NAME gepetto-viewer-corba)
+SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
+SET(PROJECT_URL "https://github.com/Gepetto/${PROJECT_NAME}")
+
 SET(CXX_DISABLE_WERROR true)
 
 INCLUDE(cmake/base.cmake)
@@ -27,15 +31,12 @@ INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/test.cmake)
 INCLUDE(cmake/apple.cmake)
 
-SET(PROJECT_NAME gepetto-viewer-corba)
-SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
-SET(PROJECT_URL "https://github.com/Gepetto/${PROJECT_NAME}")
-
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
 
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-SETUP_PROJECT ()
+COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
+PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
 IF(APPLE)
   APPLY_DEFAULT_APPLE_CONFIGURATION()
@@ -116,7 +117,5 @@ IF(NOT CLIENT_ONLY)
   ADD_SUBDIRECTORY(examples EXCLUDE_FROM_ALL)
   ADD_SUBDIRECTORY(tests)
 ENDIF(NOT CLIENT_ONLY)
-
-SETUP_PROJECT_FINALIZE()
 
 # vim: foldmethod=marker foldlevel=0
