@@ -58,27 +58,43 @@ def _tranformFromXvector (v):
         t = (0,0,0, 0, -u[2]/s, u[1]/s, s/2)
     return norm_v, t
 
+## Helper class to plot a 3D vector as a circular arrow
 class Angular:
+    ## Constructor
     ## \param majorRadius, majorN radius and discretisation of the circle that is
     ##                            the center of the torus
     ## \param minorRadius, minorN radius and discretisation of the circle that is
     ##                            a section of the torus
     def __init__ (self, nodeName, color = Color.red, majorRadius = 0.1, minorRadius = 0.005, majorN = 100, minorN = 20):
         self.name = nodeName
+        self.setTorusParameters (majorRadius, minorRadius, majorN, minorN)
+        self.color = color
+
+    ## Set the torus parameters.
+    ## \param majorRadius, majorN radius and discretisation of the circle that is
+    ##                            the center of the torus
+    ## \param minorRadius, minorN radius and discretisation of the circle that is
+    ##                            a section of the torus
+    def setTorusParameters (self, majorRadius, minorRadius, majorN, minorN):
         self.R = majorRadius
         self.r = minorRadius
         self.nR = majorN
         self.nr = minorN
-        self.color = color
 
+    ## Create the node in the GUI
     def create (self, gui):
         pts, self.minC = _pointsCircularArrow (self.R, self.r, self.nR, self.nr)
         gui.addCurve (self.name, pts, self.color)
         gui.setCurveMode (self.name, "quad_strip")
         self.maxC = len(pts)
+
+    ## Delete the node in the GUI
     def remove (self, gui):
         gui.deleteNode (self.name, False)
 
+    ## Set the 3D vector to plot
+    ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
+    ## \param v      a list or tuple of 3 elements
     ## \param factor the norm of the vector is divided by this value
     def set(self, gui, v, factor = pi):
         norm, pos = _tranformFromXvector (v)
@@ -86,21 +102,30 @@ class Angular:
         gui.setCurvePointsSubset (self.name, 0, count)
         if pos is not None: gui.applyConfiguration (self.name, pos)
 
+## Helper class to plot a 3D vector as a straight arrow
 class Linear:
-    ## \param majorRadius, majorN radius and discretisation of the circle that is
-    ##                            the center of the torus
-    ## \param minorRadius, minorN radius and discretisation of the circle that is
-    ##                            a section of the torus
+    ## Constructor
+    ## \param radius the radius of the arrow.
     def __init__ (self, nodeName, color = Color.red, radius = 0.005):
         self.name = nodeName
         self.R = radius
         self.color = color
 
+    ## Set the arrow parameter.
+    ## \param radius the radius of the arrow.
+    def setRadius (self, radius):
+        self.R = radius
+
+    ## Create the node in the GUI
     def create (self, gui):
         gui.addArrow (self.name, self.R, 1, self.color)
+    ## Delete the node in the GUI
     def remove (self, gui):
         gui.deleteNode (self.name, False)
 
+    ## Set the 3D vector to plot
+    ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
+    ## \param v      a list or tuple of 3 elements
     ## \param factor the norm of the vector is divided by this value
     def set(self, gui, v, factor = 1.):
         norm, pos = _tranformFromXvector (v)
@@ -108,29 +133,57 @@ class Linear:
         if pos is not None: gui.applyConfiguration (self.name, pos)
 
 
-## Represents a 6D vector using an arrow with the 3 first
-## values and a circular arrow with the 3 last values.
+## Helper class to plot a 6D vector with one Linear and one Angular arrow.
+## The 3 first components of the 6D vector are sent to the Linear arrow
+## and the 3 last ones are sent to the Angular arrow.
 ## It is useful to plot velocities of a body, forces and torques...
+## Example usage:
+## \code
+## from gepetto.corbaserver import Client
+## from gepetto.corbaserver.tools import Vector6
+##
+## client = Client()
+## gui = client.gui
+## gui.createWindow ("window")
+## vector = Vector6 ("window")
+## vector.create (gui)
+## vector.set (gui, [.1, .2, .3, .1, -.2, .3])
+## \endcode
 class Vector6:
     suffixLin = "linear"
     suffixAng = "angular"
 
+    ## Constructor
+    ## To tune the parameter of the 3D arrows, directly acces the attributes:
+    ## - Vector6.linear
+    ## - Vector6.angular
+    ## - Vector6.linF
+    ## - Vector6.angF
     ## \param groupName name of an **existing** group
     def __init__ (self, groupName, angFactor = pi, linFactor = 1.):
         self.name = groupName
+        ## The Linear part
         self.linear  = Linear  (self.name + '/' + Vector6.suffixLin)
+        ## The Angular part
         self.angular = Angular (self.name + '/' + Vector6.suffixAng)
+        ## The factor sent to Angular.set
         self.angF = angFactor
+        ## The factor sent to Linear.set
         self.linF = linFactor
 
+    ## Create the node in the GUI
     def create (self, gui):
         self.linear .create(gui)
         self.angular.create(gui)
 
+    ## Delete the node in the GUI
     def remove (self, gui):
         self.linear .remove(gui)
         self.angular.remove(gui)
 
+    ## Set the 6D vector to plot
+    ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
+    ## \param v a list or tuple of 6 elements
     def set (self, gui, v):
         self.linear .set (gui, v[0:3], self.linF)
         self.angular.set (gui, v[3:6], self.angF)
