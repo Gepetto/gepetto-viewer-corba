@@ -113,16 +113,15 @@ public:
   virtual bool addNodeToRoadmap(const char* nameRoadmap, const value_type* configuration) throw(Error);
 
 
-  virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba, const char* urdfPackagePathCorba) throw (Error);
+  virtual bool addURDF(const char* urdfNameCorba, const char* urdfPathCorba)
+    throw (Error);
 
   virtual bool addUrdfCollision (const char* urdfNameCorba,
-				 const char* urdfPathCorba,
-				 const char* urdfPackagePathCorba)
+				 const char* urdfPathCorba)
     throw (Error);
 
   virtual void addUrdfObjects (const char* urdfNameCorba,
 			       const char* urdfPathCorba,
-			       const char* urdfPackagePathCorba,
 			       bool visual)
     throw (Error);
 

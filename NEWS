@@ -1,4 +1,7 @@
                                                                 -*- outline -*-
+New in 6.0.0
+* parameter meshDataRootDir has been removed from idl methods addUrdf, addUrdfCollision, addUrdfObjects.
+
 New in 5.3.0
 * Add python trivial test
 * Handle CORBA Exception
