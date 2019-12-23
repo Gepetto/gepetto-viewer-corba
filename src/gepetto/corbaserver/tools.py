@@ -38,7 +38,7 @@ def _pointsCircularArrow (R, r, nR, nr):
 # Compute a transformation which rotates (1, 0, 0) to v
 # Return (norm_v, T)
 # When norm_v == 0, T is None
-def _tranformFromXvector (v):
+def _tranformFromXvector (v, origin=(0,0,0)):
     norm_v = np.linalg.norm(v)
     if norm_v == 0:
         # self.plugin.gui.gui.resizeArrow (n, self.radius, norm_v)
@@ -51,11 +51,11 @@ def _tranformFromXvector (v):
         c = max (u[0], -1)
         w2 = (1 + c) / 2
         s = sqrt(1 - w2)
-        t = (0,0,0, V[0,2]/s, V[1,2]/s, V[2,2]/s, w2)
+        t = origin + (V[0,2]/s, V[1,2]/s, V[2,2]/s, w2)
     else:
         s = sqrt(2 * (1 + u[0]))
         # axis = (0, -u[2]/s, u[1]/s) # x ^ u
-        t = (0,0,0, 0, -u[2]/s, u[1]/s, s/2)
+        t = origin + (0, -u[2]/s, u[1]/s, s/2)
     return norm_v, t
 
 ## Helper class to plot a 3D vector as a circular arrow
@@ -94,10 +94,11 @@ class Angular:
 
     ## Set the 3D vector to plot
     ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
-    ## \param v      a list or tuple of 3 elements
+    ## \param value  the vector to plot (list or tuple of 3 elements)
+    ## \param origin the translation of the origin (list or tuple of 3 elements)
     ## \param factor the norm of the vector is divided by this value
-    def set(self, gui, v, factor = pi):
-        norm, pos = _tranformFromXvector (v)
+    def set(self, gui, value, origin=(0,0,0), factor = pi):
+        norm, pos = _tranformFromXvector (value, origin=origin)
         count = min (self.minC + int (norm * (self.maxC-self.minC) / factor), self.maxC)
         gui.setCurvePointsSubset (self.name, 0, count)
         if pos is not None: gui.applyConfiguration (self.name, pos)
@@ -125,10 +126,11 @@ class Linear:
 
     ## Set the 3D vector to plot
     ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
-    ## \param v      a list or tuple of 3 elements
+    ## \param value  the vector to plot (list or tuple of 3 elements)
+    ## \param origin the translation of the origin (list or tuple of 3 elements)
     ## \param factor the norm of the vector is divided by this value
-    def set(self, gui, v, factor = 1.):
-        norm, pos = _tranformFromXvector (v)
+    def set(self, gui, value, origin=(0,0,0), factor = 1.):
+        norm, pos = _tranformFromXvector (value, origin=origin)
         gui.resizeArrow (self.name, self.R, norm / factor)
         if pos is not None: gui.applyConfiguration (self.name, pos)
 
@@ -183,10 +185,11 @@ class Vector6:
 
     ## Set the 6D vector to plot
     ## \param gui    the IDL client (typically the \c gui attribute of class gepetto.corbaserver.client.Client)
-    ## \param v a list or tuple of 6 elements
-    def set (self, gui, v):
-        self.linear .set (gui, v[0:3], self.linF)
-        self.angular.set (gui, v[3:6], self.angF)
+    ## \param value  the vector to plot (list or tuple of 6 elements)
+    ## \param origin the translation of the origin (list or tuple of 3 elements)
+    def set (self, gui, value, origin=(0,0,0)):
+        self.linear .set (gui, value[0:3], self.linF, origin=origin)
+        self.angular.set (gui, value[3:6], self.angF, origin=origin)
 
 ## Plot a function of 2 arguments i.e. (x, y, f(x, y))
 # \param gui the CORBA client
