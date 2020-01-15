@@ -26,7 +26,7 @@
 ### Setup from robotpkg apt binary package repository
 
 1. Add robotpkg to your apt configuration: http://robotpkg.openrobots.org/debian.html
-2. `sudo apt update && sudo apt install robotpkg-qt4-gepetto-viewer-corba`
+2. `sudo apt update && sudo apt install robotpkg-py27-qt4-gepetto-viewer-corba` (or `py35` on 16.04 / `py36` on 18.04)
 
 ### Setup from sources
 
