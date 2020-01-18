@@ -18,20 +18,19 @@
 #define GEPETTO_GUI_OMNIORB_URL_HH
 
 #include <QString>
+#include <gepetto/viewer/corba/deprecated.hh>
+#warning "This file will be deleted in the future."
 
 namespace gepetto {
   namespace gui {
     namespace omniOrb {
-      static inline QString IIOPurl (const QString& host, const QString& port)
+      static inline QString IIOPurl (const QString& host = "localhost",
+          const QString& port = "2809") GEPETTO_VIEWER_CORBA_DEPRECATED;
+
+      static inline QString IIOPurl (const QString& host,
+          const QString& port)
       {
-        QString hp;
-        if (host.isEmpty ()) {
-          if (!port.isEmpty ()) hp = QString ("localhost:%1").arg (port);
-        } else {
-          if (port.isEmpty ()) hp = QString ("%1:2809").arg (host);
-          else hp = QString ("%1:%2").arg(host).arg(port);
-        }
-        return QString ("corbaloc:iiop:%1/NameService").arg (hp);
+        return QString ("corbaloc:iiop:%1:%2").arg(host).arg(port);
       }
     } // namespace omniOrb
   } // namespace gui
