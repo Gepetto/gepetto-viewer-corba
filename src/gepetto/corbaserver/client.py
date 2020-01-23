@@ -60,24 +60,36 @@ class Client:
       # At this point, we are NOT in the python interpreter of gepetto-gui
       pass
 
-def gui_client(dont_raise = False, url = None, host = None, port = None):
+def gui_client(window_name = None, dont_raise = False, url = None, host = None, port = None):
   """
   Initialize CORBA and create default clients.
+  :param window_name: If provided, creates a window with this name if it does not exist.
   :param dont_raise: If True, will not raise if connection failed. It returns None instead.
   :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
               For a remote corba server, use
               url = "corbaloc:iiop:<host>:<port>/NameService".
               If None, url is initialized with param host, or alternatively with _getIIOPurl
   :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
+
+  :return: a client to the GUI.
   """
   try:
-    return Client(url, host, port).gui
+    gui = Client(url, host, port).gui
   except Exception as e:
     if not dont_raise:
       raise e
     else:
       print("Failed to connect to the viewer.")
       print("Check whether gepetto-gui is properly started.")
+    return
+  if window_name is not None:
+    if window_name in gui.getWindowList():
+      window_id = gui.getWindowID(window_name)
+    else:
+      window_id = gui.createWindow(window_name)
+    #TODO Should we return the window ID ?
+    # I think it is useless at it is almost never used.
+  return gui
 
 def _initWithNameService (orb, urlNameService):
   import CosNaming
