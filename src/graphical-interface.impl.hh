@@ -30,8 +30,6 @@ private:
     typedef gepetto::gui::WindowsManager::value_type value_type;
 
 public:
-    typedef CORBA::ULong WindowID;
-
     /**
         \brief Default constructor
         */
@@ -50,15 +48,15 @@ public:
   virtual void refresh();
   virtual void setRefreshIsSynchronous(bool synchronous);
 
-  virtual WindowID createWindow(const char* windowNameCorba);
-  virtual WindowID getWindowID (const char* windowNameCorba);
+  virtual char* createWindow(const char* windowNameCorba);
+  virtual char* getWindowID (const char* windowNameCorba);
 
   virtual void createScene(const char* sceneNameCorba);
   virtual void createSceneWithFloor(const char* sceneNameCorba);
-  virtual bool addSceneToWindow(const char* sceneNameCorba, const WindowID windowId);
+  virtual bool addSceneToWindow(const char* sceneNameCorba, const char* windowId);
 
-  virtual bool attachCameraToNode(const char* nodeName, const WindowID windowId);
-  virtual bool detachCamera(const WindowID windowId);
+  virtual bool attachCameraToNode(const char* nodeName, const char* windowId);
+  virtual bool detachCamera(const char* windowId);
 
   virtual bool nodeExists(const char* nodeName);
 
@@ -86,7 +84,7 @@ public:
 
   virtual bool addSphere(const char* sphereName, float radius, const Color color);
 
-  virtual bool addLight(const char* lightName, const WindowID windowId, float radius, const Color color);
+  virtual bool addLight(const char* lightName, const char* windowId, float radius, const Color color);
 
   virtual bool addLine(const char* lineName, const value_type* pos1, const value_type* pos2, const Color color);
   virtual bool setLineStartPoint(const char* lineName, const value_type* pos1);
@@ -142,23 +140,23 @@ public:
   virtual bool setLightingMode(const char* nodeNameCorba, const char* lightingModeCorba);
   virtual bool setHighlight(const char* nodeNameCorba, ::CORBA::Long state);
 
-  virtual void captureFrame (const WindowID windowId, const char* filename);
-  virtual bool startCapture (const WindowID windowId, const char* filename,
+  virtual void captureFrame (const char* windowId, const char* filename);
+  virtual bool startCapture (const char* windowId, const char* filename,
       const char* extension);
-  virtual bool stopCapture (const WindowID windowId);
+  virtual bool stopCapture (const char* windowId);
   virtual bool setCaptureTransform (const char* filename, const Names_t& nodename);
   virtual void captureTransformOnRefresh (bool autoCapture);
   virtual void captureTransform ();
   virtual bool writeBlenderScript (const char* filename, const Names_t& nodeNames);
   virtual bool writeNodeFile (const char* nodename, const char* filename);
-  virtual bool writeWindowFile (const WindowID windowId, const char* filename);
+  virtual bool writeWindowFile (const char* windowId, const char* filename);
 
   virtual Transform_slice* getNodeGlobalTransform(const char* nodeName);
   virtual void deleteNode (const char* nodeName, bool all);
-  virtual bool setBackgroundColor1(const WindowID windowId,const Color colorCorba);
-  virtual bool setBackgroundColor2(const WindowID windowId,const Color colorCorba);
-  virtual Transform_slice* getCameraTransform(const WindowID windowId);
-  virtual bool setCameraTransform(const WindowID windowId, const value_type *configurationCorba);
+  virtual bool setBackgroundColor1(const char* windowId,const Color colorCorba);
+  virtual bool setBackgroundColor2(const char* windowId,const Color colorCorba);
+  virtual Transform_slice* getCameraTransform(const char* windowId);
+  virtual bool setCameraTransform(const char* windowId, const value_type *configurationCorba);
 
   // ------------- Properties -------------------- //
   virtual Names_t* getPropertyNames(const char* nodeName);

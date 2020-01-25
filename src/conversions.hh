@@ -12,8 +12,6 @@ namespace gepetto {
   namespace viewer {
   namespace corba {
     namespace impl {
-        typedef GraphicalInterface::WindowID WindowID;
-
         template <typename Input, typename Output>
           void to (const Input& in, Output& out) {
             for (CORBA::ULong i = 0; i < in.length(); ++i)
@@ -44,8 +42,8 @@ namespace gepetto {
 
         enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR,
           TRANSFORM, TRANSFORM_SEQ, POSITION, POSITION_SEQ,
-          FLOAT, SHORT, LONG, WINDOW_ID, BOOL, VOID,
-          GLMODE, VECTOR2
+          FLOAT, SHORT, LONG, BOOL, VOID,
+          GLMODE, VECTOR2, WINDOW_ID = STRING
         };
 
         template <int what> struct traits {};
@@ -136,13 +134,6 @@ namespace gepetto {
           typedef CORBA::Long  In_t;
           typedef CORBA::Long  Ret_t;
           static int op (const In_t& in) { return in; }
-          static Ret_t ret (Out_t  in) { return in; }
-        };
-        template <> struct traits<WINDOW_ID> {
-          typedef       WindowsManager::WindowID  Out_t;
-          typedef const WindowID  In_t;
-          typedef       WindowID  Ret_t;
-          static Out_t op  (In_t & in) { return in; }
           static Ret_t ret (Out_t  in) { return in; }
         };
         template <> struct traits<BOOL> {

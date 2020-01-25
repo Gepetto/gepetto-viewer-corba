@@ -21,7 +21,7 @@ typedef float Transform [7];
 typedef float Vector2 [2];
 typedef float Position [3];
 typedef float Color [4];
-typedef unsigned long WindowID;
+typedef string WindowID;
 typedef sequence <string> Names_t; /// Sequence of names
 typedef sequence<float> floatSeq;
 typedef sequence<Position> PositionSeq;
@@ -49,18 +49,18 @@ typedef sequence<Transform> TransformSeq;
     /// Create a new window.
     /// \param input name : name of the new window.
     /// return the ID of the newly create window.
-    unsigned long createWindow(in string name) raises (Error);
-    unsigned long getWindowID (in string name) raises (Error);
+    WindowID createWindow(in string name) raises (Error);
+    WindowID getWindowID (in string name) raises (Error);
     
     /// change the background color1
-    /// \param input windowId : ID of the window
+    /// \param input wid : ID of the window
     /// \param input RGBAcolor : desired color
-    boolean setBackgroundColor1(in unsigned long windowId,in Color RGBAcolor);
+    boolean setBackgroundColor1(in WindowID wid,in Color RGBAcolor);
     
     /// change the background color2
-    /// \param input windowId : ID of the window
+    /// \param input wid : ID of the window
     /// \param input RGBAcolor : desired color
-    boolean setBackgroundColor2(in unsigned long windowId,in Color RGBAcolor);
+    boolean setBackgroundColor2(in WindowID wid,in Color RGBAcolor);
 
     /// Create a group node.
     /// \param input sceneName : name of the group.
@@ -73,8 +73,8 @@ typedef sequence<Transform> TransformSeq;
     /// Add groupNode sceneName to the WindowManager windowName so
     /// sceneName and all its children will be displayed in the window windowName.
     /// \param input sceneName : name of the groupNode.
-    /// \param input windowId : ID of rhe window.
-    boolean addSceneToWindow(in string sceneName, in unsigned long windowId) raises (Error);
+    /// \param input wid : ID of rhe window.
+    boolean addSceneToWindow(in string sceneName, in WindowID wid) raises (Error);
 
     /// \}
 
@@ -445,7 +445,7 @@ typedef sequence<Transform> TransformSeq;
     void captureFrame (in WindowID wid, in string imageFilename) raises (Error);
 
     /// Start capturing a window into image files.
-    /// \param windowId the ID of the window
+    /// \param wid the ID of the window
     /// \param filename, extension image files will be
     /// '<filename>_<sequence_number>.<extension>'
     ///
@@ -457,11 +457,11 @@ typedef sequence<Transform> TransformSeq;
     /// - \c libx264 is not installed by default. On ubuntu 12.04,
     ///   it is part of the package \c libavcodec-extra-53.
     /// - \c yuv420p is required only to enable support for old media players.
-    boolean startCapture (in unsigned long windowId, in string filename,
+    boolean startCapture (in WindowID wid, in string filename,
       in string extension) raises (Error);
 
     /// Stop the running capture of a window.
-    boolean stopCapture (in unsigned long windowId) raises (Error);
+    boolean stopCapture (in WindowID wid) raises (Error);
 
     /// Configure the capture of node transformation in YAML format
     /// \param filename file where to write.
@@ -486,7 +486,7 @@ typedef sequence<Transform> TransformSeq;
     boolean writeNodeFile (in string nodeName, in string filename) raises (Error);
 
     /// Write the nodes contained in the window to filename
-    boolean writeWindowFile (in unsigned long windowId, in string filename) raises (Error);
+    boolean writeWindowFile (in WindowID wid, in string filename) raises (Error);
 
     /// \}
 
@@ -495,31 +495,31 @@ typedef sequence<Transform> TransformSeq;
     /// \{
 
     /// Attach the camera to the Node nodeName in the WindowManager
-    /// pointed by windowId
+    /// pointed by wid
     /// If already attached, detach from the other node
     /// \param input nodeName : name of the node
-    /// \param input windowId : ID of the window
-    boolean attachCameraToNode(in string nodeName, in unsigned long windowId) raises (Error);
+    /// \param input wid : ID of the window
+    boolean attachCameraToNode(in string nodeName, in WindowID wid) raises (Error);
 
-    /// Detach the camera of WindowManager pointed by windowId
+    /// Detach the camera of WindowManager pointed by wid
     /// from any node
-    /// \param input windowId : ID of the window
-    boolean detachCamera(in unsigned long windowId) raises (Error);
+    /// \param input wid : ID of the window
+    boolean detachCamera(in WindowID wid) raises (Error);
 
     /// get the matrix transform of the current position of the camera
     /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
     /// axis are: X -> right, Y -> up, Z -> behind
     /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
-    /// \param input windowId : ID of the window
-    Transform getCameraTransform(in unsigned long windowId) raises (Error);
+    /// \param input wid : ID of the window
+    Transform getCameraTransform(in WindowID wid) raises (Error);
 
     /// set the matrix transform of the current camera
     /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
     /// axis are: X -> right, Y -> up, Z -> behind
     /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
-    /// \param input windowId : ID of the window
+    /// \param input wid : ID of the window
     /// \param input configuration : the desired configuration of the camera
-    boolean setCameraTransform(in unsigned long windowId,in Transform configuration) raises (Error);
+    boolean setCameraTransform(in WindowID wid, in Transform configuration) raises (Error);
 
     // register a Node callback
     boolean registerNodeCallback (in NodeCallback cb) raises (Error);
