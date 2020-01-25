@@ -57,27 +57,27 @@ namespace gepetto {
 #define WRITE_OP_ARGS_6(T0,T1,T2,T3,T4,T5) WRITE_OP_ARGS_5(T0,T1,T2,T3,T4), WRITE_OP_ARG(T5,5)
 
 #define BIND_TO_WINDOWS_MANAGER_0(Ret, Func      )                             \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (                  ) throw (Error)          \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (                  )           \
       {                                                                        \
           try {                                                                \
-            WRITE_RET_OP(Ret)( windowsManager_->Func (                ));                  \
+            WRITE_RET_OP(Ret)( windowsManager_->Func (                ));      \
           } catch (const std::exception& exc) {                                \
               throw Error (exc.what ());                                       \
           }                                                                    \
       }
 
-#define BIND_TO_WINDOWS_MANAGER_1(Ret, Func, T0)                             \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_1(T0)) throw (Error)          \
+#define BIND_TO_WINDOWS_MANAGER_1(Ret, Func, T0)                               \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_1(T0))       \
       {                                                                        \
           try {                                                                \
-            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_1(T0) ));                  \
+            WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_1(T0) )); \
           } catch (const std::exception& exc) {                                \
               throw Error (exc.what ());                                       \
           }                                                                    \
       }
 
 #define BIND_TO_WINDOWS_MANAGER_2(Ret, Func, T0, T1)     \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_2(T0, T1)) throw (Error)          \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_2(T0, T1))   \
       {                                                                        \
           try {                                                                \
             WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_2(T0, T1) ));\
@@ -86,8 +86,8 @@ namespace gepetto {
           }                                                                    \
       }
 
-#define BIND_TO_WINDOWS_MANAGER_3(Ret, Func, T0, T1, T2)     \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_3(T0, T1, T2)) throw (Error)          \
+#define BIND_TO_WINDOWS_MANAGER_3(Ret, Func, T0, T1, T2)                       \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_3(T0, T1, T2))          \
       {                                                                        \
           try {                                                                \
             WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_3(T0, T1, T2) ));\
@@ -96,8 +96,8 @@ namespace gepetto {
           }                                                                    \
       }
 
-#define BIND_TO_WINDOWS_MANAGER_4(Ret, Func, T0, T1, T2, T3)     \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_4(T0, T1, T2, T3)) throw (Error)          \
+#define BIND_TO_WINDOWS_MANAGER_4(Ret, Func, T0, T1, T2, T3)                   \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_4(T0, T1, T2, T3))          \
       {                                                                        \
           try {                                                                \
             WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_4(T0, T1, T2, T3) ));\
@@ -106,8 +106,8 @@ namespace gepetto {
           }                                                                    \
       }
 
-#define BIND_TO_WINDOWS_MANAGER_5(Ret, Func, T0, T1, T2, T3, T4)     \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_5(T0, T1, T2, T3, T4)) throw (Error)          \
+#define BIND_TO_WINDOWS_MANAGER_5(Ret, Func, T0, T1, T2, T3, T4)               \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_5(T0, T1, T2, T3, T4))          \
       {                                                                        \
           try {                                                                \
             WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_5(T0, T1, T2, T3, T4) ));\
@@ -116,8 +116,8 @@ namespace gepetto {
           }                                                                    \
       }
 
-#define BIND_TO_WINDOWS_MANAGER_6(Ret, Func, T0,T1,T2,T3,T4,T5)     \
-      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_6(T0,T1,T2,T3,T4,T5)) throw (Error)          \
+#define BIND_TO_WINDOWS_MANAGER_6(Ret, Func, T0,T1,T2,T3,T4,T5)                \
+      WRITE_RET_T(Ret) GraphicalInterface::Func (WRITE_INPUT_ARGS_6(T0,T1,T2,T3,T4,T5))          \
       {                                                                        \
           try {                                                                \
             WRITE_RET_OP(Ret)( windowsManager_->Func ( WRITE_OP_ARGS_6(T0,T1,T2,T3,T4,T5) ));\
@@ -315,7 +315,7 @@ namespace gepetto {
       BIND_TO_WINDOWS_MANAGER_2(VOID,callVoidProperty,STRING,STRING)
 
       // ------------- Callbacks -------------------- //
-      bool GraphicalInterface::registerNodeCallback (NodeCallback_ptr _cb) throw (Error)
+      bool GraphicalInterface::registerNodeCallback (NodeCallback_ptr _cb)
       {
         corbaserver::NodeCallback_var cb(corbaserver::NodeCallback::_duplicate(_cb));
         new NodeCallback (qparent_, cb);
