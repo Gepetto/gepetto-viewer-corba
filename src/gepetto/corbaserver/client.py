@@ -17,48 +17,7 @@ class Client:
   Connect and create clients for all HPP services.
   """
 
-  defaultClients = [('gui', 'GraphicalInterface')]
-
-  def initWithNameService (self, urlNameService):
-    import CosNaming
-    from .gepetto.corbaserver import GraphicalInterface
-
-    obj = self.orb.string_to_object (urlNameService)
-    self.rootContext = obj._narrow(CosNaming.NamingContext)
-    if self.rootContext is None:
-      raise CorbaError ('Failed to narrow the root context')
-
-    name = [CosNaming.NameComponent ("gepetto", "viewer"),
-            CosNaming.NameComponent ("corbaserver", "gui")]
-
-    try:
-      obj = self.rootContext.resolve (name)
-    except CosNaming.NamingContext.NotFound:
-      raise CorbaError ('Failed to find the service "gui"')
-
-    try:
-      client = obj._narrow (GraphicalInterface)
-    except KeyError:
-      raise CorbaError ('Invalid service name "gui"')
-
-    if client is None:
-      # This happens when stubs from client and server are not synchronized.
-      raise CorbaError ( 'Failed to narrow client for service named "gui"')
-
-    self.gui = client
-
-  def initWithDirectLink (self, url):
-    from .gepetto.corbaserver import GraphicalInterface
-    obj = self.orb.string_to_object (url)
-    client = obj._narrow(GraphicalInterface)
-
-    if client is None:
-      # This happens when stubs from client and server are not synchronized.
-      raise CorbaError ( 'Failed to narrow client for service named "gui"')
-
-    self.gui = client
-
-  def __init__(self, clients = defaultClients, url = None, host = None, port = None):
+  def __init__(self, url = None, host = None, port = None):
     """
     Initialize CORBA and create default clients.
     :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
@@ -73,23 +32,23 @@ class Client:
 
     if url is not None:
         try:
-            self.initWithDirectLink (url)
+            self.gui = _initWithDirectLink (self.orb, url)
         except CorbaError:
             pass
         if self.gui is None:
-            self.initWithNameService (url)
+            self.gui = _initWithNameService (self.orb, url)
     else:
         urlNameService = _getIIOPurl(service="NameService", host=host,
                 port = port if port else 2809)
         urlGepettoGui = _getIIOPurl(service="gepetto-gui", host=host,
                 port = port if port else 12321)
         try:
-            self.initWithDirectLink (urlGepettoGui)
+            self.gui = _initWithDirectLink (self.orb, urlGepettoGui)
         except CorbaError as e:
             print(e)
             pass
         if self.gui is None:
-            self.initWithNameService (urlNameService)
+            self.gui = _initWithNameService (self.orb, urlNameService)
 
     # In the python interpreter of gepetto-gui, gui.createWindow
     # crashes for an obscure reason. This hack makes it work.
@@ -100,6 +59,76 @@ class Client:
     except ImportError:
       # At this point, we are NOT in the python interpreter of gepetto-gui
       pass
+
+def gui_client(window_name = None, dont_raise = False, url = None, host = None, port = None):
+  """
+  Initialize CORBA and create default clients.
+  :param window_name: If provided, creates a window with this name if it does not exist.
+  :param dont_raise: If True, will not raise if connection failed. It returns None instead.
+  :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
+              For a remote corba server, use
+              url = "corbaloc:iiop:<host>:<port>/NameService".
+              If None, url is initialized with param host, or alternatively with _getIIOPurl
+  :param host: if not None, url is set to = "corbaloc:iiop:" + str(host) + "/NameService"
+
+  :return: a client to the GUI.
+  """
+  try:
+    gui = Client(url, host, port).gui
+  except Exception as e:
+    if not dont_raise:
+      raise e
+    else:
+      print("Failed to connect to the viewer.")
+      print("Check whether gepetto-gui is properly started.")
+    return
+  if window_name is not None:
+    if window_name in gui.getWindowList():
+      window_id = gui.getWindowID(window_name)
+    else:
+      window_id = gui.createWindow(window_name)
+    #TODO Should we return the window ID ?
+    # I think it is useless at it is almost never used.
+  return gui
+
+def _initWithNameService (orb, urlNameService):
+  import CosNaming
+  from .gepetto.corbaserver import GraphicalInterface
+
+  obj = orb.string_to_object (urlNameService)
+  rootContext = obj._narrow(CosNaming.NamingContext)
+  if rootContext is None:
+    raise CorbaError ('Failed to narrow the root context')
+
+  name = [CosNaming.NameComponent ("gepetto", "viewer"),
+          CosNaming.NameComponent ("corbaserver", "gui")]
+
+  try:
+    obj = rootContext.resolve (name)
+  except CosNaming.NamingContext.NotFound:
+    raise CorbaError ('Failed to find the service "gui"')
+
+  try:
+    client = obj._narrow (GraphicalInterface)
+  except KeyError:
+    raise CorbaError ('Invalid service name "gui"')
+
+  if client is None:
+    # This happens when stubs from client and server are not synchronized.
+    raise CorbaError ( 'Failed to narrow client for service named "gui"')
+
+  return client
+
+def _initWithDirectLink (orb, url):
+  from .gepetto.corbaserver import GraphicalInterface
+  obj = orb.string_to_object (url)
+  client = obj._narrow(GraphicalInterface)
+
+  if client is None:
+    # This happens when stubs from client and server are not synchronized.
+    raise CorbaError ( 'Failed to narrow client for service named "gui"')
+
+  return client
 
 def _getIIOPurl (service="NameService", host=None, port=None):
   """
