@@ -83,12 +83,7 @@ def gui_client(window_name = None, dont_raise = False, url = None, host = None, 
       print("Check whether gepetto-gui is properly started.")
     return
   if window_name is not None:
-    if window_name in gui.getWindowList():
-      window_id = gui.getWindowID(window_name)
-    else:
-      window_id = gui.createWindow(window_name)
-    #TODO Should we return the window ID ?
-    # I think it is useless at it is almost never used.
+    gui.createWindow(window_name)
   return gui
 
 def _initWithNameService (orb, urlNameService):
