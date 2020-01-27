@@ -162,6 +162,10 @@ class Vector6:
     ## - Vector6.linF
     ## - Vector6.angF
     ## \param groupName name of an **existing** group
+    ## \param angFactor the norm of the angular part of the vector is divided by
+    ##        this value
+    ## \param linFactor the norm of the linear part of the vector is divided by
+    ##        this value
     def __init__ (self, groupName, angFactor = pi, linFactor = 1.):
         self.name = groupName
         ## The Linear part

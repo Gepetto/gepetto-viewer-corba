@@ -8,12 +8,12 @@
 //
 // See the COPYING file for more information.
 
+#include "server-private.hh"
+
 #include <iostream>
 #include <stdexcept>
 
 #include "graphical-interface.impl.hh"
-#include "server-private.hh"
-#include "gepetto/viewer/corba/fwd.hh"
 
 namespace gepetto {
   namespace viewer {
@@ -33,7 +33,8 @@ namespace gepetto {
 
       Server::~Server ()
       {
-	delete graphicalInterfaceServantid_;
+        //TODO for a reason I do not understand, this SEGV.
+	//delete graphicalInterfaceServantid_;
       }
 
       void
@@ -44,7 +45,8 @@ namespace gepetto {
 
       void Server::deactivateAndDestroyServers()
       {
-	  poa_->deactivate_object(*graphicalInterfaceServantid_);
+        //TODO for a reason I do not understand, this SEGV.
+        //poa_->deactivate_object(*graphicalInterfaceServantid_);
       }
 
       void Server::createContext ()

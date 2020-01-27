@@ -16,7 +16,7 @@
 
 #include "omniorbthread.hh"
 
-#include <gepetto/viewer/corba/server.hh>
+#include "../../src/server.hh"
 #include <QDebug>
 
 #include <gepetto/gui/mainwindow.hh>

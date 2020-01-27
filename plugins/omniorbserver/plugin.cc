@@ -18,12 +18,14 @@
 
 #include <plugin.hh>
 
+#include <omniORB4/CORBA.h>
+
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/settings.hh>
 #include <gepetto/gui/safeapplication.hh>
-#include <gepetto/viewer/corba/server.hh>
 
 #include <omniorbthread.hh>
+#include "../../src/server.hh"
 
 using namespace gepetto::gui;
 

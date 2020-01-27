@@ -11,7 +11,7 @@
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_HH
 # define SCENEVIEWER_CORBASERVER_SERVER_HH
 
-#include "gepetto/viewer/corba/fwd.hh"
+#include <gepetto/viewer/corba/config.hh>
 #include <gepetto/gui/windows-manager.hh>
 
 class QObject;
@@ -22,35 +22,26 @@ namespace gepetto {
     using gepetto::gui::WindowsManager;
     using gepetto::gui::WindowsManagerPtr_t;
 
-    /// Implementation of Hpp module Corba server.
+    // Foward declarations
+    namespace impl
+    {
+      class Server;
+      class GraphicalInterface;
+    } // end of namespace impl
 
-    ///  This class initializes the Corba server and starts the following Corba interface implementations.
-    ///  \li hpp::Robot: to build a model::Device and to insert it in a core::ProblemSolver object,
-    ///  \li hpp::Obstacle: to build obstacles and insert them in a core::ProblemSolver object,
-    ///  \li hpp::Problem: to define a path planning problem and solve it.
-
-    ///  To use this object, call the constructor
-
-    ///  \code
-    ///  int argc=1;
-    ///  char *argv[1] = {"program"};
-    ///  core::ProblemSolverPtr_t problemSolver = new core::ProblemSolver;
-    ///  Server server(problemSolver, argc, argv, isMultiThread);
-    ///  \endcode
-    ///  where \c isMultiThread specifies whether the server should process
-    ///  requests using multi-thread policy of not.
-
-    ///  After starting a name server and configuring your Corba implementation,
-    ///  start the servers.
-    ///  \code
-    ///  server.startCorbaServer();
-    ///  \endcode
-    ///  Then, enter in the loop that handle the Corba requests
-    ///  \code
-    ///  server.processRequest(true);
-    ///  \endcode
-    ///  You can then send request to the servers.
-    class /*SCENEVIEWER_CORBASERVER_DLLAPI*/ Server
+    /// Implementation of Gepetto Viewer Corba server.
+    ///
+    /// To use this object, call the constructor
+    /// \code
+    /// int argc=1;
+    /// char *argv[1] = {"program"};
+    /// Server server(windowsManager, argc, argv);
+    /// server.startCorbaServer();
+    /// // The next line will run indefinitely.
+    /// server.processRequest(true);
+    /// \endcode
+    /// You can then send request to the servers.
+    class GEPETTO_VIEWER_CORBA_DLLAPI Server
     {
     public:
       /// Constructor

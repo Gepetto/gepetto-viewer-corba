@@ -1,13 +1,9 @@
-FILE_PATTERNS   = *.idl *.hh *.py *.idl *.dox
+FILE_PATTERNS   = *.idl *.hh *.py *.idl
 
 INPUT           = @CMAKE_SOURCE_DIR@/include    \
                   @CMAKE_SOURCE_DIR@/idl        \
                   @CMAKE_SOURCE_DIR@/plugins    \
-                  @CMAKE_SOURCE_DIR@/pyplugins  \
                   @CMAKE_SOURCE_DIR@/src/gepetto\
                   @CMAKE_SOURCE_DIR@/doc
 
 EXAMPLE_PATH    = @CMAKE_SOURCE_DIR@/examples
-LAYOUT_FILE     = @CMAKE_SOURCE_DIR@/doc/layout.xml
-
-TAGFILES        += @QT_TAGFILES@
