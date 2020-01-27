@@ -97,9 +97,7 @@ IF(NOT CLIENT_ONLY)
   # }}}
 
   # {{{ Set list of headers
-  SET (${PROJECT_NAME}_HEADERS
-    ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/server.hh
-    ${CMAKE_SOURCE_DIR}/include/gepetto/viewer/corba/fwd.hh
+  LIST(APPEND ${PROJECT_NAME}_HEADERS
     ${CMAKE_SOURCE_DIR}/include/gepetto/gui/omniorb/url.hh
     )
   # }}}

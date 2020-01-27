@@ -8,12 +8,12 @@
 //
 // See the COPYING file for more information.
 
+#include "server-private.hh"
+
 #include <iostream>
 #include <stdexcept>
 
 #include "graphical-interface.impl.hh"
-#include "server-private.hh"
-#include "gepetto/viewer/corba/fwd.hh"
 
 namespace gepetto {
   namespace viewer {

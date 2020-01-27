@@ -11,7 +11,7 @@
 
 #include <omniORB4/CORBA.h>
 
-#include "gepetto/viewer/corba/server.hh"
+#include "server.hh"
 #include "gepetto/viewer/corba/graphical-interface.hh"
 
 namespace gepetto {

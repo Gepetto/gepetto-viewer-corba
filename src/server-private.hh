@@ -11,8 +11,9 @@
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 # define SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 
+# include <omniORB4/CORBA.h>
+
 # include "graphical-interface.impl.hh"
-# include "gepetto/viewer/corba/fwd.hh"
 
 namespace gepetto {
   namespace viewer {

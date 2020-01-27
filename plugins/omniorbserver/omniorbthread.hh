@@ -25,7 +25,7 @@
 #include <QElapsedTimer>
 
 #include "gepetto/gui/fwd.hh"
-#include "gepetto/viewer/corba/fwd.hh"
+#include "../../src/server.hh"
 
 class ViewerServerProcess : public QThread
 {

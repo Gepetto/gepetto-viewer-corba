@@ -12,6 +12,13 @@ namespace gepetto {
   namespace viewer {
   namespace corba {
     namespace impl {
+        using CORBA::Boolean;
+        using CORBA::Double;
+        using CORBA::Short;
+        using CORBA::SystemException;
+        using CORBA::ULong;
+        using CORBA::UShort;
+
         template <typename Input, typename Output>
           void to (const Input& in, Output& out) {
             for (CORBA::ULong i = 0; i < in.length(); ++i)
