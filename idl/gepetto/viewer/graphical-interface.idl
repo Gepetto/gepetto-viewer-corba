@@ -46,34 +46,37 @@ typedef sequence<Transform> TransformSeq;
     /// \anchor idl_windows_and_scenes
     /// \{
 
-    /// Create a new window.
-    /// \param input name : name of the new window.
-    /// return the ID of the newly create window.
+    /// Create a new window if it does not already exists.
+    /// \param name : name of the new window.
+    /// return the value provided as input argument.
     WindowID createWindow(in string name) raises (Error);
+
+    /// \deprecated Line `windowId = gui.getWindowID(name)` can be replaced
+    ///             by `windowId = name`.
     WindowID getWindowID (in string name) raises (Error);
     
     /// change the background color1
-    /// \param input wid : ID of the window
-    /// \param input RGBAcolor : desired color
+    /// \param wid : ID of the window
+    /// \param RGBAcolor : desired color
     boolean setBackgroundColor1(in WindowID wid,in Color RGBAcolor);
     
     /// change the background color2
-    /// \param input wid : ID of the window
-    /// \param input RGBAcolor : desired color
+    /// \param wid : ID of the window
+    /// \param RGBAcolor : desired color
     boolean setBackgroundColor2(in WindowID wid,in Color RGBAcolor);
 
     /// Create a group node.
-    /// \param input sceneName : name of the group.
+    /// \param sceneName : name of the group.
     void createScene(in string sceneName) raises (Error);
 
     /// Create a group node and a GroudNode ("sceneName/floor") as child
-    /// \param input sceneName : name of the group
+    /// \param sceneName : name of the group
     void createSceneWithFloor(in string sceneName) raises (Error);
 
     /// Add groupNode sceneName to the WindowManager windowName so
     /// sceneName and all its children will be displayed in the window windowName.
-    /// \param input sceneName : name of the groupNode.
-    /// \param input wid : ID of rhe window.
+    /// \param sceneName : name of the groupNode.
+    /// \param wid : ID of rhe window.
     boolean addSceneToWindow(in string sceneName, in WindowID wid) raises (Error);
 
     /// \}
@@ -83,122 +86,114 @@ typedef sequence<Transform> TransformSeq;
     /// \{
 
     /// create a floor called floorName.
-    /// \param input floorName : name of the floor.
+    /// \param floorName : name of the floor.
     boolean addFloor(in string floorName) raises (Error);
 
     /// create a box called boxName.
-    /// \param input boxName : name of the box.
-    /// \param input boxSize1 : lenght of the box (x axis).
-    /// \param input boxSize2 : lenght of the box (y axis).
-    /// \param input boxSize3 : lenght of the box (z axis).
-    /// \param input RGBAcolor : Color of the box.
+    /// \param boxName : name of the box.
+    /// \param boxSize1 : lenght of the box (x axis).
+    /// \param boxSize2 : lenght of the box (y axis).
+    /// \param boxSize3 : lenght of the box (z axis).
+    /// \param RGBAcolor : Color of the box.
     boolean addBox(in string boxName, in float boxSize1, in float boxSize2, in float boxSize3, in Color RGBAcolor) raises (Error);
 
     /// create a box called CapsuleName.
-    /// \param input CapsuleName : name of the capsule.
-    /// \param input radius : radius of the capsule.
-    /// \param input height : lenght of the segment that generates the capsule.
-    /// \param input RGBAcolor : Color of the capsule.
-    boolean addCapsule(in string capsuleName, in float radius, in float height, in Color RGBAcolorid) raises (Error);
+    /// \param name : name of the capsule.
+    /// \param radius : radius of the capsule.
+    /// \param height : lenght of the segment that generates the capsule.
+    /// \param RGBAcolor : Color of the capsule.
+    boolean addCapsule(in string name, in float radius, in float height, in Color RGBAcolor) raises (Error);
 
 
     /// create a box called CapsuleName.
-    /// \param input CapsuleName : name of the arrow.
-    /// \param input radius : radius of the arrow
-    /// \param input length : lenght of the arrow 
-    /// \param input RGBAcolor : Color of the capsule.
-    boolean addArrow(in string arrowName, in float radius, in float length, in Color RGBAcolorid) raises (Error);
+    /// \param name : name of the arrow.
+    /// \param radius : radius of the arrow
+    /// \param length : lenght of the arrow 
+    /// \param RGBAcolor : Color of the capsule.
+    boolean addArrow(in string name, in float radius, in float length, in Color RGBAcolor) raises (Error);
 
-    boolean addRod(in string rodName, in Color RGBAcolorid, in float radius, in float totalLength,in short maxCapsule) raises (Error);
+    boolean addRod(in string rodName, in Color RGBAcolor, in float radius, in float totalLength,in short maxCapsule) raises (Error);
     
     /// resize the capsule CapsuleName.
-    /// \param input CapsuleName : name of the capsule.
-    /// \param input height : lenght of the segment that generates the capsule.
+    /// \param CapsuleName : name of the capsule.
+    /// \param height : lenght of the segment that generates the capsule.
     boolean resizeCapsule(in string capsuleName,in float height) raises (Error);
 
     boolean resizeArrow(in string capsuleName,in float radius, in float length) raises (Error);
 
     /// create a node to display a mesh (works for .dae, .obj and some other formats)
-    /// \param input meshName : name of the new meshNode.
-    /// \param input meshPath : full path to the mesh file.
+    /// \param meshName : name of the new meshNode.
+    /// \param meshPath : full path to the mesh file.
     boolean addMesh(in string meshName, in string meshPath) raises (Error);
 
     /// Remove light sources from mesh
-    /// \param input meshName : name of the new meshNode.
+    /// \param meshName : name of the new meshNode.
     void removeLightSources(in string meshName) raises (Error);
 
-    /// create a node to display a mesh (works for .dae, .obj and some other formats)
-    /// \param input meshName : name of the new meshNode.
-    /// \param input meshPath : full path to the mesh file.
-    boolean addCone(in string coneName, in float radius, in float height, in Color RGBAcolor) raises (Error);
+    /// create a Cone
+    boolean addCone(in string name, in float radius, in float height, in Color RGBAcolor) raises (Error);
 
-    /// create a Cyllinder called cylinderName
-    /// \param input cylinderName : name of the cylinder.
-    /// \param input radius : radius of the cylinder.
-    /// \param input height : lenght of the cylinder.
-    /// \param input RGBAcolor : color of the cylinder.
+    /// create a Cylinder
     boolean addCylinder(in string cylinderName, in float radius, in float height, in Color RGBAcolor) raises (Error);
 
-    /// create a sphere called sphereName
-    /// \param input sphereName : name of the sphere.
-    /// \param input radius : radius of the sphere.
-    /// \param input RGBAcolor : color of the sphere.
+    /// create a Sphere
     boolean addSphere(in string sphereName, in float radius, in Color RGBAcolor) raises (Error);
 
-    /// create a light called lightName
-    /// \param input lightName : name of the light.
-    /// \param input radius : radius of the bulb showing the light.
-    /// \param input RGBAcolor : color of the light.
+    /// create a light
+    /// \param lightName : name of the light.
+    /// \param wid : ID of the window.
+    /// \param radius : radius of the bulb showing the light.
+    /// \param RGBAcolor : color of the light.
     boolean addLight(in string lightName, in WindowID wid, in float radius, in Color RGBAcolor) raises (Error);
 
     /// create a line called lineName.
-    /// \param input lineName : name of the line.
-    /// \param input pos1 : position one extremity of the line.
-    /// \param input pos2 : position the other extremity of the line.
-    /// \param input RGBAcolor : color of the line.
+    /// \param lineName : name of the line.
+    /// \param pos1 : position one extremity of the line.
+    /// \param pos2 : position the other extremity of the line.
+    /// \param RGBAcolor : color of the line.
     boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) raises (Error);
     
     /// change starting point position of a line.
-    /// \param input lineName : name of the line.
-    /// \param input pos1 : position of the first extremity of the line.
+    /// \param lineName : name of the line.
+    /// \param pos1 : position of the first extremity of the line.
     boolean setLineStartPoint(in string lineName, in Position pos1) raises (Error);
 
     /// change terminal point position of a line.
-    /// \param input lineName : name of the line.
-    /// \param input pos2 : position of the second extremity of the line.
+    /// \param lineName : name of the line.
+    /// \param pos2 : position of the second extremity of the line.
     boolean setLineEndPoint(in string lineName, in Position pos2) raises (Error);
     
     /// change extremity positions of a line.
-    /// \param input lineName : name of the line.
-    /// \param input pos1 : position one extremity of the line.
-    /// \param input pos2 : position of the second extremity of the line.
+    /// \param lineName : name of the line.
+    /// \param pos1 : position one extremity of the line.
+    /// \param pos2 : position of the second extremity of the line.
     boolean setLineExtremalPoints(in string lineName, in Position pos1, in Position pos2) raises (Error);
     
     /// create a curve called curveName.
     /// The curve is the graph of the piecewise linear interpolation between each consecutive pos.
-    /// \param input lineName : name of the line.
-    /// \param input pos : waypoints of the curve.
-    /// \param input RGBAcolor : color of the line.
-    boolean addCurve(in string curveName, in PositionSeq pos, in Color RGBAcolor) raises (Error);
+    /// \param name : name of the line.
+    /// \param pos : waypoints of the curve.
+    /// \param RGBAcolor : color of the line.
+    boolean addCurve(in string name, in PositionSeq pos, in Color RGBAcolor) raises (Error);
     
     /// set points of a curve called curveName.
-    /// \param input lineName : name of the line.
-    /// \param input pos : waypoints of the curve.
-    boolean setCurvePoints(in string curveName, in PositionSeq pos) raises (Error);
+    /// \param name : name of the line.
+    /// \param pos : waypoints of the curve.
+    boolean setCurvePoints(in string name, in PositionSeq pos) raises (Error);
 
     /// \param mode The list of possible GL modes is provided in
     ///             gepetto::viewer::WindowsManager::setCurveMode.
     ///             From the GL modes, remove "GL_" and put it lower case.
-    boolean setCurveMode (in string curveName, in string mode) raises (Error);
+    boolean setCurveMode (in string name, in string mode) raises (Error);
 
     boolean setCurvePointsSubset (in string curveName, in long first, in long count) raises (Error);
 
     boolean setCurveLineWidth (in string curveName, in float width) raises (Error);
 
     /// create a four vertices face called faceName.
-    /// \param input faceName : name of the face.
-    /// \param input pos1, pos2, pos3, pos4 : position of the vertices.
-    /// \param input RGBAcolor : color of the face.
+    /// \param faceName : name of the face.
+    /// \param pos1, pos2, pos3, pos4 : position of the vertices.
+    /// \param RGBAcolor : color of the face.
     boolean addSquareFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Position pos4, in Color RGBAcolor) raises (Error);
 
     /// Set a texture to a face
@@ -208,37 +203,37 @@ typedef sequence<Transform> TransformSeq;
     boolean setTexture (in string nodeName, in string filename) raises (Error);
 
     /// create a three vertices face called faceName.
-    /// \param input faceName : name of the face.
-    /// \param input pos1, pos2, pos3 : position of the vertices.
-    /// \param input RGBAcolor : color of the face.
+    /// \param faceName : name of the face.
+    /// \param pos1, pos2, pos3 : position of the vertices.
+    /// \param RGBAcolor : color of the face.
     boolean addTriangleFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Color RGBAcolor) raises (Error);
 
 
 		// Add a sphere with xyz axis
 		// The colors are x=red, y=green, z=blue (xyz=RGB)
-		// \param input nodeName : name of the node
-		// \param input RGBAcolor : color of the sphere
-		// \param input radius : radius of the sphere
-		// \param input sizeAxis : size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
+		// \param nodeName : name of the node
+		// \param RGBAcolor : color of the sphere
+		// \param radius : radius of the sphere
+		// \param sizeAxis : size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
 		boolean addXYZaxis(in string nodeName, in Color RGBAcolor,in float radius,in float sizeAxis) raises(Error);
 
 		// Add an empty roadmap to the scene
-	  // \param input nameCorba : name of the roadmap
-	  // \param input RGBAcolorNode : color of the sphere
-	  // \param input radius : radius of the sphere
-	  // \param input sizeAxis :size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
-	  // \param input RGBAcolorEdge : color of the edges
+	  // \param nameCorba : name of the roadmap
+	  // \param RGBAcolorNode : color of the sphere
+	  // \param radius : radius of the sphere
+	  // \param sizeAxis :size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
+	  // \param RGBAcolorEdge : color of the edges
     boolean createRoadmap(in string nameCorba,in Color RGBAcolorNode, in float radius, in float sizeAxis, in Color RGBAcolorEdge) raises(Error);
 
 		// Add an edge to the roadmap
-	  // \param input nameRoadmap : name of the roadmap
-	  // \param input posFrom : position of the beginning of the edge
-	  // \param input posTo : position of the end of the edge (not oriented edge, order doesn't matter)
+	  // \param nameRoadmap : name of the roadmap
+	  // \param posFrom : position of the beginning of the edge
+	  // \param posTo : position of the end of the edge (not oriented edge, order doesn't matter)
     boolean addEdgeToRoadmap(in string nameRoadmap, in Position posFrom, in Position posTo)raises(Error);
 
 		// Add a node to the roadmap
-	  // \param input nameRoadmap : name of the roadmap
-	  // \param input configuration : configuration of the node 
+	  // \param nameRoadmap : name of the roadmap
+	  // \param configuration : configuration of the node 
     boolean addNodeToRoadmap(in string nameRoadmap, in Transform configuration)raises(Error);
 
     /// Create a node from an urdf file
@@ -282,7 +277,7 @@ typedef sequence<Transform> TransformSeq;
       raises (Error);
 
     /// create a groupNode called groupName
-    /// \param input groupName : name of the group.
+    /// \param groupName : name of the group.
     boolean createGroup(in string groupName) raises (Error);
 
     /// \}
@@ -300,15 +295,11 @@ typedef sequence<Transform> TransformSeq;
     ///        are deleted recursively.
     void deleteNode (in string nodeName, in boolean all) raises (Error);
 
-    /// Print names of nodes on the SceneViewer-corbaserver terminal
-    /// and return them in an array
-    /// \return the list of node names contained in the scene
+    /// Returns the name of all the nodes.
     Names_t getNodeList() raises (Error);
 
-    /// Print names of a group nodes on the SceneViewer-corbaserver terminal
-    /// and return them in an array
-    /// \param input name : name of the new window.
-    /// \return the list of node names contained in the group
+    /// Returns the name of the Group nodes contained in a group
+    /// \param group : name of the group.
     Names_t getGroupNodeList(in string group) raises (Error);
 
     /// Get the list of group (i.e. scene) nodes
@@ -318,13 +309,13 @@ typedef sequence<Transform> TransformSeq;
     Names_t getWindowList() raises (Error);
 
     /// set a node as child to a group node.
-    /// \param input nodeName : name of the child node.
-    /// \param input groupName : name of the mother node (=group node).
+    /// \param nodeName : name of the child node.
+    /// \param groupName : name of the mother node (=group node).
     boolean addToGroup(in string nodeName, in string groupName) raises (Error);
 
     /// remove the node from the child list of a group node.
-    /// \param input nodeName : name of the child node.
-    /// \param input groupName : name of the mother node (=group node).
+    /// \param nodeName : name of the child node.
+    /// \param groupName : name of the mother node (=group node).
     boolean removeFromGroup(in string nodeName, in string groupName) raises (Error);
 
     /// \}
@@ -334,8 +325,8 @@ typedef sequence<Transform> TransformSeq;
     /// \{
 
     /// Set a new configuration to a node. THIS CONFIGURATION WILL AFFECTIVE ONLY AFTER CALLING REFRESH FUNCTION!!!
-    /// \param input nodeName : name of the node.
-    /// \param input configuration : Float[7] new configuration.
+    /// \param nodeName : name of the node.
+    /// \param configuration : Float[7] new configuration.
     boolean applyConfiguration(in string nodeName, in Transform configuration) raises (Error);
 
     /// Same as \ref applyConfiguration on a list of node name and configuration.
@@ -351,7 +342,7 @@ typedef sequence<Transform> TransformSeq;
     void setRefreshIsSynchronous (in boolean synchonous) raises (Error);
     
     /// Return the Position + Quaternion orientation of an object in the global frame
-    /// \param input nodeName : name of the node.
+    /// \param nodeName : name of the node.
     /// \return a length 7 array
     Transform getNodeGlobalTransform(in string nodeName) raises (Error);
 
@@ -363,51 +354,51 @@ typedef sequence<Transform> TransformSeq;
 
     /// Add Landmark at the center of a node
     /// The colors are x=red, y=green, z=blue (xyz=RGB).
-    /// \param input nodeName : name of the node
-    /// \param input size : lenght of axises.
+    /// \param nodeName : name of the node
+    /// \param size : lenght of axises.
     boolean addLandmark(in string nodeName, in float size) raises (Error);
 
     /// delete Landmark of a node.
-    /// \param input nodeName : name of the node
+    /// \param nodeName : name of the node
     boolean deleteLandmark(in string nodeName) raises (Error);
 
     /// get the static transform of the node
-    /// \param input nodeName : name of the node
+    /// \param nodeName : name of the node
     Transform getStaticTransform(in string nodeName) raises (Error);
     
     /// set the static transform of the node
-    /// \param input nodeName : name of the node
-    /// \param input configuration : static configuration of the node
+    /// \param nodeName : name of the node
+    /// \param configuration : static configuration of the node
     boolean setStaticTransform(in string nodeName, in Transform configuration) raises (Error);
 
     /// Change the visibility of a node. If this node is a group node, visibility mode will be apply to all children.
-    /// \param input nodeName : name of the node.
-    /// \param input visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
+    /// \param nodeName : name of the node.
+    /// \param visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
     boolean setVisibility(in string nodeName, in string visibilityMode) raises (Error);
     
-       /// Change the scale of a node. 
-    /// \param input nodeName : name of the node.
-    /// \param input scale : new scale  
+    /// Change the scale of a node.
+    /// \param nodeName : name of the node.
+    /// \param scale : new scale
     boolean setScale(in string nodeName, in Position scale) raises (Error);
     
-    /// Change the color of a node. 
-    /// \param input nodeName : name of the node.
-    /// \param input color : new color
+    /// Change the color of a node.
+    /// \param nodeName : name of the node.
+    /// \param color : new color
     boolean setColor(in string nodeName, in Color scale) raises (Error);
 
     /// Change wireframe mode of a node. If this node is a group node, wireframe mode will be apply to all children.
-    /// \param input nodeName : name of the node.
-    /// \param input wireframeMode : wiredframe mode can be "FILL", "WIREFRAME" or "FILL_AND_WIREFRAME".
+    /// \param nodeName : name of the node.
+    /// \param wireframeMode : wiredframe mode can be "FILL", "WIREFRAME" or "FILL_AND_WIREFRAME".
     boolean setWireFrameMode(in string nodeName, in string wireFrameMode) raises (Error);
 
     /// Change lighting mode of a node. If this node is a group node, lighting mode will be apply to all children.
-    /// \param input nodeName : name of the node.
-    /// \param input lightingMode : lighting mode can be "ON" or "OFF".
+    /// \param nodeName : name of the node.
+    /// \param lightingMode : lighting mode can be "ON" or "OFF".
     boolean setLightingMode(in string nodeName, in string lightingMode) raises (Error);
 
     /// Change the highlight status
-    /// \param input nodeName : name of the node.
-    /// \param input state : 0 for off, 1 or 2 for other things.
+    /// \param nodeName : name of the node.
+    /// \param state : 0 for off, 1 or 2 for other things.
     boolean setHighlight (in string nodeName, in long state) raises (Error);
 
     Names_t getPropertyNames(in string nodeName) raises (Error);
@@ -439,7 +430,7 @@ typedef sequence<Transform> TransformSeq;
 
     /// \name Export of scenes to images or to blender
     /// \anchor idl_export_of_scenes_to_images_or_to_blender
-    /// See \ref gepetto.gui.Plugin
+    /// See \ref gepetto.gui.blenderexport.Plugin
     /// \{
 
     void captureFrame (in WindowID wid, in string imageFilename) raises (Error);
@@ -447,7 +438,7 @@ typedef sequence<Transform> TransformSeq;
     /// Start capturing a window into image files.
     /// \param wid the ID of the window
     /// \param filename, extension image files will be
-    /// '<filename>_<sequence_number>.<extension>'
+    /// `<filename>_<sequence_number>.<extension>`
     ///
     /// To make a movie from the sequence of images, you can run:
     /// \code{.sh}
@@ -497,28 +488,28 @@ typedef sequence<Transform> TransformSeq;
     /// Attach the camera to the Node nodeName in the WindowManager
     /// pointed by wid
     /// If already attached, detach from the other node
-    /// \param input nodeName : name of the node
-    /// \param input wid : ID of the window
+    /// \param nodeName : name of the node
+    /// \param wid : ID of the window
     boolean attachCameraToNode(in string nodeName, in WindowID wid) raises (Error);
 
     /// Detach the camera of WindowManager pointed by wid
     /// from any node
-    /// \param input wid : ID of the window
+    /// \param wid : ID of the window
     boolean detachCamera(in WindowID wid) raises (Error);
 
     /// get the matrix transform of the current position of the camera
     /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
     /// axis are: X -> right, Y -> up, Z -> behind
     /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
-    /// \param input wid : ID of the window
+    /// \param wid : ID of the window
     Transform getCameraTransform(in WindowID wid) raises (Error);
 
     /// set the matrix transform of the current camera
     /// Camera frame convention (OpenSceneGraph): looking through the optic axis as a photographer,
     /// axis are: X -> right, Y -> up, Z -> behind
     /// It corresponds to Hartley and Zisserman's frame convention with a 180° rotation around the Y axis
-    /// \param input wid : ID of the window
-    /// \param input configuration : the desired configuration of the camera
+    /// \param wid : ID of the window
+    /// \param configuration : the desired configuration of the camera
     boolean setCameraTransform(in WindowID wid, in Transform configuration) raises (Error);
 
     // register a Node callback
