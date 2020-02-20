@@ -10,8 +10,8 @@
 
 int main(int, const char **)
 {
-    graphics::corbaServer::Client client (0, NULL);
-    client.connect ();
+    gepetto::viewer::corba::Client client (0, NULL);
+    client.connect ("corbaloc:iiop:localhost:12321");
 
     float white[4] = {1.,1.,1.,1.};
     client.gui()->createWindow("window1");

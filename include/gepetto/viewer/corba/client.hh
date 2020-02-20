@@ -26,13 +26,16 @@ namespace corba {
 
       ~Client ();
 
-      void connect (const char* iiop = "corbaloc:rir:/NameService");
+      void connect (const std::string& iiop = "corbaloc:iiop:");
 
       gepetto::corbaserver::GraphicalInterface_var& gui () {
         return gui_;
       }
 
     private:
+      bool createFromDirectLink(const std::string& iiop);
+      bool createFromNameService(const std::string& iiop);
+
       corbaserver::GraphicalInterface_var gui_;
 
       CORBA::ORB_var orb_;

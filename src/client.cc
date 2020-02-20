@@ -33,14 +33,25 @@ namespace gepetto {
     {
     }
 
-    void Client::connect (const char* iiop)
+    bool Client::createFromDirectLink (const std::string& iiop)
     {
-      // Get a reference to the Naming Service
-      CORBA::Object_var rootContextObj = orb_->string_to_object(iiop);
-      CosNaming::NamingContext_var nc =
-        CosNaming::NamingContext::_narrow(rootContextObj.in());
+      std::string url = iiop + "/gepetto-gui";
 
-      // Bind robotObj with name Robot to the hppContext:
+      CORBA::Object_var obj = orb_->string_to_object(url.c_str());
+      gui_ = gepetto::corbaserver::GraphicalInterface::_narrow(obj.in());
+      return !CORBA::is_nil(gui_);
+    }
+
+    bool Client::createFromNameService (const std::string& iiop)
+    {
+      std::string url = iiop + "/NameService";
+
+      CORBA::Object_var obj = orb_->string_to_object(url.c_str());
+      if (CORBA::is_nil(obj)) return false;
+      CosNaming::NamingContext_var nc =
+        CosNaming::NamingContext::_narrow(obj.in());
+      if (CORBA::is_nil(nc)) return false;
+
       CosNaming::Name name;
       name.length(2);
       name[0].id = (const char *) "gepetto";
@@ -51,6 +62,16 @@ namespace gepetto {
       CORBA::Object_var managerObj = nc->resolve(name);
       // Narrow the previous object to obtain the correct type
       gui_ = gepetto::corbaserver::GraphicalInterface::_narrow(managerObj.in());
+
+      return CORBA::is_nil(gui_);
+    }
+
+    void Client::connect (const std::string& iiop)
+    {
+      bool ok = createFromDirectLink(iiop);
+      if (!ok) ok = createFromNameService(iiop);
+      if (!ok) throw std::runtime_error ("Could not connect to gepetto-viewer "
+          "GUI at " + iiop);
     }
 
     /// \brief Shutdown CORBA server
