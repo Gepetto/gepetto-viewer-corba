@@ -40,6 +40,37 @@ namespace corba {
 
       CORBA::ORB_var orb_;
   };
+
+  /// Initialize the connection to the viewer.
+  /// \param dontRaise If True, will not raise if connection failed. It returns NULL instead.
+  /// \param url if NULL, url is initialized with \c host and \c port.
+  /// \param host, port if not NULL, url is set to = "corbaloc:iiop:host:port"
+  void connect (const char* windowName = NULL, bool dontRaise = false,
+      const char* url = NULL, const char* host = "localhost",
+      const int port = 12321);
+
+  /// Get a client to the GUI.
+  corbaserver::GraphicalInterface_var& gui ();
+
+  /// Tells whether the connection to the gui is ok.
+  bool connected ()
+  {
+    return !CORBA::is_nil(gui());
+  }
+
+  /// Get a client to the GUI, connecting if necessary.
+  /// \param windowName If not NULL, creates a window with this name if it does not exist.
+  /// \param dontRaise If True, will not raise if connection failed. It returns NULL instead.
+  /// \param url if NULL, url is initialized with \c host and \c port.
+  /// \param host, port if not NULL, url is set to = "corbaloc:iiop:host:port"
+  /// \return a client to the GUI.
+  corbaserver::GraphicalInterface_var& gui (const char* windowName,
+      bool dontRaise = false, const char* url = NULL,
+      const char* host = "localhost", const int port = 12321)
+  {
+    connect (windowName, dontRaise, url, host, port);
+    return gui();
+  }
 } //end of namespace corba
 } //end of namespace viewer
 } //end of namespace gepetto

@@ -17,6 +17,7 @@
 #include "gepetto/viewer/corba/client.hh"
 
 #include <iostream>
+#include <sstream>
 
 namespace gepetto {
   namespace viewer {
@@ -85,6 +86,37 @@ namespace gepetto {
           std::cout << "orb->destroy failed" << std::endl;
         }
       }
+    }
+
+    Client& _client()
+    {
+      static Client client (0, NULL);
+      return client;
+    }
+
+    void connect (const char* windowName, bool dontRaise, const char* url,
+        const char* host, const int port)
+    {
+      Client& client (_client());
+      if (CORBA::is_nil(client.gui())) {
+        try {
+          if (url)
+            client.connect (url);
+          else {
+            std::ostringstream oss;
+            oss << "corbaloc:iiop:" << (host ? host : "") << ':' << port;
+            client.connect (oss.str());
+          }
+          if (windowName) client.gui()->createWindow(windowName);
+        } catch (const std::runtime_error&) {
+          if (!dontRaise) throw;
+        }
+      }
+    }
+
+    corbaserver::GraphicalInterface_var& gui ()
+    {
+      return _client().gui();
     }
   } // end of namespace corba.
   } // end of namespace viewer.
