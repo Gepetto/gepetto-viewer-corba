@@ -71,6 +71,27 @@ namespace corba {
     connect (windowName, dontRaise, url, host, port);
     return gui();
   }
+
+#if __cplusplus >= 201103L
+  constexpr corbaserver::Color
+    white       { 1.0f,  1.0f,  1.0f, 1.0f },
+    lightWhite  { 0.9f,  0.9f,  0.9f, 1.0f },
+    green       { 0.0f,  1.0f,  0.0f, 1.0f },
+    lightGreen  { 0.0f,  0.9f,  0.0f, 1.0f },
+    yellow      { 1.0f,  1.0f,  0.0f, 1.0f },
+    lightYellow { 0.9f,  0.9f,  0.0f, 1.0f },
+    blue        { 0.0f,  0.0f,  1.0f, 1.0f },
+    lightBlue   { 0.0f,  0.0f,  0.9f, 1.0f },
+    grey        { 0.7f,  0.7f,  0.7f, 1.0f },
+    lightGrey   { 0.7f,  0.7f,  0.7f, 0.7f },
+    red         { 1.0f,  0.0f,  0.0f, 1.0f },
+    lightRed    { 0.9f,  0.0f,  0.0f, 1.0f },
+    black       { 0.0f,  0.0f,  0.0f, 1.0f },
+    lightBlack  { 0.1f,  0.1f,  0.1f, 1.0f },
+    brown       {0.85f, 0.75f, 0.15f, 1.0f },
+    lightBrown  {0.75f, 0.65f, 0.10f, 1.0f };
+#endif
+
 } //end of namespace corba
 } //end of namespace viewer
 } //end of namespace gepetto
