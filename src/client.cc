@@ -17,6 +17,7 @@
 #include "gepetto/viewer/corba/client.hh"
 
 #include <iostream>
+#include <sstream>
 
 namespace gepetto {
   namespace viewer {
@@ -33,14 +34,25 @@ namespace gepetto {
     {
     }
 
-    void Client::connect (const char* iiop)
+    bool Client::createFromDirectLink (const std::string& iiop)
     {
-      // Get a reference to the Naming Service
-      CORBA::Object_var rootContextObj = orb_->string_to_object(iiop);
-      CosNaming::NamingContext_var nc =
-        CosNaming::NamingContext::_narrow(rootContextObj.in());
+      std::string url = iiop + "/gepetto-gui";
 
-      // Bind robotObj with name Robot to the hppContext:
+      CORBA::Object_var obj = orb_->string_to_object(url.c_str());
+      gui_ = gepetto::corbaserver::GraphicalInterface::_narrow(obj.in());
+      return !CORBA::is_nil(gui_);
+    }
+
+    bool Client::createFromNameService (const std::string& iiop)
+    {
+      std::string url = iiop + "/NameService";
+
+      CORBA::Object_var obj = orb_->string_to_object(url.c_str());
+      if (CORBA::is_nil(obj)) return false;
+      CosNaming::NamingContext_var nc =
+        CosNaming::NamingContext::_narrow(obj.in());
+      if (CORBA::is_nil(nc)) return false;
+
       CosNaming::Name name;
       name.length(2);
       name[0].id = (const char *) "gepetto";
@@ -51,6 +63,16 @@ namespace gepetto {
       CORBA::Object_var managerObj = nc->resolve(name);
       // Narrow the previous object to obtain the correct type
       gui_ = gepetto::corbaserver::GraphicalInterface::_narrow(managerObj.in());
+
+      return CORBA::is_nil(gui_);
+    }
+
+    void Client::connect (const std::string& iiop)
+    {
+      bool ok = createFromDirectLink(iiop);
+      if (!ok) ok = createFromNameService(iiop);
+      if (!ok) throw std::runtime_error ("Could not connect to gepetto-viewer "
+          "GUI at " + iiop);
     }
 
     /// \brief Shutdown CORBA server
@@ -64,6 +86,37 @@ namespace gepetto {
           std::cout << "orb->destroy failed" << std::endl;
         }
       }
+    }
+
+    Client& _client()
+    {
+      static Client client (0, NULL);
+      return client;
+    }
+
+    void connect (const char* windowName, bool dontRaise, const char* url,
+        const char* host, const int port)
+    {
+      Client& client (_client());
+      if (CORBA::is_nil(client.gui())) {
+        try {
+          if (url)
+            client.connect (url);
+          else {
+            std::ostringstream oss;
+            oss << "corbaloc:iiop:" << (host ? host : "") << ':' << port;
+            client.connect (oss.str());
+          }
+          if (windowName) client.gui()->createWindow(windowName);
+        } catch (const std::runtime_error&) {
+          if (!dontRaise) throw;
+        }
+      }
+    }
+
+    corbaserver::GraphicalInterface_var& gui ()
+    {
+      return _client().gui();
     }
   } // end of namespace corba.
   } // end of namespace viewer.

@@ -46,7 +46,9 @@ FINDPYTHON()
 ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
 
 SET(${PROJECT_NAME}_HEADERS
+  include/gepetto/viewer/corba/api.hh
   include/gepetto/viewer/corba/client.hh
+  include/gepetto/viewer/corba/conversions.hh
   )
 # }}}
 

@@ -17,10 +17,13 @@
 
 SET(LIBRARY_NAME ${PROJECT_NAME})
 
-ADD_EXECUTABLE (basic-scene basic-scene.cc)
-TARGET_LINK_LIBRARIES(basic-scene ${LIBRARY_NAME})
-PKG_CONFIG_USE_DEPENDENCY(basic-scene gepetto-viewer)
+MACRO(ADD_EXAMPLE NAME SOURCE)
+    ADD_EXECUTABLE (${NAME} ${SOURCE})
+    TARGET_LINK_LIBRARIES(${NAME} ${LIBRARY_NAME})
+    PKG_CONFIG_USE_DEPENDENCY(${NAME} gepetto-viewer)
+    PKG_CONFIG_USE_DEPENDENCY(${NAME} omniORB4)
+ENDMACRO()
 
-ADD_EXECUTABLE (display-urdf display-urdf.cc)
-TARGET_LINK_LIBRARIES(display-urdf ${LIBRARY_NAME})
-PKG_CONFIG_USE_DEPENDENCY(display-urdf gepetto-viewer)
+ADD_EXAMPLE (basic-scene basic-scene.cc)
+ADD_EXAMPLE (display-urdf display-urdf.cc)
+ADD_EXAMPLE (free-functions free-functions.cc)
