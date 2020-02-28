@@ -110,6 +110,8 @@ namespace gepetto {
           if (windowName) client.gui()->createWindow(windowName);
         } catch (const std::runtime_error&) {
           if (!dontRaise) throw;
+        } catch (const CORBA::Exception&) {
+          if (!dontRaise) throw;
         }
       }
     }

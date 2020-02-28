@@ -8,14 +8,14 @@ namespace viewer {
 namespace corba {
 
 #if __cplusplus >= 201103L
-void applyConfiguration(const char* name, corbaserver::Transform&& t)
+inline void applyConfiguration(const char* name, corbaserver::Transform&& t)
 {
   if (!connected()) return;
   gui()->applyConfiguration(name, t);
 }
 #endif // __cplusplus > 201103L
 
-void refresh()
+inline void refresh()
 {
   if (!connected()) return;
   gui()->refresh();

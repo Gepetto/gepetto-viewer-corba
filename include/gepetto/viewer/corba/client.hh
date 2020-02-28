@@ -53,7 +53,7 @@ namespace corba {
   corbaserver::GraphicalInterface_var& gui ();
 
   /// Tells whether the connection to the gui is ok.
-  bool connected ()
+  inline bool connected ()
   {
     return !CORBA::is_nil(gui());
   }
@@ -64,7 +64,7 @@ namespace corba {
   /// \param url if NULL, url is initialized with \c host and \c port.
   /// \param host, port if not NULL, url is set to = "corbaloc:iiop:host:port"
   /// \return a client to the GUI.
-  corbaserver::GraphicalInterface_var& gui (const char* windowName,
+  inline corbaserver::GraphicalInterface_var& gui (const char* windowName,
       bool dontRaise = false, const char* url = NULL,
       const char* host = "localhost", const int port = 12321)
   {
