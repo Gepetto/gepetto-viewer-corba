@@ -209,13 +209,13 @@ typedef sequence<Transform> TransformSeq;
     boolean addTriangleFace(in string faceName, in Position pos1, in Position pos2, in Position pos3, in Color RGBAcolor) raises (Error);
 
 
-		// Add a sphere with xyz axis
-		// The colors are x=red, y=green, z=blue (xyz=RGB)
-		// \param nodeName : name of the node
-		// \param RGBAcolor : color of the sphere
-		// \param radius : radius of the sphere
-		// \param sizeAxis : size of the axis (proportionnaly to the sphere radius, size axis = 1 -> axis are radius*4 in length and radius/4 in radius)
-		boolean addXYZaxis(in string nodeName, in Color RGBAcolor,in float radius,in float sizeAxis) raises(Error);
+    // Add a sphere with xyz axis
+    // The colors are x=red, y=green, z=blue (xyz=RGB)
+    // \param nodeName : name of the node
+    // \param RGBAcolor : color of the sphere
+    // \param radius : radius of the sphere
+    // \param sizeAxis : size of the axis
+    boolean addXYZaxis(in string nodeName, in Color RGBAcolor,in float radius,in float sizeAxis) raises(Error);
 
 		// Add an empty roadmap to the scene
 	  // \param nameCorba : name of the roadmap
