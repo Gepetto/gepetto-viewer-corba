@@ -93,6 +93,7 @@ public:
 
   virtual bool addCurve(const char* curveName, const PositionSeq& pos, const Color color);
   virtual bool setCurvePoints(const char* curveName, const PositionSeq& pos);
+  virtual bool setCurveColors(const char* curveName, const ColorSeq& colors);
 
   virtual bool setCurveMode(const char* curveName, const char* modeName);
   virtual bool setCurvePointsSubset(const char* curveName, CORBA::Long first, CORBA::Long count);

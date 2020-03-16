@@ -47,7 +47,7 @@ namespace gepetto {
           return names;
         }
 
-        enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR,
+        enum ArgType { STRING, STRING_LIST, OUT_STRING_LIST, COLOR, COLOR_SEQ,
           TRANSFORM, TRANSFORM_SEQ, POSITION, POSITION_SEQ,
           FLOAT, SHORT, LONG, BOOL, VOID,
           GLMODE, VECTOR2, WINDOW_ID = STRING
@@ -60,6 +60,16 @@ namespace gepetto {
           typedef Color_slice* Ret_t;
           static Out_t op (In_t color) { return Out_t (color[0], color[1], color[2], color[3]); }
           static Ret_t ret (Out_t in) { Ret_t r = gepetto::corbaserver::Color_alloc(); to(in, r, 4); return r; }
+        };
+        template <> struct traits<COLOR_SEQ> {
+          typedef const ColorSeq& In_t;
+          typedef       ::osg::Vec4ArrayRefPtr           Out_t;
+          static inline Out_t op (In_t in) {
+            Out_t out = new ::osg::Vec4Array(in.length());
+            for (CORBA::ULong i = 0; i < in.length (); ++i)
+              (*out)[i] = ::osg::Vec4 (in[i][0],in[i][1],in[i][2],in[i][3]);
+            return out;
+          }
         };
         template <> struct traits<TRANSFORM> {
           typedef const Transform  In_t;
@@ -101,9 +111,9 @@ namespace gepetto {
           typedef const PositionSeq& In_t;
           typedef       ::osg::Vec3ArrayRefPtr           Out_t;
           static inline Out_t op (In_t in) {
-            Out_t out = new ::osg::Vec3Array;
+            Out_t out = new ::osg::Vec3Array(in.length());
             for (CORBA::ULong i = 0; i < in.length (); ++i)
-              out->push_back (::osg::Vec3 (in[i][0],in[i][1],in[i][2]));
+              (*out)[i] = ::osg::Vec3 (in[i][0],in[i][1],in[i][2]);
             return out;
           }
         };

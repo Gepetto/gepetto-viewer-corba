@@ -25,6 +25,7 @@ typedef string WindowID;
 typedef sequence <string> Names_t; /// Sequence of names
 typedef sequence<float> floatSeq;
 typedef sequence<Position> PositionSeq;
+typedef sequence<Color> ColorSeq;
 typedef sequence<Transform> TransformSeq;
 
   interface NodeCallback {
@@ -180,6 +181,11 @@ typedef sequence<Transform> TransformSeq;
     /// \param name : name of the line.
     /// \param pos : waypoints of the curve.
     boolean setCurvePoints(in string name, in PositionSeq pos) raises (Error);
+
+    /// set colors of a curve called curveName (there should be one color per points).
+    /// \param name : name of the line.
+    /// \param color : color of each point.
+    boolean setCurveColors(in string name, in ColorSeq pos) raises (Error);
 
     /// \param mode The list of possible GL modes is provided in
     ///             gepetto::viewer::WindowsManager::setCurveMode.
