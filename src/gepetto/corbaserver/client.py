@@ -60,11 +60,24 @@ class Client:
       # At this point, we are NOT in the python interpreter of gepetto-gui
       pass
 
-def gui_client(window_name = None, dont_raise = False, url = None, host = None, port = None):
+class _GhostGraphicalInterface:
+    def __init__ (self):
+        def nofunc(*args):
+            """Connection to the GUI failed. Docstring not available."""
+            pass
+
+        from .gepetto.corbaserver import GraphicalInterface
+        for d_func in filter(lambda x:x.startswith("_d_"), GraphicalInterface.__dict__.keys()):
+            self.__dict__[d_func[3:]] = nofunc
+
+def gui_client(window_name = None, dont_raise = False, ghost=False, url = None, host = None, port = None):
   """
   Initialize CORBA and create default clients.
   :param window_name: If provided, creates a window with this name if it does not exist.
   :param dont_raise: If True, will not raise if connection failed. It returns None instead.
+  :param ghost: If True and dont_raise is True and the connection failed, an object with
+                the same API as the client is returned. This is most useful when you don't rely
+                on values returned by the GUI.
   :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
               For a remote corba server, use
               url = "corbaloc:iiop:<host>:<port>/NameService".
@@ -81,6 +94,8 @@ def gui_client(window_name = None, dont_raise = False, url = None, host = None, 
     else:
       print("Failed to connect to the viewer.")
       print("Check whether gepetto-gui is properly started.")
+      if ghost:
+          return _GhostGraphicalInterface()
     return
   if window_name is not None:
     gui.createWindow(window_name)
