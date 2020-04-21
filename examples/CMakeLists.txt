@@ -1,5 +1,5 @@
-# Copyright (c) 2015 LAAS-CNRS
-# Author: Joseph Mirabel
+# Copyright (c) 2015, 2020 LAAS-CNRS
+# Author: Joseph Mirabel, Guilhem Saurel
 #
 # This file is part of SceneViewer-corba.
 # SceneViewer-corba is free software: you can redistribute it
@@ -20,7 +20,6 @@ SET(LIBRARY_NAME ${PROJECT_NAME})
 MACRO(ADD_EXAMPLE NAME SOURCE)
     ADD_EXECUTABLE (${NAME} ${SOURCE})
     TARGET_LINK_LIBRARIES(${NAME} ${LIBRARY_NAME})
-    PKG_CONFIG_USE_DEPENDENCY(${NAME} gepetto-viewer)
     PKG_CONFIG_USE_DEPENDENCY(${NAME} omniORB4)
 ENDMACRO()
 
