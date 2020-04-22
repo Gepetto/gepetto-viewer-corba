@@ -8,7 +8,6 @@
 * [gepetto-viewer-corba](#gepetto-viewer-corba)
   * [Setup](#setup)
   * [Dependencies](#dependencies)
-  * [Install standalone urdfdom](#install-standalone-urdfdom)
 * [gepetto-gui](#gepetto-gui)
   * [Usage](#usage)
     *  [Basic usage](#basic-usage)
@@ -60,25 +59,11 @@ have to be available on your machine.
  - Libraries:
    - omniORB4 (version >= 4.1.4)
    - openscenegraph (version >= 3.2)
-   - urdfdom (version >= 0.3.0)
    - GepettoViewer (Graphical Interface of Pinocchio and HPP)
- - Binaries:
-   - omniNames (installed by sudo apt-get install omniorb-nameserver)
  - System tools:
    - CMake (>=2.6)
    - pkg-config
    - usual compilation tools (GCC/G++, make, etc.)
-
-### Install standalone urdfdom
-
-In order to read urdf files (see http://wiki.ros.org/urdf for the description), one haves to install the urdfdom package which can come either along ROS library or be installed as a standalone library. Next section describes the second procedure.
-
-urdfdom depends on both console_bridge and urdfdom_headers. The installation of both dependencies can be done with the following command lines in a terminal :
-  - `git clone git://github.com/ros/console_bridge.git && cd console_bridge && mkdir build && cd build && cmake .. && make && sudo make install`
-  - `git clone git://github.com/ros/urdfdom_headers && cd urdfdom_headers && mkdir build && cd build && cmake .. && make && sudo make install`
-
-Finally, you just need to apply the following command line to install urdfdom library :
-  - `git clone git://github.com/ros/urdfdom && cd urdfdom && mkdir build && cd build && cmake .. && make && sudo make install`
 
 ## gepetto-gui
 ## Usage

@@ -45,4 +45,4 @@ class Color(object):
                 )
 
     def __getitem__ (self, i):
-        return self.colors[i]
+        return self.colors[i % len(self.colors)]
