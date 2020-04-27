@@ -17,6 +17,4 @@
 # gepetto-viewer-corba  If not, see
 # <http://www.gnu.org/licenses/>.
 
-INCLUDE(${GEPETTO_VIEWER_CMAKE_PLUGIN})
-
 ADD_SUBDIRECTORY(omniorbserver)

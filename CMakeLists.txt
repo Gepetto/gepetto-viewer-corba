@@ -93,7 +93,6 @@ IF(NOT CLIENT_ONLY)
 
   # For backward compatibility
   SET(PKG_CONFIG_EXTRA "${PKG_CONFIG_EXTRA}\ncmake_plugin=${GEPETTO_VIEWER_CMAKE_PLUGIN}")
-  INCLUDE(${GEPETTO_VIEWER_CMAKE_PLUGIN})
   # }}}
 
   # {{{ Set list of headers
