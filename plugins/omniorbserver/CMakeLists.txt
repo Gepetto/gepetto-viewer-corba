@@ -46,6 +46,5 @@ GEPETTO_GUI_PLUGIN(omniorbserver
 
   # List of dependencies to be given to PKG_CONFIG_USE_DEPENDENCY
   PKG_CONFIG_DEPENDENCIES
-  "gepetto-viewer"
   "omniORB4"
   )

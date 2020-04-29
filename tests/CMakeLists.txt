@@ -1,6 +1,6 @@
-# Copyright 2016 CNRS-LAAS
+# Copyright 2016, 2020 CNRS-LAAS
 #
-# Author: Joseph Mirabel
+# Authors: Joseph Mirabel, Guilhem Saurel
 #
 # This file is part of hpp-gui
 # hpp-gui is free software: you can redistribute it and/or modify
@@ -29,19 +29,12 @@ IF(PROJECT_USE_QT4)
 ENDIF(PROJECT_USE_QT4)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 
-MACRO(ADD_TESTCASE NAME GENERATED)
-  IF (${GENERATED} STREQUAL TRUE)
-    ADD_UNIT_TEST(${NAME} ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.cc)
-  ELSE()
-    ADD_UNIT_TEST(${NAME} ${NAME}.cc)
-  ENDIF()
-
-  TARGET_LINK_LIBRARIES(${NAME} ${QT_LIBRARIES})
-  PKG_CONFIG_USE_DEPENDENCY(${NAME} gepetto-viewer)
-
+MACRO(ADD_TESTCASE NAME)
+  ADD_UNIT_TEST(${NAME} ${NAME}.cc)
+  TARGET_LINK_LIBRARIES(${NAME} ${QT_LIBRARIES} gepetto-viewer::gepetto-viewer)
 ENDMACRO(ADD_TESTCASE)
 
-ADD_TESTCASE (colormap FALSE)
-# ADD_TESTCASE (osgviewerQt FALSE)
+ADD_TESTCASE(colormap)
+# ADD_TESTCASE(osgviewerQt)
 
 ADD_PYTHON_UNIT_TEST("py-trivial" "tests/trivial.py" "src")

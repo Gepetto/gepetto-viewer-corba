@@ -1,5 +1,5 @@
-# Copyright (c) 2014 CNRS
-# Author: Mathieu Geisert, Florent Lamiraux
+# Copyright (c) 2014, 2020 CNRS
+# Author: Mathieu Geisert, Florent Lamiraux, Guilhem Saurel
 #
 # This file is part of gepetto-viewer-corba.
 # gepetto-viewer-corba is free software: you can redistribute it
@@ -15,20 +15,19 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-# Requires at least CMake 2.8 to configure the package.
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 SET(PROJECT_NAME gepetto-viewer-corba)
 SET(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
 SET(PROJECT_URL "https://github.com/Gepetto/${PROJECT_NAME}")
 
+SET(PROJECT_USE_CMAKE_EXPORT TRUE)
 SET(CXX_DISABLE_WERROR true)
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/idl.cmake)
 INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/boost.cmake)
-INCLUDE(cmake/test.cmake)
 INCLUDE(cmake/apple.cmake)
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
@@ -55,10 +54,7 @@ SET(${PROJECT_NAME}_HEADERS
 # {{{ C++ server.
 IF(NOT CLIENT_ONLY)
   # {{{ Dependencies for the server.
-
-  # Tells pkg-config to read qtversion and cmake_plugin from pkg config file.
-  LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES qtversion cmake_plugin)
-  ADD_REQUIRED_DEPENDENCY("gepetto-viewer >= 4.3.0")
+  ADD_PROJECT_DEPENDENCY("gepetto-viewer" REQUIRED)
 
   # Get desired Qt version
   string(REPLACE "." ";" DESIRED_QT_VERSION_LIST ${GEPETTO_VIEWER_QTVERSION})
@@ -76,16 +72,18 @@ IF(NOT CLIENT_ONLY)
   SET(CMAKE_INCLUDE_CURRENT_DIR ON)
   IF(PROJECT_USE_QT4)
     FIND_PACKAGE(Qt4 REQUIRED QtCore QtGui QtNetwork)
-    SET(PKG_CONFIG_EXTRA "qtversion=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
+    SET(GEPETTO_VIEWER_CORBA_QTVERSION "${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}")
     INCLUDE(${QT_USE_FILE})
   ELSE(PROJECT_USE_QT4)
-    FOREACH (component "Core" "Widgets" "Gui" "Network" "Concurrent")
+      FOREACH (component "Core" "Widgets" "Gui" "Network" "Concurrent" "Xml" "OpenGL")
       FIND_PACKAGE ("Qt5${component}" REQUIRED)
       LIST(APPEND QT_INCLUDE_DIRS ${Qt5${component}_INCLUDE_DIRS})
       LIST(APPEND QT_LIBRARIES    ${Qt5${component}_LIBRARIES}   )
     ENDFOREACH (component "Core" "Widgets" "Gui" "OpenGL" "Network")
-    SET(PKG_CONFIG_EXTRA "qtversion=${Qt5Core_VERSION}")
+    SET(GEPETTO_VIEWER_CORBA_QTVERSION "${Qt5Core_VERSION}")
   ENDIF(PROJECT_USE_QT4)
+  SET(PKG_CONFIG_EXTRA "qtversion=${GEPETTO_VIEWER_CORBA_QTVERSION}")
+  SET(PACKAGE_EXTRA_MACROS "set(GEPETTO_VIEWER_CORBA_QTVERSION ${GEPETTO_VIEWER_CORBA_QTVERSION})")
 
   INCLUDE_DIRECTORIES(SYSTEM ${EIGEN3_INCLUDE_DIRS} ${QT_INCLUDE_DIRS})
   # }}}
@@ -95,7 +93,6 @@ IF(NOT CLIENT_ONLY)
 
   # For backward compatibility
   SET(PKG_CONFIG_EXTRA "${PKG_CONFIG_EXTRA}\ncmake_plugin=${GEPETTO_VIEWER_CMAKE_PLUGIN}")
-  INCLUDE(${GEPETTO_VIEWER_CMAKE_PLUGIN})
   # }}}
 
   # {{{ Set list of headers
