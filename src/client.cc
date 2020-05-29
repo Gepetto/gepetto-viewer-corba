@@ -81,9 +81,8 @@ namespace gepetto {
       if (!CORBA::is_nil(orb_)) {
         try {
           orb_->destroy();
-          std::cout << "Ending CORBA..." << std::endl;
         } catch(const CORBA::Exception& e) {
-          std::cout << "orb->destroy failed" << std::endl;
+          std::cerr << "orb->destroy failed" << std::endl;
         }
       }
     }
