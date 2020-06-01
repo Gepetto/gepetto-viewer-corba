@@ -1,8 +1,8 @@
 # CORBA server/client for the Graphical Interface of Pinocchio and HPP
 
 [![Building Status](https://travis-ci.org/gepetto/gepetto-viewer-corba.svg?branch=master)](https://travis-ci.org/gepetto/gepetto-viewer-corba)
-[![Pipeline status](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/pipeline.svg)](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/commits/master)
-[![Coverage report](https://gepgitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/gepetto/gepetto-viewer-corba/master/coverage/)
+[![Pipeline status](https://gitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/pipeline.svg)](https://gitlab.laas.fr/gepetto/gepetto-viewer-corba/commits/master)
+[![Coverage report](https://gitlab.laas.fr/gepetto/gepetto-viewer-corba/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/gepetto/gepetto-viewer-corba/master/coverage/)
 
 ## Summary
 * [gepetto-viewer-corba](#gepetto-viewer-corba)
