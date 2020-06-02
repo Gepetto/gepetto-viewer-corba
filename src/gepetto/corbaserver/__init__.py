@@ -4,6 +4,13 @@ from .gepetto import Error
 
 from .client import Client, gui_client
 
+def start_server(args=[]):
+    import os, time
+    if os.system("ps -C gepetto-gui > /dev/null") == 0:
+        return
+    os.system("gepetto-gui {} &".format(" ".join(args)))
+    time.sleep(0.5)
+
 ## Helper class
 class Color(object):
     # Define some RGBA-normalized color (osg convention)
