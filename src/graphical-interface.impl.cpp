@@ -280,6 +280,8 @@ namespace gepetto {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL,setCameraTransform,WINDOW_ID,TRANSFORM)
 
+      BIND_TO_WINDOWS_MANAGER_1(BOOL,setCameraToBestFit,WINDOW_ID)
+
       // ------------- Properties -------------------- //
 
       BIND_TO_WINDOWS_MANAGER_1(STRING_LIST,getPropertyNames,STRING)

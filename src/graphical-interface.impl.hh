@@ -158,6 +158,7 @@ public:
   virtual bool setBackgroundColor2(const char* windowId,const Color colorCorba);
   virtual Transform_slice* getCameraTransform(const char* windowId);
   virtual bool setCameraTransform(const char* windowId, const value_type *configurationCorba);
+  virtual bool setCameraToBestFit(const char* windowId);
 
   // ------------- Properties -------------------- //
   virtual Names_t* getPropertyNames(const char* nodeName);
