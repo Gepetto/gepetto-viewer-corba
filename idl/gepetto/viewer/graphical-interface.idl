@@ -518,6 +518,9 @@ typedef sequence<Transform> TransformSeq;
     /// \param configuration : the desired configuration of the camera
     boolean setCameraTransform(in WindowID wid, in Transform configuration) raises (Error);
 
+    /// Set the camera to best fit.
+    boolean setCameraToBestFit(in WindowID wid) raises (Error);
+
     // register a Node callback
     boolean registerNodeCallback (in NodeCallback cb) raises (Error);
 
