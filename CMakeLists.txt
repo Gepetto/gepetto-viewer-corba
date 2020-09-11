@@ -28,7 +28,6 @@ SET(CXX_DISABLE_WERROR true)
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/idl.cmake)
 INCLUDE(cmake/python.cmake)
-INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/apple.cmake)
 
 SET(CLIENT_ONLY FALSE CACHE BOOL "Set to true to install the client only")
