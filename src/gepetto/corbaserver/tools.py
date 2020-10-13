@@ -192,8 +192,8 @@ class Vector6:
     ## \param value  the vector to plot (list or tuple of 6 elements)
     ## \param origin the translation of the origin (list or tuple of 3 elements)
     def set (self, gui, value, origin=(0,0,0)):
-        self.linear .set (gui, value[0:3], self.linF, origin=origin)
-        self.angular.set (gui, value[3:6], self.angF, origin=origin)
+        self.linear .set (gui, value[0:3], factor=self.linF, origin=origin)
+        self.angular.set (gui, value[3:6], factor=self.angF, origin=origin)
 
 ## Plot a function of 2 arguments i.e. (x, y, f(x, y))
 # \param gui the CORBA client
