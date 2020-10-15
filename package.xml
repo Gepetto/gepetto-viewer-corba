@@ -1,18 +1,21 @@
-<?xml version='1.0'?>
- <package format='2'>
+<?xml version="1.0"?>
+ <package format="3">
  <name>gepetto-viewer-corba</name>
  <version>5.5.1</version>
  <description>Corba server for gepetto-viewer </description>
 
- <maintainer email='hpp@laas.fr'>Joseph Mirabel</maintainer>
+ <maintainer email="hpp@laas.fr">Joseph Mirabel</maintainer>
  <license>LGPL</license>
 
- <!-- <url type='website'>https://github.com/Gepetto/gepetto-viewer-corba </url> -->
+ <!-- <url type="website">https://github.com/Gepetto/gepetto-viewer-corba </url> -->
 
  <author>Joseph Mirabel</author>
  <author>Florent Lamiraux et al.</author>
 
  <buildtool_depend>catkin</buildtool_depend>
  <depend>gepetto-viewer</depend>
- <depend>omniORB4</depend>
- </package>
+ <depend>omniidl</depend>
+ <depend>omniorb</depend>
+ <depend condition="$ROS_PYTHON_VERSION == 2">python-omniorb</depend>
+ <!-- TODO: There is no python3 rosdep key for omniorb - needs to be created & upstreamed first -->
+</package>
