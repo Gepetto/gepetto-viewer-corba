@@ -105,7 +105,7 @@ class Angular:
 
 ## Helper class to plot a 3D vector as a straight arrow
 class Linear:
-    ## Constructor
+    ## Constructor
     ## \param radius the radius of the arrow.
     def __init__ (self, nodeName, color = Color.red, radius = 0.005):
         self.name = nodeName
@@ -136,8 +136,8 @@ class Linear:
 
 
 ## Helper class to plot a 6D vector with one Linear and one Angular arrow.
-## The 3 first components of the 6D vector are sent to the Linear arrow
-## and the 3 last ones are sent to the Angular arrow.
+## The 3 first components of the 6D vector are sent to the Linear arrow
+## and the 3 last ones are sent to the Angular arrow.
 ## It is useful to plot velocities of a body, forces and torques...
 ## Example usage:
 ## \code
@@ -168,9 +168,9 @@ class Vector6:
     ##        this value
     def __init__ (self, groupName, angFactor = pi, linFactor = 1.):
         self.name = groupName
-        ## The Linear part
+        ## The Linear part
         self.linear  = Linear  (self.name + '/' + Vector6.suffixLin)
-        ## The Angular part
+        ## The Angular part
         self.angular = Angular (self.name + '/' + Vector6.suffixAng)
         ## The factor sent to Angular.set
         self.angF = angFactor
