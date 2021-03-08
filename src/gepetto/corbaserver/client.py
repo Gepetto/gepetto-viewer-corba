@@ -70,11 +70,12 @@ class _GhostGraphicalInterface:
         for d_func in filter(lambda x:x.startswith("_d_"), GraphicalInterface.__dict__.keys()):
             self.__dict__[d_func[3:]] = nofunc
 
-def gui_client(window_name = None, dont_raise = False, ghost=False, url = None, host = None, port = None):
+def gui_client(window_name = None, dont_raise = False, verbose = True, ghost=False, url = None, host = None, port = None):
   """
   Initialize CORBA and create default clients.
   :param window_name: If provided, creates a window with this name if it does not exist.
   :param dont_raise: If True, will not raise if connection failed. It returns None instead.
+  :param verbose: If True and dont_raise is True, will print a message if connection failed.
   :param ghost: If True and dont_raise is True and the connection failed, an object with
                 the same API as the client is returned. This is most useful when you don't rely
                 on values returned by the GUI.
@@ -92,8 +93,9 @@ def gui_client(window_name = None, dont_raise = False, ghost=False, url = None, 
     if not dont_raise:
       raise e
     else:
-      print("Failed to connect to the viewer.")
-      print("Check whether gepetto-gui is properly started.")
+      if verbose:
+        print("Failed to connect to the viewer.")
+        print("Check whether gepetto-gui is properly started.")
       if ghost:
           return _GhostGraphicalInterface()
     return
