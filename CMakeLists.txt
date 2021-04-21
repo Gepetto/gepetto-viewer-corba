@@ -100,4 +100,5 @@ IF(NOT CLIENT_ONLY)
   ADD_SUBDIRECTORY(tests)
 ENDIF(NOT CLIENT_ONLY)
 
+INSTALL(FILES package.xml DESTINATION share/${PROJECT_NAME})
 # vim: foldmethod=marker foldlevel=0
