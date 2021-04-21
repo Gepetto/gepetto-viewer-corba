@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
  <package format="3">
  <name>gepetto-viewer-corba</name>
- <version>5.5.1</version>
+ <version>5.6.0</version>
  <description>Corba server for gepetto-viewer </description>
 
  <maintainer email="hpp@laas.fr">Joseph Mirabel</maintainer>
