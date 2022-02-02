@@ -125,6 +125,7 @@ public:
   virtual bool addToGroup(const char* nodeNameCorba, const char* groupNameCorba);
   virtual bool removeFromGroup (const char* nodeNameCorba,const char* groupNameCorba);
 
+  virtual bool removeObjectFromCache(const char* nodeNameCorba);
   virtual bool applyConfiguration(const char* nodeNameCorba, const value_type* configuration);
   virtual bool applyConfigurations(const Names_t& nodeNameCorba, const TransformSeq& configuration);
 
