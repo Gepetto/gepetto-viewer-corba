@@ -323,7 +323,10 @@ typedef sequence<Transform> TransformSeq;
     /// \param nodeName : name of the child node.
     /// \param groupName : name of the mother node (=group node).
     boolean removeFromGroup(in string nodeName, in string groupName) raises (Error);
-
+    /// Remove a mesh object from the cache.
+    /// \param nodeName : name of the node, should be of type LeafNodeCollada
+    ///        (inserted by method addMesh).
+    boolean removeObjectFromCache(in string nodeName) raises (Error);
     /// \}
 
     /// \name Node configuration

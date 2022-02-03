@@ -226,6 +226,8 @@ namespace gepetto {
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, removeFromGroup, STRING, STRING)
 
+      BIND_TO_WINDOWS_MANAGER_1(BOOL, removeObjectFromCache, STRING)
+
       BIND_TO_WINDOWS_MANAGER_2(BOOL, applyConfiguration, STRING, TRANSFORM)
 
       BIND_TO_WINDOWS_MANAGER_2(BOOL, applyConfigurations, STRING_LIST, TRANSFORM_SEQ)
