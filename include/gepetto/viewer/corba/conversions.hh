@@ -7,8 +7,8 @@
 
 #include <assert.h>
 #include <omniORB4/CORBA.h>
-#include <gepetto/viewer/corba/graphical-interface.hh>
 
+#include <gepetto/viewer/corba/graphical-interface.hh>
 
 namespace gepetto {
 namespace viewer {
@@ -17,12 +17,12 @@ using namespace ::gepetto::corbaserver;
 
 #if __cplusplus >= 201103L
 
-template<typename Scalar>
-PositionSeq positionSeq(std::initializer_list< std::initializer_list<Scalar> > l)
-{
-  Position* posSeq = PositionSeq::allocbuf((CORBA::ULong) l.size());
+template <typename Scalar>
+PositionSeq positionSeq(
+    std::initializer_list<std::initializer_list<Scalar> > l) {
+  Position* posSeq = PositionSeq::allocbuf((CORBA::ULong)l.size());
 
-  PositionSeq seq ((CORBA::ULong) l.size(), (CORBA::ULong) l.size(), posSeq);
+  PositionSeq seq((CORBA::ULong)l.size(), (CORBA::ULong)l.size(), posSeq);
   CORBA::ULong i = 0;
   for (const std::initializer_list<Scalar>& el : l) {
     assert(el.size() == 3);
@@ -35,10 +35,10 @@ PositionSeq positionSeq(std::initializer_list< std::initializer_list<Scalar> > l
   return seq;
 }
 
-#endif // __cplusplus >= 201103L
+#endif  // __cplusplus >= 201103L
 
-} //end of namespace corba
-} //end of namespace viewer
-} //end of namespace gepetto
+}  // end of namespace corba
+}  // end of namespace viewer
+}  // end of namespace gepetto
 
-#endif // GEPETTO_VIEWER_CORBA_CONVERSIONS_HH
+#endif  // GEPETTO_VIEWER_CORBA_CONVERSIONS_HH

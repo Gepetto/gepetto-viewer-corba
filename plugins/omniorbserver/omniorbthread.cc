@@ -16,31 +16,23 @@
 
 #include "omniorbthread.hh"
 
-#include "../../src/server.hh"
 #include <QDebug>
-
 #include <gepetto/gui/mainwindow.hh>
 #include <gepetto/gui/plugin-interface.hh>
 
-ViewerServerProcess::ViewerServerProcess (
-    gepetto::viewer::corba::Server *server, QObject* parent)
-  : QThread (parent), server_ (server)
-{}
+#include "../../src/server.hh"
 
-ViewerServerProcess::~ViewerServerProcess()
-{
-  delete server_;
+ViewerServerProcess::ViewerServerProcess(gepetto::viewer::corba::Server* server,
+                                         QObject* parent)
+    : QThread(parent), server_(server) {}
+
+ViewerServerProcess::~ViewerServerProcess() { delete server_; }
+
+void ViewerServerProcess::run() {
+  server_->qparent(this);
+  server_->startCorbaServer();
+
+  server_->processRequest(true);
 }
 
-void ViewerServerProcess::run()
-{
-  server_->qparent (this);
-  server_->startCorbaServer ();
-
-  server_->processRequest (true);
-}
-
-void ViewerServerProcess::shutdown()
-{
-  server_->shutdown (true);
-}
+void ViewerServerProcess::shutdown() { server_->shutdown(true); }

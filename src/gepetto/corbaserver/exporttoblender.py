@@ -24,35 +24,43 @@
 #
 ###################################################
 
-## Export object position for a given robot configuration
-#
-# \param viewer gepetto viewer instance
-# \param group object group considered,
-# \param configuration current robot configuration
-# \param outData array containing each object position, indexed first by object then by frame
-def exportState(viewer, group, outData):
-	gui = viewer.client.gui
-	objNames = set([])
-	#retrieve object names
-	for obj in gui.getGroupNodeList(group):
-		objNames.add(obj)
-	while len(objNames) > 0:
-		obj = objNames.pop()
-		if obj not in outData:
-			outData[obj] = []
-		objFrame = outData[obj]
-		objFrame.append(gui.getNodeGlobalTransform(obj))
 
-## Export object position for a given robot configuration
-#
-# \param outData data computed by the exportState calls
-# \param filename name of the output file where to save the output
+def exportState(viewer, group, outData):
+    """
+    Export object position for a given robot configuration
+    \\param viewer gepetto viewer instance
+    \\param group object group considered,
+    \\param configuration current robot configuration
+    \\param outData array containing each object position,
+           indexed first by object then by frame
+    """
+    gui = viewer.client.gui
+    objNames = set([])
+    # retrieve object names
+    for obj in gui.getGroupNodeList(group):
+        objNames.add(obj)
+    while len(objNames) > 0:
+        obj = objNames.pop()
+        if obj not in outData:
+            outData[obj] = []
+        objFrame = outData[obj]
+        objFrame.append(gui.getNodeGlobalTransform(obj))
+
+
 def writeDataToFile(group, outData, filename):
-	outFile = open(filename, "w+")
-	#write number of frames
-	outFile.write('nbFrames='+str(len(outData[outData.keys()[0]]))+'\n')
-	for obj, frames in outData.items():
-		outFile.write('OBJECT='+obj[len(group)+1:]+'\n')
-		for frame in range(0,len(frames)):
-			outFile.write(str(frame)+'='+str(frames[frame]).lstrip("[").rstrip("]")+'\n')
-	outFile.close()
+    """
+     Export object position for a given robot configuration
+
+    \\param outData data computed by the exportState calls
+    \\param filename name of the output file where to save the output
+    """
+    outFile = open(filename, "w+")
+    # write number of frames
+    outFile.write("nbFrames=" + str(len(outData[outData.keys()[0]])) + "\n")
+    for obj, frames in outData.items():
+        outFile.write("OBJECT=" + obj[len(group) + 1 :] + "\n")
+        for frame in range(0, len(frames)):
+            outFile.write(
+                str(frame) + "=" + str(frames[frame]).lstrip("[").rstrip("]") + "\n"
+            )
+    outFile.close()

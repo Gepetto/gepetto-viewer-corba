@@ -17,4 +17,4 @@
 # gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from .corbaserver import Color
+from .corbaserver import Color  # noqa: F401

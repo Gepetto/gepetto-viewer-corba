@@ -9,66 +9,59 @@
 // See the COPYING file for more information.
 
 #ifndef SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
-# define SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
+#define SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
 
-# include <omniORB4/CORBA.h>
+#include <omniORB4/CORBA.h>
 
-# include "graphical-interface.impl.hh"
+#include "graphical-interface.impl.hh"
 
 namespace gepetto {
-  namespace viewer {
-  namespace corba {
-    namespace impl
-    {
-      class Server
-      {
-      public:
-	~Server ();
+namespace viewer {
+namespace corba {
+namespace impl {
+class Server {
+ public:
+  ~Server();
 
-        void initRootPOA ();
+  void initRootPOA();
 
-        void initOmniINSPOA ();
+  void initOmniINSPOA();
 
-	void createServant (corba::Server* server);
+  void createServant(corba::Server* server);
 
-        void qparent (QObject* parent)
-        {
-          graphicalInterfaceServant_->qparent(parent);
-        }
+  void qparent(QObject* parent) { graphicalInterfaceServant_->qparent(parent); }
 
-      private:
-	CORBA::ORB_var orb_;
-	PortableServer::POA_var poa_;
-        PortableServer::ObjectId_var objectId_;
-        bool useNameService_;
-        GraphicalInterface* graphicalInterfaceServant_;
+ private:
+  CORBA::ORB_var orb_;
+  PortableServer::POA_var poa_;
+  PortableServer::ObjectId_var objectId_;
+  bool useNameService_;
+  GraphicalInterface* graphicalInterfaceServant_;
 
-	/// \brief It seems that we need to store this object to
-	/// deactivate the server.
-	PortableServer::ObjectId* graphicalInterfaceServantid_;
+  /// \brief It seems that we need to store this object to
+  /// deactivate the server.
+  PortableServer::ObjectId* graphicalInterfaceServantid_;
 
-	/// \brief Corba context.
-	CosNaming::NamingContext_var Context_;
+  /// \brief Corba context.
+  CosNaming::NamingContext_var Context_;
 
-	/// \brief Create context.
-	void createContext ();
+  /// \brief Create context.
+  void createContext();
 
-	/// \brief Store objects in Corba name service.
-	void bindObjectToName
-	(CORBA::Object_ptr objref, CosNaming::Name objectName);
+  /// \brief Store objects in Corba name service.
+  void bindObjectToName(CORBA::Object_ptr objref, CosNaming::Name objectName);
 
+  /// \brief Deactivate and destroy servers
+  ///
+  /// Destroying active servers raises a Corba exception.
+  void deactivateAndDestroyServers();
 
-	/// \brief Deactivate and destroy servers
-	///
-	/// Destroying active servers raises a Corba exception.
-	void deactivateAndDestroyServers ();
+  friend class corba::Server;
+};
 
-	friend class corba::Server;
-      };
+}  // end of namespace impl.
+}  // end of namespace corba.
+}  // end of namespace viewer.
+}  // end of namespace gepetto.
 
-    } // end of namespace impl.
-  } // end of namespace corba.
-  } // end of namespace viewer.
-} // end of namespace gepetto.
-
-#endif // SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH
+#endif  // SCENEVIEWER_CORBASERVER_SERVER_PRIVATE_HH

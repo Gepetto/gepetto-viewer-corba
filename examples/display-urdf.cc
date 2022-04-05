@@ -8,21 +8,19 @@
 
 #include <gepetto/viewer/corba/client.hh>
 
-int main(int argc, const char ** argv)
-{
-    if (argc != 2) {
-      std::cout << "Usage " << argv[0] << " <urdf-filename>"
-        << std::endl;
-      return 1;
-    }
+int main(int argc, const char** argv) {
+  if (argc != 2) {
+    std::cout << "Usage " << argv[0] << " <urdf-filename>" << std::endl;
+    return 1;
+  }
 
-    gepetto::viewer::corba::Client client (0, NULL);
-    client.connect ();
+  gepetto::viewer::corba::Client client(0, NULL);
+  client.connect();
 
-    client.gui()->createWindow("urdf-display");
-    client.gui()->addURDF("urdf-display/urdf", argv[1]);
+  client.gui()->createWindow("urdf-display");
+  client.gui()->addURDF("urdf-display/urdf", argv[1]);
 
-    client.gui()->refresh();
+  client.gui()->refresh();
 
-    return 0;
+  return 0;
 }

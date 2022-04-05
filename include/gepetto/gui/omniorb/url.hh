@@ -22,18 +22,17 @@
 #warning "This file will be deleted in the future."
 
 namespace gepetto {
-  namespace gui {
-    namespace omniOrb {
-      static inline QString IIOPurl (const QString& host = "localhost",
-          const QString& port = "2809") GEPETTO_VIEWER_CORBA_DEPRECATED;
+namespace gui {
+namespace omniOrb {
+static inline QString IIOPurl(const QString& host = "localhost",
+                              const QString& port = "2809")
+    GEPETTO_VIEWER_CORBA_DEPRECATED;
 
-      static inline QString IIOPurl (const QString& host,
-          const QString& port)
-      {
-        return QString ("corbaloc:iiop:%1:%2").arg(host).arg(port);
-      }
-    } // namespace omniOrb
-  } // namespace gui
-} // namespace gepetto
+static inline QString IIOPurl(const QString& host, const QString& port) {
+  return QString("corbaloc:iiop:%1:%2").arg(host).arg(port);
+}
+}  // namespace omniOrb
+}  // namespace gui
+}  // namespace gepetto
 
-#endif // GEPETTO_GUI_OMNIORB_URL_HH
+#endif  // GEPETTO_GUI_OMNIORB_URL_HH

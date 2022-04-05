@@ -8,21 +8,19 @@ namespace viewer {
 namespace corba {
 
 #if __cplusplus >= 201103L
-inline void applyConfiguration(const char* name, corbaserver::Transform&& t)
-{
+inline void applyConfiguration(const char* name, corbaserver::Transform&& t) {
   if (!connected()) return;
   gui()->applyConfiguration(name, t);
 }
-#endif // __cplusplus > 201103L
+#endif  // __cplusplus > 201103L
 
-inline void refresh()
-{
+inline void refresh() {
   if (!connected()) return;
   gui()->refresh();
 }
 
-} //end of namespace corba
-} //end of namespace viewer
-} //end of namespace gepetto
+}  // end of namespace corba
+}  // end of namespace viewer
+}  // end of namespace gepetto
 
-#endif // GEPETTO_VIEWER_CORBA_API_HH
+#endif  // GEPETTO_VIEWER_CORBA_API_HH
