@@ -17,32 +17,31 @@
 // <http://www.gnu.org/licenses/>.
 
 #include <QObject>
-
 #include <gepetto/gui/plugin-interface.hh>
 
 class ViewerServerProcess;
 
 /// Launch a OmniORB CORBA server for remote access to the GUI.
-class OmniOrbServerPlugin : public QObject, public gepetto::gui::PluginInterface
-{
+class OmniOrbServerPlugin : public QObject,
+                            public gepetto::gui::PluginInterface {
   Q_OBJECT
-  Q_INTERFACES (gepetto::gui::PluginInterface)
-#if (QT_VERSION >= QT_VERSION_CHECK(5,0,0))
-    Q_PLUGIN_METADATA (IID "gepetto-viewer-corba.omniorbserver")
+  Q_INTERFACES(gepetto::gui::PluginInterface)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+  Q_PLUGIN_METADATA(IID "gepetto-viewer-corba.omniorbserver")
 #endif
 
-  public:
-    OmniOrbServerPlugin ();
+ public:
+  OmniOrbServerPlugin();
 
-    ~OmniOrbServerPlugin ();
+  ~OmniOrbServerPlugin();
 
-    QString name () const { return QString("OmniORB Server"); }
+  QString name() const { return QString("OmniORB Server"); }
 
-    void stopServer ();
+  void stopServer();
 
-  protected:
-    void init();
+ protected:
+  void init();
 
-  private:
-    ViewerServerProcess* server_;
+ private:
+  ViewerServerProcess* server_;
 };

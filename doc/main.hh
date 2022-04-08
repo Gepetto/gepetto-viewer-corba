@@ -2,12 +2,13 @@
 
 \mainpage CORBA interface of Gepetto Viewer
 
-This package implements a CORBA interface to \ref gepetto_viewer_index_html "gepetto-viewer".
-Refers to its doc for further details on the interface itself.
+This package implements a CORBA interface to \ref gepetto_viewer_index_html
+"gepetto-viewer". Refers to its doc for further details on the interface itself.
 
 \par Basic usage
 
-The IDL interface of the viewer is defined by gepetto::corbaserver::GraphicalInterface.
+The IDL interface of the viewer is defined by
+gepetto::corbaserver::GraphicalInterface.
 
 To create a client to the interface, you may use the following code.
 \code{py}

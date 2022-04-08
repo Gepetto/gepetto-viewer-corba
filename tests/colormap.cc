@@ -20,14 +20,17 @@
 // #define STRINGIFY(x) #x
 // #define TOSTRING(x) STRINGIFY(x)
 
-#define COUT(msg) \
-  do { \
+#define COUT(msg)                  \
+  do {                             \
     std::cout << msg << std::endl; \
   } while (0)
 
-#define CHECK(test,msg) \
-  do { \
-    if (!(test)) { std::cerr << #test << ": " << msg << std::endl; errorCount++; } \
+#define CHECK(test, msg)                              \
+  do {                                                \
+    if (!(test)) {                                    \
+      std::cerr << #test << ": " << msg << std::endl; \
+      errorCount++;                                   \
+    }                                                 \
   } while (0)
 
 using namespace gepetto::gui;
@@ -43,32 +46,34 @@ std::size_t expected(int v[VC]) {
   return ret;
 }
 
-int main (int, char**) {
-  ColorMap c (3); // log2up -> 2
+int main(int, char**) {
+  ColorMap c(3);  // log2up -> 2
   // COUT(c.log2up_);
-  CHECK(c.remap (0) ==  0, "Value is " << c.remap (0));
-  CHECK(c.remap (1) ==  2, "Value is " << c.remap (1));
-  CHECK(c.remap (2) ==  1, "Value is " << c.remap (2));
+  CHECK(c.remap(0) == 0, "Value is " << c.remap(0));
+  CHECK(c.remap(1) == 2, "Value is " << c.remap(1));
+  CHECK(c.remap(2) == 1, "Value is " << c.remap(2));
 
-  c = ColorMap (4); // log2up -> 3
+  c = ColorMap(4);  // log2up -> 3
   // COUT(c.log2up_);
-  CHECK(c.remap (0) == 0, "Value is " << c.remap (0));
-  CHECK(c.remap (1) == 4, "Value is " << c.remap (1));
-  CHECK(c.remap (2) == 2, "Value is " << c.remap (2));
-  CHECK(c.remap (3) == 6, "Value is " << c.remap (3));
+  CHECK(c.remap(0) == 0, "Value is " << c.remap(0));
+  CHECK(c.remap(1) == 4, "Value is " << c.remap(1));
+  CHECK(c.remap(2) == 2, "Value is " << c.remap(2));
+  CHECK(c.remap(3) == 6, "Value is " << c.remap(3));
 
-  c = ColorMap (1024); // log2up -> 11
+  c = ColorMap(1024);  // log2up -> 11
   // COUT(c.log2up_);
-  int exp1[11] = {0,0,0,0,0,0,0,0,0,0};
-  CHECK(c.remap (0) == expected<10>(exp1), "Value is " << c.remap (0));
-  int exp2[11] = {1,0,0,0,0,0,0,0,0,0};
-  CHECK(c.remap (1) == expected<11>(exp2), "Value is " << c.remap (1));
-  int exp3[11] = {1,1,0,0,0,0,0,0,0,0};
-  CHECK(c.remap (3) == expected<11>(exp3), "Value is " << c.remap (3));
-  int exp4[11] = {0,0,0,1,0,0,0,0,0,0};
-  CHECK(c.remap (8) == expected<11>(exp4), "Value is " << c.remap (8));
+  int exp1[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  CHECK(c.remap(0) == expected<10>(exp1), "Value is " << c.remap(0));
+  int exp2[11] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  CHECK(c.remap(1) == expected<11>(exp2), "Value is " << c.remap(1));
+  int exp3[11] = {1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+  CHECK(c.remap(3) == expected<11>(exp3), "Value is " << c.remap(3));
+  int exp4[11] = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0};
+  CHECK(c.remap(8) == expected<11>(exp4), "Value is " << c.remap(8));
 
-  if (errorCount == 0) std::cout << "No error detected" << std::endl;
-  else std::cout << errorCount << " error(s) detected" << std::endl;
+  if (errorCount == 0)
+    std::cout << "No error detected" << std::endl;
+  else
+    std::cout << errorCount << " error(s) detected" << std::endl;
   return errorCount;
 }

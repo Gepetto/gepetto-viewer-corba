@@ -19,30 +19,30 @@
 
 #include <assert.h>
 
-#include <QThread>
-#include <QMutex>
-#include <QTimerEvent>
 #include <QElapsedTimer>
+#include <QMutex>
+#include <QThread>
+#include <QTimerEvent>
 
-#include "gepetto/gui/fwd.hh"
 #include "../../src/server.hh"
+#include "gepetto/gui/fwd.hh"
 
-class ViewerServerProcess : public QThread
-{
+class ViewerServerProcess : public QThread {
   Q_OBJECT
 
-  public:
-    ViewerServerProcess (gepetto::viewer::corba::Server* server, QObject* parent = NULL);
+ public:
+  ViewerServerProcess(gepetto::viewer::corba::Server* server,
+                      QObject* parent = NULL);
 
-    ~ViewerServerProcess ();
+  ~ViewerServerProcess();
 
-    void shutdown ();
+  void shutdown();
 
-  protected:
-    void run ();
+ protected:
+  void run();
 
-  private:
-    gepetto::viewer::corba::Server* server_;
+ private:
+  gepetto::viewer::corba::Server* server_;
 };
 
-#endif // GEPETTO_GUI_OMNIORBTHREAD_HH
+#endif  // GEPETTO_GUI_OMNIORBTHREAD_HH

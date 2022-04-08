@@ -55,12 +55,12 @@ typedef sequence<Transform> TransformSeq;
     /// \deprecated Line `windowId = gui.getWindowID(name)` can be replaced
     ///             by `windowId = name`.
     WindowID getWindowID (in string name) raises (Error);
-    
+
     /// change the background color1
     /// \param wid : ID of the window
     /// \param RGBAcolor : desired color
     boolean setBackgroundColor1(in WindowID wid,in Color RGBAcolor);
-    
+
     /// change the background color2
     /// \param wid : ID of the window
     /// \param RGBAcolor : desired color
@@ -109,12 +109,12 @@ typedef sequence<Transform> TransformSeq;
     /// create a box called CapsuleName.
     /// \param name : name of the arrow.
     /// \param radius : radius of the arrow
-    /// \param length : lenght of the arrow 
+    /// \param length : lenght of the arrow
     /// \param RGBAcolor : Color of the capsule.
     boolean addArrow(in string name, in float radius, in float length, in Color RGBAcolor) raises (Error);
 
     boolean addRod(in string rodName, in Color RGBAcolor, in float radius, in float totalLength,in short maxCapsule) raises (Error);
-    
+
     /// resize the capsule CapsuleName.
     /// \param CapsuleName : name of the capsule.
     /// \param height : lenght of the segment that generates the capsule.
@@ -153,7 +153,7 @@ typedef sequence<Transform> TransformSeq;
     /// \param pos2 : position the other extremity of the line.
     /// \param RGBAcolor : color of the line.
     boolean addLine(in string lineName, in Position pos1, in Position pos2, in Color RGBAcolor) raises (Error);
-    
+
     /// change starting point position of a line.
     /// \param lineName : name of the line.
     /// \param pos1 : position of the first extremity of the line.
@@ -163,20 +163,20 @@ typedef sequence<Transform> TransformSeq;
     /// \param lineName : name of the line.
     /// \param pos2 : position of the second extremity of the line.
     boolean setLineEndPoint(in string lineName, in Position pos2) raises (Error);
-    
+
     /// change extremity positions of a line.
     /// \param lineName : name of the line.
     /// \param pos1 : position one extremity of the line.
     /// \param pos2 : position of the second extremity of the line.
     boolean setLineExtremalPoints(in string lineName, in Position pos1, in Position pos2) raises (Error);
-    
+
     /// create a curve called curveName.
     /// The curve is the graph of the piecewise linear interpolation between each consecutive pos.
     /// \param name : name of the line.
     /// \param pos : waypoints of the curve.
     /// \param RGBAcolor : color of the line.
     boolean addCurve(in string name, in PositionSeq pos, in Color RGBAcolor) raises (Error);
-    
+
     /// set points of a curve called curveName.
     /// \param name : name of the line.
     /// \param pos : waypoints of the curve.
@@ -239,7 +239,7 @@ typedef sequence<Transform> TransformSeq;
 
 		// Add a node to the roadmap
 	  // \param nameRoadmap : name of the roadmap
-	  // \param configuration : configuration of the node 
+	  // \param configuration : configuration of the node
     boolean addNodeToRoadmap(in string nameRoadmap, in Transform configuration)raises(Error);
 
     /// Create a node from an urdf file
@@ -349,7 +349,7 @@ typedef sequence<Transform> TransformSeq;
     /// with the rendering loop.
     /// \note This is an experimental features.
     void setRefreshIsSynchronous (in boolean synchonous) raises (Error);
-    
+
     /// Return the Position + Quaternion orientation of an object in the global frame
     /// \param nodeName : name of the node.
     /// \return a length 7 array
@@ -374,7 +374,7 @@ typedef sequence<Transform> TransformSeq;
     /// get the static transform of the node
     /// \param nodeName : name of the node
     Transform getStaticTransform(in string nodeName) raises (Error);
-    
+
     /// set the static transform of the node
     /// \param nodeName : name of the node
     /// \param configuration : static configuration of the node
@@ -384,12 +384,12 @@ typedef sequence<Transform> TransformSeq;
     /// \param nodeName : name of the node.
     /// \param visibilityMode : visibility mode can be "ON", "OFF" or "ALWAYS_ON_TOP".
     boolean setVisibility(in string nodeName, in string visibilityMode) raises (Error);
-    
+
     /// Change the scale of a node.
     /// \param nodeName : name of the node.
     /// \param scale : new scale
     boolean setScale(in string nodeName, in Position scale) raises (Error);
-    
+
     /// Change the color of a node.
     /// \param nodeName : name of the node.
     /// \param color : new color
