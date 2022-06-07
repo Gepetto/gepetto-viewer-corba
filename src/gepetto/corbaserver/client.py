@@ -197,7 +197,7 @@ def _getIIOPurl(service="NameService", host=None, port=None):
         if rospy.client.get_master().target is not None:
             _host = rospy.get_param("/gepetto_viewer/host", _host)
             _port = rospy.get_param("/gepetto_viewer/port", _port)
-    except ImportError:
+    except (ImportError, ConnectionRefusedError):
         pass
     _host = os.getenv("GEPETTO_VIEWER_HOST", _host)
     _port = os.getenv("GEPETTO_VIEWER_PORT", _port)
