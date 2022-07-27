@@ -192,12 +192,13 @@ def _getIIOPurl(service="NameService", host=None, port=None):
 
     try:
         import rospy
+        import socket
 
         # Check is ROS master is reachable.
         if rospy.client.get_master().target is not None:
             _host = rospy.get_param("/gepetto_viewer/host", _host)
             _port = rospy.get_param("/gepetto_viewer/port", _port)
-    except (ImportError, OSError):
+    except (ImportError, OSError, socket.error):
         pass
     _host = os.getenv("GEPETTO_VIEWER_HOST", _host)
     _port = os.getenv("GEPETTO_VIEWER_PORT", _port)
