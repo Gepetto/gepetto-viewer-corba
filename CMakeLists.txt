@@ -26,7 +26,6 @@ set(DOXYGEN_USE_TEMPLATE_CSS TRUE)
 
 include(cmake/base.cmake)
 include(cmake/idl.cmake)
-include(cmake/python.cmake)
 include(cmake/apple.cmake)
 
 set(CLIENT_ONLY
@@ -41,7 +40,6 @@ if(APPLE)
 endif(APPLE)
 
 # {{{ C++ and Python client. Dependencies
-findpython()
 add_required_dependency("omniORB4 >= 4.1.4")
 
 set(${PROJECT_NAME}_HEADERS
