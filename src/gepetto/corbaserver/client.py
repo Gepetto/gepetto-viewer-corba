@@ -189,10 +189,10 @@ def _getIIOPurl(service="NameService", host=None, port=None):
     _host = "localhost"
     _port = 2809
     import os
+    import socket
 
     try:
         import rospy
-        import socket
 
         # Check is ROS master is reachable.
         if rospy.client.get_master().target is not None:
