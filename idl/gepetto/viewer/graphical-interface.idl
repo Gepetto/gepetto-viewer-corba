@@ -299,7 +299,7 @@ typedef sequence<Transform> TransformSeq;
     /// Delete node from visualiser
     /// \param all if nodeName is a group node and all is True, nodes
     ///        are deleted recursively.
-    void deleteNode (in string nodeName, in boolean all) raises (Error);
+    boolean deleteNode (in string nodeName, in boolean all) raises (Error);
 
     /// Returns the name of all the nodes.
     Names_t getNodeList() raises (Error);
