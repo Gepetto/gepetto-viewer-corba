@@ -184,7 +184,7 @@ class GraphicalInterface
   virtual bool writeWindowFile(const char* windowId, const char* filename);
 
   virtual Transform_slice* getNodeGlobalTransform(const char* nodeName);
-  virtual void deleteNode(const char* nodeName, bool all);
+  virtual bool deleteNode(const char* nodeName, bool all);
   virtual bool setBackgroundColor1(const char* windowId,
                                    const Color colorCorba);
   virtual bool setBackgroundColor2(const char* windowId,
