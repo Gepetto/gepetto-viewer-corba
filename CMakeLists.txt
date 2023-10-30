@@ -13,7 +13,7 @@
 # Public License along with gepetto-viewer-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME gepetto-viewer-corba)
 set(PROJECT_DESCRIPTION "Corba server for gepetto-viewer")
