@@ -1,7 +1,8 @@
-from . import Color
+from math import cos, pi, sin, sqrt
 
 import numpy as np
-from math import pi, sqrt, cos, sin
+
+from . import Color
 
 
 def _pointsTorus(R, r, nR, nr):

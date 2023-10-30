@@ -1,5 +1,5 @@
 from PythonQt import QtGui
-from PythonQt.QCustomPlot import QCustomPlot, QCPItemTracer, QCPItemRichText, QCP
+from PythonQt.QCustomPlot import QCP, QCPItemRichText, QCPItemTracer, QCustomPlot
 
 
 class Plugin(QtGui.QDockWidget):

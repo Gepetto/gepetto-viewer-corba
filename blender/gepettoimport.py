@@ -22,11 +22,11 @@
 # https://github.com/jmirabel/gepetto-viewer-corba/tree/devel/blender
 ###
 
-import yaml
 import os
+
 import bpy
 import bpy_extras.io_utils
-
+import yaml
 
 bl_info = {
     "author": "Joseph Mirabel",

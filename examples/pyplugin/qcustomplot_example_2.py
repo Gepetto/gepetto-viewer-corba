@@ -1,4 +1,4 @@
-from PythonQt import QtGui, Qt
+from PythonQt import Qt, QtGui
 from PythonQt.QCustomPlot import QCustomPlot
 
 pens = (
@@ -42,9 +42,9 @@ class Plot(QtGui.QWidget):
         self.qcp.clearGraphs()
         self.legends = ["sin", "cos"]
         self.times = []
-        for i, l in enumerate(self.legends):
+        for i, legend in enumerate(self.legends):
             graph = self.qcp.addGraph()
-            graph.setName(l)
+            graph.setName(legend)
             graph.setPen(pens[i])
 
     def start(self):
@@ -56,7 +56,7 @@ class Plot(QtGui.QWidget):
 
     def _step(self):
         t = (self.times[-1] + 1) if len(self.times) > 0 else 0
-        from math import sin, cos
+        from math import cos, sin
 
         x = sin(0.1 * t)
         y = cos(0.1 * t)

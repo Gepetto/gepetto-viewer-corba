@@ -16,5 +16,5 @@
 # <http://www.gnu.org/licenses/>.
 
 from .color import Color  # noqa: F401
-from .quaternion import Quaternion  # noqa: F401
 from .corbaserver import Error  # noqa: F401
+from .quaternion import Quaternion  # noqa: F401

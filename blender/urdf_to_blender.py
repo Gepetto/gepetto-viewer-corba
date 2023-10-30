@@ -1,13 +1,13 @@
 #!/usr/bin/env python2.7
 from __future__ import print_function
-import roslib
+
+import getopt
+import inspect
+import os.path
+import sys
 
 import resource_retriever
-import sys
-import getopt
-import os.path
-import inspect
-
+import roslib
 import urdf_parser_py.urdf as urdf
 
 roslib.load_manifest("urdf_parser_py")

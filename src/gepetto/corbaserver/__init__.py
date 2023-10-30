@@ -1,8 +1,7 @@
+from .client import Client, gui_client  # noqa: F401
+from .gepetto import Error  # noqa: F401
 from .gepetto.corbaserver import GraphicalInterface  # noqa: F401
 from .gepetto__POA.corbaserver import NodeCallback as POA_NodeCallback  # noqa: F401
-from .gepetto import Error  # noqa: F401
-
-from .client import Client, gui_client  # noqa: F401
 
 
 def start_server(args=[]):

@@ -32,8 +32,9 @@ class Client:
         :param host: if not None, url is set to =
                      "corbaloc:iiop:" + str(host) + "/NameService"
         """
-        from omniORB import CORBA
         import sys
+
+        from omniORB import CORBA
 
         self.orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
 
@@ -136,6 +137,7 @@ def gui_client(
 
 def _initWithNameService(orb, urlNameService):
     import CosNaming
+
     from .gepetto.corbaserver import GraphicalInterface
 
     obj = orb.string_to_object(urlNameService)
