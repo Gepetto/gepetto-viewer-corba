@@ -1,15 +1,12 @@
-from __future__ import print_function
-
-from PythonQt import Qt, QtGui
-
 from gepetto.corbaserver import Client
+from PythonQt import Qt, QtGui
 
 
 class _NodeCreator(QtGui.QWidget):
     """This class represents one special tab of the new QDockWidget."""
 
     def __init__(self, parent, plugin):
-        super(_NodeCreator, self).__init__(parent)
+        super().__init__(parent)
         self.plugin = plugin
         box = QtGui.QVBoxLayout(self)
 
@@ -97,7 +94,7 @@ class Plugin(QtGui.QDockWidget):
     """
 
     def __init__(self, mainWindow):
-        super(Plugin, self).__init__("Gepetto Viewer plugin", mainWindow)
+        super().__init__("Gepetto Viewer plugin", mainWindow)
         self.setObjectName("Gepetto Viewer plugin")
         self.client = Client()
         # Initialize the widget

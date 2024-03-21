@@ -1,2 +1,2 @@
-import gepetto  # noqa: F401
+import gepetto
 import gepetto.corbaserver  # noqa: F401

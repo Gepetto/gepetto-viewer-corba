@@ -1,5 +1,4 @@
 #!/usr/bin/env python2.7
-from __future__ import print_function
 
 import getopt
 import inspect
@@ -138,33 +137,28 @@ def setParent (children, parent):
         self.writeCmd("currentObj.parent = empty")
 
     def translate(self, position):
-        self.writeCmd("currentObj.location = %s" % (position,))
+        self.writeCmd(f"currentObj.location = {position}")
 
     def rotate(self, rotation):
-        self.writeCmd("currentObj.rotation_euler = %s" % (rotation,))
+        self.writeCmd(f"currentObj.rotation_euler = {rotation}")
 
     def scale(self, scale):
-        self.writeCmd("currentObj.scale = %s" % (scale,))
+        self.writeCmd(f"currentObj.scale = {scale}")
 
     def handleSphere(self, sphere):
         print("Untested feature: Sphere will be treated as icosphere")
-        self.writeCmd(
-            "bpy.ops.mesh.primitive_ico_sphere_add (size=%s)" % (sphere.radius,)
-        )
+        self.writeCmd(f"bpy.ops.mesh.primitive_ico_sphere_add (size={sphere.radius})")
         self.writeCmd("currentObj = bpy.context.object")
 
     def handleBox(self, geometry):
         self.writeCmd("bpy.ops.mesh.primitive_cube_add ()")
         self.writeCmd("currentObj = bpy.context.object")
-        self.writeCmd("currentObj.dimensions = %s" % (geometry.size,))
+        self.writeCmd(f"currentObj.dimensions = {geometry.size}")
 
     def handleCylinder(self, geometry):
         self.writeCmd(
-            "bpy.ops.mesh.primitive_cylinder_add (radius=%s, depth=%s)"
-            % (
-                geometry.radius,
-                geometry.length,
-            )
+            "bpy.ops.mesh.primitive_cylinder_add"
+            f"(radius={geometry.radius}, depth={geometry.length})"
         )
         self.writeCmd("currentObj = bpy.context.object")
 
@@ -181,11 +175,8 @@ def setParent (children, parent):
                 "# Failed to find loading method for %s"
             )
             print(
-                "Extension %s of file %s is not know by the script"
-                % (
-                    extension,
-                    geometry.filename,
-                )
+                f"Extension {extension} of file {geometry.filename} "
+                "is not know by the script"
             )
             updateFrameMessage()
         self.writeCmd(command % (resolve_ros_path(geometry.filename),))
@@ -199,16 +190,16 @@ def setParent (children, parent):
         print(command, file=self.file)
 
     def addMaterial(self, name, rgba):
-        self.writeCmd('mat = bpy.data.materials.new("%s")' % (name,))
-        self.writeCmd("mat.diffuse_color = %s" % (rgba[0:3],))
-        self.writeCmd("mat.alpha = %s" % (rgba[3],))
+        self.writeCmd(f'mat = bpy.data.materials.new("{name}")')
+        self.writeCmd(f"mat.diffuse_color = {rgba[0:3]}")
+        self.writeCmd(f"mat.alpha = {rgba[3]}")
         self.materials.append(name)
 
     def addTexture(self, name, filename):
-        self.writeCmd('img = bpy.data.images.load ("%s")' % (filename,))
-        self.writeCmd("cTex = bpy.data.textures.new(\"%s\", type='IMAGE')" % (name,))
+        self.writeCmd(f'img = bpy.data.images.load ("{filename}")')
+        self.writeCmd(f"cTex = bpy.data.textures.new(\"{name}\", type='IMAGE')")
         self.writeCmd("cTex.image = img")
-        self.writeCmd('mat = bpy.data.materials.new("%s")' % (name,))
+        self.writeCmd(f'mat = bpy.data.materials.new("{name}")')
         self.writeCmd("mtex = mat.texture_slots.add()")
         self.writeCmd("mtex.texture = cTex")
         self.writeCmd("mtex.texture_coords = 'ORCO'")
@@ -223,8 +214,8 @@ def setParent (children, parent):
             pass
         if name in self.materials:
             self.writeCmd(
-                'bpy.context.object.data.materials.append(bpy.data.materials["%s"])'
-                % (name,)
+                "bpy.context.object.data.materials.append"
+                f'(bpy.data.materials["{name}"])'
             )
 
     def __call__(self, link):

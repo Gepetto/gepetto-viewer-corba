@@ -15,7 +15,7 @@ pens = (
 
 class Plot(QtGui.QWidget):
     def __init__(self, plugin):
-        super(Plot, self).__init__(self)
+        super().__init__(self)
         self.plugin = plugin
 
         self.qcp = QCustomPlot()
@@ -36,7 +36,7 @@ class Plot(QtGui.QWidget):
     def doubleClick(self, event):
         x = self.qcp.xAxis().pixelToCoord(event.posF().x())
         y = self.qcp.yAxis().pixelToCoord(event.posF().y())
-        print("You double-clicked at ({0}, {1})".format(x, y))
+        print(f"You double-clicked at ({x}, {y})")
 
     def makeCurves(self):
         self.qcp.clearGraphs()
@@ -72,7 +72,7 @@ class Plot(QtGui.QWidget):
 
 class Plugin(QtGui.QDockWidget):
     def __init__(self, mainWindow):
-        super(Plugin, self).__init__("Gepetto Viewer plugin", mainWindow)
+        super().__init__("Gepetto Viewer plugin", mainWindow)
         self.setObjectName("qcustomplot_widget_example")
         self.plot = Plot(self)
         self.setWidget(self.plot)

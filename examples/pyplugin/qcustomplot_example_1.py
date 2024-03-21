@@ -5,9 +5,9 @@ from PythonQt.QCustomPlot import QCP, QCPItemRichText, QCPItemTracer, QCustomPlo
 class Plugin(QtGui.QDockWidget):
     def __init__(self, mainWindow, flags=None):
         if flags is None:
-            super(Plugin, self).__init__("QCP example plugin", mainWindow)
+            super().__init__("QCP example plugin", mainWindow)
         else:
-            super(Plugin, self).__init__("QCP example plugin", mainWindow, flags)
+            super().__init__("QCP example plugin", mainWindow, flags)
         self.setObjectName("QCP example plugin")
 
         self.main = mainWindow

@@ -40,7 +40,7 @@ def _pointsCircularArrow(R, r, nR, nr):
     return ptsCone + ptsTorus, len(ptsCone)
 
 
-def _tranformFromXvector(v, origin=(0, 0, 0)):
+def _tranformFromXvector(v, origin=None):
     """
     Compute a transformation which rotates (1, 0, 0) to v
     Return (norm_v, T)
@@ -58,11 +58,11 @@ def _tranformFromXvector(v, origin=(0, 0, 0)):
         c = max(u[0], -1)
         w2 = (1 + c) / 2
         s = sqrt(1 - w2)
-        t = origin + (V[0, 2] / s, V[1, 2] / s, V[2, 2] / s, w2)
+        t = origin + (V[0, 2] / s, V[1, 2] / s, V[2, 2] / s, w2)  # noqa: RUF005
     else:
         s = sqrt(2 * (1 + u[0]))
         # axis = (0, -u[2]/s, u[1]/s) # x ^ u
-        t = origin + (0, -u[2] / s, u[1] / s, s / 2)
+        t = origin + (0, -u[2] / s, u[1] / s, s / 2)  # noqa: RUF005
     return norm_v, t
 
 

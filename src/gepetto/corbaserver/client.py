@@ -191,7 +191,6 @@ def _getIIOPurl(service="NameService", host=None, port=None):
     _host = "localhost"
     _port = 2809
     import os
-    import socket
 
     try:
         import rospy
@@ -200,7 +199,7 @@ def _getIIOPurl(service="NameService", host=None, port=None):
         if rospy.client.get_master().target is not None:
             _host = rospy.get_param("/gepetto_viewer/host", _host)
             _port = rospy.get_param("/gepetto_viewer/port", _port)
-    except (ImportError, OSError, socket.error):
+    except (ImportError, OSError):
         pass
     _host = os.getenv("GEPETTO_VIEWER_HOST", _host)
     _port = os.getenv("GEPETTO_VIEWER_PORT", _port)
@@ -211,5 +210,5 @@ def _getIIOPurl(service="NameService", host=None, port=None):
     if _host is None and _port is None:
         url = "corbaloc:iiop:"
     else:
-        url = "corbaloc:iiop:{}:{}".format(_host, _port)
+        url = f"corbaloc:iiop:{_host}:{_port}"
     return url + "/" + service
