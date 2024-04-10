@@ -32,7 +32,7 @@ foreach(IDL ${IDL_SOURCES})
                             -Wbpackage=gepetto.corbaserver)
   if(PYTHON_VERSION_MAJOR EQUAL 3)
     set(_IDL_PYTHON_ARGUMENTS
-        -p${CMAKE_SOURCE_DIR}/cmake/hpp/idl -bomniidl_be_python_with_docstring
+        -p${JRL_CMAKE_MODULES}/hpp/idl -bomniidl_be_python_with_docstring
         ${_IDL_PYTHON_ARGUMENTS})
   endif(PYTHON_VERSION_MAJOR EQUAL 3)
   generate_idl_python(
