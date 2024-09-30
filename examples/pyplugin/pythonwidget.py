@@ -1,5 +1,6 @@
-from gepetto.corbaserver import Client
 from PythonQt import Qt, QtGui
+
+from gepetto.corbaserver import Client
 
 
 class _NodeCreator(QtGui.QWidget):
