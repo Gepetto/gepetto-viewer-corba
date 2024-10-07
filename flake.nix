@@ -17,6 +17,8 @@
           packages = {
             default = self'.packages.gepetto-viewer-corba;
             gepetto-viewer-corba = pkgs.python3Packages.gepetto-viewer-corba.overrideAttrs (_: {
+              # TODO: remove this after next release
+              postPatch = "";
               src = pkgs.lib.fileset.toSource {
                 root = ./.;
                 fileset = pkgs.lib.fileset.unions [
