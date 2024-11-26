@@ -86,8 +86,7 @@ def updateFrameMessage():
     callerframerecord = inspect.stack()[1]
     info = inspect.getframeinfo(callerframerecord[0])
     print(
-        "Update function %s in script %s:%i"
-        % (info.function, info.filename, info.lineno)
+        f"Update function {info.function} in script {info.filename}:{info.lineno}"
     )
 
 
