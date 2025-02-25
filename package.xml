@@ -1,21 +1,41 @@
 <?xml version="1.0"?>
- <package format="3">
- <name>gepetto-viewer-corba</name>
- <version>6.0.0</version>
- <description>Corba server for gepetto-viewer </description>
+<package format="3">
+  <name>gepetto-viewer-corba</name>
+  <version>6.0.0</version>
+  <description>Corba server for gepetto-viewer </description>
 
- <maintainer email="hpp@laas.fr">Joseph Mirabel</maintainer>
- <license>LGPL</license>
+  <maintainer email="guilhem.saurel@laas.fr">Guilhem Saurel</maintainer>
 
- <!-- <url type="website">https://github.com/Gepetto/gepetto-viewer-corba </url> -->
+  <author>Joseph Mirabel</author>
+  <author>Florent Lamiraux et al.</author>
 
- <author>Joseph Mirabel</author>
- <author>Florent Lamiraux et al.</author>
+  <license>BSD-2</license>
 
- <buildtool_depend>catkin</buildtool_depend>
- <depend>gepetto-viewer</depend>
- <depend>omniidl</depend>
- <depend>omniorb</depend>
- <depend condition="$ROS_PYTHON_VERSION == 2">python-omniorb</depend>
- <!-- TODO: There is no python3 rosdep key for omniorb - needs to be created & upstreamed first -->
+  <url type="website">https://github.com/humanoid-path-planner/gepetto-viewer-corba</url>
+  <url type="repository">https://github.com/humanoid-path-planner/gepetto-viewer-corba</url>
+  <url type="bugtracker">https://github.com/humanoid-path-planner/gepetto-viewer-corba/issues</url>
+
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <build_depend>doxygen</build_depend>
+
+  <depend>gepetto-viewer</depend>
+  <depend>hpp-corbaserver</depend>
+  <depend>hpp-manipulation</depend>
+  <depend>hpp-manipulation-urdf</depend>
+  <depend>omniidl</depend>
+  <depend>omniorb</depend>
+
+  <!-- The following tags are recommended by REP-136 -->
+  <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>
+  <depend condition="$ROS_PYTHON_VERSION == 2">python-omniorb</depend>
+  <depend condition="$ROS_PYTHON_VERSION == 3">python3</depend>
+  <!-- There are no official binary for python bindings for omniorb for Python3 -->
+  <!-- <depend condition="$ROS_PYTHON_VERSION == 3">python3-omniorb</depend> -->
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
 </package>
