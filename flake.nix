@@ -13,7 +13,6 @@
       perSystem =
         { pkgs, self', ... }:
         {
-          devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
           packages = {
             default = self'.packages.gepetto-viewer-corba;
             gepetto-viewer-corba = pkgs.python3Packages.gepetto-viewer-corba.overrideAttrs (_: {
