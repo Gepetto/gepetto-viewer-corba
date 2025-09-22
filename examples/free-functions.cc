@@ -12,7 +12,7 @@
 
 namespace gui = gepetto::viewer::corba;
 
-int main(int, const char **) {
+int main(int, const char**) {
   gui::connect("windowName", true);
 
   if (gui::connected()) gui::gui()->createWindow("window1");

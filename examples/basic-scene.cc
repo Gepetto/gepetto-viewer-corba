@@ -9,7 +9,7 @@
 #include <gepetto/viewer/corba/client.hh>
 #include <gepetto/viewer/corba/conversions.hh>
 
-int main(int, const char **) {
+int main(int, const char**) {
   gepetto::viewer::corba::Client client(0, NULL);
   client.connect("corbaloc:iiop:localhost:12321");
 
