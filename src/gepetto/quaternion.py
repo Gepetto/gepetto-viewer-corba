@@ -458,7 +458,7 @@ class Quaternion:
             # which lead to a singular value problem
             c = max(c, -1.0)
             m = np.matrix([v0, v1]).transpose()
-            u, s, vh = np.linalg.svd(m)
+            u, s, _v = np.linalg.svd(m)
             axis = u[:, 2].transpose()
             w2 = (1.0 + c) * 0.5
             self.array[0:3] = axis * np.sqrt(1.0 - w2)
