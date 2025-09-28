@@ -54,7 +54,7 @@ def _tranformFromXvector(v, origin=None):
     u = v / norm_v
     if u[0] < -1 + 1e-6:  # Nearly opposite vectors
         m = np.array(((1, 0, 0), u))
-        U, S, V = np.linalg.svd(m)
+        _U, _S, V = np.linalg.svd(m)
         c = max(u[0], -1)
         w2 = (1 + c) / 2
         s = sqrt(1 - w2)
