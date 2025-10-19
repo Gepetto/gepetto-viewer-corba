@@ -126,6 +126,4 @@ if(NOT CLIENT_ONLY)
   add_subdirectory(examples EXCLUDE_FROM_ALL)
   add_subdirectory(tests)
 endif(NOT CLIENT_ONLY)
-
-install(FILES package.xml DESTINATION share/${PROJECT_NAME})
 # vim: foldmethod=marker foldlevel=0
