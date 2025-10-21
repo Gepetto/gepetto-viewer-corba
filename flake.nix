@@ -23,26 +23,31 @@
           ...
         }:
         {
-          packages = {
-            default = self'.packages.gepetto-viewer-corba;
-            gepetto-viewer-corba = pkgs.python3Packages.gepetto-viewer-corba.overrideAttrs {
-              src = lib.fileset.toSource {
-                root = ./.;
-                fileset = lib.fileset.unions [
-                  ./blender
-                  ./CMakeLists.txt
-                  ./doc
-                  ./examples
-                  ./idl
-                  ./include
-                  ./package.xml
-                  ./plugins
-                  ./src
-                  ./tests
-                ];
+          packages =
+            let
+              override = {
+                src = lib.fileset.toSource {
+                  root = ./.;
+                  fileset = lib.fileset.unions [
+                    ./blender
+                    ./CMakeLists.txt
+                    ./doc
+                    ./examples
+                    ./idl
+                    ./include
+                    ./package.xml
+                    ./plugins
+                    ./src
+                    ./tests
+                  ];
+                };
               };
+            in
+            {
+              default = self'.packages.py-gepetto-viewer-corba;
+              gepetto-viewer-corba = pkgs.gepetto-viewer-corba.overrideAttrs override;
+              py-gepetto-viewer-corba = pkgs.python3Packages.gepetto-viewer-corba.overrideAttrs override;
             };
-          };
         };
     };
 }
