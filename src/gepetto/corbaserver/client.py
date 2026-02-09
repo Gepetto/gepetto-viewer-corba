@@ -66,8 +66,8 @@ class Client:
             from PythonQt.gepetto import MainWindow
 
             # At this point, we are in the python interpreter of gepetto-gui
-            self.gui.createWindow = (
-                lambda x: MainWindow.instance().createView(x).windowID()
+            self.gui.createWindow = lambda x: (
+                MainWindow.instance().createView(x).windowID()
             )
         except ImportError:
             # At this point, we are NOT in the python interpreter of gepetto-gui
