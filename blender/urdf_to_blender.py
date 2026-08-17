@@ -7,7 +7,7 @@ import sys
 
 import resource_retriever
 import roslib
-import urdf_parser_py.urdf as urdf
+from urdf_parser_py import urdf
 
 roslib.load_manifest("urdf_parser_py")
 

@@ -59,8 +59,8 @@ def writeDataToFile(group, outData, filename):
     outFile.write("nbFrames=" + str(len(outData[outData.keys()[0]])) + "\n")
     for obj, frames in outData.items():
         outFile.write("OBJECT=" + obj[len(group) + 1 :] + "\n")
-        for frame in range(0, len(frames)):
-            outFile.write(
-                str(frame) + "=" + str(frames[frame]).lstrip("[").rstrip("]") + "\n"
-            )
+        outFile.writelines(
+            str(frame) + "=" + str(frames[frame]).lstrip("[").rstrip("]") + "\n"
+            for frame in range(len(frames))
+        )
     outFile.close()
