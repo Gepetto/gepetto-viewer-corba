@@ -61,14 +61,14 @@ for tag in urdf.JointLimit.XML_REFL.attributes:
 
 # There is something wrong with tag transmission
 # This just disables it but it is not the right way of doing it.
-urdf.Transmission.XML_REFL.attributes = list()
-urdf.Transmission.XML_REFL.vars = list()
-urdf.Transmission.XML_REFL.required_attribute_names = list()
-urdf.Transmission.XML_REFL.required_element_names = list()
-urdf.Transmission.XML_REFL.attribute_map = dict()
-urdf.Transmission.XML_REFL.element_map = dict()
-urdf.Transmission.XML_REFL.scalarNames = list()
-urdf.Transmission.XML_REFL.scalars = list()
+urdf.Transmission.XML_REFL.attributes = []
+urdf.Transmission.XML_REFL.vars = []
+urdf.Transmission.XML_REFL.required_attribute_names = []
+urdf.Transmission.XML_REFL.required_element_names = []
+urdf.Transmission.XML_REFL.attribute_map = {}
+urdf.Transmission.XML_REFL.element_map = {}
+urdf.Transmission.XML_REFL.scalarNames = []
+urdf.Transmission.XML_REFL.scalars = []
 
 robot = urdf.URDF.from_xml_file(urdfFilename)
 
@@ -90,11 +90,11 @@ def updateFrameMessage():
 
 class CreateBlenderObject:
     def __init__(self, prefix, file):
-        self.run = dict()
+        self.run = {}
         self.file = file
         self.prefix = prefix
-        self.materials = list()
-        self.textures = list()
+        self.materials = []
+        self.textures = []
         self.run[urdf.Cylinder] = self.handleCylinder
         self.run[urdf.Box] = self.handleBox
         self.run[urdf.Sphere] = self.handleSphere

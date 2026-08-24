@@ -118,9 +118,9 @@ def gui_client(
     """
     try:
         gui = Client(url, host, port).gui
-    except Exception as e:
+    except Exception:
         if not dont_raise:
-            raise e
+            raise
         else:
             if verbose:
                 print("Failed to connect to the viewer.")
