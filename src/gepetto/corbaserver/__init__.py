@@ -4,9 +4,12 @@ from .gepetto.corbaserver import GraphicalInterface  # noqa: F401
 from .gepetto__POA.corbaserver import NodeCallback as POA_NodeCallback  # noqa: F401
 
 
-def start_server(args=[]):
+def start_server(args=None):
     import os
     import time
+
+    if args is None:
+        args = []
 
     if os.system("ps -C gepetto-gui > /dev/null") == 0:
         return

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+from pathlib import Path
+
 #
 # Copyright (c) 2014 CNRS
 # Author: Steve Tonneau
@@ -35,7 +38,7 @@ def exportState(viewer, group, outData):
            indexed first by object then by frame
     """
     gui = viewer.client.gui
-    objNames = set([])
+    objNames = set()
     # retrieve object names
     for obj in gui.getGroupNodeList(group):
         objNames.add(obj)
@@ -54,13 +57,11 @@ def writeDataToFile(group, outData, filename):
     \\param outData data computed by the exportState calls
     \\param filename name of the output file where to save the output
     """
-    outFile = open(filename, "w+")
-    # write number of frames
-    outFile.write("nbFrames=" + str(len(outData[outData.keys()[0]])) + "\n")
-    for obj, frames in outData.items():
-        outFile.write("OBJECT=" + obj[len(group) + 1 :] + "\n")
-        for frame in range(0, len(frames)):
-            outFile.write(
+    with Path(filename).open("w+") as outFile:
+        outFile.write("nbFrames=" + str(len(outData[outData.keys()[0]])) + "\n")
+        for obj, frames in outData.items():
+            outFile.write("OBJECT=" + obj[len(group) + 1 :] + "\n")
+            outFile.writelines(
                 str(frame) + "=" + str(frames[frame]).lstrip("[").rstrip("]") + "\n"
+                for frame in range(len(frames))
             )
-    outFile.close()

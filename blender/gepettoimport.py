@@ -23,6 +23,7 @@
 ###
 
 import os
+from pathlib import Path
 
 import bpy
 import bpy_extras.io_utils
@@ -122,7 +123,7 @@ class UrdfToBlendImport(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
         for f in self.files:
             fullname = os.path.join(dir, f.name)
             self.report({"INFO"}, "Loading " + str(fullname))
-            exec(open(fullname).read())
+            exec(Path(fullname).read_text())  # noqa S102
         return {"FINISHED"}
 
     def invoke(self, context, event):

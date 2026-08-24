@@ -56,7 +56,6 @@ class Client:
                 self.gui = _initWithDirectLink(self.orb, urlGepettoGui)
             except CorbaError as e:
                 print(e)
-                pass
             if self.gui is None:
                 self.gui = _initWithNameService(self.orb, urlNameService)
 
@@ -78,7 +77,6 @@ class _GhostGraphicalInterface:
     def __init__(self):
         def nofunc(*args):
             """Connection to the GUI failed. Docstring not available."""
-            pass
 
         from .gepetto.corbaserver import GraphicalInterface
 
@@ -120,9 +118,9 @@ def gui_client(
     """
     try:
         gui = Client(url, host, port).gui
-    except Exception as e:
+    except Exception:
         if not dont_raise:
-            raise e
+            raise
         else:
             if verbose:
                 print("Failed to connect to the viewer.")
